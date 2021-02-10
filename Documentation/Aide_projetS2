@@ -1,0 +1,58 @@
+Mettre en commun assez tot avant soutenance -> bugs
+Mettre la meme version unity et ne plus la changer
+faire en premier tous ses objets, et une fois finie, faire la carte 
+seulement après.
+Pour l'IA sur unity, outils déjà donnés
+Regarder tuto, apprendre a utiliser les outils. Important la carte plate,
+eviter les polygones.
+Utiliser outils déjà disponibles.
+Git kraken
+Possibilité coop ou multijoueur, les 2 sont obligatoires,
+commencer par le multi puis faire le solo ensuite
+Multijoueur fonctionnel.
+
+Unity particle system (pour beauté du jeu)
+
+Latex:
+https://www.overleaf.com
+
+version gitignore:
+https://github.com/github/gitignore/blob/master/Unity.gitignore
+
+Presentation d'un jeu:
+https://www.youtube.com/watch?v=a8WiMmVz_wY&feature=youtu.be
+
+Presentation des jeux:
+https://www.youtube.com/playlist?list=PLo31Bhg3nNkbiEUQnV-6e0UcrNIQhXO3i
+
+Multiplayer:
+https://www.youtube.com/channel/UCjCpZyil4D8TBb5nVTMMaUw
+
+Photon:
+Brackeys, utiliser Photon pour multi. 3 facons pour synchro, une heure avant de
+coder pour regarder des vidéos pour savoir quel outil utiliser qui correspond.
+Site de doc de Photon, pour les tutoriels et avoir les bases.
+
+Graphismes:
+Blender
+
+Conseil débuggage:
+Ouvrir page et simplifier code pour trouver le bug, ou expliquer 
+le code à quelqu'un 
+
+Soutenance:
+si distanciel, se former en montage pour faire une vidéo de 10-15 mins 
+de présentation du jeu
+
+Logiciel de montage(si jamais):
+"DaVinci Resolve" de chez BlackMagicDesign
+
+Veille de soutenance, ou quelques jours avant la soutenance,
+marteler le jeu pour essayer de trouver tous les bugs possible
+Ne pas s'arrêter après le cahier des charges, essayer de rajouter des choses.
+Si présence d'un bug pendant la présentation, essayer d'avancer.
+Respecter le temps imparti
+ORGANISATION TRES IMPORTANTE. répartition de tâches, être très organisé.
+
+
+
