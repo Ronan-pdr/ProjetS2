@@ -5,18 +5,28 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    public Transform _transform;
-    public Rigidbody _rigidbody;
+    public Transform tr;
+    public Rigidbody rb;
+    public Transform cam;
     public static Chassé PlayerChassé;
         
     void Start()
     {
-        PlayerChassé = new Chassé(_transform, _rigidbody);
+        PlayerChassé = new Chassé(tr, rb, cam);
     }
 
     // Update is called once per frame
     void Update()
     {
         PlayerChassé.Upd();
+    }
+    
+    public void OnCollisionEnter(Collision other)
+    {
+        if (other.collider.CompareTag("Ground"))
+        {
+            Debug.Log("I hit the ground !");
+            PlayerChassé.Ground = true;
+        }
     }
 }
