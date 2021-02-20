@@ -10,7 +10,7 @@ namespace Script
         private string toucheReculer = "s";
         private string toucheDroite = "d";
         private string toucheGauche = "q";
-        private float speed = 5f;
+        private float speed = 4f;
         private float lookSensitivity = 5f;
         private string toucheJump = "space";
         private int forceJump = 15000;

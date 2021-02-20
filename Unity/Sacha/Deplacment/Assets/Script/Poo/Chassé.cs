@@ -6,7 +6,7 @@ namespace Script
 {
     public class Chassé : Player
     {
-        private static Vector3 distanceCamera = new Vector3(0, 3, -7);
+        private static Vector3 distanceCamera = new Vector3(0, 0.5f, -2);
         public Chassé(Transform tr, Rigidbody rb, Transform cam)
         {
             Tr = tr;
