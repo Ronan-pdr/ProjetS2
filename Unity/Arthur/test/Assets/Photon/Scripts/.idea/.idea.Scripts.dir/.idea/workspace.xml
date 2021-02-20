@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="53ba7db0-2e46-4a5f-b235-bd8d38509202" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/.idea/.idea.Assets.dir/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/.idea/.idea.Assets.dir/.idea/contentModel.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/.idea/.idea.Assets.dir/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/.idea/.idea.Assets.dir/.idea/indexLayout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/.idea/.idea.Assets.dir/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/.idea/.idea.Assets.dir/.idea/projectSettingsUpdater.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/.idea/.idea.Assets.dir/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/.idea/.idea.Assets.dir/riderModule.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChannelCreationOptions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChannelCreationOptions.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChannelWellKnownProperties.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChannelWellKnownProperties.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatAppSettings.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatAppSettings.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatChannel.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatChannel.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatClient.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatClient.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatDisconnectCause.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatDisconnectCause.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatEventCode.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatEventCode.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatOperationCode.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatOperationCode.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatParameterCode.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatParameterCode.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatPeer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatPeer.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatState.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatState.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatUserStatus.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/ChatUserStatus.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/IChatClientListener.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/IChatClientListener.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/PhotonChat.asmdef" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/PhotonChat.asmdef.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/changes-chat.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonChat/Code/changes-chat.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/Metro.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/Metro/Photon3Unity3D.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/Metro/Photon3Unity3D.dll.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/Metro/Photon3Unity3D.pri" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/Metro/Photon3Unity3D.pri.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/Photon3Unity3D.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/Photon3Unity3D.dll.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/Photon3Unity3D.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/Photon3Unity3D.xml.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/SocketWebTcp.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/SocketWebTcp.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/WebSocket.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/WebSocket.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/WebSocket.jslib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/WebSocket.jslib.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/websocket-sharp.README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/websocket-sharp.README.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/websocket-sharp.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/WebSocket/websocket-sharp.dll.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/changes-library.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/changes-library.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/netstandard2.0.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.deps.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.deps.json.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.dll.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonNetworking-Documentation.chm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonNetworking-Documentation.chm.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonNetworking-Documentation.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonNetworking-Documentation.pdf.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/AppSettings.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/AppSettings.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/ConnectionHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/ConnectionHandler.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/CustomTypesUnity.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/CustomTypesUnity.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/Extensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/Extensions.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/FriendInfo.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/FriendInfo.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/LoadBalancingClient.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/LoadBalancingClient.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/LoadbalancingPeer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/LoadbalancingPeer.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/PhotonPing.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/PhotonPing.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/PhotonPingClasses.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/PhotonPingClasses.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/PhotonRealtime.asmdef" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/PhotonRealtime.asmdef.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/Player.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/Player.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/Region.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/Region.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/RegionHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/RegionHandler.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/Room.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/Room.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/RoomInfo.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/RoomInfo.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/SupportLogger.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/SupportLogger.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/WebRpc.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/WebRpc.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/changes-realtime.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonRealtime/Code/changes-realtime.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/CustomTypes.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/CustomTypes.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/AccountService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/AccountService.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/CopyIcon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/CopyIcon.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/CopyIconPro.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/CopyIconPro.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonEditorUtils.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonEditorUtils.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonGUI.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonGUI.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonUnityNetworking.Editor.asmdef" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonUnityNetworking.Editor.asmdef.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonViewHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonViewHandler.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonViewInspector.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PhotonViewInspector.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PunGradient.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PunGradient.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PunSceneSettings.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PunSceneSettings.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PunSceneSettingsFile.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PunSceneSettingsFile.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PunSceneSettingsInspector.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/PunSceneSettingsInspector.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/ReordableList.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/ReordableList/LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/ReordableList/LICENSE.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/ReordableList/ReorderableListResources.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/ReordableList/ReorderableListResources.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/ServerSettingsInspector.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/ServerSettingsInspector.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/MonoBehaviourPunEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/MonoBehaviourPunEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonAnimatorViewEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonAnimatorViewEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonRigidbody2DViewEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonRigidbody2DViewEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonRigidbodyViewEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonRigidbodyViewEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonTransformViewClassicEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonTransformViewClassicEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonTransformViewEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/Views/PhotonTransformViewEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/help.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Editor/help.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Enums.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Enums.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Interfaces.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Interfaces/IPhotonViewCallbacks.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Interfaces/IPhotonViewCallbacks.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Interfaces/IPunCallbacks.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Interfaces/IPunCallbacks.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonHandler.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonNetwork.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonNetwork.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonNetworkPart.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonNetworkPart.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonStreamQueue.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonStreamQueue.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonUnityNetworking.asmdef" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonUnityNetworking.asmdef.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PhotonView.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PunClasses.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/PunClasses.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/ServerSettings.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/ServerSettings.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Utilities.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Utilities/NestedComponentUtilities.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Utilities/NestedComponentUtilities.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonAnimatorView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonAnimatorView.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonRigidbody2DView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonRigidbody2DView.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonRigidbodyView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonRigidbodyView.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonTransformView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonTransformView.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonTransformViewClassic.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Code/Views/PhotonTransformViewClassic.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIcon-128.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIcon-128.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIconApp128.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIconApp128.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIconApp32.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIconApp32.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIconApp48.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIconApp48.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIconApp512.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Icons/PunIconApp512.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Resources.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling/CullArea.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling/CullArea.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling/CullingHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling/CullingHandler.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling/Editor.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling/Editor/CullAreaEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling/Editor/CullAreaEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling/Editor/PhotonUnityNetworking.Utilities.Culling.Editor.asmdef" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Culling/Editor/PhotonUnityNetworking.Utilities.Culling.Editor.asmdef.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Debugging.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Debugging/PhotonLagSimulationGui.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Debugging/PhotonLagSimulationGui.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Debugging/PhotonStatsGui.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Debugging/PhotonStatsGui.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Debugging/PointedAtGameObjectInfo.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Debugging/PointedAtGameObjectInfo.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Debugging/StatesGui.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Debugging/StatesGui.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/Editor.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/Editor/PhotonTeamsManagerInspector.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/Editor/PhotonTeamsManagerInspector.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/Editor/PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.asmdef" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/Editor/PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.asmdef.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/Editor/PlayerNumberingInspector.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/Editor/PlayerNumberingInspector.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/Editor/PunTeamsInspector.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/Editor/PunTeamsInspector.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/PhotonTeamsManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/PhotonTeamsManager.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/PlayerNumbering.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/PlayerNumbering.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/PunPlayerScores.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/PunPlayerScores.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/PunTeams.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonPlayer/PunTeams.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonUnityNetworking.Utilities.asmdef" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonUnityNetworking.Utilities.asmdef.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonView.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonView/SmoothSyncMovement.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/PhotonView/SmoothSyncMovement.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/ConnectAndJoinRandom.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/ConnectAndJoinRandom.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/MoveByKeys.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/MoveByKeys.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnClickDestroy.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnClickDestroy.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnClickInstantiate.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnClickInstantiate.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnClickRpc.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnClickRpc.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnEscapeQuit.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnEscapeQuit.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnJoinedInstantiate.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnJoinedInstantiate.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnStartDelete.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Prototyping/OnStartDelete.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Room.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Room/CountdownTimer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/Room/CountdownTimer.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/TurnBased.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/TurnBased/PunTurnManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/TurnBased/PunTurnManager.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/ButtonInsideScrollList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/ButtonInsideScrollList.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/EventSystemSpawner.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/EventSystemSpawner.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/GraphicToggleIsOnTransition.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/GraphicToggleIsOnTransition.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/OnPointerOverTooltip.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/OnPointerOverTooltip.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/TabViewManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/TabViewManager.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/TextButtonTransition.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/TextButtonTransition.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/TextToggleIsOnTransition.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/UtilityScripts/UI/TextToggleIsOnTransition.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/changelog.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/changelog.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/link.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/link.xml.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/readme.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Photon/PhotonUnityNetworking/readme.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Game.unity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Game.unity.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/MainMenu.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/MainMenu.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/Menu.unity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/Menu.unity.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/New TMP Color Gradient.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/New TMP Color Gradient.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/background_dark.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/background_dark.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/d6iuhnh-22a84a73-8669-48aa-aaac-47e886276b7c.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/Scenes/Menu/d6iuhnh-22a84a73-8669-48aa-aaac-47e886276b7c.jpg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Documentation.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Fonts.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Fonts/LiberationSans.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Fonts/LiberationSans.ttf.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Fonts &amp; Materials.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Drop Shadow.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Drop Shadow.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Outline.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Outline.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Sprite Assets.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Style Sheets.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/TMP Settings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Resources/TMP Settings.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_SDF.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_Sprite.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMP_Sprite.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMPro.cginc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMPro.cginc.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Sprites.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Sprites/EmojiOne.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Sprites/EmojiOne.json.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Sprites/EmojiOne.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Assets/TextMesh Pro/Sprites/EmojiOne.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Packages/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Packages/packages-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/AudioManager.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/ClusterInputManager.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/DynamicsManager.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/EditorBuildSettings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/EditorSettings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/GraphicsSettings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/InputManager.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/NavMeshAreas.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/PackageManagerSettings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/Physics2DSettings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/PresetManager.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/ProjectSettings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/ProjectVersion.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/QualitySettings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/TagManager.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/TimeManager.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/UnityConnectSettings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/VFXManager.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/XRSettings.asset" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../../.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Launcher.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Menu.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../MenuManager.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/../../MenuManager.cs" />
+        <option value="$PROJECT_DIR$/../../Menu.cs" />
+        <option value="$PROJECT_DIR$/Launcher.cs" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1olRj9PyB1t6JdYYAe4U7Wz4IJU" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="53ba7db0-2e46-4a5f-b235-bd8d38509202" name="Default Changelist" comment="" />
+      <created>1613859338055</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1613859338055</updated>
+      <workItem from="1613859378744" duration="2417000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>
