@@ -20,11 +20,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53ba7db0-2e46-4a5f-b235-bd8d38509202" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../.idea/.idea.Assets.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/.idea.Assets.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../MenuManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../MenuManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Menu.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Menu.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../MenuManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../MenuManager.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Scripts.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Scripts.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Launcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Launcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../RoomListItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../RoomListItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PlayerListItem.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PlayerListItem.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../RoomListItem.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../RoomListItem.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../../Scenes/Game.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,10 +41,9 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Launcher.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../Menu.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../RoomListItem.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../MenuManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../PlayerListItem.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/RoomManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/PlayerManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/PlayerController.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -48,6 +52,9 @@
         <option value="$PROJECT_DIR$/../../RoomListItem.cs" />
         <option value="$PROJECT_DIR$/../../MenuManager.cs" />
         <option value="$PROJECT_DIR$/Launcher.cs" />
+        <option value="$PROJECT_DIR$/../../RoomManager.cs" />
+        <option value="$PROJECT_DIR$/PlayerManager.cs" />
+        <option value="$PROJECT_DIR$/PlayerController.cs" />
       </list>
     </option>
   </component>
@@ -71,7 +78,7 @@
       <option name="presentableId" value="Default" />
       <updated>1613859338055</updated>
       <workItem from="1613859378744" duration="2417000" />
-      <workItem from="1613918882828" duration="891000" />
+      <workItem from="1613918882828" duration="5292000" />
     </task>
     <servers />
   </component>
