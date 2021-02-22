@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class Launcher : MonoBehaviourPunCallbacks
 {
@@ -16,6 +17,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject PlayerListItemPrefab;
     [SerializeField] GameObject startGameButton;
+    [SerializeField] TMP_InputField nameInputField;
+    [SerializeField] Button saveButton;
+    
+    private const string PlayerPrefsNameKey = "PlayerName";
 
     void Awake()
     {
@@ -25,6 +30,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
+        SetUpInputField();
     }
 
     public override void OnConnectedToMaster()
@@ -38,7 +44,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu("title");
         Debug.Log("Joined Lobby");
-        PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+        SavePlayerName();
     }
 
     public void CreateRoom()
@@ -116,5 +122,31 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+    }
+
+    void StartName()
+    {
+        SetUpInputField();
+    }
+
+    public void SetUpInputField()
+    {
+        if (!PlayerPrefs.HasKey(PlayerPrefsNameKey))
+            return;
+        string defaultName = PlayerPrefs.GetString(PlayerPrefsNameKey);
+        nameInputField.text = defaultName;
+        SetPlayerName(defaultName);
+    }
+
+    public void SetPlayerName(string name)
+    {
+        saveButton.interactable = !string.IsNullOrEmpty(name);
+    }
+
+    public void SavePlayerName()
+    {
+        string playerName = nameInputField.text;
+        PhotonNetwork.NickName = playerName;
+        PlayerPrefs.SetString(PlayerPrefsNameKey, playerName);
     }
 }
