@@ -5,58 +5,58 @@ using UnityEngine;
 
 public class PlayerGroundCheck : MonoBehaviour
 {
-    private PlayerController playerController;
+    private Humanoide human;
 
     private void Awake()
     {
-        playerController = GetComponentInParent<PlayerController>();
+        human = GetComponentInParent<Humanoide>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == playerController.gameObject) // Le cas où c'est avec notre propre personnage
+        if (other.gameObject == human.gameObject) // Le cas où c'est avec notre propre personnage
             return;
         
-        playerController.SetGroundedState(true);
+        human.SetGroundedState(true);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject == playerController.gameObject)
+        if (other.gameObject == human.gameObject)
             return;
         
-        playerController.SetGroundedState(false);
+        human.SetGroundedState(false);
     }
 
-    private void OnTriggerStay(Collider other)
+    /*private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject == playerController.gameObject)
+        if (other.gameObject == human.gameObject)
             return;
         
-        playerController.SetGroundedState(true);
-    }
+        human.SetGroundedState(true);
+    }*/
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject == playerController.gameObject)
+        if (other.gameObject == human.gameObject)
             return;
         
-        playerController.SetGroundedState(true);
+        human.SetGroundedState(true);
     }
 
     private void OnCollisionExit(Collision other)
     {
-        if (other.gameObject == playerController.gameObject)
+        if (other.gameObject == human.gameObject)
             return;
         
-        playerController.SetGroundedState(false);
+        human.SetGroundedState(false);
     }
 
-    private void OnCollisionStay(Collision other)
+    /*private void OnCollisionStay(Collision other)
     {
-        if (other.gameObject == playerController.gameObject)
+        if (other.gameObject == human.gameObject)
             return;
         
-        playerController.SetGroundedState(true);
-    }
+        human.SetGroundedState(true);
+    }*/
 }

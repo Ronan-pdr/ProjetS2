@@ -1,29 +1,29 @@
 ﻿using System;
 using UnityEngine;
+using Photon.Pun;
 using UnityEngine.PlayerLoop;
 
 namespace Script
 {
-    public class Chassé : Player
+    public class Chassé : PlayerClass
     {
-        private static Vector3 distanceCamera = new Vector3(0, 0.5f, -2);
+        private void Awake()
+        {
+            Awa();
+        }
 
         void Start()
         {
-            
+            Sta();
         }
-        
-        /*public Chassé(Transform tr, Rigidbody rb, Transform cam)
-        {
-            Tr = tr;
-            Rb = rb;
-            Cam = cam;
-            Cam.position = tr.position + distanceCamera;
-        }*/
         
         void Update()
         {
             Upd();
+        }
+
+        private void FixedUpdate()
+        {
             FixedUpd();
         }
     }

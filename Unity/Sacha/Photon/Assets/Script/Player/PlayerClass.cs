@@ -6,9 +6,8 @@ using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class Player : Humanoide
+public class PlayerClass : Humanoide
 {
-    
     //Avancer
     private float walkSpeed = 3f;
     private string touchAvancer = "z";
@@ -26,30 +25,34 @@ public class Player : Humanoide
     
     //Jump
     private string touchJump = "space";
-    private float jumpForce = 3000f;
+    private float jumpForce = 200f;
     
     //Look
     private float verticalLookRotation;
-    private float cameraHolder;
     private float mouseSensitivity = 3f;
+    [SerializeField] protected Transform cameraHolder;
+    [SerializeField] protected Vector3 distanceCamera;
     
     //Photon
-    private PhotonView PV;
+    protected PhotonView PV;
 
-    //GamePlay
+    /*//GamePlay
     private const float maxHealth = 100f;
-    private float currentHealth = maxHealth;
+    private float currentHealth = maxHealth;*/
 
-    void Awake()
+    protected override void Awa()
     {
         Rb = GetComponent<Rigidbody>();
         PV = GetComponent<PhotonView>();
     }
 
-    void Start()
+    protected override void Sta()
     {
-        // On veut détruire les caméras qui ne sont pas les tiennes
-        if (!PV.IsMine)
+        if (PV.IsMine) // Placer la caméra en fonction de ta classe (chasseur/chassé) 
+        {
+            cameraHolder.position += distanceCamera;
+        }
+        else // On veut détruire les caméras qui ne sont pas les tiennes
         {
             Destroy(GetComponentInChildren<Camera>().gameObject);
             Destroy(Rb);
@@ -92,6 +95,7 @@ public class Player : Humanoide
         {
             Debug.Log("I jump !");
             Rb.AddForce(transform.up * jumpForce); // transform.up = new Vector3(0, 0, 0)
+            Grounded = false;
         }
     }
 
@@ -100,9 +104,9 @@ public class Player : Humanoide
         transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
 
         verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
+        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -70f, 70f);
 
-        cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
+        cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
     }
 
     protected override void FixedUpd()
