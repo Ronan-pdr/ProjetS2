@@ -41,10 +41,20 @@ public class PauseMenu : MonoBehaviour
     }
     
 
-    public void Quit()
+    public IEnumerator Quit()
     {
         disconnecting = true;
-        PhotonNetwork.LeaveRoom();
+		PhotonNetwork.Disconnect();
+		Destroy(RoomManager.Instance.gameObject);
+		while(PhotonNetwork.IsConnected)
+		{
+			yield return null;
+		}
         SceneManager.LoadScene(0);
+    }
+
+    public void StartQuit()
+    {
+        StartCoroutine(Quit());
     }
 }
