@@ -11,7 +11,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        if (Instance) // checks if another RoomManger exists
+        if (Instance) // checks if another RoomManager exists
         {
             Destroy(gameObject); // there can only be one
             return;

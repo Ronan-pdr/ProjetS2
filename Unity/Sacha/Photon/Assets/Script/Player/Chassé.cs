@@ -9,22 +9,23 @@ namespace Script
     {
         private void Awake()
         {
-            Awa();
+            AwakePlayer();
         }
 
         void Start()
         {
-            Sta();
+            StartPlayer();
         }
         
         void Update()
         {
-            Upd();
+            UpdateHumanoide();
+            UpdatePlayer();
         }
 
         private void FixedUpdate()
         {
-            FixedUpd();
+            FixedUpdatePlayer();
         }
     }
 }

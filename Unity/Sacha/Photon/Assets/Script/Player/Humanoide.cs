@@ -11,16 +11,24 @@ public abstract class Humanoide : MonoBehaviour
     protected Rigidbody Rb;
     protected bool Grounded;
     
+    protected PlayerManager playerManager;
+    
     public void SetGroundedState(bool grounded)
     {
         Grounded = grounded;
     }
 
-
-    protected abstract void Awa();
-
-    protected abstract void Sta();
-    protected abstract void Upd();
+    protected void UpdateHumanoide()
+    {
+        // Mourir de chute
+        if (transform.position.y < -10f)
+        {
+            Die();
+        }
+    }
     
-    protected abstract void FixedUpd();
+    protected void Die()
+    {
+        playerManager.Die();
+    }
 }

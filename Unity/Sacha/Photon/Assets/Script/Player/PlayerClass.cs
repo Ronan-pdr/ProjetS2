@@ -6,7 +6,7 @@ using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class PlayerClass : Humanoide
+public class PlayerClass : Humanoide, IDamagable
 {
     //Avancer
     private float walkSpeed = 3f;
@@ -36,17 +36,20 @@ public class PlayerClass : Humanoide
     //Photon
     protected PhotonView PV;
 
-    /*//GamePlay
+    //GamePlay
     private const float maxHealth = 100f;
-    private float currentHealth = maxHealth;*/
+    private float currentHealth = maxHealth;
+    
 
-    protected override void Awa()
+    protected void AwakePlayer()
     {
         Rb = GetComponent<Rigidbody>();
         PV = GetComponent<PhotonView>();
+        
+        playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
     }
 
-    protected override void Sta()
+    protected void StartPlayer()
     {
         if (PV.IsMine) // Placer la caméra en fonction de ta classe (chasseur/chassé) 
         {
@@ -59,7 +62,7 @@ public class PlayerClass : Humanoide
         }
     }
 
-    protected override void Upd()
+    protected void UpdatePlayer()
     {
         if (!PV.IsMine)
             return;
@@ -67,6 +70,15 @@ public class PlayerClass : Humanoide
         Look();
         Move();
         Jump();
+    }
+    
+    protected void FixedUpdatePlayer()
+    {
+        if (!PV.IsMine)
+            return;
+        
+        //Déplce le corps du joueur grâce à moveAmount précédemment calculé
+        Rb.MovePosition(Rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
     }
     
     private void Move()
@@ -93,7 +105,6 @@ public class PlayerClass : Humanoide
     {
         if (Input.GetKey(touchJump) && Grounded)
         {
-            Debug.Log("I jump !");
             Rb.AddForce(transform.up * jumpForce); // transform.up = new Vector3(0, 0, 0)
             Grounded = false;
         }
@@ -108,12 +119,25 @@ public class PlayerClass : Humanoide
 
         cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
     }
-
-    protected override void FixedUpd()
+    
+    public void TakeDamage(float damage) // Runs sur l'ordinateur du shooter
+    {
+        Debug.Log("took damage : " + damage);
+        PV.RPC("RPC_TakeDamage", RpcTarget.All, damage);
+    }
+    
+    [PunRPC]
+    void RPC_TakeDamage(float damage) // runs sur tous les ordis mais grâce à '!PV.IsMine', seuk la victime subit les dommages
     {
         if (!PV.IsMine)
             return;
         
-        Rb.MovePosition(Rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+        Debug.Log("took damage " + damage);
+        currentHealth -= damage;
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 }
