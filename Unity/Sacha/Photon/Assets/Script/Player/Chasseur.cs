@@ -94,4 +94,11 @@ public class Chasseur : PlayerClass
             EquipItem((int)changedProps["itemIndex"]);
         }
     }
+
+    //Animation
+    arrAnimContinue = new (string, string)[0];
+    arrAnimAcoup = new(string, string)[0];
+
+    protected override void AnimationContinue(string touche){}
+    protected override void AnimationAcoup(string touche){}
 }

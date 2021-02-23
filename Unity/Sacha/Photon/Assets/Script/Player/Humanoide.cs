@@ -31,4 +31,11 @@ public abstract class Humanoide : MonoBehaviour
     {
         playerManager.Die();
     }
+
+    //Animation
+    protected (string, string)[] arrAnimContinue;
+    protected (string, string)[] arrAnimAcoup;
+
+    protected abstract void AnimationContinue(string touche);
+    protected abstract void AnimationAcoup(string touche);
 }

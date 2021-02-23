@@ -27,5 +27,24 @@ namespace Script
         {
             FixedUpdatePlayer();
         }
+
+
+        // Animation
+        
+
+        private static void Search()
+
+        protected override void AnimationContinue(string touche)
+        {
+
+        }
+
+        protected override void AnimationAcoup(string touche)
+        {
+
+        }
+
+
+
     }
 }
