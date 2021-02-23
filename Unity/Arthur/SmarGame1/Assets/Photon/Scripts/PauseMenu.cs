@@ -6,7 +6,7 @@ using Photon.Pun;
 
 public class PauseMenu : MonoBehaviour
 {
-    public static  bool isPaused = false;
+    public static bool isPaused = false;
     private bool disconnecting = false;
     public GameObject pauseMenuUI;
 
