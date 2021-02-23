@@ -36,5 +36,14 @@ public class SimpleMath
     {
         return (float)Math.Sqrt(a);
     }
+
+    public static float Cos(float angle)
+    {
+        return (float)Math.Cos(angle);
+    }
     
+    public static float Sin(float angle)
+    {
+        return (float)Math.Sin(angle);
+    }
 }

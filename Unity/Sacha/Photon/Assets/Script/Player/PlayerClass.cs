@@ -140,4 +140,9 @@ public class PlayerClass : Humanoide, IDamagable
             Die();
         }
     }
+
+    public virtual void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        throw new NotImplementedException();
+    }
 }

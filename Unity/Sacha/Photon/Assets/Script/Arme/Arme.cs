@@ -1,14 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
-using Script.Player;
 using UnityEngine;
+using System.IO;
+
 
 public abstract class Arme : MonoBehaviour
 {
-    public ArmeInfo armeInfo;
-    [SerializeField] protected GameObject controller;
-    public GameObject armeGameObject;
+    // les gameObject de la caméra et du joueur qui porte le flingue
     [SerializeField] protected Camera cam;
+    [SerializeField] protected GameObject controller;
+    
+    // Variables relatives 
+    [SerializeField] protected ArmeInfo armeInfo;
+    public GameObject armeObject;
+    
 
     public abstract void Use();
+
+    
 }

@@ -4,38 +4,36 @@ using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Script
+public class Chasseur : PlayerClass
 {
-    public class Chasseur : PlayerClass
+    // Relatif aux armes
+    [SerializeField] private Arme[] armes;
+    private int armeIndex;
+    private int previousArmeIndex = -1;
+    private void Awake()
     {
-        // Relatif aux armes
-        [SerializeField] private Arme[] armes;
-        private int armeIndex;
-        private int previousArmeIndex = -1;
-        private void Awake()
-        {
-            AwakePlayer();
-        }
+        AwakePlayer();
+    }
 
-        void Start()
-        {
-            StartPlayer();
-        }
+    void Start()
+    {
+        StartPlayer();
+    }
         
-        void Update()
-        {
-            ManipulerArme();
+    void Update()
+    {
+        ManipulerArme();
             
-            UpdateHumanoide();
-            UpdatePlayer();
-        }
+        UpdateHumanoide();
+        UpdatePlayer();
+    }
 
-        private void FixedUpdate()
-        {
-            FixedUpdatePlayer();
-        }
+    private void FixedUpdate()
+    {
+        FixedUpdatePlayer();
+    }
 
-        private void ManipulerArme()
+    private void ManipulerArme()
         {
             //changer d'arme avec les numéros
             for (int i = 0; i < armes.Length; i++)
@@ -64,27 +62,36 @@ namespace Script
             }
         }
         
-        private void EquipItem(int index) // index supposé valide
-        {
-            if (index == previousArmeIndex)
-                return;
-        
-            if (previousArmeIndex != -1)
-            {
-                armes[previousArmeIndex].armeGameObject.SetActive(false);
-            }
-
-            previousArmeIndex = armeIndex;
+    private void EquipItem(int index) // index supposé valide
+    {
+        // Le cas où on essaye de prendre l'arme qu'on a déjà
+        if (index == previousArmeIndex)
+            return;
             
-            armeIndex = index;
-            armes[armeIndex].armeGameObject.SetActive(true);
+        // C'est le cas où on avait pas encore de d'arme précédente
+        if (previousArmeIndex != -1)
+        {
+            armes[previousArmeIndex].armeObject.SetActive(false);
+        }
 
-            if (PV.IsMine)
-            {
-                Hashtable hash = new Hashtable();
-                hash.Add("itemIndex", armeIndex);
-                PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-            }
-        } 
+        previousArmeIndex = armeIndex;
+            
+        armeIndex = index;
+        armes[armeIndex].armeObject.SetActive(true);
+
+        if (PV.IsMine)
+        {
+            Hashtable hash = new Hashtable();
+            hash.Add("itemIndex", armeIndex);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        }
+    }
+    
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        if (!PV.IsMine && targetPlayer == PV.Owner)
+        {
+            EquipItem((int)changedProps["itemIndex"]);
+        }
     }
 }
