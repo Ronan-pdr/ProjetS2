@@ -24,8 +24,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject playerListItemPrefab;
 
     [SerializeField] private GameObject startGameButton;
-
-    public Transform GetplayerListContent() => playerListContent;
+    
     void Awake()
     {
         Instance = this;
@@ -99,6 +98,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
+        
         PhotonNetwork.LoadLevel(1);
     }
 

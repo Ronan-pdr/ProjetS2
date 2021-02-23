@@ -6,32 +6,27 @@ using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class PlayerClass : Humanoide, IDamagable
+public abstract class PlayerClass : Humanoide, IDamagable
 {
     //Avancer
-    private float walkSpeed = 3f;
-    private string touchAvancer = "z";
-    private string touchReculer = "s";
-    private string touchDroite = "d";
-    private string touchGauche = "q";
+    protected string touchAvancer = "z";
+    protected string touchReculer = "s";
+    protected string touchDroite = "d";
+    protected string touchGauche = "q";
     
     private Vector3 smoothMoveVelocity;
-    private Vector3 moveAmount;
     private float smouthTime = 0.15f;
     
     //Sprint
-    private float sprintSpeed = 5f;
-    private KeyCode touchSprint = KeyCode.LeftShift;
+    protected string touchSprint = "left shift";
     
     //Jump
-    private string touchJump = "space";
-    private float jumpForce = 200f;
+    protected string touchJump = "space";
     
     //Look
     private float verticalLookRotation;
     private float mouseSensitivity = 3f;
     [SerializeField] protected Transform cameraHolder;
-    [SerializeField] protected Vector3 distanceCamera;
     
     //Photon
     protected PhotonView PV;
@@ -51,11 +46,7 @@ public class PlayerClass : Humanoide, IDamagable
 
     protected void StartPlayer()
     {
-        if (PV.IsMine) // Placer la caméra en fonction de ta classe (chasseur/chassé) 
-        {
-            cameraHolder.position += distanceCamera;
-        }
-        else // On veut détruire les caméras qui ne sont pas les tiennes
+        if (!PV.IsMine) // On veut détruire les caméras qui ne sont pas les tiennes
         {
             Destroy(GetComponentInChildren<Camera>().gameObject);
             Destroy(Rb);
@@ -77,8 +68,7 @@ public class PlayerClass : Humanoide, IDamagable
         if (!PV.IsMine)
             return;
         
-        //Déplce le corps du joueur grâce à moveAmount précédemment calculé
-        Rb.MovePosition(Rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+        FixedUpdateHumanoide();
     }
     
     private void Move()
@@ -94,19 +84,42 @@ public class PlayerClass : Humanoide, IDamagable
         if (Input.GetKey(touchGauche))
             xMov--;
 
+        float speed = AnimationMove(xMov, zMov, walkSpeed);
+
         Vector3 moveDir = new Vector3(xMov, 0, zMov);
 
         moveAmount = Vector3.SmoothDamp(moveAmount,
-            moveDir * (Input.GetKey(touchSprint) ? sprintSpeed : walkSpeed),
+            moveDir * speed,
             ref smoothMoveVelocity, smouthTime);
+    }
+
+    private float AnimationMove(int xMov, int zMov, float speed)
+    {
+        if (xMov == 1)
+            SearchAnimation(touchDroite);
+        else if (xMov == -1)
+            SearchAnimation(touchGauche);
+        else if (zMov == 1)
+        {
+            if (Input.GetKey(touchSprint)) // On ne peut seulement sprinter lorsque l'on avance 
+            {
+                speed = sprintSpeed;
+                SearchAnimation(touchSprint);
+            }
+            else
+                SearchAnimation(touchAvancer);
+        }
+        else if (zMov == -1)
+            SearchAnimation(touchReculer);
+
+        return speed;
     }
 
     private void Jump()
     {
-        if (Input.GetKey(touchJump) && Grounded)
+        if (Input.GetKey(touchJump))
         {
-            Rb.AddForce(transform.up * jumpForce); // transform.up = new Vector3(0, 0, 0)
-            Grounded = false;
+            JumpHumanoide();
         }
     }
 
@@ -127,7 +140,7 @@ public class PlayerClass : Humanoide, IDamagable
     }
     
     [PunRPC]
-    void RPC_TakeDamage(float damage) // runs sur tous les ordis mais grâce à '!PV.IsMine', seuk la victime subit les dommages
+    void RPC_TakeDamage(float damage) // runs sur tous les ordis mais grâce à '!PV.IsMine', seul la victime subit les dommages
     {
         if (!PV.IsMine)
             return;
