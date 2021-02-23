@@ -31,6 +31,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
         SetUpInputField();
+        
     }
 
     public override void OnConnectedToMaster()
@@ -149,4 +150,10 @@ public class Launcher : MonoBehaviourPunCallbacks
         PhotonNetwork.NickName = playerName;
         PlayerPrefs.SetString(PlayerPrefsNameKey, playerName);
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
+

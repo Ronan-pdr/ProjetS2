@@ -59,3 +59,4 @@ public class PlayerGroundCheck : MonoBehaviour
         playerController.SetGroundedState(true);
     }
 }
+

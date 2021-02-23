@@ -787,7 +787,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060149}
+      - m_Target: {fileID: 1868060144}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2
@@ -1240,7 +1240,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060144}
+      - m_Target: {fileID: 1868060149}
         m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
         m_MethodName: StartGame
         m_Mode: 1
@@ -1373,7 +1373,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060149}
+      - m_Target: {fileID: 1868060144}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2
@@ -1773,7 +1773,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 600906016}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1868060149}
+        m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &600906016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2409,7 +2421,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060144}
+      - m_Target: {fileID: 1868060149}
         m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
         m_MethodName: SetPlayerName
         m_Mode: 0
@@ -3343,7 +3355,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060149}
+      - m_Target: {fileID: 1868060144}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2
@@ -3843,7 +3855,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060149}
+      - m_Target: {fileID: 1868060144}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2
@@ -4632,7 +4644,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060149}
+      - m_Target: {fileID: 1868060144}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2
@@ -4765,7 +4777,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060144}
+      - m_Target: {fileID: 1868060149}
         m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
         m_MethodName: SavePlayerName
         m_Mode: 1
@@ -4898,7 +4910,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060149}
+      - m_Target: {fileID: 1868060144}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2
@@ -5094,8 +5106,8 @@ GameObject:
   - component: {fileID: 1868060147}
   - component: {fileID: 1868060146}
   - component: {fileID: 1868060145}
-  - component: {fileID: 1868060144}
   - component: {fileID: 1868060149}
+  - component: {fileID: 1868060144}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -5112,21 +5124,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1868060143}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f035fe8c310caef4ab162db6d8cd0532, type: 3}
+  m_Script: {fileID: 11500000, guid: 380e28cd98648fc40be34382d8ce3913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomNameInputField: {fileID: 997776648}
-  errorText: {fileID: 1017698175}
-  roomNameText: {fileID: 1514728831}
-  roomListContent: {fileID: 2068055215}
-  playerListContent: {fileID: 889106499}
-  roomListItemPrefab: {fileID: 1306912711193985793, guid: 3217a4763fa32a84a8152735f83b4ad3,
-    type: 3}
-  PlayerListItemPrefab: {fileID: 7337502742591567453, guid: 2c69d435f3a6e094188564fde4417128,
-    type: 3}
-  startGameButton: {fileID: 517219816}
-  nameInputField: {fileID: 779615246}
-  saveButton: {fileID: 1621659646}
+  menus:
+  - {fileID: 724819589}
+  - {fileID: 2083725400}
+  - {fileID: 1164132804}
+  - {fileID: 3878577}
+  - {fileID: 199024704}
+  - {fileID: 1117353344}
+  - {fileID: 198389077}
 --- !u!114 &1868060145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5223,17 +5231,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 1868060143}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 380e28cd98648fc40be34382d8ce3913, type: 3}
+  m_Script: {fileID: 11500000, guid: f035fe8c310caef4ab162db6d8cd0532, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menus:
-  - {fileID: 724819589}
-  - {fileID: 2083725400}
-  - {fileID: 1164132804}
-  - {fileID: 3878577}
-  - {fileID: 199024704}
-  - {fileID: 1117353344}
-  - {fileID: 198389077}
+  roomNameInputField: {fileID: 997776648}
+  errorText: {fileID: 1017698175}
+  roomNameText: {fileID: 1514728831}
+  roomListContent: {fileID: 2068055215}
+  playerListContent: {fileID: 889106499}
+  roomListItemPrefab: {fileID: 1306912711193985793, guid: 3217a4763fa32a84a8152735f83b4ad3,
+    type: 3}
+  PlayerListItemPrefab: {fileID: 7337502742591567453, guid: 2c69d435f3a6e094188564fde4417128,
+    type: 3}
+  startGameButton: {fileID: 517219816}
+  nameInputField: {fileID: 779615246}
+  saveButton: {fileID: 1621659646}
 --- !u!1 &1879141199
 GameObject:
   m_ObjectHideFlags: 0
@@ -5317,7 +5329,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060144}
+      - m_Target: {fileID: 1868060149}
         m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
         m_MethodName: CreateRoom
         m_Mode: 1
@@ -5450,7 +5462,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060144}
+      - m_Target: {fileID: 1868060149}
         m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
         m_MethodName: LeaveRoom
         m_Mode: 1
@@ -5583,7 +5595,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1868060149}
+      - m_Target: {fileID: 1868060144}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2

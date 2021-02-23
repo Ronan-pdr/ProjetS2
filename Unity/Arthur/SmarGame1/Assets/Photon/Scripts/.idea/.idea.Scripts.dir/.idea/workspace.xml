@@ -22,7 +22,18 @@
     <list default="true" id="53ba7db0-2e46-4a5f-b235-bd8d38509202" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Scripts.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Scripts.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Launcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Launcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../../Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Menu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Menu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MenuManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MenuManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlayerGroundCheck.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PlayerGroundCheck.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlayerListItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PlayerListItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlayerManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PlayerManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RoomListItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RoomListItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RoomManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RoomManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../../Scenes/Game.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Scenes/SampleScene.unity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Scenes/SampleScene.unity.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,12 +45,14 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Launcher.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/RoomManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/PlayerManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/PlayerListItem.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Menu.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/PlayerGroundCheck.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/PlayerController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/RoomManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/PlayerManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/PauseMenu.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/PlayerListItem.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Menu.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/PlayerGroundCheck.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/RoomListItem.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/PlayerController.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -48,10 +61,18 @@
         <option value="$PROJECT_DIR$/../../RoomListItem.cs" />
         <option value="$PROJECT_DIR$/../../MenuManager.cs" />
         <option value="$PROJECT_DIR$/../../RoomManager.cs" />
-        <option value="$PROJECT_DIR$/PlayerManager.cs" />
-        <option value="$PROJECT_DIR$/PlayerGroundCheck.cs" />
-        <option value="$PROJECT_DIR$/PlayerController.cs" />
         <option value="$PROJECT_DIR$/PlayerInputName.cs" />
+        <option value="$PROJECT_DIR$/PlayerGroundCheck.cs" />
+        <option value="$PROJECT_DIR$/PlayerManager.cs" />
+        <option value="$PROJECT_DIR$/RoomListItem.cs" />
+        <option value="$PROJECT_DIR$/PlayerListItem.cs" />
+        <option value="$PROJECT_DIR$/MenuManager.cs" />
+        <option value="$PROJECT_DIR$/RoomManager.cs" />
+        <option value="$PROJECT_DIR$/Menu.cs" />
+        <option value="$PROJECT_DIR$/Pause.cs" />
+        <option value="$PROJECT_DIR$/../../PauseMenu.cs" />
+        <option value="$PROJECT_DIR$/PlayerController.cs" />
+        <option value="$PROJECT_DIR$/PauseMenu.cs" />
         <option value="$PROJECT_DIR$/Launcher.cs" />
       </list>
     </option>
@@ -81,6 +102,9 @@
       <workItem from="1614004331996" duration="3735000" />
       <workItem from="1614018526232" duration="1523000" />
       <workItem from="1614027327727" duration="7717000" />
+      <workItem from="1614077762341" duration="2405000" />
+      <workItem from="1614080255409" duration="3821000" />
+      <workItem from="1614086481552" duration="6301000" />
     </task>
     <servers />
   </component>

@@ -28,3 +28,4 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         Destroy(gameObject);
     }
 }
+

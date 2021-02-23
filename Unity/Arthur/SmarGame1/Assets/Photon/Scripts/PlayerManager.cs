@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+
 public class PlayerManager : MonoBehaviour
 {
     PhotonView PV;
@@ -25,3 +26,4 @@ public class PlayerManager : MonoBehaviour
         PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), Vector3.zero, Quaternion.identity);
     }
 }
+
