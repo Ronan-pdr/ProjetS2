@@ -17,7 +17,7 @@ public class PlayerManager : MonoBehaviour
     private PhotonView PV;
     private GameObject controller;
 
-    private List<IAClass> Bots;
+    private List<GameObject> Bots;
     private Player[] players;
     
     private void Awake()
@@ -34,11 +34,11 @@ public class PlayerManager : MonoBehaviour
             if (PhotonNetwork.IsMasterClient)
             {
                 controller = CreateController("Chasseur");
-                /*int nIA = players.Length*3;
+                int nIA = players.Length*3;
                 for (int i = 0; i < nIA; i++)
                 {
-                    Bots.Add(Instantiate(Path.Combine("PhotonPrefabs", "IABasics")));
-                }*/
+                    Bots.Add(PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "IABasics"), Vector3.zero, Quaternion.identity));
+                }
             }
             else
                 controller = CreateController("Chassé");

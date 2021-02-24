@@ -37,7 +37,7 @@ public abstract class Humanoide : MonoBehaviour
 
     protected void FixedUpdateHumanoide()
     {
-        //Déplace le corps du joueur grâce à moveAmount précédemment calculé
+        //Déplace le corps du human grâce à moveAmount précédemment calculé
         Rb.MovePosition(Rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
     }
 

@@ -7,12 +7,12 @@ using Random = UnityEngine.Random;
 public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager Instance;
-    private SpawntPoint[] spawnPoints;
+    private Point[] spawnPoints;
 
     private void Awake()
     {
         Instance = this;
-        spawnPoints = GetComponentsInChildren<SpawntPoint>();
+        spawnPoints = GetComponentsInChildren<Point>();
     }
 
     public Transform GetSpawnPoint()

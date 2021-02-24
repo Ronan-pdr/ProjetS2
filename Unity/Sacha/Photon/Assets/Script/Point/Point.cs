@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawntPoint : MonoBehaviour
+public class Point : MonoBehaviour
 {
     [SerializeField] private GameObject graphics;
 
