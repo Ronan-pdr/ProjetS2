@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerGroundCheck : MonoBehaviour
+public class HumanGroundCheck : MonoBehaviour
 {
     private Humanoide human;
 
@@ -38,7 +38,7 @@ public class PlayerGroundCheck : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject == human.gameObject)
+        if (other.gameObject == human.gameObject) // Le cas où c'est avec notre propre personnage
             return;
         
         human.SetGroundedState(true);

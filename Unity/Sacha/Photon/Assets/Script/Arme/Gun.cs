@@ -15,7 +15,7 @@ public abstract class Gun : Arme
             hit.collider.gameObject.GetComponent<IDamagable>()?.TakeDamage(armeInfo.damage);
         }*/
 
-        float alpha = cam.transform.rotation.x;
+        float alpha = cameraHoder.rotation.x;
         float beta = controller.transform.rotation.y;
 
         float dirX = SimpleMath.Sin(beta);

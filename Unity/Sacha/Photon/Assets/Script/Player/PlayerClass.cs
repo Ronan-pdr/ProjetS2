@@ -14,9 +14,6 @@ public abstract class PlayerClass : Humanoide, IDamagable
     protected string touchDroite = "d";
     protected string touchGauche = "q";
     
-    private Vector3 smoothMoveVelocity;
-    private float smouthTime = 0.15f;
-    
     //Sprint
     protected string touchSprint = "left shift";
     
@@ -40,7 +37,8 @@ public abstract class PlayerClass : Humanoide, IDamagable
     {
         Rb = GetComponent<Rigidbody>();
         PV = GetComponent<PhotonView>();
-        
+        Tr = GetComponent<Transform>();
+             
         playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
     }
 
@@ -88,14 +86,12 @@ public abstract class PlayerClass : Humanoide, IDamagable
 
         Vector3 moveDir = new Vector3(xMov, 0, zMov);
 
-        moveAmount = Vector3.SmoothDamp(moveAmount,
-            moveDir * speed,
-            ref smoothMoveVelocity, smouthTime);
+        MoveHumanoide(moveDir, speed);
     }
 
     private float AnimationMove(int xMov, int zMov, float speed)
     {
-        if (xMov == 1)
+        if (xMov == 1) // On a décidé que l'aniation de la marche sur les côtés avaient la priorité
             SearchAnimation(touchDroite);
         else if (xMov == -1)
             SearchAnimation(touchGauche);
@@ -125,7 +121,7 @@ public abstract class PlayerClass : Humanoide, IDamagable
 
     void Look()
     {
-        transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
+        Tr.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
 
         verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -70f, 70f);

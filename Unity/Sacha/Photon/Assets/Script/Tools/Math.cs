@@ -46,4 +46,15 @@ public class SimpleMath
     {
         return (float)Math.Sin(angle);
     }
+
+    public static float ArcTan(float oposé, float adjacent) // l'angle obtenu sera toujours positif
+    {
+        float r = (float) Atan(oposé / adjacent); //r est l'angle en radian
+        return RadianToDegre(r);
+    }
+
+    public static float RadianToDegre(float angle)
+    {
+        return (float) (angle * 360 / (2 * PI));
+    }
 }

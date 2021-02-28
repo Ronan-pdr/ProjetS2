@@ -7,7 +7,7 @@ using System.IO;
 public abstract class Arme : MonoBehaviour
 {
     // les gameObject de la caméra et du joueur qui porte le flingue
-    [SerializeField] protected Camera cam;
+    [SerializeField] protected Transform cameraHoder;
     [SerializeField] protected GameObject controller;
     
     // Variables relatives 

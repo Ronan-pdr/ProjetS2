@@ -18,7 +18,6 @@ public class PlayerManager : MonoBehaviour
     private GameObject controller;
 
     private List<GameObject> Bots;
-    private Player[] players;
     
     private void Awake()
     {
@@ -28,17 +27,11 @@ public class PlayerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        players = PhotonNetwork.PlayerList;
         if (PV.IsMine)
         {
             if (PhotonNetwork.IsMasterClient)
             {
                 controller = CreateController("Chasseur");
-                int nIA = players.Length*3;
-                for (int i = 0; i < nIA; i++)
-                {
-                    Bots.Add(PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "IABasics"), Vector3.zero, Quaternion.identity));
-                }
             }
             else
                 controller = CreateController("Chassé");
@@ -48,16 +41,8 @@ public class PlayerManager : MonoBehaviour
     GameObject CreateController(string type) // Instanstiate our player controller
     {
         Transform tr = SpawnManager.Instance.GetSpawnPoint();
-        return PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", type),
+        return PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
             tr.position, Quaternion.identity, 0, new object[]{PV.ViewID});
-    }
-
-    private void Update()
-    {
-        /*for (int i = 0; i < listChassé.Length; i++)
-        {
-            Debug.Log(i);
-        }*/
     }
     
     public void Die()

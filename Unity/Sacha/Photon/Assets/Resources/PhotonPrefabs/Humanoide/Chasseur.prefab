@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3cab327d33f18147aabca59e40d83e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 1958372079522721443}
+  cameraHoder: {fileID: 2045545082932553956}
   controller: {fileID: 3767613495494971272}
   armeInfo: {fileID: 11400000, guid: 91da3e1781a2cba4f8e02af840d5c9dd, type: 2}
   armeObject: {fileID: 3880080853475675638}
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2841e205850b6d43b1935e083b3d545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 1958372079522721443}
+  cameraHoder: {fileID: 2045545082932553956}
   controller: {fileID: 3767613495494971272}
   armeInfo: {fileID: 11400000, guid: d41a0c0af4072194e822d6d31aef2d4e, type: 2}
   armeObject: {fileID: 4245349083554019181}
