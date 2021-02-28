@@ -121,7 +121,7 @@ public class BotRectiligne : BotClass
         else if (amountRotation < -180)
             amountRotation += 360;
 
-        Enchemin = amountRotation == 0;
+        Enchemin = SimpleMath.Abs(amountRotation) < 5;
     }
 
     private void Avancer()

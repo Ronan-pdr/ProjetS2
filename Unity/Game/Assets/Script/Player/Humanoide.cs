@@ -55,11 +55,8 @@ public abstract class Humanoide : MonoBehaviour
 
     protected void JumpHumanoide()
     {
-        if (Grounded)
-        {
-            Rb.AddForce(transform.up * jumpForce); // transform.up = new Vector3(0, 1, 0)
-            Grounded = false;
-        }
+        Rb.AddForce(transform.up * jumpForce); // transform.up = new Vector3(0, 1, 0)
+        Grounded = false;
     }
 
     protected void Die()

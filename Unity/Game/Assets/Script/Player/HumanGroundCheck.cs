@@ -28,35 +28,19 @@ public class HumanGroundCheck : MonoBehaviour
         human.SetGroundedState(false);
     }
 
-    /*private void OnTriggerStay(Collider other)
+    //Comme ça fait que l'on peut sauter plusieurs fois, je mets avant lequel l'event OnTriggerStay puisse fonctionner
+    private float ecartTime = 0.5f;
+    private float previousTime;
+    
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject == human.gameObject)
             return;
-        
-        human.SetGroundedState(true);
-    }*/
 
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject == human.gameObject) // Le cas où c'est avec notre propre personnage
-            return;
-        
-        human.SetGroundedState(true);
+        if (Time.time - previousTime > ecartTime)
+        {
+            previousTime = Time.time;
+            human.SetGroundedState(true);
+        }
     }
-
-    private void OnCollisionExit(Collision other)
-    {
-        if (other.gameObject == human.gameObject)
-            return;
-        
-        human.SetGroundedState(false);
-    }
-
-    /*private void OnCollisionStay(Collision other)
-    {
-        if (other.gameObject == human.gameObject)
-            return;
-        
-        human.SetGroundedState(true);
-    }*/
 }

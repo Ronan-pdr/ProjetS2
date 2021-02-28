@@ -3,7 +3,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-using Script.PauseMenu;
 
 public class Chasseur : PlayerClass
 {
@@ -23,8 +22,12 @@ public class Chasseur : PlayerClass
         
     void Update()
     {
-        /*if (PauseMenu.isPaused)
-            return;*/
+        if (PauseMenu.PauseMenu.isPaused)
+        {
+            moveAmount = Vector3.zero;
+            return;
+        }
+            
         ManipulerArme();
             
         UpdateHumanoide();

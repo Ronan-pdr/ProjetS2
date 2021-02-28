@@ -2,7 +2,6 @@
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.PlayerLoop;
-using Script.PauseMenu;
 
 namespace Script
 {
@@ -25,8 +24,12 @@ namespace Script
         
         void Update()
         {
-            /* if (PauseMenu.isPaused)
-                return;*/
+            if (PauseMenu.PauseMenu.isPaused)
+            {
+                moveAmount = Vector3.zero;
+                return;
+            }
+            
             UpdateHumanoide();
             UpdatePlayer();
         }

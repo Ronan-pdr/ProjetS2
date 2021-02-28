@@ -113,7 +113,7 @@ public abstract class PlayerClass : Humanoide, IDamagable
 
     private void Jump()
     {
-        if (Input.GetKey(touchJump))
+        if (Input.GetKey(touchJump) && Grounded)
         {
             JumpHumanoide();
         }

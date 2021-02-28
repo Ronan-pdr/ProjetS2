@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 
-namespace Script.PauseMenu
+namespace PauseMenu
 {
     public class PauseMenu : MonoBehaviour
     {
