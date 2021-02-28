@@ -16,6 +16,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] private TMP_Text roomNameText;
     
     //Liste des rooms disponibles
+
     [SerializeField] private Transform roomListContent;
     [SerializeField] private GameObject roomListItemPrefab;
     
@@ -49,6 +50,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu("title");
         Debug.Log("Joined Lobby");
         PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("000");
+
     }
 
     public void CreateRoom()
@@ -75,7 +77,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             Destroy(child.gameObject);
         }
-
         for (int i = 0; i < players.Length; i++)
         {
             Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
