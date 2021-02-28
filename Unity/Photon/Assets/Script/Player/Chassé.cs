@@ -2,6 +2,7 @@
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.PlayerLoop;
+using Script.PauseMenu;
 
 namespace Script
 {
@@ -24,6 +25,8 @@ namespace Script
         
         void Update()
         {
+            /* if (PauseMenu.isPaused)
+                return;*/
             UpdateHumanoide();
             UpdatePlayer();
         }

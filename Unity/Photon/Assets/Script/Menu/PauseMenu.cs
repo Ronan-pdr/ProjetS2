@@ -4,57 +4,60 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 
-public class PauseMenu : MonoBehaviour
+namespace Script.PauseMenu
 {
-    public static bool isPaused = false;
-    private bool disconnecting = false;
-    public GameObject pauseMenuUI;
-
-    // Update is called once per frame
-    void Update()
+    public class PauseMenu : MonoBehaviour
     {
-        if (disconnecting)
-            return;
-        if (Input.GetKeyDown(KeyCode.Escape))
+        public static bool isPaused = false;
+        private bool disconnecting = false;
+        public GameObject pauseMenuUI;
+
+        // Update is called once per frame
+        void Update()
         {
-            if (isPaused)
+            if (disconnecting)
+                return;
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                Resume();
-            }
-            else
-            {
-                Pause();
+                if (isPaused)
+                {
+                    Resume();
+                }
+                else
+                {
+                    Pause();
+                }
             }
         }
-    }
 
-    public void Resume()
-    {
-        pauseMenuUI.SetActive(false);
-        isPaused = false;
-    }
+        public void Resume()
+        {
+            pauseMenuUI.SetActive(false);
+            isPaused = false;
+        }
 
-    void Pause()
-    {
-        pauseMenuUI.SetActive(true);
-        isPaused = true;
-    }
+        void Pause()
+        {
+            pauseMenuUI.SetActive(true);
+            isPaused = true;
+        }
     
 
-    public IEnumerator Quit()
-    {
-        disconnecting = true;
-        PhotonNetwork.Disconnect();
-        Destroy(RoomManager.Instance.gameObject);
-        while(PhotonNetwork.IsConnected)
+        public IEnumerator Quit()
         {
-            yield return null;
+            disconnecting = true;
+            PhotonNetwork.Disconnect();
+            Destroy(RoomManager.Instance.gameObject);
+            while(PhotonNetwork.IsConnected)
+            {
+                yield return null;
+            }
+            SceneManager.LoadScene(0);
         }
-        SceneManager.LoadScene(0);
-    }
 
-    public void StartQuit()
-    {
-        StartCoroutine(Quit());
+        public void StartQuit()
+        {
+            StartCoroutine(Quit());
+        }
     }
 }

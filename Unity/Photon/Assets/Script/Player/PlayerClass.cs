@@ -55,7 +55,7 @@ public abstract class PlayerClass : Humanoide, IDamagable
     {
         if (!PV.IsMine)
             return;
-        
+
         Look();
         Move();
         Jump();
