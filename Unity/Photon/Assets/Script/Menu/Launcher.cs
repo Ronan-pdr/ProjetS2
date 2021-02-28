@@ -34,7 +34,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
         SetUpInputField();
-        
     }
     
     public override void OnConnectedToMaster()
