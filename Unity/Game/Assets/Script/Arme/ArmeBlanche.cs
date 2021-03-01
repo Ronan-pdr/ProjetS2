@@ -7,6 +7,5 @@ public class ArmeBlanche : Arme
 {
     public override void Use()
     {
-        Vector3 posController = controller.transform.position;
     }
 }

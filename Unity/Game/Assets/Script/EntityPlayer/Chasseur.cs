@@ -10,6 +10,10 @@ public class Chasseur : PlayerClass
     [SerializeField] private Arme[] armes;
     private int armeIndex;
     private int previousArmeIndex = -1;
+    private int damageAie = 20;
+    
+    //Getter
+    public int GetDamageAie() => damageAie;
     private void Awake()
     {
         AwakePlayer();
@@ -22,12 +26,15 @@ public class Chasseur : PlayerClass
         
     void Update()
     {
+        if (!PV.IsMine)
+            return;
+        
         if (PauseMenu.PauseMenu.isPaused)
         {
             moveAmount = Vector3.zero;
             return;
         }
-            
+
         ManipulerArme();
             
         UpdateHumanoide();
@@ -74,7 +81,7 @@ public class Chasseur : PlayerClass
         if (index == previousArmeIndex)
             return;
             
-        // C'est le cas où on avait pas encore d'arme précédente
+        // C'est le cas on avait séjà une arme, il faut la désactiver
         if (previousArmeIndex != -1)
         {
             armes[previousArmeIndex].armeObject.SetActive(false);
@@ -95,7 +102,7 @@ public class Chasseur : PlayerClass
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
-        if (!PV.IsMine && targetPlayer == PV.Owner)
+        if (!PV.IsMine && targetPlayer == PV.Owner) // cette fonction permet de faire changer, de ton point de vue, l'arme du chasseur
         {
             EquipItem((int)changedProps["itemIndex"]);
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using Script.Tools;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ public class BotRectiligne : BotClass
 
     void Awake()
     {
-        AwakeIA();
+        AwakeEntity();
     }
 
     void Start()
@@ -48,6 +49,9 @@ public class BotRectiligne : BotClass
 
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        
         if (Time.time - lastCalculRotation > ecartTime)
         {
             FindAmountRotation();
@@ -60,21 +64,24 @@ public class BotRectiligne : BotClass
                 IndexPreviousPoint = IndexDestination;
                 FindNewDestination();
                 FindAmountRotation();
+                anim.enabled = false;
             }
             else
                 Avancer();
         }
         else
         {
-            moveAmount = Vector3.zero; //En effet, ce bot n'avançera jamais lorqu'il tournera
+            moveAmount = Vector3.zero; //En effet, le bot rectiligne n'avançera jamais lorqu'il tournera
             Tourner();
         }
-            
     }
 
     private void FixedUpdate()
     {
-        FixedUpdateHumanoide();
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        
+        moveEntity();
     }
 
     private void FindNewDestination()
@@ -126,7 +133,10 @@ public class BotRectiligne : BotClass
 
     private void Avancer()
     {
-        MoveHumanoide(new Vector3(0, 0, 1), walkSpeed);
+        SetMoveAmount(new Vector3(0, 0, 1), 2);
+        
+        anim.enabled = true;
+        anim.Play("Avant");
     }
 
     private void Tourner()

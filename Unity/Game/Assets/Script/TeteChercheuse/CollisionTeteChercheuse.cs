@@ -4,22 +4,23 @@ using UnityEngine;
 
 public class CollisionTeteChercheuse : MonoBehaviour
 {
+    [SerializeField] private TeteChercheuse teteChercheuse;
     
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == TeteChercheuse.GetLanceur()) // Le cas où c'est avec notre propre personnage
+        if (other.gameObject == teteChercheuse.GetLanceur()) // Le cas où c'est avec notre propre personnage
             return;
-
-        TeteChercheuse.SetFind(true);
-        TeteChercheuse.SetHittenObj(other.gameObject);
+        
+        teteChercheuse.SetFind(true);
+        teteChercheuse.SetHittenObj(other.gameObject);
     }
     
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject == TeteChercheuse.GetLanceur())
+        if (other.gameObject == teteChercheuse.GetLanceur())
             return;
         
-        TeteChercheuse.SetFind(true);
-        TeteChercheuse.SetHittenObj(other.gameObject);
+        teteChercheuse.SetFind(true);
+        teteChercheuse.SetHittenObj(other.gameObject);
     }
 }

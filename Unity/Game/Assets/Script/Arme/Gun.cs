@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Gun : Arme
+public class Gun : Arme
 {
-    protected void Shoot()
+    public override void Use()
     {
         /*Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
         ray.origin = cam.transform.position;
@@ -15,14 +15,12 @@ public abstract class Gun : Arme
             hit.collider.gameObject.GetComponent<IDamagable>()?.TakeDamage(armeInfo.damage);
         }*/
 
-        float alpha = cameraHoder.rotation.x;
-        float beta = controller.transform.rotation.y;
+        float rotCam = cameraHoder.eulerAngles.x;
+        float rotChasseur = controller.transform.eulerAngles.y;
 
-        float dirX = SimpleMath.Sin(beta);
-        float dirY = -SimpleMath.Sin(alpha);
-        float dirZ = SimpleMath.Cos(alpha) * SimpleMath.Cos(beta);
-
-        Vector3 direction = new Vector3(dirX, dirY, dirZ);
-        //TeteChercheuse.VecteurCollision(controller, cam.gameObject.transform.position, direction, armeInfo.portéeAttaque);
+        Vector3 rotation = new Vector3(rotCam, rotChasseur, 0);
+        
+        TeteChercheuse teteChercheuse = TeteChercheuse.Initialisation(cameraHoder.gameObject.transform.position);
+        teteChercheuse.VecteurCollision(controller, rotation, armeInfo.GetPortéeAttaque());
     }
 }

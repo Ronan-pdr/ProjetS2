@@ -16,6 +16,4 @@ public abstract class Arme : MonoBehaviour
     
 
     public abstract void Use();
-
-    
 }

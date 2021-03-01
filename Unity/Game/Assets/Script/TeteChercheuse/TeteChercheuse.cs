@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,55 +6,75 @@ using Photon.Pun;
 using System.IO;
 using Script.Tools;
 
-public class TeteChercheuse : MonoBehaviour
+public class TeteChercheuse : Entity
 {
-    [SerializeField] private static GameObject prefabs;
-    private static float vitesse = 0.1f;
+    private float speed = 8f;
     
     //Variable initialiser avec les fonctions
-    private static bool Find;
-    private static GameObject Lanceur;
-    private static GameObject TeCheObj;
-    private static GameObject HittenObj;
+    private bool Find;
+    private GameObject Lanceur;
+    private GameObject HittenObj;
+    private float PortéAttaque;
 
     //Getter
-    public static GameObject GetLanceur() => Lanceur;
+    public GameObject GetLanceur() => Lanceur;
+    
+    public GameObject GetHittenObj() => HittenObj;
     
     //Setter
-    public static void SetFind(bool find)
+    public void SetFind(bool find)
     {
         Find = find;
     }
     
-    public static void SetHittenObj(GameObject hittenObj)
+    public void SetHittenObj(GameObject hittenObj)
     {
         HittenObj = hittenObj;
     }
 
-    private static GameObject Initialisation(Vector3 depart)
+    public static TeteChercheuse Initialisation(Vector3 coord)
     {
-        return PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "TeteChercheuse"), depart, Quaternion.identity);
+        return PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "TeteChercheuse"), coord, Quaternion.identity).GetComponent<TeteChercheuse>();
     }
     
-    public static GameObject VecteurCollision(GameObject ownObj, Vector3 depart, Vector3 directionSens, float distanceMax)
+    public void VecteurCollision(GameObject ownObj, Vector3 rotation, float portéAttaque)
     {
+        AwakeEntity();
+        
         Find = false;
         Lanceur = ownObj;
-        TeCheObj = Initialisation(depart);
-
-        while (!Find && Calcul.Distance(Lanceur.transform.position, TeCheObj.transform.position) < distanceMax)
-        {
-            TeCheObj.transform.position += directionSens * vitesse;
-        }
+        PortéAttaque = portéAttaque;
+        moveAmount = new Vector3(0, 0, speed);
         
-        Destroy(TeCheObj);
+        transform.Rotate(rotation);
+    }
 
-        if (Find)
+    public void Update()
+    {
+        if (!gameObject || !Tr)
+            return;
+        
+        if (Find || Calcul.Distance(Lanceur.transform.position, Tr.position) > PortéAttaque)
         {
-            Debug.Log("I hit a " + HittenObj);
-            return HittenObj;
-        }
+            if (Find)
+            {
+                Debug.Log("I hit a " + HittenObj);
+            }
+        
+            Debug.Log("I didn't hit anything");
 
-        return null;
+            Chasseur chasseur = Lanceur.GetComponent<Chasseur>();
+            chasseur.TakeDamage(chasseur.GetDamageAie());
+
+            moveAmount = Vector3.zero;
+            PhotonNetwork.Destroy(gameObject);
+            enabled = false;
+        }
+    }
+
+    public void FixedUpdate()
+    {
+        if (gameObject && Rb)
+            moveEntity();
     }
 }

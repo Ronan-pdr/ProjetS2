@@ -66,7 +66,7 @@ public abstract class PlayerClass : Humanoide, IDamagable
         if (!PV.IsMine)
             return;
         
-        FixedUpdateHumanoide();
+        moveEntity();
     }
     
     private void Move()
@@ -86,7 +86,7 @@ public abstract class PlayerClass : Humanoide, IDamagable
 
         Vector3 moveDir = new Vector3(xMov, 0, zMov);
 
-        MoveHumanoide(moveDir, speed);
+        SetMoveAmount(moveDir, speed);
     }
 
     private float AnimationMove(int xMov, int zMov, float speed)
@@ -128,30 +128,9 @@ public abstract class PlayerClass : Humanoide, IDamagable
 
         cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
     }
-    
-    public void TakeDamage(float damage) // Runs sur l'ordinateur du shooter
+
+    public void TakeDamage(int damage)
     {
-        Debug.Log("took damage : " + damage);
-        PV.RPC("RPC_TakeDamage", RpcTarget.All, damage);
-    }
-    
-    [PunRPC]
-    void RPC_TakeDamage(float damage) // runs sur tous les ordis mais grâce à '!PV.IsMine', seul la victime subit les dommages
-    {
-        if (!PV.IsMine)
-            return;
         
-        Debug.Log("took damage " + damage);
-        currentHealth -= damage;
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    public virtual void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
-    {
-        throw new NotImplementedException();
     }
 }

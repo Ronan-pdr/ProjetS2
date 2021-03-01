@@ -107,7 +107,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1390462197405272808}
-  - component: {fileID: 2090121396951946190}
+  - component: {fileID: 6135910877297862842}
   m_Layer: 0
   m_Name: Ak-47
   m_TagString: Untagged
@@ -130,7 +130,7 @@ Transform:
   m_Father: {fileID: 2045545082932553956}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2090121396951946190
+--- !u!114 &6135910877297862842
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3414586836092880645}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2841e205850b6d43b1935e083b3d545, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ec302aec0a612d44bae4ba592d9a472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cameraHoder: {fileID: 2045545082932553956}
@@ -176,7 +176,7 @@ Transform:
   m_GameObject: {fileID: 3767613495494971272}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.22, y: 0.22, z: 0.22}
   m_Children:
   - {fileID: 5358065222545671041}
   - {fileID: 3573239761418041087}
@@ -194,10 +194,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.74880326
-  m_Height: 5.856307
+  m_Radius: 0.73584765
+  m_Height: 5.9104214
   m_Direction: 1
-  m_Center: {x: 0.047497228, y: 2.7452645, z: 0.0030842423}
+  m_Center: {x: 0.047497246, y: 2.772321, z: -0.009871342}
 --- !u!54 &2655639362905865863
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -229,7 +229,7 @@ MonoBehaviour:
   anim: {fileID: 7917680838160966800}
   cameraHolder: {fileID: 2045545082932553956}
   armes:
-  - {fileID: 2090121396951946190}
+  - {fileID: 6135910877297862842}
   - {fileID: 1950812665973044090}
 --- !u!114 &7257875464731040772
 MonoBehaviour:
@@ -396,9 +396,9 @@ CapsuleCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.24300665
-  m_Height: 1.4090472
+  m_Height: 1.5606802
   m_Direction: 1
-  m_Center: {x: 0.01987964, y: 0.48138052, z: -0.07009562}
+  m_Center: {x: 0.01987964, y: 0.40556395, z: -0.070095606}
 --- !u!114 &4482921113774767576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -611,7 +611,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bb232c2e2f2b1654d923dc4809013173, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.35
+      value: -1.3499999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bb232c2e2f2b1654d923dc4809013173, type: 3}
       propertyPath: m_LocalPosition.z
@@ -627,11 +627,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bb232c2e2f2b1654d923dc4809013173, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bb232c2e2f2b1654d923dc4809013173, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bb232c2e2f2b1654d923dc4809013173, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

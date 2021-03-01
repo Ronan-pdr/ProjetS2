@@ -1518,7 +1518,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4783445902611335903}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: -4}
+  m_LocalPosition: {x: 0, y: 3.5, z: -3.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4918538361837307648}
@@ -1892,7 +1892,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5548534695010097265}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00022423267, y: 0.057, z: 0.19483078}
+  m_LocalPosition: {x: 0.00022423267, y: 0.057, z: -0.196}
   m_LocalScale: {x: 0.45000002, y: 0.45000002, z: 0.45000002}
   m_Children: []
   m_Father: {fileID: 4087766718951420619}
@@ -1909,9 +1909,9 @@ CapsuleCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.115545444
-  m_Height: 0.5729333
+  m_Height: 0.80509305
   m_Direction: 1
-  m_Center: {x: 0.017722415, y: 0.25712416, z: 0.13780199}
+  m_Center: {x: 0.017722405, y: 0.14104433, z: 0.137802}
 --- !u!114 &7768398406176942763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2121,6 +2121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6096508523046470046}
   - component: {fileID: 2909232356640108291}
+  - component: {fileID: 1794265307272735964}
   m_Layer: 0
   m_Name: Ternier (1)
   m_TagString: Untagged
@@ -2166,6 +2167,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1794265307272735964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6908581514271205165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters: []
+  m_SynchronizeLayers:
+  - SynchronizeType: 2
+    LayerIndex: 0
 --- !u!1 &7068298936441799554
 GameObject:
   m_ObjectHideFlags: 0
@@ -2587,7 +2606,7 @@ Transform:
   m_GameObject: {fileID: 7904250425746919107}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.45, y: 0.45, z: 0.45}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children:
   - {fileID: 722405112715187987}
   - {fileID: 8989666752559855078}
@@ -2606,9 +2625,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.40280837
-  m_Height: 3.1747096
+  m_Height: 3.2238512
   m_Direction: 1
-  m_Center: {x: 0.019619863, y: 1.6052184, z: -0.13446553}
+  m_Center: {x: 0.019619875, y: 1.5806482, z: -0.13446555}
 --- !u!54 &8211816108802394849
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2659,6 +2678,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: 8503606706268766905}
+  - {fileID: 1794265307272735964}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
