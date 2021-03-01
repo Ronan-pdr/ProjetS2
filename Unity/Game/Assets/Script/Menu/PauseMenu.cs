@@ -8,9 +8,15 @@ namespace PauseMenu
 {
     public class PauseMenu : MonoBehaviour
     {
-        public static bool isPaused = false;
-        private bool disconnecting = false;
+        public static bool isPaused;
+        private bool disconnecting;
         public GameObject pauseMenuUI;
+
+        public void Start()
+        {
+            isPaused = false;
+            disconnecting = false;
+        }
 
         // Update is called once per frame
         void Update()

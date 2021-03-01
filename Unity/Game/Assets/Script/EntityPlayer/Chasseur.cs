@@ -22,6 +22,7 @@ public class Chasseur : PlayerClass
     void Start()
     {
         StartPlayer();
+        EquipItem(0);
     }
         
     void Update()

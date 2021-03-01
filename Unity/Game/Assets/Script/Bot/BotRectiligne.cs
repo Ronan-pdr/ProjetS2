@@ -11,7 +11,12 @@ public class BotRectiligne : BotClass
     private bool Enchemin;
     
     //Précédent point
-    private int IndexPreviousPoint;
+    private int IndexPreviousPoint; //Va être instancier pour la première fois dans BotManager
+
+    public void SetIndexPreviousPoint(int index)
+    {
+        IndexPreviousPoint = index;
+    }
     
     //Destination
     private int IndexDestination;
@@ -34,15 +39,11 @@ public class BotRectiligne : BotClass
         AwakeEntity();
     }
 
-    void Start()
+    public void Start()
     {
-        (Vector3 coord, int index) = CrossManager.Instance.GetRandomPosition(-1);
+        Vector3 coord = CrossManager.Instance.GetPosition(IndexPreviousPoint);
         Tr.position += coord;
-        IndexPreviousPoint = index;
 
-        /*IndexPreviousPoint = 1;
-        Tr.position += CrossManager.Instance.GetPosition(IndexPreviousPoint);*/
-            
         FindNewDestination();
         FindAmountRotation();
     }

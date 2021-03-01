@@ -6,6 +6,9 @@ public class CrossManager : MonoBehaviour
 {
     public static CrossManager Instance;
     private Point[] crossPoints;
+    
+    //Getter
+    public int GetNumberPoint() => crossPoints.Length;
 
     private void Awake()
     {
