@@ -24,7 +24,7 @@ public class BotManager : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
         {
             players = PhotonNetwork.PlayerList;
-            int nBot = players.Length * 4;
+            int nBot = 7;
 
             int nBotMax = CrossManager.Instance.GetNumberPoint();
             if (nBot > nBotMax)
