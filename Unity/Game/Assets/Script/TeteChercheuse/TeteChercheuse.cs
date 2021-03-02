@@ -51,7 +51,7 @@ public class TeteChercheuse : Entity
 
     public void Update()
     {
-        if (!gameObject || !Tr)
+        if (!gameObject || !Tr) //Sans cela, le multijoueur créé des bugs
             return;
         
         if (Find || Calcul.Distance(Lanceur.transform.position, Tr.position) > PortéAttaque)

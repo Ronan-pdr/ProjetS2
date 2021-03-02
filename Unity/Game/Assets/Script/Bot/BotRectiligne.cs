@@ -124,12 +124,12 @@ public class BotRectiligne : BotClass
         // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il étatit à 0 degré
         amountRotation -= transform.eulerAngles.y; // eulerAngles pour récupérer l'angle en degré
 
-        if (amountRotation > 180)
+        if (amountRotation > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210°
             amountRotation -= 360;
         else if (amountRotation < -180)
             amountRotation += 360;
 
-        Enchemin = SimpleMath.Abs(amountRotation) < 5;
+        Enchemin = SimpleMath.Abs(amountRotation) < 5; // Si le dégré est négligeable, le bot continue sa course
     }
 
     private void Avancer()
