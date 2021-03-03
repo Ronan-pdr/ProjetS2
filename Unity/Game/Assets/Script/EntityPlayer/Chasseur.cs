@@ -29,12 +29,6 @@ public class Chasseur : PlayerClass
     {
         if (!PV.IsMine)
             return;
-        
-        if (PauseMenu.PauseMenu.isPaused)
-        {
-            moveAmount = Vector3.zero;
-            return;
-        }
 
         ManipulerArme();
             

@@ -24,11 +24,8 @@ namespace Script
         
         void Update()
         {
-            if (PauseMenu.PauseMenu.isPaused)
-            {
-                moveAmount = Vector3.zero;
+            if (!PV.IsMine)
                 return;
-            }
             
             UpdateHumanoide();
             UpdatePlayer();

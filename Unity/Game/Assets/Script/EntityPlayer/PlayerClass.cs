@@ -31,7 +31,13 @@ public abstract class PlayerClass : Humanoide, IDamagable
     //GamePlay
     private const float maxHealth = 100f;
     private float currentHealth = maxHealth;
-    
+
+    private PlayerHealth playerHealth;
+
+    public void GetHealth(float _currentHealth)
+    {
+        _currentHealth = currentHealth;
+    }
 
     protected void AwakePlayer()
     {
@@ -53,9 +59,13 @@ public abstract class PlayerClass : Humanoide, IDamagable
 
     protected void UpdatePlayer()
     {
-        if (!PV.IsMine)
+        Cursor.lockState = (PauseMenu.PauseMenu.isPaused) ? CursorLockMode.None : CursorLockMode.Confined;
+        Cursor.visible = (PauseMenu.PauseMenu.isPaused);
+        if (PauseMenu.PauseMenu.isPaused)
+        {
+            moveAmount = Vector3.zero;
             return;
-
+        }
         Look();
         Move();
         Jump();
@@ -132,5 +142,9 @@ public abstract class PlayerClass : Humanoide, IDamagable
     public void TakeDamage(int damage)
     {
         
+    }
+    public void SetHealth()
+    {
+        playerHealth.healthAmount.text = currentHealth.ToString(); 
     }
 }
