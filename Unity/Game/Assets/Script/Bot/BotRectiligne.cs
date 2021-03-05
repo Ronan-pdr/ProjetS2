@@ -13,11 +13,6 @@ public class BotRectiligne : BotClass
     //Précédent point
     private int IndexPreviousPoint; //Va être instancier pour la première fois dans BotManager
 
-    public void SetIndexPreviousPoint(int index)
-    {
-        IndexPreviousPoint = index;
-    }
-    
     //Destination
     private int IndexDestination;
     private Vector3 coordDestination;
@@ -32,15 +27,19 @@ public class BotRectiligne : BotClass
     //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
     private float ecartTime = 1;
     private float lastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
-
-
-    void Awake()
+    
+    //Setter
+    public void SetIndexPreviousPoint(int index)
     {
-        AwakeEntity();
+        IndexPreviousPoint = index;
     }
 
     public void Start()
     {
+        SetRbTr();
+        StartBot();
+        StartHuman();
+        
         Vector3 coord = CrossManager.Instance.GetPosition(IndexPreviousPoint);
         Tr.position += coord;
 
@@ -75,6 +74,8 @@ public class BotRectiligne : BotClass
             moveAmount = Vector3.zero; //En effet, le bot rectiligne n'avançera jamais lorqu'il tournera
             Tourner();
         }
+
+        UpdateBot();
     }
 
     private void FixedUpdate()
@@ -124,12 +125,12 @@ public class BotRectiligne : BotClass
         // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il étatit à 0 degré
         amountRotation -= transform.eulerAngles.y; // eulerAngles pour récupérer l'angle en degré
 
-        if (amountRotation > 180)
+        if (amountRotation > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210°
             amountRotation -= 360;
         else if (amountRotation < -180)
             amountRotation += 360;
 
-        Enchemin = SimpleMath.Abs(amountRotation) < 5;
+        Enchemin = SimpleMath.Abs(amountRotation) < 5; // Si le dégré est négligeable, le bot continue sa course
     }
 
     private void Avancer()

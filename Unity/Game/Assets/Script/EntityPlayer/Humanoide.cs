@@ -5,15 +5,21 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public abstract class Humanoide : Entity
 {
-    protected bool Grounded;
     protected PlayerManager playerManager;
     
+    //Etat
+    protected bool Grounded;
+
     //Avancer
-    protected float walkSpeed = 3f;
-    protected float sprintSpeed = 5f;
+    protected const float walkSpeed = 3f;
+    protected const float sprintSpeed = 5f;
 
     //Jump
-    protected float jumpForce = 200f;
+    protected const float jumpForce = 200f;
+    
+    //GamePlay
+    protected int maxHealth;
+    protected int currentHealth;
     
     
     public void SetGroundedState(bool grounded)
@@ -21,17 +27,34 @@ public abstract class Humanoide : Entity
         Grounded = grounded;
     }
 
-    protected void UpdateHumanoide()
+    protected void StartHuman()
+    {
+        currentHealth = maxHealth;
+    }
+
+    private void PotentielleMort()
     {
         // Mourir de chute
         if (transform.position.y < -10f)
         {
+            Debug.Log($"{this} est mort de chute");
             Die();
         }
-
-        if (!Input.anyKey)
-            AnimationStop();
+        
+        // Mourir point de vie
+        if (currentHealth <= 0)
+        {
+            Debug.Log($"{this} est mort de point de vie");
+            Die();
+        }
     }
+
+    protected void UpdateHumanoide()
+    {
+        PotentielleMort();
+    }
+    
+    //Déplacment
 
     protected void JumpHumanoide()
     {
@@ -39,19 +62,30 @@ public abstract class Humanoide : Entity
         Grounded = false;
     }
 
-    protected void Die()
-    {
-        playerManager.Die();
-    }
-
     //Animation
     [SerializeField] protected Animator anim;
-    protected abstract void SearchAnimation(string touche);
 
-    private void AnimationStop()
+    protected void AnimationStop()
     {
         anim.enabled = false;
     }
+    
+    //GamePlay
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+
+        if (this is PlayerClass)
+        {
+            PlayerClass playerClass = (PlayerClass) this;
+            
+            Hashtable hash = new Hashtable();
+            hash.Add("PointDeVie", currentHealth);
+            playerClass.GetPlayer().SetCustomProperties(hash);
+        }
+    }
+
+    protected abstract void Die();
     
     //Fonctions communes aux chassées ainsi qu'aux bots
     
