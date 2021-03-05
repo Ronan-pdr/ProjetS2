@@ -1,19 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 
-namespace PauseMenu
+namespace Script
 {
     public class PauseMenu : MonoBehaviour
     {
-        public static bool isPaused;
+        public static PauseMenu Instance;
+        
+        private bool isPaused;
         private bool disconnecting;
-        public GameObject pauseMenuUI;
-
-        public void Start()
+        [SerializeField] private GameObject pauseMenuUI;
+        
+        // Getter
+        public bool GetIsPaused() => isPaused;
+        
+        public void Awake()
         {
+            Instance = this;
+            
             isPaused = false;
             disconnecting = false;
         }
@@ -23,6 +31,7 @@ namespace PauseMenu
         {
             if (disconnecting)
                 return;
+            
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (isPaused)
@@ -47,7 +56,6 @@ namespace PauseMenu
             pauseMenuUI.SetActive(true);
             isPaused = true;
         }
-    
 
         public IEnumerator Quit()
         {

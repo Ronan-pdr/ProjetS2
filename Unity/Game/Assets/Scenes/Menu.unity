@@ -7832,8 +7832,8 @@ MonoBehaviour:
   errorText: {fileID: 1017698175}
   roomNameText: {fileID: 1514728831}
   roomListContent: {fileID: 2068055215}
-  playerListContent: {fileID: 889106499}
   roomListItemPrefab: {fileID: 5473660097555817173, guid: 97e0752071e547541a0e82139c2d7c3d, type: 3}
+  playerListContent: {fileID: 889106499}
   PlayerListItemPrefab: {fileID: 4663121052077334813, guid: 1119ddff9ced9224ba5bdcafcdb60bc6, type: 3}
   startGameButton: {fileID: 517219816}
   nameInputField: {fileID: 779615246}

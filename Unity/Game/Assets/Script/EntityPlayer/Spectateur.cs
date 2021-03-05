@@ -21,6 +21,7 @@ namespace Script
         private float xLookRotation;
         private float mouseSensitivity = 3f;
 
+        // hauteur pour atteindre la tête
         [SerializeField] private float hauteur;
         
         private void Awake()
@@ -50,7 +51,7 @@ namespace Script
 
         private void Update()
         {
-            if (!PV.IsMine || PauseMenu.PauseMenu.isPaused)
+            if (!PV.IsMine || PauseMenu.Instance.GetIsPaused())
             {
                 return;
             }

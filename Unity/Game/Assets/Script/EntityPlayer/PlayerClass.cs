@@ -10,6 +10,12 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public abstract class PlayerClass : Humanoide
 {
+    // Etat
+    protected string touchLeverAssoir = "c";
+    protected float lastChangementEtat; // La dernière qu'on a changé entre assis et lever
+    protected string touchAccroupi = "x";
+    protected int etatDebAssAcc = 0; // debout -> 0 ; Assis -> 1 ; Acc -> 2
+    
     //Avancer
     protected string touchAvancer = "z";
     protected string touchReculer = "s";
@@ -71,12 +77,6 @@ public abstract class PlayerClass : Humanoide
 
     protected void UpdatePlayer()
     {
-        if (PauseMenu.PauseMenu.isPaused)
-        {
-            moveAmount = Vector3.zero;
-            return;
-        }
-
         Look();
         Move();
         Jump();
@@ -94,6 +94,11 @@ public abstract class PlayerClass : Humanoide
     
     private void Move()
     {
+        if (etatDebAssAcc == 1) // assis
+        {
+            return;
+        }
+        
         int zMov = 0;
         if (Input.GetKey(touchAvancer))
             zMov++;
@@ -105,7 +110,13 @@ public abstract class PlayerClass : Humanoide
         if (Input.GetKey(touchGauche))
             xMov--;
 
-        float speed = AnimationMove(xMov, zMov, walkSpeed);
+        float speed = walkSpeed;
+        if (zMov == 1 && xMov == 0) // il faut qu'il avance tout droit pour sprinter
+            speed = sprintSpeed;
+        else if (xMov != 0 || zMov != 0) // en gros s'il se déplace
+        {
+            etatDebAssAcc = 0; // il ne reste pas accroupi lorqu'il se déplace mais pas tout droit
+        }
 
         Vector3 moveDir = new Vector3(xMov, 0, zMov);
 
@@ -114,7 +125,7 @@ public abstract class PlayerClass : Humanoide
     
     private void Jump()
     {
-        if (Input.GetKey(touchJump) && Grounded)
+        if (Input.GetKey(touchJump) && Grounded && etatDebAssAcc == 0) //il faut qu'il soit debout
         {
             JumpHumanoide();
         }
@@ -171,31 +182,5 @@ public abstract class PlayerClass : Humanoide
                 currentHealth = (int)life;
             }
         }
-    }
-
-    
-    //Animation 
-    
-    protected abstract void SearchAnimation(string touche);
-    private float AnimationMove(int xMov, int zMov, float speed)
-    {
-        if (zMov == 1) // On a décidé que l'animation de la marche avant avait la priorité
-        {
-            if (Input.GetKey(touchSprint) && xMov == 0) // On peut seulement sprinter lorsque l'on avance tout droit
-            {
-                speed = sprintSpeed;
-                SearchAnimation(touchSprint);
-            }
-            else
-                SearchAnimation(touchAvancer);
-        }
-        else if (zMov == -1) // Prio arrière aussi
-            SearchAnimation(touchReculer);
-        else if (xMov == 1)
-            SearchAnimation(touchDroite);
-        else if (xMov == -1)
-            SearchAnimation(touchGauche);
-
-        return speed;
     }
 }

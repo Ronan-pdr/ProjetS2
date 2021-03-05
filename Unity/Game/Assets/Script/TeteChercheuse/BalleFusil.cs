@@ -59,8 +59,6 @@ public class BalleFusil : Entity
         {
             if (Find && HittenObj.GetComponent<Humanoide>())
             {
-                Debug.Log("I hit a " + HittenObj);
-                
                 Humanoide cibleHumaine = HittenObj.GetComponent<Humanoide>();
 
                 if (!(cibleHumaine is Chasseur)) //Si la personne touchée est un chasseur, personne prend de dégât
@@ -72,10 +70,6 @@ public class BalleFusil : Entity
                         Lanceur.GetComponent<Chasseur>().TakeDamage(armeInfo.GetDamage()); //Le chasseur en prend aussi puisqu'il s'est trompé de cible
                     }
                 }
-            }
-            else
-            {
-                Debug.Log("I didn't hit a human");
             }
 
             PhotonNetwork.Destroy(gameObject);

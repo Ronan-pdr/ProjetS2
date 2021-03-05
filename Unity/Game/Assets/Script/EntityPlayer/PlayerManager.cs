@@ -25,6 +25,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             }
             else
                 controller = CreateController("Chassé");
+            
+            MasterManager.Instance.SetOwnPlayer(controller.GetComponent<PlayerClass>());
         }
     }
 

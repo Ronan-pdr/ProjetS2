@@ -15,17 +15,28 @@ namespace Script
         // Est ce que la liste a déjà été instancié
         private bool DejaFait;
         private float debutJeu; // le moment exacte ou le jeu commence
-        private float ecart = 1; // Au bout de combien de temps il instancie les listes
+        private float ecart = 0.5f; // Au bout de combien de temps il instancie les listes
         
         // Accéder aux différents joueurs, chaque joueur sera donc stocké deux fois, sauf s'il est mort, il sera juste un spectateur
         private List<PlayerClass> players;
         private List<Chasseur> chasseurs;
         private List<Chassé> chassés;
         private List<Spectateur> spectateurs;
+        
+        // Accéder facilement à ton avatar
+        private PlayerClass ownPlayer;
 
         // Getter
         public int GetNbPlayer() => players.Count;
+        public List<PlayerClass> GetListPlayer() => players;
         public PlayerClass GetPlayer(int index) => players[index];
+        public PlayerClass GetOwnPlayer() => ownPlayer;
+        
+        //Setter
+        public void SetOwnPlayer(PlayerClass _ownPlayer)
+        {
+            ownPlayer = _ownPlayer;
+        }
 
         private void Awake()
         {
@@ -61,6 +72,9 @@ namespace Script
             }
 
             DejaFait = true;
+            
+            // Donner le feu vert à tous les script qui attendaient les listes
+            InterfaceInGame.Instance.FeuVert();
         }
 
         public void Die(PlayerClass player, PhotonView pv)

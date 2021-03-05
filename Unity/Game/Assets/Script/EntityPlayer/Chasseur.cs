@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using Script;
 
 public class Chasseur : PlayerClass
 {
@@ -30,7 +31,7 @@ public class Chasseur : PlayerClass
         if (!PV.IsMine)
             return;
         
-        if (PauseMenu.PauseMenu.isPaused)
+        if (PauseMenu.Instance.GetIsPaused())
         {
             moveAmount = Vector3.zero;
             return;
@@ -114,6 +115,6 @@ public class Chasseur : PlayerClass
     }
 
     //Animation
-    protected override void SearchAnimation(string touche)
-    {}
+    /*protected override void SearchAnimation(string touche)
+    {}*/
 }

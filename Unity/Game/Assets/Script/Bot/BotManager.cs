@@ -66,8 +66,6 @@ public class BotManager : MonoBehaviour
 
     public void Die(GameObject bot)
     {
-        Debug.Log("destroy bot");
-        
         Bots.Remove(bot.GetComponent<BotClass>());
         
         PhotonNetwork.Destroy(bot.gameObject);

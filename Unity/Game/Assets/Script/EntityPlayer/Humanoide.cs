@@ -21,6 +21,10 @@ public abstract class Humanoide : Entity
     protected int maxHealth;
     protected int currentHealth;
     
+    //Getter
+    public int GetCurrentHealth() => currentHealth;
+    public int GetMaxHealth() => maxHealth;
+    
     
     public void SetGroundedState(bool grounded)
     {
@@ -37,14 +41,12 @@ public abstract class Humanoide : Entity
         // Mourir de chute
         if (transform.position.y < -10f)
         {
-            Debug.Log($"{this} est mort de chute");
             Die();
         }
         
         // Mourir point de vie
         if (currentHealth <= 0)
         {
-            Debug.Log($"{this} est mort de point de vie");
             Die();
         }
     }
@@ -64,6 +66,8 @@ public abstract class Humanoide : Entity
 
     //Animation
     [SerializeField] protected Animator anim;
+
+    //protected abstract void Animation();
 
     protected void AnimationStop()
     {
