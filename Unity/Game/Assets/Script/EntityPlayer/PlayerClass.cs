@@ -1,13 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
+using Script;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public abstract class PlayerClass : Humanoide, IDamagable
+public abstract class PlayerClass : Humanoide
 {
+    // Etat
+    protected string touchLeverAssoir = "c";
+    protected float lastChangementEtat; // La dernière qu'on a changé entre assis et lever
+    protected string touchAccroupi = "x";
+    protected int etatDebAssAcc = 0; // debout -> 0 ; Assis -> 1 ; Acc -> 2
+    
     //Avancer
     protected string touchAvancer = "z";
     protected string touchReculer = "s";
@@ -21,44 +29,61 @@ public abstract class PlayerClass : Humanoide, IDamagable
     protected string touchJump = "space";
     
     //Look
-    private float verticalLookRotation;
+    private float verticalLookRotation; 
     private float mouseSensitivity = 3f;
     [SerializeField] protected Transform cameraHolder;
     
     //Photon
     protected PhotonView PV;
+    protected Player _player; // Sa valeur n'est instancié que 
 
-    //GamePlay
-    private const float maxHealth = 100f;
-    private float currentHealth = maxHealth;
+    public Player GetPlayer() => _player;
+
+    //Rassembler les infos
+    protected Transform masterManager;
     
-
+    // Getter
+    public PhotonView GetPV() => PV;
+    
     protected void AwakePlayer()
     {
-        Rb = GetComponent<Rigidbody>();
+        masterManager = MasterManager.Instance.transform;
+        transform.parent = masterManager;
+        
+        SetRbTr();
+        
         PV = GetComponent<PhotonView>();
-        Tr = GetComponent<Transform>();
-             
+
         playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
+
+        if (PV.IsMine)
+        {
+            _player = PhotonNetwork.LocalPlayer;
+            
+            Hashtable hash = new Hashtable();
+            hash.Add("player", _player);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        }
     }
 
     protected void StartPlayer()
     {
-        if (!PV.IsMine) // On veut détruire les caméras qui ne sont pas les tiennes
+        StartHuman();
+        
+        if (!PV.IsMine) 
         {
-            Destroy(GetComponentInChildren<Camera>().gameObject);
+            Destroy(GetComponentInChildren<Camera>().gameObject); // On veut détruire les caméras qui ne sont pas les tiennes
             Destroy(Rb);
         }
     }
 
     protected void UpdatePlayer()
     {
-        if (!PV.IsMine)
-            return;
-
         Look();
         Move();
         Jump();
+        
+        UpdateHumanoide();
     }
     
     protected void FixedUpdatePlayer()
@@ -71,6 +96,11 @@ public abstract class PlayerClass : Humanoide, IDamagable
     
     private void Move()
     {
+        if (etatDebAssAcc == 1) // assis
+        {
+            return;
+        }
+        
         int zMov = 0;
         if (Input.GetKey(touchAvancer))
             zMov++;
@@ -82,38 +112,22 @@ public abstract class PlayerClass : Humanoide, IDamagable
         if (Input.GetKey(touchGauche))
             xMov--;
 
-        float speed = AnimationMove(xMov, zMov, walkSpeed);
+        float speed = walkSpeed;
+        if (zMov == 1 && xMov == 0) // il faut qu'il avance tout droit pour sprinter
+            speed = sprintSpeed;
+        else if (xMov != 0 || zMov != 0) // en gros s'il se déplace
+        {
+            etatDebAssAcc = 0; // il ne reste pas accroupi lorqu'il se déplace pas tout droit
+        }
 
         Vector3 moveDir = new Vector3(xMov, 0, zMov);
 
         SetMoveAmount(moveDir, speed);
     }
-
-    private float AnimationMove(int xMov, int zMov, float speed)
-    {
-        if (xMov == 1) // On a décidé que l'aniation de la marche sur les côtés avaient la priorité
-            SearchAnimation(touchDroite);
-        else if (xMov == -1)
-            SearchAnimation(touchGauche);
-        else if (zMov == 1)
-        {
-            if (Input.GetKey(touchSprint)) // On ne peut seulement sprinter lorsque l'on avance 
-            {
-                speed = sprintSpeed;
-                SearchAnimation(touchSprint);
-            }
-            else
-                SearchAnimation(touchAvancer);
-        }
-        else if (zMov == -1)
-            SearchAnimation(touchReculer);
-
-        return speed;
-    }
-
+    
     private void Jump()
     {
-        if (Input.GetKey(touchJump) && Grounded)
+        if (Input.GetKey(touchJump) && Grounded && etatDebAssAcc == 0) //il faut qu'il soit debout
         {
             JumpHumanoide();
         }
@@ -128,9 +142,57 @@ public abstract class PlayerClass : Humanoide, IDamagable
 
         cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
     }
-
-    public void TakeDamage(int damage)
+    
+    // Communication par hash
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
+        if (!PV.Owner.Equals(targetPlayer))
+            return;
         
+        // Set '_player' de type Player (Photon) -> AwakePlayer (PlayerClass)
+        if (!PV.IsMine) // tu l'as déjà fait avec ton point de vue
+        {
+            changedProps.TryGetValue("player", out object p);
+
+            if (p != null)
+            {
+                _player = (Player)p;
+            }
+        }
+        
+        // arme du chasseur -> EquipItem (Chasseur)
+        if (this is Chasseur && !PV.IsMine) // ça ne doit pas être ton point de vie puisque tu l'as déjà fait
+        {
+            changedProps.TryGetValue("itemIndex", out object indexArme);
+
+            if (indexArme != null)
+            {
+                Chasseur chasseur = (Chasseur) this;
+                chasseur.EquipItem((int)indexArme);
+            }
+        }
+
+        // point de vie -> TakeDamage (Humanoide)
+        if (!PhotonNetwork.IsMasterClient) // c'est le masterClient qui contrôle les balles donc qui enlève les point de vies
+        {
+            changedProps.TryGetValue("PointDeVie", out object life);
+
+            if (life != null)
+            {
+                currentHealth = (int)life;
+            }
+        }
+        
+        // les morts
+        if (!PV.IsMine) // c'est le mourant qui envoie le hash
+        {
+            changedProps.TryGetValue("MortPlayer", out object _player);
+
+            if (_player != null)
+            {
+                Player player = (Player) _player;
+                MasterManager.Instance.Die(player);
+            }
+        }
     }
 }

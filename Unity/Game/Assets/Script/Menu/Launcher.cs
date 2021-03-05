@@ -14,9 +14,9 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text roomNameText;
     //Liste des rooms disponibles
     [SerializeField] Transform roomListContent;
+    [SerializeField] GameObject roomListItemPrefab;
     //Liste des joueurs dans la room
     [SerializeField] Transform playerListContent;
-    [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject PlayerListItemPrefab;
     [SerializeField] GameObject startGameButton;
     [SerializeField] TMP_InputField nameInputField;
@@ -90,7 +90,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     
     public void StartGame()
     {
-        Debug.Log("la");
         PhotonNetwork.LoadLevel(1);
     }
     

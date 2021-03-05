@@ -1,32 +1,22 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
-using Photon.Realtime;
-using TMPro;
 using Script;
-using Random = UnityEngine.Random;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviourPunCallbacks
 {
-    //public static PlayerManager Instance;
-    
     private PhotonView PV;
     private GameObject controller;
 
-    private List<GameObject> Bots;
+    private Transform masterManager;
     
     private void Awake()
     {
+        masterManager = MasterManager.Instance.transform;
+        transform.parent = masterManager;
+        
         PV = GetComponent<PhotonView>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
+        
         if (PV.IsMine)
         {
             if (PhotonNetwork.IsMasterClient)
@@ -35,19 +25,21 @@ public class PlayerManager : MonoBehaviour
             }
             else
                 controller = CreateController("Chassé");
+            
+            MasterManager.Instance.SetOwnPlayer(controller.GetComponent<PlayerClass>());
         }
     }
 
-    GameObject CreateController(string type) // Instanstiate our player controller
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    GameObject CreateController(string type) // Instanstiate our player
     {
         Transform tr = SpawnManager.Instance.GetSpawnPoint();
         return PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
-            tr.position, Quaternion.identity, 0, new object[]{PV.ViewID});
-    }
-    
-    public void Die()
-    {
-        PhotonNetwork.Destroy(controller);
-        CreateController("Chassé");
+            tr.position, tr.rotation, 0, new object[]{PV.ViewID});
     }
 }
