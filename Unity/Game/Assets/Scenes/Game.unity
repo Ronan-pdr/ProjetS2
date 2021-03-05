@@ -4415,7 +4415,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3402830659998642261, guid: 73992e31ec6ac69418721a32e071f65c, type: 3}
       propertyPath: m_Name
-      value: InfoItemPrefab
+      value: TesInfos
       objectReference: {fileID: 0}
     - target: {fileID: 4767871268874440499, guid: 73992e31ec6ac69418721a32e071f65c, type: 3}
       propertyPath: m_Pivot.x
