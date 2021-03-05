@@ -14,18 +14,16 @@ public class BotManager : MonoBehaviour
     // Est ce que la liste a déjà été instancié
     private bool DejaFait;
     private float debutJeu; // le moment exacte ou le jeu commence
-    private float ecart = 1; // Au bout de combien de temps il instancie les listes
+    private float ecart = 0.5f; // Au bout de combien de temps il instancie les listes
 
     void Start()
     {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            return;
-        }
-        
         Instance = this;
         Bots = new List<BotClass>();
-            
+        
+        if (!PhotonNetwork.IsMasterClient) // Seule le masterClient créé les bots
+            return;
+
         Player[] players = PhotonNetwork.PlayerList;
         int nBot = 8;
 
@@ -35,14 +33,12 @@ public class BotManager : MonoBehaviour
             nBot = nBotMax;
         }
 
-        for (int i = 0; i < nBot; i++)
+        for (int i = 0; i < nBot; i++) // Instancier et ranger tous les bots
         {
             BotRectiligne bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "BotRectiligne"),
                 Vector3.zero, Quaternion.identity).GetComponent<BotRectiligne>();
             Bots.Add(bot);
-            
-            bot.transform.parent = transform;
-                
+
             bot.SetIndexPreviousPoint(i);
         }
 
@@ -51,11 +47,9 @@ public class BotManager : MonoBehaviour
 
     private void Update()
     {
-        if (DejaFait || Time.time - debutJeu < ecart)
-        {
+        if (DejaFait || Time.time - debutJeu < ecart) // attend que le masterClient ait créé et classé les bots
             return;
-        }
-            
+
         foreach (BotClass bot in GetComponentsInChildren<BotClass>())
         {
             Bots.Add(bot);

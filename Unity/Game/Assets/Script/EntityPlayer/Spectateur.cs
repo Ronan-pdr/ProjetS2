@@ -51,6 +51,9 @@ namespace Script
 
         private void Update()
         {
+            Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
+            Cursor.visible = PauseMenu.Instance.GetIsPaused();
+            
             if (!PV.IsMine || PauseMenu.Instance.GetIsPaused())
             {
                 return;

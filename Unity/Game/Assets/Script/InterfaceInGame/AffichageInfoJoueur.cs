@@ -13,12 +13,8 @@ namespace Script
         public void SetUp(PlayerClass _player, int hauteur, int largeur)
         {
             player = _player;
-
-            Vector3 position = new Vector3(largeur, hauteur, 0);
             
-            Debug.Log(position);
-            
-            text.transform.position = position;
+            text.transform.position = new Vector3(largeur, hauteur, 0);
         }
 
         public void Update()

@@ -75,7 +75,7 @@ public abstract class Humanoide : Entity
     }
     
     //GamePlay
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage) // Seul le masterClient active cette fonction
     {
         currentHealth -= damage;
 

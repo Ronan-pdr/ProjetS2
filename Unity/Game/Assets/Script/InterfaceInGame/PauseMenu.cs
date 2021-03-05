@@ -11,9 +11,13 @@ namespace Script
     {
         public static PauseMenu Instance;
         
+        // Etat
         private bool isPaused;
         private bool disconnecting;
+        
+        // les interfaces
         [SerializeField] private GameObject pauseMenuUI;
+        [SerializeField] private GameObject InterfaceInGame; 
         
         // Getter
         public bool GetIsPaused() => isPaused;
@@ -49,12 +53,16 @@ namespace Script
         {
             pauseMenuUI.SetActive(false);
             isPaused = false;
+
+            InterfaceInGame.SetActive(true);
         }
 
         void Pause()
         {
             pauseMenuUI.SetActive(true);
             isPaused = true;
+            
+            InterfaceInGame.SetActive(false);
         }
 
         public IEnumerator Quit()

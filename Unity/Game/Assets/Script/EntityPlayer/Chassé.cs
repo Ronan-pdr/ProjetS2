@@ -25,6 +25,9 @@ namespace Script
             if (!PV.IsMine)
                 return;
             
+            Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
+            Cursor.visible = PauseMenu.Instance.GetIsPaused();
+            
             if (PauseMenu.Instance.GetIsPaused())
             {
                 moveAmount = Vector3.zero;
@@ -32,7 +35,6 @@ namespace Script
             }
 
             UpdatePlayer();
-            
             Animation();
         }
 
@@ -45,7 +47,7 @@ namespace Script
 
         protected override void Die() // Est appelé lorsqu'il vient de mourir
         {
-            MasterManager.Instance.Die(this, PV);
+            MasterManager.Instance.Die(_player);
             
             PhotonNetwork.Destroy(gameObject);
         }

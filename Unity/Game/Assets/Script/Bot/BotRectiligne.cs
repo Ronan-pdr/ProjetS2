@@ -49,7 +49,7 @@ public class BotRectiligne : BotClass
 
     void Update()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (!PhotonNetwork.IsMasterClient) // Seul le masterClient contrôle les bots
             return;
         
         if (Time.time - lastCalculRotation > ecartTime)

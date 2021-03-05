@@ -31,6 +31,9 @@ public class Chasseur : PlayerClass
         if (!PV.IsMine)
             return;
         
+        Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
+        Cursor.visible = PauseMenu.Instance.GetIsPaused();
+        
         if (PauseMenu.Instance.GetIsPaused())
         {
             moveAmount = Vector3.zero;
@@ -104,17 +107,10 @@ public class Chasseur : PlayerClass
         }
     }
 
-    /*public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
-    {
-        
-    }*/
+    // GamePlay
 
     protected override void Die()
     {
         
     }
-
-    //Animation
-    /*protected override void SearchAnimation(string touche)
-    {}*/
 }
