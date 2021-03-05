@@ -13,11 +13,6 @@ public class BotRectiligne : BotClass
     //Précédent point
     private int IndexPreviousPoint; //Va être instancier pour la première fois dans BotManager
 
-    public void SetIndexPreviousPoint(int index)
-    {
-        IndexPreviousPoint = index;
-    }
-    
     //Destination
     private int IndexDestination;
     private Vector3 coordDestination;
@@ -32,15 +27,19 @@ public class BotRectiligne : BotClass
     //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
     private float ecartTime = 1;
     private float lastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
-
-
-    void Awake()
+    
+    //Setter
+    public void SetIndexPreviousPoint(int index)
     {
-        AwakeEntity();
+        IndexPreviousPoint = index;
     }
 
     public void Start()
     {
+        SetRbTr();
+        StartBot();
+        StartHuman();
+        
         Vector3 coord = CrossManager.Instance.GetPosition(IndexPreviousPoint);
         Tr.position += coord;
 
@@ -75,6 +74,8 @@ public class BotRectiligne : BotClass
             moveAmount = Vector3.zero; //En effet, le bot rectiligne n'avançera jamais lorqu'il tournera
             Tourner();
         }
+
+        UpdateBot();
     }
 
     private void FixedUpdate()

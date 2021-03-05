@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CollisionTeteChercheuse : MonoBehaviour
 {
-    [SerializeField] private TeteChercheuse teteChercheuse;
+    [SerializeField] private BalleFusil teteChercheuse;
     
     private void OnTriggerEnter(Collider other)
     {
