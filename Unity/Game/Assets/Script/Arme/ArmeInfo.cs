@@ -5,13 +5,13 @@
 public class ArmeInfo : ScriptableObject
 {
     [SerializeField] private string armeName;
-    [SerializeField] private float damage;
+    [SerializeField] private int damage;
     [SerializeField] private float portéeAttaque;
-    [SerializeField] private float frequenceAttaque;
+    [SerializeField] private float périodeAttaque; // le nombre de balle possiblement tiré 
     
     //Getter
     public string GetName() => armeName;
-    public float GetDamage() => damage;
+    public int GetDamage() => damage;
     public float GetPortéeAttaque() => portéeAttaque;
-    public float GetFrequenceAttaque() => frequenceAttaque;
+    public float GetPériodeAttaque() => périodeAttaque;
 }

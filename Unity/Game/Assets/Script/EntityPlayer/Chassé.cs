@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
-using UnityEngine.PlayerLoop;
+using System.IO;
 
 namespace Script
 {
@@ -11,6 +10,9 @@ namespace Script
         private bool _debout;
         private double previousTime;*/
         
+        // le "gameObject" qui contient les graphiques (c'est plus un dossier qu'autre chose)
+        [SerializeField] private GameObject graphics;
+        
         private void Awake()
         {
             AwakePlayer();
@@ -19,26 +21,40 @@ namespace Script
 
         void Start()
         {
+            maxHealth = 100;
             StartPlayer();
         }
         
         void Update()
         {
+            if (!PV.IsMine)
+                return;
+            
             if (PauseMenu.PauseMenu.isPaused)
             {
                 moveAmount = Vector3.zero;
                 return;
             }
-            
-            UpdateHumanoide();
+
             UpdatePlayer();
+                            
+            if (!Input.anyKey)
+                AnimationStop();
         }
 
         private void FixedUpdate()
         {
             FixedUpdatePlayer();
         }
+        
+        //GamePlay
 
+        protected override void Die() // Est appelé lorsqu'il vient de mourir
+        {
+            MasterManager.Instance.Die(this, PV);
+            
+            PhotonNetwork.Destroy(gameObject);
+        }
 
         // Animation
         private (string, string)[] arrAnim; // (touche, animation)

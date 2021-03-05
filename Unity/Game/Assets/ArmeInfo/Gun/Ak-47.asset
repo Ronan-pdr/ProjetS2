@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   armeName: Ak-47
   damage: 25
-  "port\xE9eAttaque": 12
-  frequenceAttaque: 0
+  "port\xE9eAttaque": 20
+  "p\xE9riodeAttaque": 0.1

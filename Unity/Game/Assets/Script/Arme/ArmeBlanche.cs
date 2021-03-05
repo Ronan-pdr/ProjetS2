@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 public class ArmeBlanche : Arme
 {
-    public override void Use()
+    public override void UtiliserArme()
     {
     }
 }

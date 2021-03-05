@@ -10,10 +10,8 @@ public class Chasseur : PlayerClass
     [SerializeField] private Arme[] armes;
     private int armeIndex;
     private int previousArmeIndex = -1;
-    private int damageAie = 20;
     
     //Getter
-    public int GetDamageAie() => damageAie;
     private void Awake()
     {
         AwakePlayer();
@@ -21,7 +19,9 @@ public class Chasseur : PlayerClass
 
     void Start()
     {
+        maxHealth = 100;
         StartPlayer();
+        
         EquipItem(0);
     }
         
@@ -38,7 +38,6 @@ public class Chasseur : PlayerClass
 
         ManipulerArme();
             
-        UpdateHumanoide();
         UpdatePlayer();
     }
 
@@ -46,7 +45,10 @@ public class Chasseur : PlayerClass
     {
         FixedUpdatePlayer();
     }
+    
 
+    //GamePlay
+    
     private void ManipulerArme()
     {
         //changer d'arme avec les numéros
@@ -70,19 +72,19 @@ public class Chasseur : PlayerClass
         }
 
         //tirer
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         { 
             armes[armeIndex].Use();
         }
     }
         
-    private void EquipItem(int index) // index supposé valide
+    public void EquipItem(int index) // index supposé valide
     {
         // Le cas où on essaye de prendre l'arme qu'on a déjà
         if (index == previousArmeIndex)
             return;
             
-        // C'est le cas on avait séjà une arme, il faut la désactiver
+        // C'est le cas où on avait déjà une arme, il faut la désactiver
         if (previousArmeIndex != -1)
         {
             armes[previousArmeIndex].armeObject.SetActive(false);
@@ -101,12 +103,14 @@ public class Chasseur : PlayerClass
         }
     }
 
-    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    /*public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
-        if (!PV.IsMine && targetPlayer == PV.Owner) // cette fonction permet de faire changer, de ton point de vue, l'arme du chasseur
-        {
-            EquipItem((int)changedProps["itemIndex"]);
-        }
+        
+    }*/
+
+    protected override void Die()
+    {
+        
     }
 
     //Animation

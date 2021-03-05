@@ -11,7 +11,7 @@ public class Entity : MonoBehaviourPunCallbacks
     private Vector3 smoothMoveVelocity;
     private float smouthTime = 0.15f;
     
-    protected void AwakeEntity()
+    protected void SetRbTr()
     {
         Rb = GetComponent<Rigidbody>();
         Tr = GetComponent<Transform>();
