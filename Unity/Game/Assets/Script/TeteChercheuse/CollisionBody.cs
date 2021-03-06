@@ -1,4 +1,5 @@
-﻿using Script;
+﻿using Photon.Pun;
+using Script;
 using UnityEngine;
 
 namespace Script
@@ -9,6 +10,9 @@ namespace Script
         
         private void OnTriggerEnter(Collider other)
         {
+            if (!PhotonNetwork.IsMasterClient) // Seul le masterClient contrôle les tetes chercheuses
+                return;
+            
             if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrêt pas
                 return;
         
@@ -18,6 +22,9 @@ namespace Script
     
         private void OnCollisionEnter(Collision other)
         {
+            if (!PhotonNetwork.IsMasterClient) // Seul le masterClient contrôle les tetes chercheuses
+                return;
+            
             if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrêt pas
                 return;
         
