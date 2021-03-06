@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HumanGroundCheck : MonoBehaviour
+public class HumanGroundCheck : Entity
 {
     private Humanoide human;
 
@@ -28,7 +28,7 @@ public class HumanGroundCheck : MonoBehaviour
         human.SetGroundedState(false);
     }
 
-    //Comme ça fait que l'on peut sauter plusieurs fois, je mets avant lequel l'event OnTriggerStay puisse fonctionner
+    //Comme cette fonction fait que l'on peut sauter plusieurs fois (en une fraction de seconde), je mets un temps avant lequel l'event OnTriggerStay puisse fonctionner
     private float ecartTime = 0.5f;
     private float previousTime;
     

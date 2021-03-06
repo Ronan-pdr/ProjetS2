@@ -16,15 +16,21 @@ namespace Script.IA
             if (other.gameObject == bot.gameObject)
                 return;
         
-            bot.FindAmountRotation();
+            if (bot.GetEtat() == 0) // recalcule seulment quand il avance
+            {
+                bot.FindAmountRotation();
+            }
         }
 
         private void OnCollisionExit(Collision other)
         {
             if (other.gameObject == bot.gameObject)
                 return;
-        
-            bot.FindAmountRotation();
+
+            if (bot.GetEtat() == 0) // recalcule seulment quand il avance
+            {
+                bot.FindAmountRotation();
+            }
         }
     }
 }

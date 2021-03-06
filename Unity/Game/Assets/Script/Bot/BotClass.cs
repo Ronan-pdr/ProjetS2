@@ -12,7 +12,7 @@ public class BotClass : Humanoide
     {
         Tr.parent = BotManager.Instance.transform;
         
-        maxHealth = 50;
+        maxHealth = 100;
     }
 
     protected void UpdateBot()
@@ -22,6 +22,7 @@ public class BotClass : Humanoide
 
     protected override void Die()
     {
+        enabled = false;
         BotManager.Instance.Die(gameObject);
     }
 }

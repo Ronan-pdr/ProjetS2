@@ -39,7 +39,7 @@ public class BotManager : MonoBehaviour
                 Vector3.zero, Quaternion.identity).GetComponent<BotRectiligne>();
             Bots.Add(bot);
 
-            bot.SetIndexPreviousPoint(i);
+            bot.transform.position += CrossManager.Instance.GetPosition(i);
         }
 
         DejaFait = true;

@@ -49,6 +49,7 @@ namespace Script
         {
             MasterManager.Instance.Die(_player);
             
+            anim.enabled = false;
             PhotonNetwork.Destroy(gameObject);
         }
 

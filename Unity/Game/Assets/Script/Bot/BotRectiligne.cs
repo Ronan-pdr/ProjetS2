@@ -2,23 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Script;
 using Script.Tools;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class BotRectiligne : BotClass
 {
     //Etat
-    private bool Enchemin;
-    
-    //Précédent point
-    private int IndexPreviousPoint; //Va être instancier pour la première fois dans BotManager
+    private int EtatCheminTournerAttendre; // EnChemin -> 0 ; Tourner -> 1 ; Attendre -> 2
 
     //Destination
-    private int IndexDestination;
     private Vector3 coordDestination;
     
-    //Deplacement
-    private float rotationSpeed = 100;
+    //Rotation
+    private float rotationSpeed = 200;
     private float amountRotation;
     
     //Ecart maximum entre le point et sa position pour qu'il soit considéré comme arrivé à destination
@@ -28,23 +26,24 @@ public class BotRectiligne : BotClass
     private float ecartTime = 1;
     private float lastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
     
-    //Setter
-    public void SetIndexPreviousPoint(int index)
-    {
-        IndexPreviousPoint = index;
-    }
+    // La liste des coordonnées possible (pour l'instant c'est les crossPoints)
+    private Vector3[] listCordonnées;
+    private int nResultReceive;
+    private List<Vector3> validDestinations;
+    
+    //Getter
+
+    public int GetEtat() => EtatCheminTournerAttendre;
 
     public void Start()
     {
         SetRbTr();
-        StartBot();
-        StartHuman();
-        
-        Vector3 coord = CrossManager.Instance.GetPosition(IndexPreviousPoint);
-        Tr.position += coord;
+        StartBot(); // il faut instancier maxHealth pour instancier currentHealth
+        StartHuman(); // voila pourquoi j'ai mis StartBot avant StartHuman
 
-        FindNewDestination();
-        FindAmountRotation();
+        listCordonnées = CrossManager.Instance.GetListPosition(); // je dois l'intancier avant d'utiliser 'FindNewDestination'
+
+        FindNewDestination(); // va changer l'etat du bot
     }
 
     void Update()
@@ -52,30 +51,34 @@ public class BotRectiligne : BotClass
         if (!PhotonNetwork.IsMasterClient) // Seul le masterClient contrôle les bots
             return;
         
-        if (Time.time - lastCalculRotation > ecartTime)
+        UpdateBot(); // quoi que ce soit son état, il fait ça
+
+        if (EtatCheminTournerAttendre == 2)// s'il est en train d'attendre
+        {
+            moveAmount = Vector3.zero;
+            return;
+        }
+
+        if (Time.time - lastCalculRotation > ecartTime) // il recalcule sa position tous les 'ecartTime'
         {
             FindAmountRotation();
         }
-        
-        if (Enchemin)
+            
+        if (EtatCheminTournerAttendre == 0) // est en chemin
         {
             if (Calcul.Distance(Tr.position, coordDestination) < ecartDistance) // arrivé
             {
-                IndexPreviousPoint = IndexDestination;
                 FindNewDestination();
-                FindAmountRotation();
                 anim.enabled = false;
             }
-            else
+            else // avancer
                 Avancer();
         }
-        else
+        else // se troune
         {
-            moveAmount = Vector3.zero; //En effet, le bot rectiligne n'avançera jamais lorqu'il tournera
+            moveAmount = Vector3.zero; // Le bot rectiligne n'avançera jamais lorqu'il tournera
             Tourner();
         }
-
-        UpdateBot();
     }
 
     private void FixedUpdate()
@@ -86,14 +89,59 @@ public class BotRectiligne : BotClass
         moveEntity();
     }
 
+    // Pour trouver une nouvelle destination, ce bot envoie des body Chercheur en direction de toutes les coordonnées de la 'listCoordonnées'.
+    // Ainsi, il doit attendre la réponse de ceux-ci, pendant ce temps, ils vont rester immobile
     private void FindNewDestination()
     {
-        (coordDestination, IndexDestination) = CrossManager.Instance.GetRandomPosition(IndexPreviousPoint);
+        for (int i = 0; i < listCordonnées.Length; i++)
+        {
+            if (Calcul.Distance(Tr.position, listCordonnées[i]) > 2) // on ne veut pas lancer un body chercheur la où on se situe
+            {
+                coordDestination = listCordonnées[i];
+                FindAmountRotation(); // change amountRotation pour le bodyChercheur (c'est pas grave s'il change l'etat du joueur puisqu'on va le faire juste à la fin de cette fontion)
+                
+                BodyChercheur.InstancierStatic(this, listCordonnées[i], new Vector3(0, amountRotation, 0)); // rotate seulement sur y
+            }
+        }
         
-        //coordDestination = CrossManager.Instance.GetPosition(2);
+        EtatCheminTournerAttendre = 2; // il doit attendre la réponse des bodyChercheur
+        validDestinations = new List<Vector3>(); // instanicie la list où seront stockés toutes les positions valides
+        nResultReceive = 0; // il n'a encore reçu aucun résultat
     }
 
-    public void FindAmountRotation()
+    public void FoundResultDestination(bool valid, Vector3 coord) // est appelé dans la class 'BodyChercheur', dans la fonction 'Update'
+    {
+        if (EtatCheminTournerAttendre != 2)
+        {
+            Debug.Log("PROBLEME");
+            Debug.Log("Dans la class 'botRectilgne', dans la fonction 'FoundResultDestination'");
+            Debug.Log("Un script a appelé cette fonction alors que ce que Sacha avait prévu que ça n'arriverai pas (Prévenez Sacha)");
+            return;
+        }
+        
+        nResultReceive += 1;
+
+        if (valid)
+        {
+            validDestinations.Add(coord); // ajoute dans les potentielles destinations que le bot suivra
+        }
+
+        if (nResultReceive == listCordonnées.Length - 1) // a reçu tous les résultats (-1 parce qu'on n'envoie pas la coordonné où le bot est)
+        {
+            Debug.Log("Tous les body ont été reçu");
+            
+            if (validDestinations.Count == 0)
+            {
+                Debug.Log("Il y a une coordonnée qui ne possède aucune destination de valide");
+            }
+
+            coordDestination = validDestinations[Random.Range(0, validDestinations.Count)]; // il choisi aléatoirement une coord parmi toutes les deestinations valides
+            FindAmountRotation(); // son état va changer (il ne va plus attendre)
+        }
+    }
+    
+    // Cette fonction trouve le degré nécessaire (entre ]-180, 180]) afin que le soit orienté face à sa destination
+    public void FindAmountRotation() // Change aussi l'état du joueur
     {
         float diffX = coordDestination.x - Tr.position.x;
         float diffZ = coordDestination.z - Tr.position.z;
@@ -122,15 +170,24 @@ public class BotRectiligne : BotClass
             }
         }
         
-        // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il étatit à 0 degré
+        // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il était à 0 degré
         amountRotation -= transform.eulerAngles.y; // eulerAngles pour récupérer l'angle en degré
 
-        if (amountRotation > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210°
+        if (amountRotation > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210° (par exemple)
             amountRotation -= 360;
         else if (amountRotation < -180)
             amountRotation += 360;
 
-        Enchemin = SimpleMath.Abs(amountRotation) < 5; // Si le dégré est négligeable, le bot continue sa course
+        if (SimpleMath.Abs(amountRotation) < 5) // Si le dégré est négligeable, le bot continue sa course
+        {
+            EtatCheminTournerAttendre = 0; // va directement avancer
+        }
+        else
+        {
+            EtatCheminTournerAttendre = 1; // va tourner
+        }
+
+        lastCalculRotation = Time.time;
     }
 
     private void Avancer()
@@ -154,14 +211,12 @@ public class BotRectiligne : BotClass
         if (SimpleMath.Abs(amountRotation) < SimpleMath.Abs(yRot)) // Le cas où on a finis de tourner
         {
             Tr.Rotate(new Vector3(0, amountRotation, 0));
-            Enchemin = true;
+            EtatCheminTournerAttendre = 0; // il va avancer maintenant
         }
         else
         {
             Tr.Rotate(new Vector3(0, yRot, 0));
             amountRotation -= yRot;
         }
-
-        lastCalculRotation = Time.time;
     }
 }
