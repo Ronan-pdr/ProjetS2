@@ -25,7 +25,7 @@ public class BotManager : MonoBehaviour
             return;
 
         Player[] players = PhotonNetwork.PlayerList;
-        int nBot = 8;
+        int nBot = 12;
 
         int nBotMax = CrossManager.Instance.GetNumberPoint();
         if (nBot > nBotMax) //Dépassement du nombre de point
@@ -39,7 +39,7 @@ public class BotManager : MonoBehaviour
                 Vector3.zero, Quaternion.identity).GetComponent<BotRectiligne>();
             Bots.Add(bot);
 
-            bot.SetIndexPreviousPoint(i);
+            bot.transform.position += CrossManager.Instance.GetPosition(i);
         }
 
         DejaFait = true;

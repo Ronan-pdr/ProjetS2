@@ -7,33 +7,13 @@ using System.IO;
 using Script;
 using Script.Tools;
 
-public class BalleFusil : Entity
+public class BalleFusil : TeteChercheuse
 {
-    private bool Find;
-    private GameObject Lanceur; // C'est un chasseur, je ne fais pas la conversion pour les collisions
-    private GameObject HittenObj;
-    
     private ArmeInfo armeInfo;
-
-    //Getter
-    public GameObject GetLanceur() => Lanceur;
-    
-    public GameObject GetHittenObj() => HittenObj;
-    
-    //Setter
-    public void SetFind(bool find)
-    {
-        Find = find;
-    }
-    
-    public void SetHittenObj(GameObject hittenObj)
-    {
-        HittenObj = hittenObj;
-    }
 
     public static void Tirer(Vector3 coord, GameObject ownObj, Vector3 rotation, ArmeInfo _armeInfo, float speed)
     {
-        BalleFusil balleFusil = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Balle" + _armeInfo.GetName()), coord, Quaternion.identity).GetComponent<BalleFusil>();
+        BalleFusil balleFusil = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "TeteChercheuse", "Balle" + _armeInfo.GetName()), coord, Quaternion.identity).GetComponent<BalleFusil>();
         
         balleFusil.VecteurCollision(ownObj, rotation, _armeInfo, speed);
     }
@@ -47,7 +27,7 @@ public class BalleFusil : Entity
         moveAmount = new Vector3(0, 0, speed);
         armeInfo = _armeInfo;
         
-        transform.Rotate(rotation);
+        Tr.Rotate(rotation);
     }
 
     public void Update()
@@ -67,7 +47,7 @@ public class BalleFusil : Entity
 
                     if (cibleHumaine is BotClass)
                     {
-                        Lanceur.GetComponent<Chasseur>().TakeDamage(armeInfo.GetDamage()); //Le chasseur en prend aussi puisqu'il s'est trompé de cible
+                        Lanceur.GetComponent<Chasseur>().TakeDamage(10); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
                     }
                 }
             }

@@ -6,9 +6,6 @@ public class CrossManager : MonoBehaviour
 {
     public static CrossManager Instance;
     private Point[] crossPoints;
-    
-    //Getter
-    public int GetNumberPoint() => crossPoints.Length;
 
     private void Awake()
     {
@@ -16,6 +13,9 @@ public class CrossManager : MonoBehaviour
         crossPoints = GetComponentsInChildren<Point>();
     }
 
+    //Getter
+    public int GetNumberPoint() => crossPoints.Length;
+    
     public (Vector3, int) GetRandomPosition(int previousIndex)
     {
         int len = crossPoints.Length;
@@ -42,5 +42,17 @@ public class CrossManager : MonoBehaviour
         }
 
         return crossPoints[index].transform.position;
+    }
+
+    public Vector3[] GetListPosition()
+    {
+        int len = GetNumberPoint();
+        Vector3[] positions = new Vector3[len];
+        for (int i = 0; i < len; i++)
+        {
+            positions[i] = crossPoints[i].transform.position;
+        }
+
+        return positions;
     }
 }

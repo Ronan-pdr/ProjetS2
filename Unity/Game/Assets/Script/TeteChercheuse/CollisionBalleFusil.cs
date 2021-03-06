@@ -1,10 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Script;
 using UnityEngine;
 
-public class CollisionTeteChercheuse : MonoBehaviour
+public class CollisionBalleFusil : Entity
 {
-    [SerializeField] private BalleFusil teteChercheuse;
+    [SerializeField] private TeteChercheuse teteChercheuse;
     
     private void OnTriggerEnter(Collider other)
     {
