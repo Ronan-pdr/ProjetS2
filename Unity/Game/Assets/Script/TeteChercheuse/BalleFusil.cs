@@ -47,7 +47,7 @@ public class BalleFusil : TeteChercheuse
 
                     if (cibleHumaine is BotClass)
                     {
-                        Lanceur.GetComponent<Chasseur>().TakeDamage(5); //Le chasseur en prend aussi puisqu'il s'est trompé de cible
+                        Lanceur.GetComponent<Chasseur>().TakeDamage(10); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
                     }
                 }
             }

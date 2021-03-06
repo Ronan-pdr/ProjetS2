@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Gun : Arme
 {
-    private float speedBalls = 20f;
+    private float speedBalls = 40f;
 
     public override void UtiliserArme()
     {

@@ -128,8 +128,6 @@ public class BotRectiligne : BotClass
 
         if (nResultReceive == listCordonnées.Length - 1) // a reçu tous les résultats (-1 parce qu'on n'envoie pas la coordonné où le bot est)
         {
-            Debug.Log("Tous les body ont été reçu");
-            
             if (validDestinations.Count == 0)
             {
                 Debug.Log("Il y a une coordonnée qui ne possède aucune destination de valide");
@@ -192,7 +190,7 @@ public class BotRectiligne : BotClass
 
     private void Avancer()
     {
-        SetMoveAmount(new Vector3(0, 0, 1), 2);
+        SetMoveAmount(new Vector3(0, 0, 1), sprintSpeed);
         
         anim.enabled = true;
         anim.Play("Avant");
