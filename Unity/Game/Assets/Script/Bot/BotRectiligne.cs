@@ -40,6 +40,11 @@ public class BotRectiligne : BotClass
 
     public int GetEtat() => EtatCheminTournerAttendre;
 
+    private void Awake()
+    {
+        AwakeBot();
+    }
+
     public void Start()
     {
         StartBot(); // tout le monde le fait pour qu'il soit parenter

@@ -11,15 +11,19 @@ public class BalleFusil : TeteChercheuse
 {
     private ArmeInfo armeInfo;
 
+    private PhotonView PV;
+
     private void Start()
     {
         SetRbTr();
+
+        PV = GetComponent<PhotonView>();
 
         // parenter
         Tr.parent = MasterManager.Instance.GetDossierBalleFusil();
         
         Find = false;
-        moveAmount = new Vector3(0, 0, 80);
+        moveAmount = new Vector3(0, 0, 50);
     }
 
     public static void Tirer(Vector3 coord, GameObject ownObj, Vector3 rotation, ArmeInfo _armeInfo)
@@ -39,7 +43,7 @@ public class BalleFusil : TeteChercheuse
 
     public void Update()
     {
-        if (!PhotonNetwork.IsMasterClient) //Seul le masterClient controle les balles
+        if (!PV.IsMine) //Seul le masterClient controle les balles
             return;
 
         if (Find || Calcul.Distance(Lanceur.transform.position, Tr.position) > armeInfo.GetPortéeAttaque()) // Fin de course : soit touché, soit max distance

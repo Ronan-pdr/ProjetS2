@@ -17,7 +17,7 @@ public class Entity : MonoBehaviourPunCallbacks
         Tr = GetComponent<Transform>();
     }
     
-    protected void SetMoveAmount(Vector3 moveDir, float speed) // moveDir doit être de la forme (1, 0, 0), (0, 0, -1), (1, 0, 1)... mais pas de 1 sur y
+    protected void SetMoveAmount(Vector3 moveDir, float speed) // moveDir doit être de la forme (1, 0, 0), (0, 0, -1), (1, 0, 1)... mais pas de 1 sur y (pour les humains du moins)
     {
         moveAmount = Vector3.SmoothDamp(moveAmount,
             moveDir * speed,

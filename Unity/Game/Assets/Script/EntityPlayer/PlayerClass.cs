@@ -42,6 +42,7 @@ public abstract class PlayerClass : Humanoide
     protected void AwakePlayer()
     {
         SetRbTr();
+        AwakeHuman();
         
         // parenter
         masterManager = MasterManager.Instance.transform;
@@ -49,9 +50,6 @@ public abstract class PlayerClass : Humanoide
         
         // Le ranger dans la liste du MasterManager
         MasterManager.Instance.AjoutPlayer(this);
-        
-        //photon
-        PV = GetComponent<PhotonView>();
     }
 
     protected void StartPlayer()
@@ -62,8 +60,6 @@ public abstract class PlayerClass : Humanoide
         {
             Destroy(GetComponentInChildren<Camera>().gameObject); // On veut détruire les caméras qui ne sont pas les tiennes
             Destroy(Rb);
-            
-            
         }
     }
 

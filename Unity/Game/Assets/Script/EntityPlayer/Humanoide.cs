@@ -34,6 +34,11 @@ public abstract class Humanoide : Entity
         Grounded = grounded;
     }
 
+    protected void AwakeHuman()
+    {
+        PV = GetComponent<PhotonView>(); // doit obligatoirement être dans awake
+    }
+
     protected void StartHuman()
     {
         currentHealth = maxHealth;
@@ -76,7 +81,7 @@ public abstract class Humanoide : Entity
     }
     
     //GamePlay
-    public void TakeDamage(int damage) // Seul le masterClient active cette fonction
+    public void TakeDamage(int damage) // Seul les chasseurs activent cette fonction
     {
         currentHealth -= damage;
         
@@ -88,10 +93,16 @@ public abstract class Humanoide : Entity
         }
         else
         {
-            BotClass bot = (BotClass) this;
+            string mes = currentHealth.ToString(); // comme il faut indiqué la vie ainsi que le bot à qui c'est concerné, on met les deux infos dans une string
+            while (mes.Length < 3) // on formate la vie à trois charactères
+            {
+                mes = " " + mes;
+            }
+            
+            hash.Add("PointDeVieBot", name + mes);
         }
 
-        GetPlayer().SetCustomProperties(hash);
+        PV.Owner.SetCustomProperties(hash);
     }
 
     protected abstract void Die();
