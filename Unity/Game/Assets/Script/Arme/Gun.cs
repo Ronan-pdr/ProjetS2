@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Gun : Arme
-{
-    private float speedBalls = 40f;
-
+{ 
     public override void UtiliserArme()
     {
         float rotCam = cameraHolder.eulerAngles.x;
@@ -14,6 +12,6 @@ public class Gun : Arme
         Vector3 rotation = new Vector3(rotCam, rotChasseur, 0);
         
         BalleFusil.Tirer(cameraHolder.gameObject.transform.position,
-            controller, rotation, armeInfo, speedBalls);
+            controller, rotation, armeInfo);
     }
 }

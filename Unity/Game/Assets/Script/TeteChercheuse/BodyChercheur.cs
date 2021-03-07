@@ -7,6 +7,11 @@ namespace Script
 {
     public class BodyChercheur : TeteChercheuse
     {
+        // Nous n'avons pas envie que tous les ordinateurs des joueurs suivent ce script.
+        // Mais, comme les body checheur s'instancie localement (pas avec photon),
+        // nul besoin de rajouter des conditions.
+        
+        // les capsules colliders
         [SerializeField] private CapsuleCollider botCapsuleCollider;
         private CapsuleCollider ownCapsuleCollider;
         
@@ -21,6 +26,9 @@ namespace Script
 
         private void Start()
         {
+            // parenter
+            Tr.parent = MasterManager.Instance.GetDossierBodyChercheur();
+
             Find = false;
 
             ownCapsuleCollider = GetComponent<CapsuleCollider>();
@@ -32,7 +40,7 @@ namespace Script
 
             float rayon = ownCapsuleCollider.radius; // marre d'avoir des warning parce que j'utilise plusieurs fois un transform
             
-            moveAmount = new Vector3(0, 0, rayon); // la vitesse est le rayon de la capsule (parce que le diamètre c'est trop)
+            moveAmount = new Vector3(0, 0, rayon); // la vitesse est le rayon de la capsule (parce que le diamètre c'est trop, il traverse les destinations sans s'arrêter)
             ecartDistance = rayon*2;
         }
 
@@ -40,9 +48,10 @@ namespace Script
         public static void InstancierStatic(BotRectiligne lanceur, Vector3 _coordDestination, Vector3 rotation)
         {
             Transform trLanceur = lanceur.transform;
+
+            BodyChercheur original = MasterManager.Instance.GetOriginalBodyChercheur();
             
-            BodyChercheur body = PhotonNetwork.Instantiate("PhotonPrefabs/TeteChercheuse/BodyChercheur",
-                trLanceur.position, trLanceur.rotation).GetComponent<BodyChercheur>();
+            BodyChercheur body = Instantiate(original, trLanceur.position, trLanceur.rotation);
             
             body.Instancier(lanceur, _coordDestination, rotation);
         }
@@ -51,7 +60,7 @@ namespace Script
         private void Instancier(BotRectiligne lanceur, Vector3 _coordDestination, Vector3 rotation)
         {
             SetRbTr();
-            
+
             botRectiligne = lanceur;
             Lanceur = lanceur.gameObject;
             coordDestination = _coordDestination;
@@ -61,9 +70,6 @@ namespace Script
 
         private void Update()
         {
-            if (!PhotonNetwork.IsMasterClient) // Seul le masterClient controle le bodyChercheur
-                return;
-            
             Rb.MovePosition(Rb.position + Tr.TransformDirection(moveAmount)); // move entity sans deltaTime
 
             if (!Find && Calcul.Distance(Tr.position, coordDestination) > ecartDistance)
@@ -71,7 +77,7 @@ namespace Script
             
             botRectiligne.FoundResultDestination(!Find, coordDestination); // S'il a trouvé un obstacle, alors la coordonnée n'est pas valide
             
-            PhotonNetwork.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

@@ -4,65 +4,49 @@ using UnityEngine;
 using Photon.Pun;
 using System.IO;
 using Photon.Realtime;
+using Object = System.Object;
 
 
 public class BotManager : MonoBehaviour
-{
-    public static BotManager Instance;
-    private List<BotClass> Bots;
+{ 
+    // Chaque joueur va contrôler un certain nombre de bots,
+    // les leurs seront stockés dans le dossier 'BotManager' sur Unity
+    // et ceux controlés pas les autres dans 'DossierOtherBot'
     
-    // Est ce que la liste a déjà été instancié
-    private bool DejaFait;
-    private float debutJeu; // le moment exacte ou le jeu commence
-    private float ecart = 0.5f; // Au bout de combien de temps il instancie les listes
+    
+    public static BotManager Instance; //c'est possible puisqu'il y en a qu'un par joueur
+    
+    // stocké tous les bots
+    private List<BotClass> Bots;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
-        Instance = this;
         Bots = new List<BotClass>();
-        
-        if (!PhotonNetwork.IsMasterClient) // Seule le masterClient créé les bots
-            return;
 
-        Player[] players = PhotonNetwork.PlayerList;
-        int nBot = 12;
+        int nBot = 5;
 
-        int nBotMax = CrossManager.Instance.GetNumberPoint();
-        if (nBot > nBotMax) //Dépassement du nombre de point
-        {
-            nBot = nBotMax;
-        }
-
-        for (int i = 0; i < nBot; i++) // Instancier et ranger tous les bots
+        for (int i = 0; i < nBot; i++) // Instancier, ranger (dans la liste) et positionner sur la map tous les bots
         {
             BotRectiligne bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "BotRectiligne"),
                 Vector3.zero, Quaternion.identity).GetComponent<BotRectiligne>();
             Bots.Add(bot);
 
             bot.transform.position += CrossManager.Instance.GetPosition(i);
+            bot.SetOwnBotManager(this); // lui indiquer quel est son père
+            
+            Bots.Add(bot); // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)
         }
-
-        DejaFait = true;
-    }
-
-    private void Update()
-    {
-        if (DejaFait || Time.time - debutJeu < ecart) // attend que le masterClient ait créé et classé les bots
-            return;
-
-        foreach (BotClass bot in GetComponentsInChildren<BotClass>())
-        {
-            Bots.Add(bot);
-        }
-
-        DejaFait = true;
     }
 
     public void Die(GameObject bot)
     {
-        Bots.Remove(bot.GetComponent<BotClass>());
+        Bots.Remove(bot.GetComponent<BotClass>()); // le supprimer de la liste
         
-        PhotonNetwork.Destroy(bot.gameObject);
-        enabled = false;
+        PhotonNetwork.Destroy(bot.gameObject); // détruire l'objet
     }
 }

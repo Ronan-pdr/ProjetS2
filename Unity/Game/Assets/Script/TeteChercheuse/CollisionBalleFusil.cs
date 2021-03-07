@@ -10,18 +10,36 @@ public class CollisionBalleFusil : Entity
     
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == teteChercheuse.GetLanceur()) // Le cas où c'est avec notre propre personnage
+        if (other.gameObject == teteChercheuse.GetLanceur() || other.GetComponent<TeteChercheuse>()) // Le cas où c'est avec notre propre personnage
             return;
         
         teteChercheuse.SetFind(true);
         teteChercheuse.SetHittenObj(other.gameObject);
     }
-    
-    private void OnCollisionEnter(Collision other)
+
+    private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject == teteChercheuse.GetLanceur())
+        if (other.gameObject == teteChercheuse.GetLanceur() || other.GetComponent<TeteChercheuse>()) // Le cas où c'est avec notre propre personnage
             return;
         
+        teteChercheuse.SetFind(true);
+        teteChercheuse.SetHittenObj(other.gameObject);
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject == teteChercheuse.GetLanceur() || other.gameObject.GetComponent<TeteChercheuse>()) // Le cas où c'est avec notre propre personnage
+            return;
+
+        teteChercheuse.SetFind(true);
+        teteChercheuse.SetHittenObj(other.gameObject);
+    }
+
+    private void OnCollisionStay(Collision other)
+    {
+        if (other.gameObject == teteChercheuse.GetLanceur() || other.gameObject.GetComponent<TeteChercheuse>()) // Le cas où c'est avec notre propre personnage
+            return;
+
         teteChercheuse.SetFind(true);
         teteChercheuse.SetHittenObj(other.gameObject);
     }

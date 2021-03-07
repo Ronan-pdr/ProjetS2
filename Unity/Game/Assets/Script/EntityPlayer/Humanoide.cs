@@ -5,8 +5,6 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public abstract class Humanoide : Entity
 {
-    protected PlayerManager playerManager;
-    
     //Etat
     protected bool Grounded;
 
@@ -15,15 +13,20 @@ public abstract class Humanoide : Entity
     protected const float sprintSpeed = 5f;
 
     //Jump
-    protected const float jumpForce = 200f;
+    private const float jumpForce = 200f;
     
     //GamePlay
     protected int maxHealth;
     protected int currentHealth;
     
+    // photon
+    protected PhotonView PV;
+    
     //Getter
     public int GetCurrentHealth() => currentHealth;
     public int GetMaxHealth() => maxHealth;
+    public PhotonView GetPV() => PV;
+    public Player GetPlayer() => PV.Owner;
     
     
     public void SetGroundedState(bool grounded)
@@ -67,8 +70,6 @@ public abstract class Humanoide : Entity
     //Animation
     [SerializeField] protected Animator anim;
 
-    //protected abstract void Animation();
-
     protected void AnimationStop()
     {
         anim.enabled = false;
@@ -78,20 +79,20 @@ public abstract class Humanoide : Entity
     public void TakeDamage(int damage) // Seul le masterClient active cette fonction
     {
         currentHealth -= damage;
+        
+        Hashtable hash = new Hashtable();
 
         if (this is PlayerClass)
         {
-            PlayerClass playerClass = (PlayerClass) this;
-            
-            Hashtable hash = new Hashtable();
-            hash.Add("PointDeVie", currentHealth);
-            playerClass.GetPlayer().SetCustomProperties(hash);
+            hash.Add("PointDeViePlayer", currentHealth);
         }
+        else
+        {
+            BotClass bot = (BotClass) this;
+        }
+
+        GetPlayer().SetCustomProperties(hash);
     }
 
     protected abstract void Die();
-    
-    //Fonctions communes aux chassées ainsi qu'aux bots
-    
-    
 }

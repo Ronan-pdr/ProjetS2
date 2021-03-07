@@ -16,6 +16,9 @@ public class Chasseur : PlayerClass
     private void Awake()
     {
         AwakePlayer();
+        
+        // Le ranger dans la liste du MasterManager
+        MasterManager.Instance.AjoutChasseur(this);
     }
 
     void Start()

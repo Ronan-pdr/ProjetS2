@@ -26,20 +26,26 @@ public class BotRectiligne : BotClass
     private float ecartTime = 1;
     private float lastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
     
-    // La liste des coordonnées possible (pour l'instant c'est les crossPoints)
-    private Vector3[] listCordonnées;
-    private int nResultReceive;
+    // le bot envoie des 'bodyChercheur' à chaque fois qu'il souhaite trouvé une nouvelle destination
+    // il les envoie vers les coordonnées (pas toute) comprises dans la 'listCordonnées'
+    // le nombre de bodyChercheur envoyé est dans 'nResultAttendu'
+    // il doit donc attendre les résultats, ceux qui sont positifs sont ajoutés dans la liste 'validDestinations'
+    // et à chaque réception, 'nResultReceive' s'incrémente
+    private Vector3[] listCordonnées; // La liste des coordonnées possible (pour l'instant c'est les crossPoints)
     private List<Vector3> validDestinations;
-    
+    private int nResultReceive;
+    private int nResultAttendu;
+
     //Getter
 
     public int GetEtat() => EtatCheminTournerAttendre;
 
     public void Start()
     {
-        SetRbTr();
-        StartBot(); // il faut instancier maxHealth pour instancier currentHealth
-        StartHuman(); // voila pourquoi j'ai mis StartBot avant StartHuman
+        StartBot(); // tout le monde le fait pour qu'il soit parenter
+        
+        if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
+            return;
 
         listCordonnées = CrossManager.Instance.GetListPosition(); // je dois l'intancier avant d'utiliser 'FindNewDestination'
 
@@ -48,14 +54,14 @@ public class BotRectiligne : BotClass
 
     void Update()
     {
-        if (!PhotonNetwork.IsMasterClient) // Seul le masterClient contrôle les bots
+        if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
             return;
         
-        UpdateBot(); // quoi que ce soit son état, il fait ça
+        UpdateBot(); // quoi que soit son état, il fait ça
 
-        if (EtatCheminTournerAttendre == 2)// s'il est en train d'attendre
+        if (EtatCheminTournerAttendre == 2) // s'il est en train d'attendre...
         {
-            moveAmount = Vector3.zero;
+            moveAmount = Vector3.zero; // ...il ne se déplace pas
             return;
         }
 
@@ -63,7 +69,7 @@ public class BotRectiligne : BotClass
         {
             FindAmountRotation();
         }
-            
+        
         if (EtatCheminTournerAttendre == 0) // est en chemin
         {
             if (Calcul.Distance(Tr.position, coordDestination) < ecartDistance) // arrivé
@@ -83,7 +89,7 @@ public class BotRectiligne : BotClass
 
     private void FixedUpdate()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
             return;
         
         moveEntity();
@@ -93,14 +99,21 @@ public class BotRectiligne : BotClass
     // Ainsi, il doit attendre la réponse de ceux-ci, pendant ce temps, ils vont rester immobile
     private void FindNewDestination()
     {
+        nResultAttendu = 0;
+
+        float distanceThisCoord;
         for (int i = 0; i < listCordonnées.Length; i++)
         {
-            if (Calcul.Distance(Tr.position, listCordonnées[i]) > 2) // on ne veut pas lancer un body chercheur la où on se situe
+            distanceThisCoord = Calcul.Distance(Tr.position, listCordonnées[i]);
+            
+            if (2 < distanceThisCoord && distanceThisCoord < 30) // on ne veut pas lancer un body chercheur la où on se situe
             {
                 coordDestination = listCordonnées[i];
                 FindAmountRotation(); // change amountRotation pour le bodyChercheur (c'est pas grave s'il change l'etat du joueur puisqu'on va le faire juste à la fin de cette fontion)
                 
                 BodyChercheur.InstancierStatic(this, listCordonnées[i], new Vector3(0, amountRotation, 0)); // rotate seulement sur y
+
+                nResultAttendu += 1;
             }
         }
         
@@ -111,6 +124,9 @@ public class BotRectiligne : BotClass
 
     public void FoundResultDestination(bool valid, Vector3 coord) // est appelé dans la class 'BodyChercheur', dans la fonction 'Update'
     {
+        if (!this) // comme c'est possible que des bodyChercheurs appellent cette fonction même après qu'il soit destroy, j'ai mis cette condition
+            return;
+
         if (EtatCheminTournerAttendre != 2)
         {
             Debug.Log("PROBLEME");
@@ -123,10 +139,10 @@ public class BotRectiligne : BotClass
 
         if (valid)
         {
-            validDestinations.Add(coord); // ajoute dans les potentielles destinations que le bot suivra
+            validDestinations.Add(coord);
         }
 
-        if (nResultReceive == listCordonnées.Length - 1) // a reçu tous les résultats (-1 parce qu'on n'envoie pas la coordonné où le bot est)
+        if (nResultReceive == nResultAttendu) // a reçu tous les résultats donc le bot va repartir (se réorienter du moins)
         {
             if (validDestinations.Count == 0)
             {
@@ -134,7 +150,7 @@ public class BotRectiligne : BotClass
             }
 
             coordDestination = validDestinations[Random.Range(0, validDestinations.Count)]; // il choisi aléatoirement une coord parmi toutes les deestinations valides
-            FindAmountRotation(); // son état va changer (il ne va plus attendre)
+            FindAmountRotation(); // précision : son état va changer dans cette fonction (il ne va plus attendre)
         }
     }
     

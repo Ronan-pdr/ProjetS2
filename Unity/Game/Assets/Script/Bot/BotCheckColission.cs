@@ -1,7 +1,7 @@
 ﻿using Photon.Pun;
 using UnityEngine;
 
-namespace Script.IA
+namespace Script
 {
     public class BotCheckColission : MonoBehaviour
     {
@@ -14,10 +14,10 @@ namespace Script.IA
         
         private void OnCollisionEnter(Collision other)
         {
-            if (!PhotonNetwork.IsMasterClient) // Seul le MasterClient contrôle les bots
+            if (!bot.IsMyBot()) // Ton ordi contrôle seulement tes bots
                 return;
         
-            if (other.gameObject == bot.gameObject)
+            if (other.gameObject == bot.gameObject) // si c'est son propre corps qu'il a percuté
                 return;
         
             if (bot.GetEtat() == 0) // recalcule seulment quand il avance
@@ -28,10 +28,10 @@ namespace Script.IA
 
         private void OnCollisionExit(Collision other)
         {
-            if (!PhotonNetwork.IsMasterClient) // Seul le MasterClient contrôle les bots
+            if (!bot.IsMyBot()) // Ton ordi contrôle seulement tes bots
                 return;
             
-            if (other.gameObject == bot.gameObject)
+            if (other.gameObject == bot.gameObject) // si c'est son propre corps qu'il a percuté
                 return;
 
             if (bot.GetEtat() == 0) // recalcule seulement quand il avance

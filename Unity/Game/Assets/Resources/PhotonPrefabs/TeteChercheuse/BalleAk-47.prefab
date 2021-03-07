@@ -1,7 +1,7 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!64 &2093250367045609878
-MeshCollider:
+--- !u!136 &2071959723798271223
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -10,10 +10,10 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2124705421725058983, guid: 28d678eb62a42314582b3ef7aca29130, type: 3}
+  m_Radius: 0.01
+  m_Height: 0.5971485
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 0.28875235}
 --- !u!114 &522213292305456332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,7 +154,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28d678eb62a42314582b3ef7aca29130, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28d678eb62a42314582b3ef7aca29130, type: 3}
       propertyPath: m_LocalPosition.y

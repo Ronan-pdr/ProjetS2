@@ -12,55 +12,43 @@ namespace Script
     {
         public static InterfaceInGame Instance;
         
+        // pour instancier sur la toile l'affichage du joueur
         [SerializeField] Transform infoContent;
         [SerializeField] GameObject infoItemPrefab;
 
+        // relatif à toi
         [SerializeField] private AffichageInfoJoueur tesInfos;
-        private PlayerClass ownPlayer;
+        private PlayerClass ownPlayerClass;
+        
+        // relatif aux autres
         private List<AffichageInfoJoueur> infosJoueur;
-        
-        // on attent que le masterManager instancie la liste
-        private bool start = false;
-        
-        // Setter
-        public void FeuVert() // est activé lorsque le masterManager a instancié toutes ces listes
-        {
-            start = true;
-        }
 
         private void Awake()
         {
             Instance = this;
             infosJoueur = new List<AffichageInfoJoueur>();
         }
-
-        private void Update()
-        {
-            if (start)
-                StartFeuVert();
-        }
         
-        private void StartFeuVert()
+        public void Set()
         {
             MasterManager masterManager = MasterManager.Instance;
             int hauteur = Screen.height;
             int largeur = Screen.width;
             int taille = 85;
             
-            ownPlayer = masterManager.GetOwnPlayer();
-            tesInfos.SetUp(ownPlayer, taille, 0);
+            ownPlayerClass = masterManager.GetOwnPlayer();
+
+            tesInfos.SetUp(ownPlayerClass, taille, 0);
 
             int index = 0;
-            foreach (PlayerClass player in masterManager.GetListPlayer())
+            foreach (PlayerClass playerClass in masterManager.GetListPlayer()) // pas grave si la liste est vide (mais elle est forcément instancié)
             {
-                if (player != ownPlayer)
+                if (playerClass != ownPlayerClass)
                 {
                     infosJoueur.Add(Instantiate(infoItemPrefab, infoContent).GetComponent<AffichageInfoJoueur>());
-                    infosJoueur[index++].SetUp(player, hauteur - index*taille, 90);
+                    infosJoueur[index++].SetUp(playerClass, hauteur - index*taille, 90);
                 }
             }
-
-            start = false;
         }
     }
 }

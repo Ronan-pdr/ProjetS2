@@ -12,6 +12,9 @@ namespace Script
         private void Awake()
         {
             AwakePlayer();
+            
+            // Le ranger dans la liste du MasterManager
+            MasterManager.Instance.AjoutChassé(this);
         }
 
         void Start()
@@ -47,7 +50,7 @@ namespace Script
 
         protected override void Die() // Est appelé lorsqu'il vient de mourir
         {
-            MasterManager.Instance.Die(_player);
+            MasterManager.Instance.Die(PV.Owner);
             
             anim.enabled = false;
             PhotonNetwork.Destroy(gameObject);

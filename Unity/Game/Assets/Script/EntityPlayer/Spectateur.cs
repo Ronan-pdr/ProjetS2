@@ -24,6 +24,12 @@ namespace Script
         // hauteur pour atteindre la tête
         [SerializeField] private float hauteur;
         
+        // Setter
+        private void SetPorteur()
+        {
+            Porteur = MasterManager.Instance.GetPlayer(indexPorteur).transform;
+        }
+        
         private void Awake()
         {
             // Le ranger dans MasterClient
@@ -34,7 +40,7 @@ namespace Script
             PV = GetComponent<PhotonView>();
 
             indexPorteur = 0;
-            Porteur = MasterManager.Instance.GetPlayer(indexPorteur).transform;
+            SetPorteur();
         }
 
         private void Start()
@@ -57,6 +63,12 @@ namespace Script
             if (!PV.IsMine || PauseMenu.Instance.GetIsPaused())
             {
                 return;
+            }
+
+            if (!Porteur)
+            {
+                indexPorteur = 0;
+                SetPorteur();
             }
 
             Position();
@@ -91,7 +103,7 @@ namespace Script
                 indexPorteur = SimpleMath.Mod(indexPorteur - 1, MasterManager.Instance.GetNbPlayer());
             }
             
-            Porteur = MasterManager.Instance.GetPlayer(indexPorteur).transform;
+            SetPorteur();
         }
     }
 }

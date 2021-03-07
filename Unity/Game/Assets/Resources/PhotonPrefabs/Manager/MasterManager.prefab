@@ -43,4 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5d6700a739f4b9580380d1142fc7ab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  players: []
+  originalBodyChercheur: {fileID: 0}
+  dossierBodyChercheur: {fileID: 0}
+  dossierBalleFusil: {fileID: 0}
+  DossierOtherBot: {fileID: 0}

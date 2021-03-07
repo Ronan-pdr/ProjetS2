@@ -12,7 +12,7 @@ public abstract class PlayerClass : Humanoide
 {
     // Etat
     protected string touchLeverAssoir = "c";
-    protected float lastChangementEtat; // La dernière qu'on a changé entre assis et lever
+    protected float lastChangementEtat; // La dernière fois qu'on a changé de position entre assis et lever
     protected string touchAccroupi = "x";
     protected int etatDebAssAcc = 0; // debout -> 0 ; Assis -> 1 ; Acc -> 2
     
@@ -27,43 +27,31 @@ public abstract class PlayerClass : Humanoide
     
     //Jump
     protected string touchJump = "space";
+    private float lastJump; // le temps la dernière fois que le joueur a sauté
+    private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
     
     //Look
     private float verticalLookRotation; 
     private float mouseSensitivity = 3f;
     [SerializeField] protected Transform cameraHolder;
-    
-    //Photon
-    protected PhotonView PV;
-    protected Player _player; // Sa valeur n'est instancié que 
-
-    public Player GetPlayer() => _player;
 
     //Rassembler les infos
     protected Transform masterManager;
-    
-    // Getter
-    public PhotonView GetPV() => PV;
-    
+
+
     protected void AwakePlayer()
     {
-        masterManager = MasterManager.Instance.transform;
-        transform.parent = masterManager;
-        
         SetRbTr();
         
+        // parenter
+        masterManager = MasterManager.Instance.transform;
+        Tr.parent = masterManager;
+        
+        // Le ranger dans la liste du MasterManager
+        MasterManager.Instance.AjoutPlayer(this);
+        
+        //photon
         PV = GetComponent<PhotonView>();
-
-        playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
-
-        if (PV.IsMine)
-        {
-            _player = PhotonNetwork.LocalPlayer;
-            
-            Hashtable hash = new Hashtable();
-            hash.Add("player", _player);
-            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-        }
     }
 
     protected void StartPlayer()
@@ -74,6 +62,8 @@ public abstract class PlayerClass : Humanoide
         {
             Destroy(GetComponentInChildren<Camera>().gameObject); // On veut détruire les caméras qui ne sont pas les tiennes
             Destroy(Rb);
+            
+            
         }
     }
 
@@ -127,9 +117,11 @@ public abstract class PlayerClass : Humanoide
     
     private void Jump()
     {
-        if (Input.GetKey(touchJump) && Grounded && etatDebAssAcc == 0) //il faut qu'il soit debout
+        if (Input.GetKey(touchJump) && Time.time - lastJump > periodeJump && Grounded && etatDebAssAcc == 0) //il faut qu'il soit debout
         {
             JumpHumanoide();
+
+            lastJump = Time.time;
         }
     }
 
@@ -138,7 +130,7 @@ public abstract class PlayerClass : Humanoide
         Tr.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
 
         verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -70f, 70f);
+        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -50f, 30f);
 
         cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
     }
@@ -146,19 +138,8 @@ public abstract class PlayerClass : Humanoide
     // Communication par hash
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
-        if (!PV.Owner.Equals(targetPlayer))
+        if (!PV.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
             return;
-        
-        // Set '_player' de type Player (Photon) -> AwakePlayer (PlayerClass)
-        if (!PV.IsMine) // tu l'as déjà fait avec ton point de vue
-        {
-            changedProps.TryGetValue("player", out object p);
-
-            if (p != null)
-            {
-                _player = (Player)p;
-            }
-        }
         
         // arme du chasseur -> EquipItem (Chasseur)
         if (this is Chasseur && !PV.IsMine) // ça ne doit pas être ton point de vie puisque tu l'as déjà fait
@@ -175,7 +156,7 @@ public abstract class PlayerClass : Humanoide
         // point de vie -> TakeDamage (Humanoide)
         if (!PhotonNetwork.IsMasterClient) // c'est le masterClient qui contrôle les balles donc qui enlève les point de vies
         {
-            changedProps.TryGetValue("PointDeVie", out object life);
+            changedProps.TryGetValue("PointDeViePlayer", out object life);
 
             if (life != null)
             {
