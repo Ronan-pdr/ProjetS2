@@ -1,8 +1,7 @@
-﻿using Photon.Pun;
-using Script;
-using UnityEngine;
+﻿using UnityEngine;
+using Script.EntityPlayer;
 
-namespace Script
+namespace Script.TeteChercheuse
 {
     // Nous n'avons pas envie que tous les ordinateurs des joueurs suivent ce script.
     // Mais, comme les body checheur s'instancie localement (pas avec photon),

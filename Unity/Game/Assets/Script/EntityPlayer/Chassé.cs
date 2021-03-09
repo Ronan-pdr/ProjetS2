@@ -1,14 +1,11 @@
 ﻿using UnityEngine;
 using Photon.Pun;
-using System.IO;
+using Script.InterfaceInGame;
 
-namespace Script
+namespace Script.EntityPlayer
 {
     public class Chassé : PlayerClass
     {
-        // le "gameObject" qui contient les graphiques (c'est plus un dossier qu'autre chose)
-        [SerializeField] private GameObject graphics;
-        
         private void Awake()
         {
             AwakePlayer();
@@ -19,13 +16,13 @@ namespace Script
 
         void Start()
         {
-            maxHealth = 100;
+            MaxHealth = 100;
             StartPlayer();
         }
         
         void Update()
         {
-            if (!PV.IsMine)
+            if (!Pv.IsMine)
                 return;
             
             Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
@@ -33,7 +30,7 @@ namespace Script
             
             if (PauseMenu.Instance.GetIsPaused())
             {
-                moveAmount = Vector3.zero;
+                MoveAmount = Vector3.zero;
                 return;
             }
 
@@ -50,15 +47,13 @@ namespace Script
 
         protected override void Die() // Est appelé lorsqu'il vient de mourir
         {
-            MasterManager.Instance.Die(PV.Owner);
+            MasterManager.Instance.Die(Pv.Owner);
             
             anim.enabled = false;
             PhotonNetwork.Destroy(gameObject);
         }
 
         // Animation
-        private (string, string)[] arrAnim; // (touche, animation)
-
         private void Animation()
         {
             (int xMov, int zMov) = (0, 0);
@@ -72,41 +67,43 @@ namespace Script
                 xMov -= 1;
 
 
-            if (Input.GetKey(touchLeverAssoir) && etatDebAssAcc != 2 && Time.time - lastChangementEtat > 0.5f) // il ne doit pas être accroupi
+            if (Input.GetKey(touchLeverAssoir) && etat != Etat.Accroupi && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être accroupi
             {
-                if (etatDebAssAcc == 0) // S'assoir puisqu'il est debout
+                if (etat == Etat.Debout) // S'assoir puisqu'il est debout
                 {
-                    moveAmount = Vector3.zero;
+                    MoveAmount = Vector3.zero;
                     ActiverAnimation("Assis");
+                    etat = Etat.Assis;
                 }
                 else // Se lever depuis assis
                 {
                     ActiverAnimation("Lever PASS");
+                    etat = Etat.Debout;
                 }
 
-                lastChangementEtat = Time.time;
-                etatDebAssAcc = 1 - etatDebAssAcc; // 0 -> 1 ou 1 -> 0
+                LastChangementEtat = Time.time;
             }
-            else if (Input.GetKey(touchAccroupi) && etatDebAssAcc != 1 && Time.time - lastChangementEtat > 0.5f) // il ne doit pas être assis
+            else if (Input.GetKey(touchAccroupi) && etat != Etat.Assis && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être assis
             {
-                if (etatDebAssAcc == 0) // s'accroupir puisqu'il est debout
+                if (etat == Etat.Debout) // s'accroupir puisqu'il est debout
                 {
-                    moveAmount = Vector3.zero;
+                    MoveAmount = Vector3.zero;
                     ActiverAnimation("Accroupir");
+                    etat = Etat.Accroupi;
                 }
                 else // se lever depuis accroupi
                 {
                     ActiverAnimation("Lever PAcc");
+                    etat = Etat.Debout;
                 }
                 
-                lastChangementEtat = Time.time;
-                etatDebAssAcc = 2 - etatDebAssAcc; // 0 -> 2 ou 2 -> 0
+                LastChangementEtat = Time.time;
             }
-            else if (etatDebAssAcc == 1 || Time.time - lastChangementEtat < 0.25f) // Aucune animation lorsque le chassé est assis
+            else if (etat == Etat.Assis || Time.time - LastChangementEtat < 0.25f) // Aucune animation lorsque le chassé est assis
             {}
             else if (zMov == 1) // Avancer
             {
-                if (etatDebAssAcc == 2) // avancer en étant accroupi
+                if (etat == Etat.Accroupi) // avancer en étant accroupi
                 {
                     ActiverAnimation("Marche acc");
                 }
@@ -142,10 +139,10 @@ namespace Script
         }
         
 
-        private void ActiverAnimation(string animation)
+        private void ActiverAnimation(string strAnimation)
         {
             anim.enabled = true;
-            anim.Play(animation);
+            anim.Play(strAnimation);
         }
     }
 }

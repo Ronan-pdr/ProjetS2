@@ -3,107 +3,110 @@ using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public abstract class Humanoide : Entity
+namespace Script.EntityPlayer
 {
-    //Etat
-    protected bool Grounded;
-
-    //Avancer
-    protected const float walkSpeed = 3f;
-    protected const float sprintSpeed = 5f;
-
-    //Jump
-    private const float jumpForce = 200f;
-    
-    //GamePlay
-    protected int maxHealth;
-    protected int currentHealth;
-    
-    // photon
-    protected PhotonView PV;
-    
-    //Getter
-    public int GetCurrentHealth() => currentHealth;
-    public int GetMaxHealth() => maxHealth;
-    public PhotonView GetPV() => PV;
-    public Player GetPlayer() => PV.Owner;
-    
-    
-    public void SetGroundedState(bool grounded)
+    public abstract class Humanoide : Entity
     {
-        Grounded = grounded;
-    }
+        //Etat
+        protected bool Grounded;
 
-    protected void AwakeHuman()
-    {
-        PV = GetComponent<PhotonView>(); // doit obligatoirement être dans awake
-    }
+        //Avancer
+        protected const float WalkSpeed = 3f;
+        protected const float SprintSpeed = 5f;
 
-    protected void StartHuman()
-    {
-        currentHealth = maxHealth;
-    }
-
-    private void PotentielleMort()
-    {
-        // Mourir de chute
-        if (transform.position.y < -10f)
-        {
-            Die();
-        }
+        //Jump
+        private const float JumpForce = 200f;
+    
+        //GamePlay
+        protected int MaxHealth;
+        protected int CurrentHealth;
+    
+        // photon
+        protected PhotonView Pv;
+    
+        //Getter
+        public int GetCurrentHealth() => CurrentHealth;
+        public int GetMaxHealth() => MaxHealth;
+        public PhotonView GetPv() => Pv;
+        public Player GetPlayer() => Pv.Owner;
         
-        // Mourir point de vie
-        if (currentHealth <= 0)
+        public void SetGroundedState(bool grounded)
         {
-            Die();
+            Grounded = grounded;
         }
-    }
 
-    protected void UpdateHumanoide()
-    {
-        PotentielleMort();
-    }
-    
-    //Déplacment
-
-    protected void JumpHumanoide()
-    {
-        Rb.AddForce(transform.up * jumpForce); // transform.up = new Vector3(0, 1, 0)
-        Grounded = false;
-    }
-
-    //Animation
-    [SerializeField] protected Animator anim;
-
-    protected void AnimationStop()
-    {
-        anim.enabled = false;
-    }
-    
-    //GamePlay
-    public void TakeDamage(int damage) // Seul les chasseurs activent cette fonction
-    {
-        currentHealth -= damage;
-        
-        Hashtable hash = new Hashtable();
-
-        if (this is PlayerClass)
+        protected void AwakeHuman()
         {
-            hash.Add("PointDeViePlayer", currentHealth);
+            Pv = GetComponent<PhotonView>(); // doit obligatoirement être dans awake
         }
-        else
+
+        protected void StartHuman()
         {
-            string mes = currentHealth.ToString(); // comme il faut indiqué la vie ainsi que le bot à qui c'est concerné, on met les deux infos dans une string
-            while (mes.Length < 3) // on formate la vie à trois charactères
+            CurrentHealth = MaxHealth;
+        }
+
+        private void PotentielleMort()
+        {
+            // Mourir de chute
+            if (transform.position.y < -10f)
             {
-                mes = " " + mes;
+                Die();
             }
-            
-            hash.Add("PointDeVieBot", name + mes);
+        
+            // Mourir point de vie
+            if (CurrentHealth <= 0)
+            {
+                Die();
+            }
         }
 
-        PV.Owner.SetCustomProperties(hash);
-    }
+        protected void UpdateHumanoide()
+        {
+            PotentielleMort();
+        }
+    
+        //Déplacment
 
-    protected abstract void Die();
+        protected void JumpHumanoide()
+        {
+            Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
+            Grounded = false;
+        }
+
+        //Animation
+        [SerializeField] protected Animator anim;
+
+        protected void AnimationStop()
+        {
+            anim.enabled = false;
+        }
+    
+        //GamePlay
+        public void TakeDamage(int damage) // Seul les chasseurs activent cette fonction
+        {
+            CurrentHealth -= damage;
+        
+            Hashtable hash = new Hashtable();
+
+            if (this is PlayerClass)
+            {
+                hash.Add("PointDeViePlayer", CurrentHealth);
+            }
+            else
+            {
+                string mes = CurrentHealth.ToString(); // comme il faut indiqué la vie ainsi que le bot à qui c'est concerné, on met les deux infos dans une string
+                while (mes.Length < 3) // on formate la vie à trois charactères
+                {
+                    mes = " " + mes;
+                }
+            
+                hash.Add("PointDeVieBot", name + mes);
+            }
+
+            Pv.Owner.SetCustomProperties(hash);
+        }
+
+        protected abstract void Die();
+    }
 }
+

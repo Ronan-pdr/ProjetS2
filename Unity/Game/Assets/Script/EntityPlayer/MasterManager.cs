@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using Script.InterfaceInGame;
+using Script.TeteChercheuse;
 
-namespace Script
+namespace Script.EntityPlayer
 {
     public class MasterManager : MonoBehaviour
     {
@@ -17,7 +18,7 @@ namespace Script
         [SerializeField] private BodyChercheur originalBodyChercheur; // prefab des body
         [SerializeField] private Transform dossierBodyChercheur; // ranger les 'BodyChercheur'
         [SerializeField] private Transform dossierBalleFusil; // ranger les 'BalleFusil'
-        [SerializeField] private Transform DossierOtherBot; // le dossier où les bots que ton ordinateur ne contrôle pas seront rangés
+        [SerializeField] private Transform dossierOtherBot; // le dossier où les bots que ton ordinateur ne contrôle pas seront rangés
         
         // nombre de participant (sera utilisé pour déterminer le moment lorsque tous les joueurs auront instancié leur playerController)
         private int nParticipant; // participant regroupe les joueurs ainsi que les spectateurs
@@ -51,7 +52,7 @@ namespace Script
         public BodyChercheur GetOriginalBodyChercheur() => originalBodyChercheur;
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
-        public Transform GetDossierOtherBot() => DossierOtherBot;
+        public Transform GetDossierOtherBot() => dossierOtherBot;
         public string GetNameBot(Player player)
         {
             int i;
@@ -63,9 +64,9 @@ namespace Script
         }
         
         //Setter
-        public void SetOwnPlayer(PlayerClass _ownPlayer)
+        public void SetOwnPlayer(PlayerClass value)
         {
-            ownPlayer = _ownPlayer;
+            ownPlayer = value;
         }
         public void AjoutPlayer(PlayerClass player)
         {
@@ -143,7 +144,7 @@ namespace Script
             // ce if s'active lorsque tous les joueurs ont créé leur avatar et l'ont ajouté à la liste 'players'
             if (players.Count == nParticipant && !SetInterfaceInGame)
             {
-                InterfaceInGame.Instance.Set();
+                InterfaceInGameManager.Instance.Set();
 
                 SetInterfaceInGame = true;
             }
@@ -168,7 +169,7 @@ namespace Script
                 chasseurs.Remove((Chasseur) playerClass); // remove de la liste chasseurs (si c'était un chasseur)
             }
 
-            PhotonView pv = playerClass.GetPV(); // on récupère le point de vue du mourant
+            PhotonView pv = playerClass.GetPv(); // on récupère le point de vue du mourant
 
             if (!pv.IsMine) // Seul le mourant envoie le hash et créé un spectateur
                 return;

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using TMPro;
-using Photon.Realtime;
-using UnityEngine.UI;
+using Script.EntityPlayer;
 
-namespace Script
+namespace Script.InterfaceInGame
 {
-    public class InterfaceInGame : MonoBehaviourPunCallbacks
+    public class InterfaceInGameManager : MonoBehaviourPunCallbacks
     {
-        public static InterfaceInGame Instance;
+        public static InterfaceInGameManager Instance;
         
         // pour instancier sur la toile l'affichage du joueur
         [SerializeField] Transform infoContent;
@@ -33,7 +30,7 @@ namespace Script
         {
             MasterManager masterManager = MasterManager.Instance;
             int hauteur = Screen.height;
-            int largeur = Screen.width;
+            //int largeur = Screen.width;
             int taille = 85;
             
             ownPlayerClass = masterManager.GetOwnPlayer();

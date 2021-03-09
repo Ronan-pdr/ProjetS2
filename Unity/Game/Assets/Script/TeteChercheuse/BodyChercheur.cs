@@ -1,9 +1,9 @@
-﻿using System;
-using Photon.Pun;
-using UnityEngine;
+﻿using UnityEngine;
 using Script.Tools;
+using Script.Bot;
+using Script.EntityPlayer;
 
-namespace Script
+namespace Script.TeteChercheuse
 {
     public class BodyChercheur : TeteChercheuse
     {
@@ -40,12 +40,12 @@ namespace Script
 
             float rayon = ownCapsuleCollider.radius; // marre d'avoir des warning parce que j'utilise plusieurs fois un transform
             
-            moveAmount = new Vector3(0, 0, rayon); // la vitesse est le rayon de la capsule (parce que le diamètre c'est trop, il traverse les destinations sans s'arrêter)
+            MoveAmount = new Vector3(0, 0, rayon); // la vitesse est le rayon de la capsule (parce que le diamètre c'est trop, il traverse les destinations sans s'arrêter)
             ecartDistance = rayon*2;
         }
 
         // l'instancier de manière static
-        public static void InstancierStatic(BotRectiligne lanceur, Vector3 _coordDestination, Vector3 rotation)
+        public static void InstancierStatic(BotRectiligne lanceur, Vector3 coordDest, Vector3 rotation)
         {
             Transform trLanceur = lanceur.transform;
 
@@ -53,24 +53,24 @@ namespace Script
             
             BodyChercheur body = Instantiate(original, trLanceur.position, trLanceur.rotation);
             
-            body.Instancier(lanceur, _coordDestination, rotation);
+            body.Instancier(lanceur, coordDest, rotation);
         }
 
         // l'instancier de manière non-static (est appelé dans 'InstatncierStatic')
-        private void Instancier(BotRectiligne lanceur, Vector3 _coordDestination, Vector3 rotation)
+        private void Instancier(BotRectiligne lanceur, Vector3 coordDest, Vector3 rotation)
         {
             SetRbTr();
 
             botRectiligne = lanceur;
             Lanceur = lanceur.gameObject;
-            coordDestination = _coordDestination;
+            coordDestination = coordDest;
 
             Tr.Rotate(rotation);
         }
 
         private void Update()
         {
-            Rb.MovePosition(Rb.position + Tr.TransformDirection(moveAmount)); // move entity sans deltaTime
+            Rb.MovePosition(Rb.position + Tr.TransformDirection(MoveAmount)); // move entity sans deltaTime
 
             if (!Find && Calcul.Distance(Tr.position, coordDestination) > ecartDistance)
                 return; // il n'a rien touché et est trop loin de sa destination, donc il continue

@@ -1,7 +1,6 @@
-﻿using Photon.Pun;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Script
+namespace Script.Bot
 {
     public class BotCheckColission : MonoBehaviour
     {
@@ -20,7 +19,7 @@ namespace Script
             if (other.gameObject == bot.gameObject) // si c'est son propre corps qu'il a percuté
                 return;
         
-            if (bot.GetEtat() == 0) // recalcule seulment quand il avance
+            if (bot.GetEtat() == 0) // recalcule seulement quand il avance
             {
                 bot.FindAmountRotation();
             }

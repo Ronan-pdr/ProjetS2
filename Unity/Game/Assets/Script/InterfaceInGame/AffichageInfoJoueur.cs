@@ -2,17 +2,18 @@
 using Photon.Pun;
 using UnityEngine;
 using TMPro;
+using Script.EntityPlayer;
 
-namespace Script
+namespace Script.InterfaceInGame
 {
     public class AffichageInfoJoueur : MonoBehaviourPunCallbacks
     {
         [SerializeField] private TMP_Text text;
         private PlayerClass player;
 
-        public void SetUp(PlayerClass _player, int hauteur, int largeur)
+        public void SetUp(PlayerClass value, int hauteur, int largeur)
         {
-            player = _player;
+            player = value;
             
             text.transform.position = new Vector3(largeur, hauteur, 0);
         }
