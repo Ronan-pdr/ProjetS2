@@ -1,3 +1,4 @@
+using Script.Tools;
 using UnityEngine;
 
 namespace Script.DossierPoint
@@ -38,9 +39,10 @@ namespace Script.DossierPoint
             if (index >= crossPoints.Length)
             {
                 Debug.Log("GetPostion cross manager : index out of range");
-                return Vector3.zero;
+                Debug.Log("Mais je fais un modulo rien que pour tes beaux yeux");
+                index = SimpleMath.Mod(index, crossPoints.Length);
             }
-    
+            
             return crossPoints[index].transform.position;
         }
     

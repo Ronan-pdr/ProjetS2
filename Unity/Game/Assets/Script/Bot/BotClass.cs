@@ -37,7 +37,6 @@ namespace Script.Bot
             StartHuman(); // vie
 
             name = MasterManager.Instance.GetNameBot(Pv.Owner);
-            Debug.Log(name);
 
             if (botManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
                 Tr.parent = MasterManager.Instance.GetDossierOtherBot(); // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs

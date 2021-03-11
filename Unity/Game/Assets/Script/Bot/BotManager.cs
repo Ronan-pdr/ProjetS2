@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+using Photon.Realtime;
 using Script.DossierPoint;
 
 namespace Script.Bot
 {
     public class BotManager : MonoBehaviour
-    { 
+    {
         // Chaque joueur va contrôler un certain nombre de bots,
         // les leurs seront stockés dans le dossier 'BotManager' sur Unity
         // et ceux controlés pas les autres dans 'DossierOtherBot'
@@ -29,6 +30,10 @@ namespace Script.Bot
             Bots = new List<BotClass>();
 
             int nBot = 5;
+            int indexPlayer;
+            Player[] players = PhotonNetwork.PlayerList;
+            for (indexPlayer = players.Length - 1; indexPlayer >= 0 && !players[indexPlayer].Equals(PhotonNetwork.LocalPlayer); indexPlayer--)
+            {}
 
             for (int i = 0; i < nBot; i++) // Instancier, ranger (dans la liste) et positionner sur la map tous les bots
             {
@@ -36,7 +41,7 @@ namespace Script.Bot
                     Vector3.zero, Quaternion.identity).GetComponent<BotRectiligne>();
                 Bots.Add(bot);
 
-                bot.transform.position += CrossManager.Instance.GetPosition(i);
+                bot.transform.position += CrossManager.Instance.GetPosition(i + indexPlayer * nBot);
                 bot.SetOwnBotManager(this); // lui indiquer quel est son père
             
                 Bots.Add(bot); // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)

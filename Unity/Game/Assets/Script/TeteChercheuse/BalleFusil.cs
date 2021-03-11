@@ -70,7 +70,7 @@ namespace Script.TeteChercheuse
     
         public void FixedUpdate()
         {
-            if (!PhotonNetwork.IsMasterClient) // Seul le créateur de la balle la contrôle
+            if (!Pv.IsMine) // Seul le créateur de la balle la contrôle
                 return;
             
             MoveEntity();

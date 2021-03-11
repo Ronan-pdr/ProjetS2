@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
 using Photon.Realtime;
+using Script.DossierPoint;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.InterfaceInGame;
 using Script.TeteChercheuse;
+using Script.Tools;
+using Random = System.Random;
 
 namespace Script.EntityPlayer
 {
@@ -34,7 +38,9 @@ namespace Script.EntityPlayer
         private string typeOwnPlayer; // c'est le masterManager qui envoie le type via un hash
         
         // attribut que seul le masterClient utilisera
-        private string[] listTypeJoueur;
+        // la string contenant les infos du joueur seront sous la forme :
+        // indexCoordPoint(2 caractères) + type(1 caractère)
+        private string[] listInfoCréationJoueur;
         
         // les booléens qui indiquent ce que le MasterClient a fait ou non dans le Update
         private bool EnvoieDuTypeJoueurs; // Est ce que les hash indiquant le type des joueurs ont été envoyés ?
@@ -42,6 +48,14 @@ namespace Script.EntityPlayer
         
         // cette liste va servir à donner les noms à chaque bot
         private int[] nBotParJoueur;
+        
+        // Enum pour la création des joueurs
+        public enum TypePlayer
+        {
+            Chasseur = 0,
+            Chassé = 1,
+            Spectateur = 2
+        }
 
         // Getter
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -97,21 +111,29 @@ namespace Script.EntityPlayer
             
             // cette liste va servir à donner les noms à chaque bot
             nBotParJoueur = new int[nParticipant];
+            
+            if (!PhotonNetwork.IsMasterClient) // Seul le masterClient décide le type de chaque joueur, il l'envoie aux autres dans 'Update'
+                return;
+            
+            listInfoCréationJoueur = new string[nParticipant]; // instancier la liste
+            List<int> listChasseur = ManList.CreateListRange(SpawnManager.Instance.GetLengthSpawnPointChasseur());
+            List<int> listChassé = ManList.CreateListRange(SpawnManager.Instance.GetLengthSpawnPointChassé());
 
-            if (PhotonNetwork.IsMasterClient) // Seul le masterClient décide le type de chaque joueur, il l'envoie aux autres dans 'Update'
+            int indexSpot;
+            Random random = new Random();
+            for (int i = 0; i < nParticipant; i++)
             {
-                listTypeJoueur = new string[nParticipant]; // instancier la liste
-
-                for (int i = 0; i < nParticipant; i++)
+                if (i < 2) // pour l'instant, seul le premier de liste est un chasseur 
                 {
-                    if (i == 0) // pour l'instant, seul le premier de liste est un chasseur 
-                    {
-                        listTypeJoueur[i] = "Chasseur";
-                    }
-                    else
-                    {
-                        listTypeJoueur[i] = "Chassé";
-                    }
+                    indexSpot = listChasseur[random.Next(listChasseur.Count)];
+                    listChasseur.Remove(indexSpot);
+                    listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int)TypePlayer.Chasseur;
+                }
+                else
+                {
+                    indexSpot = listChassé[random.Next(listChassé.Count)];
+                    listChassé.Remove(indexSpot);
+                    listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int)TypePlayer.Chassé;
                 }
             }
         }
@@ -134,7 +156,7 @@ namespace Script.EntityPlayer
                 for (int i = 0; i < nParticipant; i++) // envoie le type à tous les joueurs grâce à un hash
                 {
                     Hashtable hash = new Hashtable();
-                    hash.Add("typePlayer", listTypeJoueur[i]);
+                    hash.Add("InfoCréationJoueur", listInfoCréationJoueur[i]);
                     PhotonNetwork.PlayerList[i].SetCustomProperties(hash);
                 }
 
