@@ -10,7 +10,7 @@ namespace PauseMenu
     {
         public static bool isPaused;
         private bool disconnecting;
-        public GameObject pauseMenuUI;
+       
 
         public void Start()
         {
@@ -38,13 +38,13 @@ namespace PauseMenu
 
         public void Resume()
         {
-            pauseMenuUI.SetActive(false);
+            MenuManager.Instance.CloseMenu("pause");
             isPaused = false;
         }
 
         void Pause()
         {
-            pauseMenuUI.SetActive(true);
+            MenuManager.Instance.OpenMenu("pause");
             isPaused = true;
         }
     
