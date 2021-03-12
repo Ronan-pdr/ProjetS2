@@ -32,13 +32,6 @@ public abstract class PlayerClass : Humanoide, IDamagable
     private const float maxHealth = 100f;
     private float currentHealth = maxHealth;
 
-    private PlayerHealth playerHealth;
-
-    public void GetHealth(float _currentHealth)
-    {
-        _currentHealth = currentHealth;
-    }
-
     protected void AwakePlayer()
     {
         Rb = GetComponent<Rigidbody>();
@@ -142,9 +135,5 @@ public abstract class PlayerClass : Humanoide, IDamagable
     public void TakeDamage(int damage)
     {
         
-    }
-    public void SetHealth()
-    {
-        playerHealth.healthAmount.text = currentHealth.ToString(); 
     }
 }

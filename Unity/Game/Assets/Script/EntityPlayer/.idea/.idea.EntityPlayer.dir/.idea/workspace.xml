@@ -20,9 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b5b30bf4-6163-417b-85aa-6e1049b46d55" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Chasseur.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Chasseur.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chassé.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Chassé.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EntityPlayer.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EntityPlayer.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlayerClass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PlayerClass.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlayerHealth.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlayerHealth.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Menu/Launcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Menu/Launcher.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,11 +35,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Chasseur.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Chasseur.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Menu/Launcher.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/PlayerClass.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Menu/RoomManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Chassé.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/PlayerHealth.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Chassé.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -46,6 +48,7 @@
         <option value="$PROJECT_DIR$/Chassé.cs" />
         <option value="$PROJECT_DIR$/PlayerHealth.cs" />
         <option value="$PROJECT_DIR$/PlayerClass.cs" />
+        <option value="$PROJECT_DIR$/../Menu/Launcher.cs" />
       </list>
     </option>
   </component>
@@ -69,13 +72,15 @@
       <option name="presentableId" value="Default" />
       <updated>1614802659876</updated>
       <workItem from="1614802695723" duration="6532000" />
+      <workItem from="1614984313547" duration="1676000" />
+      <workItem from="1615545639039" duration="2150000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -87,6 +92,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
