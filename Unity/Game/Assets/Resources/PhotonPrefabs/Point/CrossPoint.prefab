@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4261902594927881119}
-  - component: {fileID: 8106485754984040657}
+  - component: {fileID: -1453401439030132381}
   m_Layer: 0
   m_Name: CrossPoint
   m_TagString: Untagged
@@ -26,13 +26,13 @@ Transform:
   m_GameObject: {fileID: 1661681372574391247}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -56.51453, y: 20.289495, z: 49.481102}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.3, z: 0.9}
   m_Children:
   - {fileID: 6392408853641826574}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8106485754984040657
+--- !u!114 &-1453401439030132381
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1661681372574391247}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 023b46c15a30ef041988aae1167792e8, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a2709c026a4487cbab3ca08b7e1cbcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   graphics: {fileID: 2518149559917680947}

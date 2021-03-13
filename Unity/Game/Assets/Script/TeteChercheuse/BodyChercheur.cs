@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Script.Tools;
-using Script.Bot;
+using Script.DossierPoint;
 using Script.EntityPlayer;
 
 namespace Script.TeteChercheuse
@@ -16,13 +16,15 @@ namespace Script.TeteChercheuse
         private CapsuleCollider ownCapsuleCollider;
         
         // Destination
-        private Vector3 coordDestination;
+        private CrossPoint Destination;
         
         //Ecart maximum entre sa destination et sa position pour qu'il soit considéré comme arrivé
         private float ecartDistance;
         
         // Nécessaire pour lui envoyer le résultat des body
-        private BotRectiligne botRectiligne;
+        private CrossPoint crossPoint;
+
+        private float Vitesse = 3 * 0.5f;
 
         private void Start()
         {
@@ -35,17 +37,17 @@ namespace Script.TeteChercheuse
 
             // on récupère toutes les caractéristiques du CapsuleCollider du bot
             ownCapsuleCollider.center = botCapsuleCollider.center;
-            ownCapsuleCollider.height = botCapsuleCollider.height - 0.5f;
+            ownCapsuleCollider.height = botCapsuleCollider.height;
             ownCapsuleCollider.radius = botCapsuleCollider.radius;
 
             float rayon = ownCapsuleCollider.radius; // marre d'avoir des warning parce que j'utilise plusieurs fois un transform
             
-            MoveAmount = new Vector3(0, 0, rayon); // la vitesse est le rayon de la capsule (parce que le diamètre c'est trop, il traverse les destinations sans s'arrêter)
+            MoveAmount = new Vector3(0, 0, Vitesse); // la vitesse est le rayon de la capsule (parce que le diamètre c'est trop, il traverse les destinations sans s'arrêter)
             ecartDistance = rayon*2;
         }
 
         // l'instancier de manière static
-        public static void InstancierStatic(BotRectiligne lanceur, Vector3 coordDest, Vector3 rotation)
+        public static void InstancierStatic(CrossPoint lanceur, CrossPoint destination, Vector3 rotation)
         {
             Transform trLanceur = lanceur.transform;
 
@@ -53,31 +55,53 @@ namespace Script.TeteChercheuse
             
             BodyChercheur body = Instantiate(original, trLanceur.position, trLanceur.rotation);
             
-            body.Instancier(lanceur, coordDest, rotation);
+            body.Instancier(lanceur, destination, rotation);
         }
 
         // l'instancier de manière non-static (est appelé dans 'InstatncierStatic')
-        private void Instancier(BotRectiligne lanceur, Vector3 coordDest, Vector3 rotation)
+        private void Instancier(CrossPoint lanceur, CrossPoint destination, Vector3 rotation)
         {
             SetRbTr();
 
-            botRectiligne = lanceur;
+            crossPoint = lanceur;
             Lanceur = lanceur.gameObject;
-            coordDestination = coordDest;
+            Destination = destination;
 
             Tr.Rotate(rotation);
+
+            MoveAmount = new Vector3(0, 0, 3f);
+            for (int i = 0; i < 20; i++)
+            {
+                MoveEntity();
+            }
         }
 
         private void Update()
         {
-            Rb.MovePosition(Rb.position + Tr.TransformDirection(MoveAmount)); // move entity sans deltaTime
+            MoveAmount = new Vector3(0, 0, Vitesse); // la vitesse est le rayon de la capsule (parce que le diamètre c'est trop, il traverse les destinations sans s'arrêter)
 
-            if (!Find && Calcul.Distance(Tr.position, coordDestination) > ecartDistance)
-                return; // il n'a rien touché et est trop loin de sa destination, donc il continue
-            
-            botRectiligne.FoundResultDestination(!Find, coordDestination); // S'il a trouvé un obstacle, alors la coordonnée n'est pas valide
-            
-            Destroy(gameObject);
+            MoveEntity();
+            //Rb.MovePosition(Rb.position + Tr.TransformDirection(MoveAmount)); // move entity sans deltaTime
+
+            float dist = Calcul.Distance(Tr.position, Destination.transform.position, Calcul.Coord.Y);
+
+            if (Find || dist > 1000) // s'il rentre en contact avec un obstacle ou qu'il est trop loin de sa destination (il s'est perdu) c'est fini
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            if (dist < ecartDistance) // il est arrivé à destination (est ce qu'il est à la bonne altitude ?) 
+            {
+                if (Calcul.Distance(Tr.position.y, Destination.transform.position.y) < ownCapsuleCollider.height / 2) // c'est que c'est une destination valide
+                {
+                    crossPoint.AddNeighboors(Destination);
+                }
+
+                Destroy(gameObject);
+            }
+
+            // else il est trop loin de sa destination, donc il continue
         }
     }
 }

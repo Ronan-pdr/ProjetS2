@@ -29,7 +29,7 @@ namespace Script.Bot
         {
             Bots = new List<BotClass>();
 
-            int nBot = 5;
+            int nBot = 1;
             int indexPlayer;
             Player[] players = PhotonNetwork.PlayerList;
             for (indexPlayer = players.Length - 1; indexPlayer >= 0 && !players[indexPlayer].Equals(PhotonNetwork.LocalPlayer); indexPlayer--)
@@ -41,7 +41,11 @@ namespace Script.Bot
                     Vector3.zero, Quaternion.identity).GetComponent<BotRectiligne>();
                 Bots.Add(bot);
 
-                bot.transform.position += CrossManager.Instance.GetPosition(i + indexPlayer * nBot);
+                CrossPoint crossPoint = CrossManager.Instance.GetPoint(i + indexPlayer * nBot);
+                
+                bot.transform.position = crossPoint.transform.position; // le placer sur la map
+                bot.SetPointDestination(crossPoint);
+                
                 bot.SetOwnBotManager(this); // lui indiquer quel est son père
             
                 Bots.Add(bot); // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)

@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Script.EntityPlayer;
+using Script.Tools;
 
 namespace Script.TeteChercheuse
 {
@@ -9,23 +11,55 @@ namespace Script.TeteChercheuse
     public class CollisionBody : Entity
     {
         [SerializeField] private TeteChercheuse teteChercheuse;
-        
+        [SerializeField] private CapsuleCollider _collider;
+
+        private float GetYSol()
+        {
+            float y = _collider.transform.position.y;
+
+            return y;
+        }
+
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrêt pas
+            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrête pas
                 return;
-        
-            teteChercheuse.SetFind(true);
-            teteChercheuse.SetHittenObj(other.gameObject);
+
+            _collider.isTrigger = false;
         }
     
         private void OnCollisionEnter(Collision other)
         {
-            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrêt pas
+            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrête pas
+            {
+                _collider.isTrigger = true;
                 return;
+            }
+
+            ContactPoint[] listContact = other.contacts;
+            int len = listContact.Length;
+            
+            int i;
+            for (i = 0; i < len && Calcul.Distance(listContact[i].point.y, GetYSol()) < _collider.radius; i++)
+            {}
+
+            if (i < len) // cela signifie qu'un objet (qui n'est pas entity) l'a touché à une hauteur supérieur au rayon 
+            {
+                Debug.Log($"{other.gameObject.name} ; contact y = {listContact[i].point.y} ; YSol = {GetYSol()}, rayon = {_collider.radius}");
+                
+                teteChercheuse.SetFind(true);
+                teteChercheuse.SetHittenObj(other.gameObject);
+            }
+        }
         
-            teteChercheuse.SetFind(true);
-            teteChercheuse.SetHittenObj(other.gameObject);
+        
+        
+        private void OnCollisionStay(Collision other)
+        {
+            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrête pas
+            {
+                _collider.isTrigger = true;
+            }
         }
     }
 }

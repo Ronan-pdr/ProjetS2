@@ -11,11 +11,11 @@ namespace Script.InterfaceInGame
         [SerializeField] private TMP_Text text;
         private PlayerClass player;
 
-        public void SetUp(PlayerClass value, int hauteur, int largeur)
+        public void SetUp(PlayerClass value, int largeur, int hauteur)
         {
             player = value;
             
-            text.transform.position = new Vector3(largeur, hauteur, 0);
+            text.transform.position = new Vector3(largeur, hauteur + 131.5f, 0);
         }
 
         public void Update()

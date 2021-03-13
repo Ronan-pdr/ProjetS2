@@ -14,12 +14,12 @@ namespace Script.Bot
         {
             EnChemin,
             SeTourne,
-            Attend
+            Attend // il attend seulement lorsqu'il est sur un point qui possède encore 0 voisin
         }
         private Etat etat = Etat.Attend;
 
         //Destination
-        private Vector3 coordDestination;
+        private CrossPoint PointDestination;
     
         //Rotation
         private float rotationSpeed = 200;
@@ -31,20 +31,17 @@ namespace Script.Bot
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         private float ecartTime = 1;
         private float lastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
-    
-        // le bot envoie des 'bodyChercheur' à chaque fois qu'il souhaite trouvé une nouvelle destination
-        // il les envoie vers les coordonnées (pas toute) comprises dans la 'listCordonnées'
-        // le nombre de bodyChercheur envoyé est dans 'nResultAttendu'
-        // il doit donc attendre les résultats, ceux qui sont positifs sont ajoutés dans la liste 'validDestinations'
-        // et à chaque réception, 'nResultReceive' s'incrémente
-        private Vector3[] listCordonnées; // La liste des coordonnées possible (pour l'instant c'est les crossPoints)
-        private List<Vector3> validDestinations;
-        private int nResultReceive;
-        private int nResultAttendu;
 
         //Getter
     
         public Etat GetEtat() => etat;
+        
+        // Setter
+
+        public void SetPointDestination(CrossPoint value)
+        {
+            PointDestination = value;
+        }
 
         private void Awake()
         {
@@ -57,10 +54,6 @@ namespace Script.Bot
         
             if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
                 return;
-
-            listCordonnées = CrossManager.Instance.GetListPosition(); // je dois l'intancier avant d'utiliser 'FindNewDestination'
-
-            FindNewDestination(); // va changer l'etat du bot
         }
 
         void Update()
@@ -72,18 +65,23 @@ namespace Script.Bot
 
             if (etat == Etat.Attend) // s'il est en train d'attendre,...
             {
+                if (PointDestination.GetNbNeighboor() > 0)
+                {
+                    FindNewDestination();
+                }
+                
                 MoveAmount = Vector3.zero; // ...il ne se déplace pas...
                 return; // ...et ne fait rien d'autre
             }
 
-            if (Time.time - lastCalculRotation > ecartTime) // il recalcule sa position tous les 'ecartTime'
+            if (Time.time - lastCalculRotation > ecartTime) // il recalcule sa rotation tous les 'ecartTime'
             {
                 FindAmountRotation();
             }
         
             if (etat == Etat.EnChemin)
             {
-                if (Calcul.Distance(Tr.position, coordDestination) < ecartDistance) // arrivé
+                if (Calcul.Distance(Tr.position, PointDestination.transform.position) < ecartDistance) // arrivé
                 {
                     FindNewDestination();
                     anim.enabled = false;
@@ -106,103 +104,25 @@ namespace Script.Bot
             MoveEntity();
         }
 
-        // Pour trouver une nouvelle destination, ce bot envoie des body Chercheur en direction de toutes les coordonnées de la 'listCoordonnées'.
-        // Ainsi, il doit attendre la réponse de ceux-ci, pendant ce temps, ils vont rester immobile
-        private void FindNewDestination()
+        public void FindNewDestination()
         {
-            nResultAttendu = 0;
+            int nNeighboor = PointDestination.GetNbNeighboor();
 
-            float distanceThisCoord;
-            for (int i = 0; i < listCordonnées.Length; i++)
+            if (nNeighboor > 0)
             {
-                distanceThisCoord = Calcul.Distance(Tr.position, listCordonnées[i]);
-            
-                if (2 < distanceThisCoord && distanceThisCoord < 30) // on ne veut pas lancer un body chercheur la où on se situe
-                {
-                    coordDestination = listCordonnées[i];
-                    FindAmountRotation(); // change amountRotation pour le bodyChercheur (c'est pas grave s'il change l'etat du joueur puisqu'on va le faire juste à la fin de cette fontion)
-                
-                    BodyChercheur.InstancierStatic(this, listCordonnées[i], new Vector3(0, amountRotation, 0)); // rotate seulement sur y
-
-                    nResultAttendu += 1;
-                }
-            }
-        
-            etat = Etat.Attend; // il doit attendre la réponse des bodyChercheur
-            validDestinations = new List<Vector3>(); // instanicie la list où seront stockés toutes les positions valides
-            nResultReceive = 0; // il n'a encore reçu aucun résultat
-        }
-
-        public void FoundResultDestination(bool valid, Vector3 coord) // est appelé dans la class 'BodyChercheur', dans la fonction 'Update'
-        {
-            if (!this) // comme c'est possible que des bodyChercheurs appellent cette fonction même après qu'il soit destroy, j'ai mis cette condition
-                return;
-
-            if (etat != Etat.Attend)
-            {
-                Debug.Log("PROBLEME");
-                Debug.Log("Dans la class 'botRectilgne', dans la fonction 'FoundResultDestination'");
-                Debug.Log("Un script a appelé cette fonction alors que ce que Sacha avait prévu que ça n'arriverai pas (Prévenez Sacha)");
-                return;
-            }
-        
-            nResultReceive += 1;
-
-            if (valid)
-            {
-                validDestinations.Add(coord);
-            }
-
-            if (nResultReceive == nResultAttendu) // a reçu tous les résultats donc le bot va repartir (se réorienter du moins)
-            {
-                if (validDestinations.Count == 0)
-                {
-                    Debug.Log("Il y a une coordonnée qui ne possède aucune destination de valide");
-                }
-
-                coordDestination = validDestinations[Random.Range(0, validDestinations.Count)]; // il choisi aléatoirement une coord parmi toutes les deestinations valides
-                FindAmountRotation(); // précision : son état va changer dans cette fonction (il ne va plus attendre)
-            }
-        }
-    
-        // Cette fonction trouve le degré nécessaire (entre ]-180, 180]) afin que le soit orienté face à sa destination
-        public void FindAmountRotation() // Change aussi l'état du joueur
-        {
-            Vector3 position = Tr.position;
-            float diffX = coordDestination.x - position.x;
-            float diffZ = coordDestination.z - position.z;
-
-            if (diffX == 0)
-            {
-                amountRotation = 0;
-            }
-            else if (diffZ == 0)
-            {
-                if (diffX < 0)
-                    amountRotation = -90;
-                else
-                    amountRotation = 90;
+                PointDestination = PointDestination.GetNeighboor(Random.Range(0, nNeighboor));
+                FindAmountRotation(); // va aussi instancier 'etat'
             }
             else
             {
-                amountRotation = SimpleMath.ArcTan(diffX, diffZ); // amountRotation : Df = ]-90, 90[
-            
-                if (diffZ < 0) // Fait quatre schémas avec les différentes configurations pour comprendre
-                {
-                    if (diffX < 0)
-                        amountRotation -= 180; // amountRotation était positif
-                    else
-                        amountRotation += 180; // amountRotation était négatif
-                }
+                etat = Etat.Attend;
             }
-        
-            // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il était à 0 degré
-            amountRotation -= transform.eulerAngles.y; // eulerAngles pour récupérer l'angle en degré
+        }
 
-            if (amountRotation > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210° (par exemple)
-                amountRotation -= 360;
-            else if (amountRotation < -180)
-                amountRotation += 360;
+        // Cette fonction trouve le degré nécessaire (entre ]-180, 180]) afin que le soit orienté face à sa destination
+        public void FindAmountRotation() // Change aussi l'état du joueur
+        {
+            amountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, PointDestination.transform.position);
 
             if (SimpleMath.Abs(amountRotation) < 5) // Si le dégré est négligeable, le bot continue sa course
             {

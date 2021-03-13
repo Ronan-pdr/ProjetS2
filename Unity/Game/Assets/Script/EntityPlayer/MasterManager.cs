@@ -112,6 +112,11 @@ namespace Script.EntityPlayer
             // cette liste va servir à donner les noms à chaque bot
             nBotParJoueur = new int[nParticipant];
             
+            
+        }
+
+        public void Start()
+        {
             if (!PhotonNetwork.IsMasterClient) // Seul le masterClient décide le type de chaque joueur, il l'envoie aux autres dans 'Update'
                 return;
             

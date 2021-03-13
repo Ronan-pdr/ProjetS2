@@ -6,16 +6,17 @@ namespace Script.DossierPoint
     public class CrossManager : MonoBehaviour
     {
         public static CrossManager Instance;
-        private Point[] crossPoints;
+        private CrossPoint[] crossPoints;
     
         private void Awake()
         {
             Instance = this;
-            crossPoints = GetComponentsInChildren<Point>();
+            crossPoints = GetComponentsInChildren<CrossPoint>();
         }
     
         //Getter
         public int GetNumberPoint() => crossPoints.Length;
+        public CrossPoint GetPoint(int index) => crossPoints[index];
         
         public (Vector3, int) GetRandomPosition(int previousIndex)
         {
