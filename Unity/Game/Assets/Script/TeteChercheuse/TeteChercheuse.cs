@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using Photon.Pun;
-using System.IO;
+using Script.EntityPlayer;
 
-namespace Script
+namespace Script.TeteChercheuse
 {
     public abstract class TeteChercheuse : Entity
     {

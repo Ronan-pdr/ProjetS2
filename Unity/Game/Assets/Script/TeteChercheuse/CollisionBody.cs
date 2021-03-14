@@ -1,35 +1,65 @@
-﻿using Photon.Pun;
-using Script;
+﻿using System;
 using UnityEngine;
+using Script.EntityPlayer;
+using Script.Tools;
 
-namespace Script
+namespace Script.TeteChercheuse
 {
+    // Nous n'avons pas envie que tous les ordinateurs des joueurs suivent ce script.
+    // Mais, comme les body checheur s'instancie localement (pas avec photon),
+    // nul besoin de rajouter des conditions.
     public class CollisionBody : Entity
     {
         [SerializeField] private TeteChercheuse teteChercheuse;
-        
+        [SerializeField] private CapsuleCollider _collider;
+
+        private float GetYSol()
+        {
+            float y = _collider.transform.position.y;
+
+            return y;
+        }
+
         private void OnTriggerEnter(Collider other)
         {
-            if (!PhotonNetwork.IsMasterClient) // Seul le masterClient contrôle les tetes chercheuses
+            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrête pas
                 return;
-            
-            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrêt pas
-                return;
-        
-            teteChercheuse.SetFind(true);
-            teteChercheuse.SetHittenObj(other.gameObject);
+
+            _collider.isTrigger = false;
         }
     
         private void OnCollisionEnter(Collision other)
         {
-            if (!PhotonNetwork.IsMasterClient) // Seul le masterClient contrôle les tetes chercheuses
+            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrête pas
+            {
+                _collider.isTrigger = true;
                 return;
+            }
+
+            ContactPoint[] listContact = other.contacts;
+            int len = listContact.Length;
             
-            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrêt pas
-                return;
+            int i;
+            for (i = 0; i < len && Calcul.Distance(listContact[i].point.y, GetYSol()) < _collider.radius; i++)
+            {}
+
+            if (i < len) // cela signifie qu'un objet (qui n'est pas entity) l'a touché à une hauteur supérieur au rayon 
+            {
+                Debug.Log($"{other.gameObject.name} ; contact y = {listContact[i].point.y} ; YSol = {GetYSol()}, rayon = {_collider.radius}");
+                
+                teteChercheuse.SetFind(true);
+                teteChercheuse.SetHittenObj(other.gameObject);
+            }
+        }
         
-            teteChercheuse.SetFind(true);
-            teteChercheuse.SetHittenObj(other.gameObject);
+        
+        
+        private void OnCollisionStay(Collision other)
+        {
+            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrête pas
+            {
+                _collider.isTrigger = true;
+            }
         }
     }
 }

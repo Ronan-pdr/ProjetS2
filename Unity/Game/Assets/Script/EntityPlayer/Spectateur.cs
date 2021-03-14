@@ -1,20 +1,21 @@
-﻿using System;
-using Photon.Pun;
+﻿using Photon.Pun;
 using UnityEngine;
+using Script.InterfaceInGame;
+using Script.Tools;
 
-namespace Script
+namespace Script.EntityPlayer
 {
     public class Spectateur : Entity
     {
         // Celui que l'on va suivre
-        private Transform Porteur;
+        protected Transform Porteur;
         private int indexPorteur;
         
         //Photon
-        protected PhotonView PV;
+        protected PhotonView Pv;
 
         //Rassembler les infos
-        protected Transform masterManager;
+        private Transform masterManager;
         
         //Variable similaire aux playerClass
         private float yLookRotation;
@@ -24,6 +25,12 @@ namespace Script
         // hauteur pour atteindre la tête
         [SerializeField] private float hauteur;
         
+        // Setter
+        private void SetPorteur()
+        {
+            Porteur = MasterManager.Instance.GetPlayer(indexPorteur).transform;
+        }
+        
         private void Awake()
         {
             // Le ranger dans MasterClient
@@ -31,15 +38,15 @@ namespace Script
             transform.parent = masterManager;
         
             SetRbTr();
-            PV = GetComponent<PhotonView>();
+            Pv = GetComponent<PhotonView>();
 
             indexPorteur = 0;
-            Porteur = MasterManager.Instance.GetPlayer(indexPorteur).transform;
+            SetPorteur();
         }
 
         private void Start()
         {
-            if (PV.IsMine)
+            if (Pv.IsMine)
             {
                 Tr.rotation = Porteur.rotation;
             }
@@ -54,9 +61,15 @@ namespace Script
             Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
             Cursor.visible = PauseMenu.Instance.GetIsPaused();
             
-            if (!PV.IsMine || PauseMenu.Instance.GetIsPaused())
+            if (!Pv.IsMine || PauseMenu.Instance.GetIsPaused())
             {
                 return;
+            }
+
+            if (!Porteur)
+            {
+                indexPorteur = 0;
+                SetPorteur();
             }
 
             Position();
@@ -91,7 +104,7 @@ namespace Script
                 indexPorteur = SimpleMath.Mod(indexPorteur - 1, MasterManager.Instance.GetNbPlayer());
             }
             
-            Porteur = MasterManager.Instance.GetPlayer(indexPorteur).transform;
+            SetPorteur();
         }
     }
 }
