@@ -1,11 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 
-namespace Script
+namespace Script.InterfaceInGame
 {
     public class PauseMenu : MonoBehaviour
     {
@@ -17,7 +15,7 @@ namespace Script
         
         // les interfaces
         [SerializeField] private GameObject pauseMenuUI;
-        [SerializeField] private GameObject InterfaceInGame; 
+        [SerializeField] private GameObject interfaceInGame; 
         
         // Getter
         public bool GetIsPaused() => isPaused;
@@ -54,7 +52,7 @@ namespace Script
             pauseMenuUI.SetActive(false);
             isPaused = false;
 
-            InterfaceInGame.SetActive(true);
+            interfaceInGame.SetActive(true);
         }
 
         void Pause()
@@ -62,7 +60,7 @@ namespace Script
             pauseMenuUI.SetActive(true);
             isPaused = true;
             
-            InterfaceInGame.SetActive(false);
+            interfaceInGame.SetActive(false);
         }
 
         public IEnumerator Quit()

@@ -1,167 +1,169 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
 using Script.Tools;
 using UnityEngine;
+using Random = UnityEngine.Random;
+using Script.DossierPoint;
+using Script.TeteChercheuse;
 
-public class BotRectiligne : BotClass
+namespace Script.Bot
 {
-    //Etat
-    private bool Enchemin;
-    
-    //Précédent point
-    private int IndexPreviousPoint; //Va être instancier pour la première fois dans BotManager
-
-    //Destination
-    private int IndexDestination;
-    private Vector3 coordDestination;
-    
-    //Deplacement
-    private float rotationSpeed = 100;
-    private float amountRotation;
-    
-    //Ecart maximum entre le point et sa position pour qu'il soit considéré comme arrivé à destination
-    private float ecartDistance = 0.5f;
-    
-    //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
-    private float ecartTime = 1;
-    private float lastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
-    
-    //Setter
-    public void SetIndexPreviousPoint(int index)
+    public class BotRectiligne : BotClass
     {
-        IndexPreviousPoint = index;
-    }
-
-    public void Start()
-    {
-        SetRbTr();
-        StartBot();
-        StartHuman();
-        
-        Vector3 coord = CrossManager.Instance.GetPosition(IndexPreviousPoint);
-        Tr.position += coord;
-
-        FindNewDestination();
-        FindAmountRotation();
-    }
-
-    void Update()
-    {
-        if (!PhotonNetwork.IsMasterClient) // Seul le masterClient contrôle les bots
-            return;
-        
-        if (Time.time - lastCalculRotation > ecartTime)
+        //Etat
+        public enum Etat
         {
-            FindAmountRotation();
+            EnChemin,
+            SeTourne,
+            Attend // il attend seulement lorsqu'il est sur un point qui possède encore 0 voisin
         }
+        private Etat etat = Etat.Attend;
+
+        //Destination
+        private CrossPoint PointDestination;
+    
+        //Rotation
+        private float rotationSpeed = 200;
+        private float amountRotation;
+    
+        //Ecart maximum entre le point et sa position pour qu'il soit considéré comme arrivé à destination
+        private float ecartDistance = 0.5f;
+    
+        //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
+        private float ecartTime = 1;
+        private float lastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
+
+        //Getter
+    
+        public Etat GetEtat() => etat;
         
-        if (Enchemin)
+        // Setter
+
+        public void SetPointDestination(CrossPoint value)
         {
-            if (Calcul.Distance(Tr.position, coordDestination) < ecartDistance) // arrivé
+            PointDestination = value;
+        }
+
+        private void Awake()
+        {
+            AwakeBot();
+        }
+
+        public void Start()
+        {
+            StartBot(); // tout le monde le fait pour qu'il soit parenter
+        
+            if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
+                return;
+        }
+
+        void Update()
+        {
+            if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
+                return;
+        
+            UpdateBot(); // quoi que soit son état, il fait ça
+
+            if (etat == Etat.Attend) // s'il est en train d'attendre,...
             {
-                IndexPreviousPoint = IndexDestination;
-                FindNewDestination();
+                if (PointDestination.GetNbNeighboor() > 0)
+                {
+                    FindNewDestination();
+                }
+                
+                MoveAmount = Vector3.zero; // ...il ne se déplace pas...
+                return; // ...et ne fait rien d'autre
+            }
+
+            if (Time.time - lastCalculRotation > ecartTime) // il recalcule sa rotation tous les 'ecartTime'
+            {
                 FindAmountRotation();
-                anim.enabled = false;
             }
-            else
-                Avancer();
-        }
-        else
-        {
-            moveAmount = Vector3.zero; //En effet, le bot rectiligne n'avançera jamais lorqu'il tournera
-            Tourner();
-        }
-
-        UpdateBot();
-    }
-
-    private void FixedUpdate()
-    {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
         
-        moveEntity();
-    }
-
-    private void FindNewDestination()
-    {
-        (coordDestination, IndexDestination) = CrossManager.Instance.GetRandomPosition(IndexPreviousPoint);
-        
-        //coordDestination = CrossManager.Instance.GetPosition(2);
-    }
-
-    public void FindAmountRotation()
-    {
-        float diffX = coordDestination.x - Tr.position.x;
-        float diffZ = coordDestination.z - Tr.position.z;
-
-        if (diffX == 0)
-        {
-            amountRotation = 0;
-        }
-        else if (diffZ == 0)
-        {
-            if (diffX < 0)
-                amountRotation = -90;
-            else
-                amountRotation = 90;
-        }
-        else
-        {
-            amountRotation = SimpleMath.ArcTan(diffX, diffZ); // amountRotation : Df = ]-90, 90[
-            
-            if (diffZ < 0) // Fait quatre schémas avec les différentes configurations pour comprendre
+            if (etat == Etat.EnChemin)
             {
-                if (diffX < 0)
-                    amountRotation -= 180; // amountRotation était positif
-                else
-                    amountRotation += 180; // amountRotation était négatif
+                if (Calcul.Distance(Tr.position, PointDestination.transform.position) < ecartDistance) // arrivé
+                {
+                    FindNewDestination();
+                    anim.enabled = false;
+                }
+                else // avancer
+                    Avancer();
+            }
+            else // se troune
+            {
+                MoveAmount = Vector3.zero; // Le bot rectiligne n'avançera jamais lorqu'il tournera
+                Tourner();
             }
         }
-        
-        // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il étatit à 0 degré
-        amountRotation -= transform.eulerAngles.y; // eulerAngles pour récupérer l'angle en degré
 
-        if (amountRotation > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210°
-            amountRotation -= 360;
-        else if (amountRotation < -180)
-            amountRotation += 360;
-
-        Enchemin = SimpleMath.Abs(amountRotation) < 5; // Si le dégré est négligeable, le bot continue sa course
-    }
-
-    private void Avancer()
-    {
-        SetMoveAmount(new Vector3(0, 0, 1), 2);
-        
-        anim.enabled = true;
-        anim.Play("Avant");
-    }
-
-    private void Tourner()
-    {
-        int sensRotation;
-        if (amountRotation >= 0)
-            sensRotation = 1;
-        else
-            sensRotation = -1;
-
-        float yRot = sensRotation * rotationSpeed * Time.deltaTime;
-
-        if (SimpleMath.Abs(amountRotation) < SimpleMath.Abs(yRot)) // Le cas où on a finis de tourner
+        private void FixedUpdate()
         {
-            Tr.Rotate(new Vector3(0, amountRotation, 0));
-            Enchemin = true;
-        }
-        else
-        {
-            Tr.Rotate(new Vector3(0, yRot, 0));
-            amountRotation -= yRot;
+            if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
+                return;
+        
+            MoveEntity();
         }
 
-        lastCalculRotation = Time.time;
+        public void FindNewDestination()
+        {
+            int nNeighboor = PointDestination.GetNbNeighboor();
+
+            if (nNeighboor > 0)
+            {
+                PointDestination = PointDestination.GetNeighboor(Random.Range(0, nNeighboor));
+                FindAmountRotation(); // va aussi instancier 'etat'
+            }
+            else
+            {
+                etat = Etat.Attend;
+            }
+        }
+
+        // Cette fonction trouve le degré nécessaire (entre ]-180, 180]) afin que le soit orienté face à sa destination
+        public void FindAmountRotation() // Change aussi l'état du joueur
+        {
+            amountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, PointDestination.transform.position);
+
+            if (SimpleMath.Abs(amountRotation) < 5) // Si le dégré est négligeable, le bot continue sa course
+            {
+                etat = Etat.EnChemin; // va directement avancer
+            }
+            else
+            {
+                etat = Etat.SeTourne; // va tourner
+            }
+
+            lastCalculRotation = Time.time;
+        }
+
+        private void Avancer()
+        {
+            SetMoveAmount(new Vector3(0, 0, 1), SprintSpeed);
+        
+            anim.enabled = true;
+            anim.Play("Avant");
+        }
+
+        private void Tourner()
+        {
+            int sensRotation;
+            if (amountRotation >= 0)
+                sensRotation = 1;
+            else
+                sensRotation = -1;
+
+            float yRot = sensRotation * rotationSpeed * Time.deltaTime;
+
+            if (SimpleMath.Abs(amountRotation) < SimpleMath.Abs(yRot)) // Le cas où on a finis de tourner
+            {
+                Tr.Rotate(new Vector3(0, amountRotation, 0));
+                etat = Etat.EnChemin; // il va avancer maintenant
+            }
+            else
+            {
+                Tr.Rotate(new Vector3(0, yRot, 0));
+                amountRotation -= yRot;
+            }
+        }
     }
 }

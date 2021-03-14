@@ -1,0 +1,62 @@
+using Script.Tools;
+using UnityEngine;
+
+namespace Script.DossierPoint
+{
+    public class CrossManager : MonoBehaviour
+    {
+        public static CrossManager Instance;
+        private CrossPoint[] crossPoints;
+    
+        private void Awake()
+        {
+            Instance = this;
+            crossPoints = GetComponentsInChildren<CrossPoint>();
+        }
+    
+        //Getter
+        public int GetNumberPoint() => crossPoints.Length;
+        public CrossPoint GetPoint(int index) => crossPoints[index];
+        
+        public (Vector3, int) GetRandomPosition(int previousIndex)
+        {
+            int len = crossPoints.Length;
+            int max = len;
+            if (previousIndex == -1) //Si bot vient d'aparaître
+                previousIndex = len;
+            else
+                max -= 1;
+                
+    
+            int index = Random.Range(0, max);
+            if (index >= previousIndex)
+                index++;
+            
+            return (crossPoints[index].transform.position, index);
+        }
+    
+        public Vector3 GetPosition(int index)
+        {
+            if (index >= crossPoints.Length)
+            {
+                Debug.Log("GetPostion cross manager : index out of range");
+                Debug.Log("Mais je fais un modulo rien que pour tes beaux yeux");
+                index = SimpleMath.Mod(index, crossPoints.Length);
+            }
+            
+            return crossPoints[index].transform.position;
+        }
+    
+        public Vector3[] GetListPosition()
+        {
+            int len = GetNumberPoint();
+            Vector3[] positions = new Vector3[len];
+            for (int i = 0; i < len; i++)
+            {
+                positions[i] = crossPoints[i].transform.position;
+            }
+    
+            return positions;
+        }
+    }
+}

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Script.IA
+namespace Script.Bot
 {
     public class BotCheckColission : MonoBehaviour
     {
@@ -13,18 +13,30 @@ namespace Script.IA
         
         private void OnCollisionEnter(Collision other)
         {
-            if (other.gameObject == bot.gameObject)
+            if (!bot.IsMyBot()) // Ton ordi contrôle seulement tes bots
                 return;
         
-            bot.FindAmountRotation();
+            if (other.gameObject == bot.gameObject) // si c'est son propre corps qu'il a percuté
+                return;
+        
+            if (bot.GetEtat() == 0) // recalcule seulement quand il avance
+            {
+                bot.FindAmountRotation();
+            }
         }
 
         private void OnCollisionExit(Collision other)
         {
-            if (other.gameObject == bot.gameObject)
+            if (!bot.IsMyBot()) // Ton ordi contrôle seulement tes bots
                 return;
-        
-            bot.FindAmountRotation();
+            
+            if (other.gameObject == bot.gameObject) // si c'est son propre corps qu'il a percuté
+                return;
+
+            if (bot.GetEtat() == 0) // recalcule seulement quand il avance
+            {
+                bot.FindAmountRotation();
+            }
         }
     }
 }
