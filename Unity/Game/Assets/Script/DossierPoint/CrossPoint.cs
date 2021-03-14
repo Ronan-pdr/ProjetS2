@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Script.TeteChercheuse;
 using Script.Tools;
+using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
 namespace Script.DossierPoint
