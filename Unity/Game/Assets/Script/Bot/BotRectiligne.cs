@@ -29,7 +29,7 @@ namespace Script.Bot
         private float ecartDistance = 0.5f;
     
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
-        private float ecartTime = 1;
+        private float ecartTime = 0.5f;
         private float lastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
 
         //Getter

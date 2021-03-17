@@ -29,7 +29,7 @@ namespace Script.Bot
         {
             Bots = new List<BotClass>();
 
-            int nBot = 1;
+            int nBot = 3;
             int indexPlayer;
             Player[] players = PhotonNetwork.PlayerList;
             for (indexPlayer = players.Length - 1; indexPlayer >= 0 && !players[indexPlayer].Equals(PhotonNetwork.LocalPlayer); indexPlayer--)

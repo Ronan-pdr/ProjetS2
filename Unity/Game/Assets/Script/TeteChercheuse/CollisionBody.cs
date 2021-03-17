@@ -45,8 +45,6 @@ namespace Script.TeteChercheuse
 
             if (i < len) // cela signifie qu'un objet (qui n'est pas entity) l'a touché à une hauteur supérieur au rayon 
             {
-                Debug.Log($"{other.gameObject.name} ; contact y = {listContact[i].point.y} ; YSol = {GetYSol()}, rayon = {_collider.radius}");
-                
                 teteChercheuse.SetFind(true);
                 teteChercheuse.SetHittenObj(other.gameObject);
             }

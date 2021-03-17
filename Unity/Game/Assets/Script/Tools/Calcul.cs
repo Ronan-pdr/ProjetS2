@@ -61,6 +61,7 @@ namespace Script.Tools
             float amountRotation;
             if (diffX == 0) // on ne peut pas diviser par 0 donc je suis obligé de faire ce cas (dans le ArcTan)
             {
+                Debug.Log("kjfdhbvkbg n");
                 amountRotation = 0;
             }
             else if (diffZ == 0)
