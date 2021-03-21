@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
 using Script.InterfaceInGame;

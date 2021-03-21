@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Script.EntityPlayer;
 using Script.Tools;

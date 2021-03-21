@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Script.Tools;
 using Script.DossierPoint;
 using Script.EntityPlayer;
