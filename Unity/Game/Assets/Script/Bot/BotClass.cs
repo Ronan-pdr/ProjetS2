@@ -1,27 +1,29 @@
 using UnityEngine;
 using Photon.Realtime;
+using Script.DossierPoint;
 using Script.EntityPlayer;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Script.Bot
 {
-    public class BotClass : Humanoide
+    public abstract class BotClass : Humanoide
     {
-        private BotManager botManager; // instancié lorsque le bot est créé dans son BotManager
+        protected BotManager BotManager; // instancié lorsque le bot est créé dans son BotManager
     
         // Getter
         public string GetName() => name;
 
         // Setter
-        public void SetOwnBotManager(BotManager botManag)
+        public abstract void SetBot(CrossPoint crossPoint);
+        public void SetOwnBotManager(BotManager value)
         {
-            botManager = botManag;
+            BotManager = value;
         }
-    
+
         // cette fonction indique si un bot est ton bot
         public bool IsMyBot()
         {
-            return botManager != null;
+            return BotManager != null;
         }
 
         protected void AwakeBot()
@@ -38,21 +40,22 @@ namespace Script.Bot
 
             name = MasterManager.Instance.GetNameBot(Pv.Owner);
 
-            if (botManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
+            if (BotManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
                 Tr.parent = MasterManager.Instance.GetDossierOtherBot(); // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs
             else
-                Tr.parent = botManager.transform; // le parenter dans ton dossier de botManager
+                Tr.parent = BotManager.transform; // le parenter dans ton dossier de botManager
         }
 
         protected void UpdateBot()
         {
             UpdateHumanoide();
         }
-
+        
+        // GamePlay
         protected override void Die()
         {
             enabled = false;
-            botManager.Die(gameObject);
+            BotManager.Die(gameObject);
         }
     
         // réception des hash

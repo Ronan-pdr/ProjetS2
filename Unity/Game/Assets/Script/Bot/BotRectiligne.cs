@@ -37,10 +37,9 @@ namespace Script.Bot
         public Etat GetEtat() => etat;
         
         // Setter
-
-        public void SetPointDestination(CrossPoint value)
+        public override void SetBot(CrossPoint crossPoint)
         {
-            PointDestination = value;
+            PointDestination = crossPoint;
         }
 
         private void Awake()
@@ -122,7 +121,7 @@ namespace Script.Bot
         // Cette fonction trouve le degré nécessaire (entre ]-180, 180]) afin que le soit orienté face à sa destination
         public void FindAmountRotation() // Change aussi l'état du joueur
         {
-            amountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, PointDestination.transform.position);
+            amountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, PointDestination.transform.position, Calcul.Coord.Y);
 
             if (SimpleMath.Abs(amountRotation) < 5) // Si le dégré est négligeable, le bot continue sa course
             {

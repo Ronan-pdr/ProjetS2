@@ -35,7 +35,7 @@ namespace Script.InterfaceInGame
             
             ownPlayerClass = masterManager.GetOwnPlayer();
 
-            tesInfos.SetUp(ownPlayerClass, 80, -50);
+            tesInfos.SetUp(ownPlayerClass, 80, -25);
 
             int index = 0;
             foreach (PlayerClass playerClass in masterManager.GetListPlayer()) // pas grave si la liste est vide (mais elle est forcément instancié)

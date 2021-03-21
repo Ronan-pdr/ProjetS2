@@ -49,7 +49,7 @@ namespace Script.DossierPoint
 
                 if (0.2f < distanceThisWithDest && distanceThisWithDest < 30) // on ne veut pas lancer un body chercheur la où on se situe et on ne veux pas des voisins trop loins
                 {
-                    amountRotation = Calcul.Angle(0, ownCoord, destCoord);
+                    amountRotation = Calcul.Angle(0, ownCoord, destCoord, Calcul.Coord.Y);
                     BodyChercheur.InstancierStatic(this, potentialNeighboor, new Vector3(0, amountRotation, 0));
                 }
             }

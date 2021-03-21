@@ -49,35 +49,56 @@ namespace Script.Tools
             return SimpleMath.Sqrt(a + b + c);
         }
 
-        // Calcul l'angle le plus faible pour qu'un objet au 'depart' (avec un angle de 'rotationInitiale' DEGRE)
-        // puisse s'orienter face à 'destination'. A noter que ce sera un angle cohérent seulement sur y
-        // 'rotationInitiale' DOIT être en degré et correspond à la rotation sur y de l'objet aux
-        // coordonnées départs
-        public static float Angle(float rotationInitialeY, Vector3 depart, Vector3 destination)
+        // Calcul l'angle le plus faible pour qu'un objet à la position 'depart'
+        // puisse s'orienter face à 'destination'. A noter que ce sera un angle cohérent seulement sur 'coord'.
+        // 'rotationInitiale' DOIT être en degré et correspond à la rotation sur 'coord' de l'objet aux
+        // coordonnées 'départ'
+        public static float Angle(float rotationInitiale, Vector3 depart, Vector3 destination, Coord coord)
         {
             float diffX = destination.x - depart.x;
+            float diffY = destination.y - depart.y;
             float diffZ = destination.z - depart.z;
 
-            float amountRotation;
-            if (diffX == 0) // on ne peut pas diviser par 0 donc je suis obligé de faire ce cas (dans le ArcTan)
+            float adjacent, opposé;
+            if (coord == Coord.X)
             {
-                Debug.Log("kjfdhbvkbg n");
-                amountRotation = 0;
+                opposé = diffZ;
+                adjacent = diffY;
             }
-            else if (diffZ == 0)
+            else if (coord == Coord.Y)
             {
-                if (diffX < 0)
+                opposé = diffX;
+                adjacent = diffZ;
+            }
+            else // pas défini
+            {
+                opposé = 0;
+                adjacent = 0;
+            }
+                
+
+            float amountRotation;
+            if (opposé == 0)
+            {
+                if (adjacent > 0)
+                    amountRotation = 0;
+                else
+                    amountRotation = 180;
+            }
+            else if (adjacent == 0) // on ne peut pas diviser par 0 donc je suis obligé de faire ce cas (dans le ArcTan)
+            {
+                if (opposé < 0)
                     amountRotation = -90;
                 else
                     amountRotation = 90;
             }
             else
             {
-                amountRotation = SimpleMath.ArcTan(diffX, diffZ); // amountRotation : Df = ]-90, 90[
+                amountRotation = SimpleMath.ArcTan(opposé, adjacent); // amountRotation : Df = ]-90, 90[
             
-                if (diffZ < 0) // Fait quatre schémas avec les différentes configurations pour comprendre
+                if (adjacent < 0) // Fait quatre schémas avec les différentes configurations pour comprendre
                 {
-                    if (diffX < 0)
+                    if (opposé < 0)
                         amountRotation -= 180; // amountRotation était positif
                     else
                         amountRotation += 180; // amountRotation était négatif
@@ -85,7 +106,7 @@ namespace Script.Tools
             }
         
             // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il était à 0 degré
-            amountRotation -= rotationInitialeY; // eulerAngles pour récupérer l'angle en degré
+            amountRotation -= rotationInitiale; // eulerAngles pour récupérer l'angle en degré
 
             if (amountRotation > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210° (par exemple)
                 amountRotation -= 360;
