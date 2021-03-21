@@ -24,7 +24,7 @@ namespace Script.TeteChercheuse
         // Nécessaire pour lui envoyer le résultat des body
         private CrossPoint crossPoint;
 
-        private float Vitesse = 3 * 0.5f;
+        private float Vitesse = 3;
 
         private void Start()
         {
@@ -38,11 +38,11 @@ namespace Script.TeteChercheuse
             // on récupère toutes les caractéristiques du CapsuleCollider du bot
             ownCapsuleCollider.center = botCapsuleCollider.center;
             ownCapsuleCollider.height = botCapsuleCollider.height;
-            ownCapsuleCollider.radius = botCapsuleCollider.radius;
+            ownCapsuleCollider.radius = botCapsuleCollider.radius * 0.8f; // 0,8 pour laisser une petite marge
 
-            float rayon = ownCapsuleCollider.radius; // marre d'avoir des warning parce que j'utilise plusieurs fois un transform
-            
-            MoveAmount = new Vector3(0, 0, Vitesse); // la vitesse est le rayon de la capsule (parce que le diamètre c'est trop, il traverse les destinations sans s'arrêter)
+            float rayon = ownCapsuleCollider.radius;
+
+            MoveAmount = new Vector3(0, 0, Vitesse);
             ecartDistance = rayon*2;
         }
 
@@ -71,6 +71,13 @@ namespace Script.TeteChercheuse
 
             MoveAmount = new Vector3(0, 0, 3f);
             for (int i = 0; i < 20; i++)
+            {
+                MoveEntity();
+            }
+            
+            // je fais ça pour qu'il se décale un peu pour que les bodyChercheur qui se croisent ne se cogne pas
+            MoveAmount = new Vector3(0, 0, 0);
+            for (int i = 0; i < 3; i++)
             {
                 MoveEntity();
             }

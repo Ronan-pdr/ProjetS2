@@ -8,7 +8,7 @@ namespace Script.DossierPoint
     
         private void Awake()
         {
-            graphics.SetActive(false);
+            graphics.SetActive(true);
         }
     }
 }

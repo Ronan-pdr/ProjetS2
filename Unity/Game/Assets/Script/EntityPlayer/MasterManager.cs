@@ -60,8 +60,12 @@ namespace Script.EntityPlayer
         // Getter
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
         public int GetNbPlayer() => players.Count;
+        public int GetNbChasseur() => chasseurs.Count;
+        public int GetNbChassé() => chassés.Count;
         public List<PlayerClass> GetListPlayer() => players;
         public PlayerClass GetPlayer(int index) => players[index];
+        public Chasseur GetChasseur(int index) => chasseurs[index];
+        public Chassé GetChassé(int index) => chassés[index];
         public PlayerClass GetOwnPlayer() => ownPlayer;
         public BodyChercheur GetOriginalBodyChercheur() => originalBodyChercheur;
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
@@ -128,7 +132,7 @@ namespace Script.EntityPlayer
             Random random = new Random();
             for (int i = 0; i < nParticipant; i++)
             {
-                if (i < 2) // pour l'instant, seul le premier de liste est un chasseur 
+                if (i == 0) // pour l'instant, seul le premier de liste est un chasseur 
                 {
                     indexSpot = listChasseur[random.Next(listChasseur.Count)];
                     listChasseur.Remove(indexSpot);
@@ -156,7 +160,7 @@ namespace Script.EntityPlayer
             // ce if sert à indiqué à tous les participants leur type de joueur (chasseur ou chassé)
             // ce if s'active losque tout le monde est déplacé son 'PlayerManager' dans le 'MasterManager' et losqu'il l'a pas déjà fait
             // seul le masterClient l'active
-            if (PhotonNetwork.IsMasterClient && GetComponentsInChildren<PlayerManager>().Length == nParticipant && !EnvoieDuTypeJoueurs)
+            if (!EnvoieDuTypeJoueurs && PhotonNetwork.IsMasterClient && GetComponentsInChildren<PlayerManager>().Length == nParticipant)
             {
                 for (int i = 0; i < nParticipant; i++) // envoie le type à tous les joueurs grâce à un hash
                 {

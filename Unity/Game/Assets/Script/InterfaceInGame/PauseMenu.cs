@@ -13,10 +13,6 @@ namespace Script.InterfaceInGame
         private bool isPaused;
         private bool disconnecting;
         
-        // les interfaces
-        [SerializeField] private GameObject pauseMenuUI;
-        [SerializeField] private GameObject interfaceInGame; 
-        
         // Getter
         public bool GetIsPaused() => isPaused;
         
@@ -49,18 +45,14 @@ namespace Script.InterfaceInGame
 
         public void Resume()
         {
-            pauseMenuUI.SetActive(false);
+            MenuManager.Instance.OpenMenu("InterfaceInGame");
             isPaused = false;
-
-            interfaceInGame.SetActive(true);
         }
 
         void Pause()
         {
-            pauseMenuUI.SetActive(true);
+            MenuManager.Instance.OpenMenu("pause");
             isPaused = true;
-            
-            interfaceInGame.SetActive(false);
         }
 
         public IEnumerator Quit()

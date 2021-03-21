@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using Script.Bot;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -54,6 +55,8 @@ namespace Script.EntityPlayer
         
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);
+            
+            Fuyard.SetInfoCamera(this);
         }
 
         protected void StartPlayer()

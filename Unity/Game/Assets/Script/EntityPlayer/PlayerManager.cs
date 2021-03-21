@@ -3,6 +3,7 @@ using Photon.Pun;
 using System.IO;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
+using Script.Bot;
 using Script.DossierPoint;
 
 namespace Script.EntityPlayer

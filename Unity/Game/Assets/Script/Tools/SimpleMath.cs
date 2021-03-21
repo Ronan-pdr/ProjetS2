@@ -46,18 +46,23 @@ namespace Script.Tools
             return (float)Math.Sin(angle);
         }
     
-        public static float ArcTan(float oposé, float adjacent) // l'angle obtenu sera toujours positif
+        public static float ArcTan(float opposé, float adjacent) // l'angle obtenu sera toujours positif
         {
             if (adjacent == 0)
                 throw new DivideByZeroException("On ne peut pas diviser par 0 (ArcTan)");
                 
-            float r = (float) Atan(oposé / adjacent); //r est l'angle en radian
+            float r = (float) Atan(opposé / adjacent); //r est l'angle en radian
             return RadianToDegre(r);
         }
     
         public static float RadianToDegre(float angle)
         {
             return (float) (angle * 360 / (2 * PI));
+        }
+
+        public static float DegreToRadian(float angle)
+        {
+            return (float) (angle * 2 * PI / 360);
         }
     }    
 }

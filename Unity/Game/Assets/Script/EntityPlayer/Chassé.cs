@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using Script.Bot;
 using Script.InterfaceInGame;
 
 namespace Script.EntityPlayer
