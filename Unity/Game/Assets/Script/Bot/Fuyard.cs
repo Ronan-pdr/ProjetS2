@@ -1,4 +1,5 @@
 using System;
+
 using Script.DossierPoint;
 using Script.EntityPlayer;
 using Script.Tools;

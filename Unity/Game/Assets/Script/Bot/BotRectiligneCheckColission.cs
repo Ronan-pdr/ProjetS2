@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 namespace Script.Bot
 {
     public class BotRectiligneCheckColission : MonoBehaviour
