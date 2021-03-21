@@ -64,36 +64,30 @@ namespace Script.Bot
 
         private bool IsChasseurInMyVision()
         {
-            int i;
-            float angleY = 0;
             int nChasseur = master.GetNbChasseur();
             
-            for (i = 0; i < nChasseur; i++)
+            for (int i = 0; i < nChasseur; i++)
             {
-                angleY = Calcul.Angle(Tr.eulerAngles.y, Tr.position,
-                    master.GetChasseur(i).transform.position, Calcul.Coord.Y);
+                Vector3 positionChasseur = master.GetChasseur(i).transform.position;
+                Vector3 positionCamera = Tr.position + PositionCamera;
                 
-                if (SimpleMath.Abs(angleY) < AngleCamera)
-                    break;
+                float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
+                    positionChasseur, Calcul.Coord.Y);
+
+                if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
+                {
+                    Ray ray = new Ray(positionCamera, Calcul.Diff(positionChasseur, positionCamera));
+                    
+                    if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
+                    {
+                        //Debug.Log($"I hit the {hit.collider.name}, angleY = {angleY}");
+                    
+                        if (hit.collider.GetComponent<Chasseur>())
+                            return true;
+                    }
+                }
             }
-
-            if (nChasseur == 0 || i == nChasseur)
-                return false;
-
-            Vector3 position = Tr.position;
             
-            float angleX = Calcul.Angle(Tr.eulerAngles.x, position,
-                master.GetChasseur(i).transform.position, Calcul.Coord.X);
-
-            Ray ray = new Ray(new Vector3(SimpleMath.DegreToRadian(angleX), SimpleMath.DegreToRadian(angleY), 0), PositionCamera + position);
-
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Debug.Log("I hit the " + hit.collider.name);
-
-                return hit.collider.GetComponent<Chasseur>();
-            }
-
             return false;
         }
 

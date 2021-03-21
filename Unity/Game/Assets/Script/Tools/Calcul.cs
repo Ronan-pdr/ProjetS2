@@ -49,15 +49,24 @@ namespace Script.Tools
             return SimpleMath.Sqrt(a + b + c);
         }
 
+        public static Vector3 Diff(Vector3 destination, Vector3 depart)
+        {
+            float diffX = destination.x - depart.x;
+            float diffY = destination.y - depart.y;
+            float diffZ = destination.z - depart.z;
+            
+            return new Vector3(diffX, diffY, diffZ);
+        }
+
         // Calcul l'angle le plus faible pour qu'un objet à la position 'depart'
         // puisse s'orienter face à 'destination'. A noter que ce sera un angle cohérent seulement sur 'coord'.
         // 'rotationInitiale' DOIT être en degré et correspond à la rotation sur 'coord' de l'objet aux
         // coordonnées 'départ'
         public static float Angle(float rotationInitiale, Vector3 depart, Vector3 destination, Coord coord)
         {
-            float diffX = destination.x - depart.x;
-            float diffY = destination.y - depart.y;
-            float diffZ = destination.z - depart.z;
+            float diffX, diffY, diffZ;
+            Vector3 vect = Diff(destination, depart);
+            (diffX, diffY, diffZ) = (vect.x, vect.y, vect.z);
 
             float adjacent, opposé;
             if (coord == Coord.X)
