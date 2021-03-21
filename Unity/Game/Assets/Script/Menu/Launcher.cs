@@ -14,14 +14,15 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text roomNameText;
     //Liste des rooms disponibles
     [SerializeField] Transform roomListContent;
-    [SerializeField] GameObject roomListItemPrefab;
     //Liste des joueurs dans la room
     [SerializeField] Transform playerListContent;
+    [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject PlayerListItemPrefab;
     [SerializeField] GameObject startGameButton;
     [SerializeField] TMP_InputField nameInputField;
-    [SerializeField] Button saveButton;
-    
+    [SerializeField] private Button createRoomButton;
+    [SerializeField] private Button findRoomButton;
+
     private const string PlayerPrefsNameKey = "PlayerName";
 
     void Awake()
@@ -57,6 +58,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
         PhotonNetwork.CreateRoom(roomNameInputField.text);
         MenuManager.Instance.OpenMenu("loading");
+        SavePlayerName();
     }
     //Est appelé automatiquement après 'Join Room'
     public override void OnJoinedRoom()
@@ -90,6 +92,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     
     public void StartGame()
     {
+        Debug.Log("la");
         PhotonNetwork.LoadLevel(1);
     }
     
@@ -105,6 +108,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.JoinRoom(info.Name);
         MenuManager.Instance.OpenMenu("loading");
+        SavePlayerName();
     }
     
     //Est appelé automatiquement après 'Leave Room'
@@ -147,10 +151,12 @@ public class Launcher : MonoBehaviourPunCallbacks
         nameInputField.text = defaultName;
         SetPlayerName(defaultName);
     }
+    
 
     public void SetPlayerName(string name)
     {
-        saveButton.interactable = !string.IsNullOrEmpty(name);
+        createRoomButton.interactable = !string.IsNullOrEmpty(nameInputField.text);
+        findRoomButton.interactable = !string.IsNullOrEmpty(nameInputField.text);
     }
 
     public void SavePlayerName()
