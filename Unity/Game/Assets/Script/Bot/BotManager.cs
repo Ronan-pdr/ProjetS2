@@ -42,6 +42,8 @@ namespace Script.Bot
 
                 CrossPoint crossPoint = CrossManager.Instance.GetPoint(i + indexPlayer * nBot);
                 
+                Debug.Log(crossPoint.transform.position);
+                
                 bot.transform.position = crossPoint.transform.position; // le placer sur la map
                 
                 bot.SetBot(crossPoint);

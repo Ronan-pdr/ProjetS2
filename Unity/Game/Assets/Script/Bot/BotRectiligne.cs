@@ -14,17 +14,13 @@ namespace Script.Bot
         {
             EnChemin,
             SeTourne,
-            Attend // il attend seulement lorsqu'il est sur un point qui possède encore 0 voisin
+            Attend // il attend seulement lorsqu'il est sur un point qui possède 0 voisin
         }
         private Etat etat = Etat.Attend;
 
         //Destination
         private CrossPoint PointDestination;
-    
-        //Rotation
-        private float rotationSpeed = 200;
-        private float amountRotation;
-    
+
         //Ecart maximum entre le point et sa position pour qu'il soit considéré comme arrivé à destination
         private float ecartDistance = 0.5f;
     
@@ -49,6 +45,8 @@ namespace Script.Bot
 
         public void Start()
         {
+            rotationSpeed = 200;
+            
             StartBot(); // tout le monde le fait pour qu'il soit parenter
         
             if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
@@ -83,12 +81,12 @@ namespace Script.Bot
                 if (Calcul.Distance(Tr.position, PointDestination.transform.position) < ecartDistance) // arrivé
                 {
                     FindNewDestination();
-                    anim.enabled = false;
+                    AnimationStop();
                 }
                 else // avancer
                     Avancer();
             }
-            else // se troune
+            else // se tourne
             {
                 MoveAmount = Vector3.zero; // Le bot rectiligne n'avançera jamais lorqu'il tournera
                 Tourner();
@@ -97,7 +95,7 @@ namespace Script.Bot
 
         private void FixedUpdate()
         {
-            if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
+            if (!IsMyBot()) // Chaque ordi contrôle seulement ses bots
                 return;
         
             MoveEntity();
@@ -110,7 +108,7 @@ namespace Script.Bot
             if (nNeighboor > 0)
             {
                 PointDestination = PointDestination.GetNeighboor(Random.Range(0, nNeighboor));
-                FindAmountRotation(); // va aussi instancier 'etat'
+                FindAmountRotation(); // va aussi donner une valeur à 'etat'
             }
             else
             {
@@ -121,9 +119,9 @@ namespace Script.Bot
         // Cette fonction trouve le degré nécessaire (entre ]-180, 180]) afin que le soit orienté face à sa destination
         public void FindAmountRotation() // Change aussi l'état du joueur
         {
-            amountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, PointDestination.transform.position, Calcul.Coord.Y);
+            AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, PointDestination.transform.position, Calcul.Coord.Y);
 
-            if (SimpleMath.Abs(amountRotation) < 5) // Si le dégré est négligeable, le bot continue sa course
+            if (SimpleMath.Abs(AmountRotation) < 5) // Si le dégré est négligeable, le bot continue sa course
             {
                 etat = Etat.EnChemin; // va directement avancer
             }
@@ -137,32 +135,15 @@ namespace Script.Bot
 
         private void Avancer()
         {
-            SetMoveAmount(new Vector3(0, 0, 1), SprintSpeed);
+            SetMoveAmount(new Vector3(0, 0, 1), WalkSpeed);
         
             anim.enabled = true;
             anim.Play("Avant");
         }
 
-        private void Tourner()
+        protected override void FiniDeTourner()
         {
-            int sensRotation;
-            if (amountRotation >= 0)
-                sensRotation = 1;
-            else
-                sensRotation = -1;
-
-            float yRot = sensRotation * rotationSpeed * Time.deltaTime;
-
-            if (SimpleMath.Abs(amountRotation) < SimpleMath.Abs(yRot)) // Le cas où on a finis de tourner
-            {
-                Tr.Rotate(new Vector3(0, amountRotation, 0));
-                etat = Etat.EnChemin; // il va avancer maintenant
-            }
-            else
-            {
-                Tr.Rotate(new Vector3(0, yRot, 0));
-                amountRotation -= yRot;
-            }
+            etat = Etat.EnChemin; // il va avancer maintenant
         }
     }
 }

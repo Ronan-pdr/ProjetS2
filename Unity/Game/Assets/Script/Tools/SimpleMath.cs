@@ -38,12 +38,14 @@ namespace Script.Tools
     
         public static float Cos(float angle)
         {
-            return (float)Math.Cos(angle);
+            float degre = DegreToRadian(angle);
+            return (float)Math.Cos(degre);
         }
         
         public static float Sin(float angle)
         {
-            return (float)Math.Sin(angle);
+            float degre = DegreToRadian(angle);
+            return (float)Math.Sin(degre);
         }
     
         public static float ArcTan(float opposé, float adjacent) // l'angle obtenu sera toujours positif

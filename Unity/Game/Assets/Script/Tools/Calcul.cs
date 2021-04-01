@@ -58,6 +58,29 @@ namespace Script.Tools
             return new Vector3(diffX, diffY, diffZ);
         }
 
+        public static Vector3 FromAngleToDirection(float angleY)
+        {
+            float x = SimpleMath.Sin(angleY) * 5;
+            float z = SimpleMath.Cos(angleY) * 5;
+            
+            Debug.Log($"x = {x} ; z = {z}");
+
+            return new Vector3(x, 0, z);
+        }
+
+        public static float GiveAmoutRotation(float angle, float angleEntity)
+        {
+            // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il était à 0 degré
+            angle -= angleEntity;
+
+            if (angle > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210° (par exemple)
+                angle -= 360;
+            else if (angle < -180)
+                angle += 360;
+
+            return angle;
+        }
+
         // Calcul l'angle le plus faible pour qu'un objet à la position 'depart'
         // puisse s'orienter face à 'destination'. A noter que ce sera un angle cohérent seulement sur 'coord'.
         // 'rotationInitiale' DOIT être en degré et correspond à la rotation sur 'coord' de l'objet aux
@@ -84,7 +107,6 @@ namespace Script.Tools
                 opposé = 0;
                 adjacent = 0;
             }
-                
 
             float amountRotation;
             if (opposé == 0)
@@ -113,16 +135,8 @@ namespace Script.Tools
                         amountRotation += 180; // amountRotation était négatif
                 }
             }
-        
-            // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il était à 0 degré
-            amountRotation -= rotationInitiale; // eulerAngles pour récupérer l'angle en degré
 
-            if (amountRotation > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210° (par exemple)
-                amountRotation -= 360;
-            else if (amountRotation < -180)
-                amountRotation += 360;
-
-            return amountRotation;
+            return GiveAmoutRotation(amountRotation, rotationInitiale);
         }
     }
 }

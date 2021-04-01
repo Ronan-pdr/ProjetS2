@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using System;
+using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -107,6 +108,19 @@ namespace Script.EntityPlayer
         }
 
         protected abstract void Die();
+
+        public static bool operator ==(Humanoide hum1, Humanoide hum2)
+        {
+            if (hum1 is null || hum2 is null)
+                throw new Exception("Tu as testé l'égalité de deux humains dont au moins un est null");
+            
+            return hum1.name == hum2.name;
+        }
+        
+        public static bool operator !=(Humanoide hum1, Humanoide hum2)
+        {
+            return !(hum1 == hum2);
+        }
     }
 }
 
