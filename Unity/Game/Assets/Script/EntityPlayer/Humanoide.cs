@@ -121,6 +121,19 @@ namespace Script.EntityPlayer
         {
             return !(hum1 == hum2);
         }
+
+        public override bool Equals(object other)
+        {
+            if (other is Humanoide)
+                return this == (Humanoide)other;
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
 

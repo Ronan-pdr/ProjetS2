@@ -1,3 +1,4 @@
+using Script.EntityPlayer;
 using UnityEngine;
 
 namespace Script.DossierPoint
@@ -8,7 +9,10 @@ namespace Script.DossierPoint
     
         private void Awake()
         {
-            graphics.SetActive(true);
+            if (this is CrossPoint && MasterManager.Instance.IsInCrossPointMaintenance())
+                return;
+            
+            graphics.SetActive(false);
         }
     }
 }

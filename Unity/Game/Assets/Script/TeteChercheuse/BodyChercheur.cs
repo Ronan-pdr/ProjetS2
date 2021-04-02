@@ -95,6 +95,7 @@ namespace Script.TeteChercheuse
             if (Find || dist > 1000) // s'il rentre en contact avec un obstacle ou qu'il est trop loin de sa destination (il s'est perdu) c'est fini
             {
                 Destroy(gameObject);
+                crossPoint.EndResearchBody(null);
                 return;
             }
 
@@ -102,7 +103,11 @@ namespace Script.TeteChercheuse
             {
                 if (Calcul.Distance(Tr.position.y, Destination.transform.position.y) < ownCapsuleCollider.height / 2) // c'est que c'est une destination valide
                 {
-                    crossPoint.AddNeighboors(Destination);
+                    crossPoint.EndResearchBody(Destination);
+                }
+                else
+                {
+                    crossPoint.EndResearchBody(null);
                 }
 
                 Destroy(gameObject);

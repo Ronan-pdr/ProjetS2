@@ -33,7 +33,7 @@ namespace Script.Bot
         private MasterManager master;
         
         // fuite
-        private float tempsMaxFuite = 1.5f;
+        private float tempsMaxFuite = 5f;
         private float tempsRestantFuite;
         private float distanceFuite;
         
@@ -98,19 +98,19 @@ namespace Script.Bot
         private void IsChasseurInMyVision()
         {
             int nChasseur = master.GetNbChasseur();
+            Vector3 positionCamera = Tr.position + PositionCamera;
             
             for (int i = 0; i < nChasseur; i++)
             {
                 Vector3 positionChasseur = master.GetChasseur(i).transform.position;
-                Vector3 positionCamera = Tr.position + PositionCamera;
-                
+
                 float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
                     positionChasseur, Calcul.Coord.Y);
 
                 if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
                 {
                     Ray ray = new Ray(positionCamera, Calcul.Diff(positionChasseur, positionCamera));
-                    
+
                     if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
                     {
                         if (hit.collider.GetComponent<Chasseur>()) // si l'obstacle est le chasseur alors le bot "VOIt" le chasseur
@@ -135,34 +135,34 @@ namespace Script.Bot
                 Vus.Add((vu, vu.transform.position)); // on le rajoute
             
             // pour l'instant je vais juste gérer le cas où y'a qu'un chasseur
-            float angleY = Calcul.Angle(0, Tr.position, Vus[0].position, Calcul.Coord.Y);
+            var position = Tr.position;
+            float angleY = Calcul.Angle(0, position, Vus[0].position, Calcul.Coord.Y);
             
             angleY += 180 * (angleY > 0 ? -1 : 1); // il va rotater pour aller le plus loin possible des chasseur
-            
-            Debug.Log($"AnlgeY = {angleY}");
 
             // test ses directions pour déterminer s'il n'y a pas d'obstacle
             int ecartAngle = 0; // prendra les valeurs successives 0 ; 1 ; -1 ; 2 ; -2 ; 3 ; -3...
             bool bo = true;
+            Vector3 positionCamera = position + PositionCamera;
+            
             for (int j = 0; bo; j++)
             {
-                Ray ray = new Ray(Tr.position, Calcul.FromAngleToDirection(angleY + ecartAngle));
+                Ray ray = new Ray(positionCamera, Calcul.FromAngleToDirection(angleY + ecartAngle));
 
                 if (Physics.Raycast(ray, out RaycastHit hit) && hit.distance < distanceFuite) // true --> il a trouvé un obstacle
                 {
-                    Debug.Log($"ecartAngle = {ecartAngle} ; hit = {hit.collider.name}");
                     ecartAngle += j * (j % 2 == 1 ? 1 : -1);
                 }
                 else
                 {
-                    try
+                    /*try
                     {
                         Debug.Log($"hit = {hit.collider.name}");
                     }
                     catch (Exception e)
                     {
                         Debug.Log("rien touché");
-                    }
+                    }*/
                     
                     bo = false;
                 }
@@ -183,6 +183,7 @@ namespace Script.Bot
             {
                 MoveAmount = Vector3.zero; // ...il s'arrête
                 etat = Etat.Attend;
+                Vus.Clear();
                 return;
             }
 
@@ -193,8 +194,6 @@ namespace Script.Bot
             
             // set sa vitesse actuel (se déplace toujours droit devant lui)
             SetMoveAmount(new Vector3(0, 0, 1), SprintSpeed);
-            
-            
             
             // animation
             anim.enabled = true;

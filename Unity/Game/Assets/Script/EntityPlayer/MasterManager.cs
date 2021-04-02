@@ -49,6 +49,15 @@ namespace Script.EntityPlayer
         // cette liste va servir à donner les noms à chaque bot
         private int[] nBotParJoueur;
         
+        // si maintenance != None alors y'a pas de jeu
+        private TypeMaintenance Maintenance;
+
+        public enum TypeMaintenance
+        {
+            None,
+            CrossManager // la recherche des voisins de chaque SpawnPoint
+        }
+        
         // Enum pour la création des joueurs
         public enum TypePlayer
         {
@@ -80,6 +89,9 @@ namespace Script.EntityPlayer
             nBotParJoueur[i] += 1;
             return player.NickName + "Bot" +  nBotParJoueur[i];
         }
+
+        public bool IsInMaintenance() => Maintenance != TypeMaintenance.None;
+        public bool IsInCrossPointMaintenance() => Maintenance == TypeMaintenance.CrossManager;
         
         //Setter
         public void SetOwnPlayer(PlayerClass value)
@@ -104,6 +116,19 @@ namespace Script.EntityPlayer
             // On peut faire ça puisqu'il y en aura qu'un seul
             Instance = this;
             
+            if (CrossManager.IsMaintenance()) // maintenance des cross point
+            {
+                Maintenance = TypeMaintenance.CrossManager;
+            }
+            else
+            {
+                Maintenance = TypeMaintenance.None;
+            }
+            
+            // pas de gestion de joueurs s'il y a maitenance
+            if (IsInMaintenance())
+                return;
+            
             // instancier le nombre de joueur
             nParticipant = PhotonNetwork.PlayerList.Length;
             
@@ -115,13 +140,13 @@ namespace Script.EntityPlayer
             
             // cette liste va servir à donner les noms à chaque bot
             nBotParJoueur = new int[nParticipant];
-            
-            
         }
 
         public void Start()
         {
-            if (!PhotonNetwork.IsMasterClient) // Seul le masterClient décide le type de chaque joueur, il l'envoie aux autres dans 'Update'
+            // Seul le masterClient décide le type de chaque joueur, il l'envoie aux autres dans 'Update'
+            // et s'il y a maintenance, alors il n'y a pas de joueur
+            if (!PhotonNetwork.IsMasterClient || IsInMaintenance())
                 return;
             
             listInfoCréationJoueur = new string[nParticipant]; // instancier la liste
@@ -149,6 +174,10 @@ namespace Script.EntityPlayer
 
         private void Update()
         {
+            // S'il y a maintenance, il n'y a pas de joueur et pas leur gestion
+            if (IsInMaintenance())
+                return;
+            
             // J'ai implémenter des alertes qui indique les erreurs possible qui n'engendre pas forcément d'erreur de script
             if (players.Count > nParticipant)
             {
@@ -156,7 +185,7 @@ namespace Script.EntityPlayer
                 Debug.Log($"Il y a {players.Count} joueurs pour {nParticipant} participants");
                 Debug.Log("Vous préviendrez Sacha");
             }
-            
+
             // ce if sert à indiqué à tous les participants leur type de joueur (chasseur ou chassé)
             // ce if s'active losque tout le monde est déplacé son 'PlayerManager' dans le 'MasterManager' et losqu'il l'a pas déjà fait
             // seul le masterClient l'active

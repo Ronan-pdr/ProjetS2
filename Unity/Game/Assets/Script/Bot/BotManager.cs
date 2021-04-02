@@ -5,6 +5,7 @@ using Photon.Pun;
 using System.IO;
 using Photon.Realtime;
 using Script.DossierPoint;
+using Script.EntityPlayer;
 
 namespace Script.Bot
 {
@@ -27,6 +28,10 @@ namespace Script.Bot
 
         void Start()
         {
+            // pas de création de bot s'il y a maintenance
+            if (MasterManager.Instance.IsInMaintenance())
+                return;
+            
             Bots = new List<BotClass>();
 
             int nBot = 1;
@@ -37,12 +42,10 @@ namespace Script.Bot
 
             for (int i = 0; i < nBot; i++) // Instancier, ranger (dans la liste) et positionner sur la map tous les bots
             {
-                BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "Fuyard"),
+                BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "BotRectiligne"),
                     Vector3.zero, Quaternion.identity).GetComponent<BotClass>();
 
                 CrossPoint crossPoint = CrossManager.Instance.GetPoint(i + indexPlayer * nBot);
-                
-                Debug.Log(crossPoint.transform.position);
                 
                 bot.transform.position = crossPoint.transform.position; // le placer sur la map
                 

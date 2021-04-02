@@ -60,10 +60,8 @@ namespace Script.Tools
 
         public static Vector3 FromAngleToDirection(float angleY)
         {
-            float x = SimpleMath.Sin(angleY) * 5;
-            float z = SimpleMath.Cos(angleY) * 5;
-            
-            Debug.Log($"x = {x} ; z = {z}");
+            float x = SimpleMath.Sin(angleY);
+            float z = SimpleMath.Cos(angleY);
 
             return new Vector3(x, 0, z);
         }

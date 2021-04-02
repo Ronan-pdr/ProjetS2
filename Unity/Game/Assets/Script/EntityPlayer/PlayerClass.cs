@@ -131,7 +131,7 @@ namespace Script.EntityPlayer
             Tr.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
 
             verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -50f, 30f);
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -70f, 30f);
 
             cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
         }

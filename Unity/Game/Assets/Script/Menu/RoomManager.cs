@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using Photon.Pun;
+using Script.DossierPoint;
+using Script.EntityPlayer;
 using UnityEngine.SceneManagement;
 
 public class RoomManager : MonoBehaviourPunCallbacks
@@ -34,10 +33,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        if (scene.buildIndex == 1) // We are in the game scene
+        if (scene.buildIndex == 1 && !MasterManager.Instance.IsInMaintenance()) // We are in the game scene
         {
             PhotonNetwork.Instantiate("PhotonPrefabs/Manager/PlayerManager",
-                Vector3.zero, Quaternion.identity);
+                                Vector3.zero, Quaternion.identity);
         }
     }
 }
