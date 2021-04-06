@@ -15,23 +15,23 @@ namespace Script.EntityPlayer
             Assis,
             Accroupi
         }
-
+        
         protected Etat etat = Etat.Debout;
-        protected string touchLeverAssoir = "c";
+        protected KeyCode touchLeverAssoir {get; set;}
         protected float LastChangementEtat; // La dernière fois qu'on a changé de position entre assis et lever
-        protected string touchAccroupi = "x";
+        protected KeyCode touchAccroupi {get; set;}
 
         //Avancer
-        protected string touchAvancer = "z";
-        protected string touchReculer = "s";
-        protected string touchDroite = "d";
-        protected string touchGauche = "q";
+        protected KeyCode touchAvancer {get; set;}
+        protected KeyCode touchReculer {get; set;}
+        protected KeyCode touchDroite {get; set;}
+        protected KeyCode touchGauche {get; set;}
     
         //Sprint
-        protected string touchSprint = "left shift";
+        protected KeyCode touchSprint {get; set;}
     
         //Jump
-        protected string touchJump = "space";
+        protected KeyCode touchJump {get; set;}
         private float lastJump; // le temps la dernière fois que le joueur a sauté
         private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
     
@@ -42,8 +42,7 @@ namespace Script.EntityPlayer
 
         //Rassembler les infos
         protected Transform masterManager;
-
-
+        
         protected void AwakePlayer()
         {
             SetRbTr();
@@ -57,6 +56,15 @@ namespace Script.EntityPlayer
             MasterManager.Instance.AjoutPlayer(this);
             
             Fuyard.SetInfoCamera(this);
+
+            touchJump = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("jumpKey", "Space"));
+            touchSprint = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("sprintKey", "left shift"));
+            touchGauche = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("leftKey", "q"));
+            touchDroite = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("rightKey", "d"));
+            touchReculer = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("backwardKey", "s"));
+            touchAvancer = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("forwardKey", "z"));
+            touchAccroupi = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("crouchKey", "c"));
+            touchLeverAssoir = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("sitKey", "x"));
         }
 
         protected void StartPlayer()
