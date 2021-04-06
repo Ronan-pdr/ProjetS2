@@ -58,17 +58,17 @@ namespace Script.EntityPlayer
         private void Animation()
         {
             (int xMov, int zMov) = (0, 0);
-            if (Input.GetKey(touchAvancer)) // avancer
+            if (Input.GetKey(touches.GettouchAvancer())) // avancer
                 zMov += 1;
-            if (Input.GetKey(touchReculer)) // reculer
+            if (Input.GetKey(touches.GettouchReculer())) // reculer
                 zMov -= 1;
-            if (Input.GetKey(touchDroite)) // droite
+            if (Input.GetKey(touches.GettouchDroite())) // droite
                 xMov += 1;
-            if (Input.GetKey(touchGauche)) // gauche
+            if (Input.GetKey(touches.GettouchGauche())) // gauche
                 xMov -= 1;
 
 
-            if (Input.GetKey(touchLeverAssoir) && etat != Etat.Accroupi && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être accroupi
+            if (Input.GetKey(touches.GettouchLeverAssoir()) && etat != Etat.Accroupi && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être accroupi
             {
                 if (etat == Etat.Debout) // S'assoir puisqu'il est debout
                 {
@@ -84,7 +84,7 @@ namespace Script.EntityPlayer
 
                 LastChangementEtat = Time.time;
             }
-            else if (Input.GetKey(touchAccroupi) && etat != Etat.Assis && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être assis
+            else if (Input.GetKey(touches.GettouchAccroupi()) && etat != Etat.Assis && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être assis
             {
                 if (etat == Etat.Debout) // s'accroupir puisqu'il est debout
                 {
@@ -108,7 +108,7 @@ namespace Script.EntityPlayer
                 {
                     ActiverAnimation("Marche acc");
                 }
-                else if (xMov == 0 && Input.GetKey(touchSprint)) // Sprinter
+                else if (xMov == 0 && Input.GetKey(touches.GettouchSprint())) // Sprinter
                 {
                     ActiverAnimation("Course");
                 }
@@ -129,7 +129,7 @@ namespace Script.EntityPlayer
             {
                 ActiverAnimation("Gauche");
             }
-            else if (Input.GetKey(touchJump)) // Jump
+            else if (Input.GetKey(touches.GettouchJump())) // Jump
             {
                 ActiverAnimation("Jump");
             }

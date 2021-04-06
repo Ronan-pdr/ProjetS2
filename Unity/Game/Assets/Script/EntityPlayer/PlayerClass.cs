@@ -15,23 +15,14 @@ namespace Script.EntityPlayer
             Assis,
             Accroupi
         }
+
+        protected TouchesClass touches = TouchesClass.Instance;
+        
         
         protected Etat etat = Etat.Debout;
-        protected KeyCode touchLeverAssoir {get; set;}
+        
         protected float LastChangementEtat; // La dernière fois qu'on a changé de position entre assis et lever
-        protected KeyCode touchAccroupi {get; set;}
-
-        //Avancer
-        protected KeyCode touchAvancer {get; set;}
-        protected KeyCode touchReculer {get; set;}
-        protected KeyCode touchDroite {get; set;}
-        protected KeyCode touchGauche {get; set;}
-    
-        //Sprint
-        protected KeyCode touchSprint {get; set;}
-    
-        //Jump
-        protected KeyCode touchJump {get; set;}
+        
         private float lastJump; // le temps la dernière fois que le joueur a sauté
         private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
     
@@ -42,6 +33,7 @@ namespace Script.EntityPlayer
 
         //Rassembler les infos
         protected Transform masterManager;
+        
         
         protected void AwakePlayer()
         {
@@ -56,15 +48,6 @@ namespace Script.EntityPlayer
             MasterManager.Instance.AjoutPlayer(this);
             
             Fuyard.SetInfoCamera(this);
-
-            touchJump = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("jumpKey", "Space"));
-            touchSprint = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("sprintKey", "left shift"));
-            touchGauche = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("leftKey", "q"));
-            touchDroite = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("rightKey", "d"));
-            touchReculer = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("backwardKey", "s"));
-            touchAvancer = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("forwardKey", "z"));
-            touchAccroupi = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("crouchKey", "c"));
-            touchLeverAssoir = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("sitKey", "x"));
         }
 
         protected void StartPlayer()
@@ -101,14 +84,14 @@ namespace Script.EntityPlayer
                 return;
         
             int zMov = 0;
-            if (Input.GetKey(touchAvancer))
+            if (Input.GetKey(touches.GettouchAvancer()))
                 zMov++;
-            if (Input.GetKey(touchReculer))
+            if (Input.GetKey(touches.GettouchReculer()))
                 zMov--;
             int xMov = 0;
-            if (Input.GetKey(touchDroite))
+            if (Input.GetKey(touches.GettouchDroite()))
                 xMov++;
-            if (Input.GetKey(touchGauche))
+            if (Input.GetKey(touches.GettouchGauche()))
                 xMov--;
 
             float speed = WalkSpeed;
@@ -126,7 +109,7 @@ namespace Script.EntityPlayer
     
         private void Jump()
         {
-            if (Input.GetKey(touchJump) && Time.time - lastJump > periodeJump && Grounded && etat == Etat.Debout) //il faut qu'il soit debout
+            if (Input.GetKey(touches.GettouchJump()) && Time.time - lastJump > periodeJump && Grounded && etat == Etat.Debout) //il faut qu'il soit debout
             {
                 JumpHumanoide();
 

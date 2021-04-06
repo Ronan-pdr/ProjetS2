@@ -32,6 +32,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     //Se connecte au serveur que l'on retrouve dans Assets/Photon/Photon/UnityNetworking/Ressources/PhotonSer...
     void Start()
     {
+        new TouchesClass();
         Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
         SetUpInputField();

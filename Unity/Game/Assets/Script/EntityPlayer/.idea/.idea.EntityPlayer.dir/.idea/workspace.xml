@@ -20,13 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3a8d918b-b2cb-4837-b1f2-2a85dc57d0a0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Chasseur.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Chasseur.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Chassé.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Chassé.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Fuyard.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Fuyard.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Manager/PlayerManager.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Manager/PlayerManager.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/TeteChercheuse/BalleAk-47.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/TeteChercheuse/BalleAk-47.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlayerClass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PlayerClass.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Packages/packages-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +62,7 @@
       <workItem from="1617551113702" duration="8000" />
       <workItem from="1617551149637" duration="1041000" />
       <workItem from="1617552244424" duration="1195000" />
+      <workItem from="1617718627729" duration="153000" />
     </task>
     <servers />
   </component>
