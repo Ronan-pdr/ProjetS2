@@ -9,7 +9,6 @@ public class SettingsMenu : MonoBehaviour
     Resolution[] resolutions;
     public TMP_Dropdown resolutionDropdown;
     int currentResolutionIndex = 0;
-    
     void Start()
     {
         resolutions = Screen.resolutions;

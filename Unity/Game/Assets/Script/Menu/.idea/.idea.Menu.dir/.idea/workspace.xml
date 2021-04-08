@@ -20,17 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e16049ee-2e66-4d93-a619-0e5e4e6b6a2d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Chasseur.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Chasseur.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Chassé.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Chassé.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Fuyard.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Humanoide/Fuyard.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Manager/PlayerManager.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/Manager/PlayerManager.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/TeteChercheuse/BalleAk-47.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/PhotonPrefabs/TeteChercheuse/BalleAk-47.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Scenes/Menu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../../Scenes/Menu.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EntityPlayer/PlayerClass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EntityPlayer/PlayerClass.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Menu.dir/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Menu.dir/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Menu.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Menu.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SettingsMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SettingsMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Launcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Launcher.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RoomManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RoomManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +34,6 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Launcher.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../EntityPlayer/PlayerClass.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -50,8 +41,6 @@
         <option value="$PROJECT_DIR$/RoomManager.cs" />
         <option value="$PROJECT_DIR$/Launcher.cs" />
         <option value="$PROJECT_DIR$/PauseMenu.cs" />
-        <option value="$PROJECT_DIR$/../EntityPlayer/PlayerClass.cs" />
-        <option value="$PROJECT_DIR$/SettingsMenu.cs" />
       </list>
     </option>
   </component>
@@ -76,9 +65,6 @@
       <updated>1614521082412</updated>
       <workItem from="1614521119456" duration="1018000" />
       <workItem from="1614522181296" duration="2081000" />
-      <workItem from="1617652074458" duration="4000" />
-      <workItem from="1617652141779" duration="26000" />
-      <workItem from="1617652205767" duration="3392000" />
     </task>
     <servers />
   </component>

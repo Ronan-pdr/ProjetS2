@@ -2658,6 +2658,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 2909232356640108291}
   cameraHolder: {fileID: 722405112715187987}
+  graphics: {fileID: 4838648099535593848}
 --- !u!114 &3982942136922913934
 MonoBehaviour:
   m_ObjectHideFlags: 0
