@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Script.EntityPlayer;
+using Script.Test;
 using Script.Tools;
 using UnityEngine;
 
@@ -71,7 +72,7 @@ namespace Script.TeteChercheuse
             CapsuleCollider cap = MasterManager.Instance.GetCapsuleBot();
             float scale = cap.transform.localScale.y;
             capsule.hauteur = cap.height * scale;
-            capsule.rayon = cap.radius * scale;
+            capsule.rayon = cap.radius * scale * 2;
             
             // initialiser destination
             destination = posDestination;
@@ -83,9 +84,9 @@ namespace Script.TeteChercheuse
             CheckPosition(first);
         }
 
-        public static List<Vector3> GetPath(GameObject lanceur, GameObject destination)
+        public static List<Vector3> GetPath(Vector3 depart, Vector3 destination)
         {
-            RayGaz rayGaz = new RayGaz(lanceur.transform.position, destination.transform.position);
+            RayGaz rayGaz = new RayGaz(depart, destination);
             
             return rayGaz.Resarch();
         }
@@ -101,16 +102,27 @@ namespace Script.TeteChercheuse
                 node = file.Defiler();
                 
                 // temporaire
-                Test.TestRayGaz.CreateMarqueur(node.Position);
+                //TestRayGaz.CreateMarqueur(node.Position);
 
                 // devant
-                NewPosition(node, Vector3.forward);
+                NewPosition(node, Vector3.forward, bond);
                 // derriere
-                NewPosition(node, Vector3.back);
+                NewPosition(node, Vector3.back, bond);
                 // droite
-                NewPosition(node, Vector3.right);
+                NewPosition(node, Vector3.right, bond);
                 // gauche
-                NewPosition(node, Vector3.left);
+                NewPosition(node, Vector3.left, bond);
+
+                float maxDist = bond * SimpleMath.Sqrt(2.1f);
+                
+                // devant - droite
+                NewPosition(node, new Vector3(1, 0, 1), maxDist);
+                // devant - gauche
+                NewPosition(node, new Vector3(-1, 0, 1), maxDist);
+                // derrière - droite
+                NewPosition(node, new Vector3(1, 0, -1), maxDist);
+                // derrière - gauche
+                NewPosition(node, new Vector3(-1, 0, -1), maxDist);
 
             } while (!file.IsEmpty() && !Arrivé(node.Position));
 
@@ -145,7 +157,7 @@ namespace Script.TeteChercheuse
             return inBorne && Sonde[z, x] == null;
         }
 
-        private void NewPosition(Node after, Vector3 direction)
+        private void NewPosition(Node after, Vector3 direction, float maxDistance)
         {
             Vector3 position = after.Position;
             
@@ -154,7 +166,7 @@ namespace Script.TeteChercheuse
 
             Vector3 newPos = position + direction * bond;
 
-            if (CanIPass(capsule, position, direction, bond) && IsValidPosition(newPos))
+            if (CanIPass(capsule, position, direction, maxDistance) && IsValidPosition(newPos))
             {
                 // nous avons trouvé une position où le gaz va se répendre...
                 Node node = new Node(after, newPos);
@@ -200,8 +212,8 @@ namespace Script.TeteChercheuse
             while (node.After != null)
             {
                 nextNode = node.After;
-                while (nextNode.After != null && CanIPass(capsule, node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
-                    Calcul.Distance(nextNode.After.Position, node.Position)))
+                for (int i = 0; i >= 0 && nextNode.After != null && CanIPass(capsule, node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
+                    Calcul.Distance(nextNode.After.Position, node.Position)); i++)
                 {
                     nextNode = nextNode.After;
                 }

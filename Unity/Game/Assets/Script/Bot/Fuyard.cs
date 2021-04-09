@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Test;
 using Script.TeteChercheuse;
 using Script.Tools;
 using UnityEngine;
@@ -31,9 +32,11 @@ namespace Script.Bot
         private MasterManager master;
         
         // fuite
-        private float tempsMaxFuite = 3f;
+        private List<Vector3> planFuite;
+        
+        /*private float tempsMaxFuite = 3f;
         private float tempsRestantFuite;
-        private float distanceFuite;
+        private float distanceFuite;*/
         
         // variable relative à sa capsule
         private (float hauteur, float rayon) capsule;
@@ -54,13 +57,13 @@ namespace Script.Bot
             capsule.hauteur = cap.height * scale;
             capsule.rayon = cap.radius * scale;
             
-            rotationSpeed = 600;
+            rotationSpeed = 800;
             
             StartBot(); // tout le monde le fait pour qu'il soit parenter
             
             master = MasterManager.Instance;
 
-            distanceFuite = SprintSpeed * tempsMaxFuite;
+            //distanceFuite = SprintSpeed * tempsMaxFuite;
         }
 
         public static void SetInfoCamera(PlayerClass player)
@@ -79,11 +82,15 @@ namespace Script.Bot
                 return;
             
             // quoi que soit son état, il fait ça
-            UpdateBot(); 
-            IsChasseurInMyVision();
+            UpdateBot();
+            
 
             if (etat == Etat.Fuite)
                 Fuir();
+            else
+            {
+                IsChasseurInMyVision();
+            }
         }
 
         private void FixedUpdate()
@@ -133,6 +140,19 @@ namespace Script.Bot
             else
                 Vus.Add((vu, vu.transform.position)); // on le rajoute
             
+            // part en cavale avec un plan bien rodé vers une destination stratégique
+            Vector3 dest = CrossManager.Instance.GetPosition(1);
+            planFuite = RayGaz.GetPath(Tr.position, dest);
+            etat = Etat.Fuite;
+            
+            /*foreach (Vector3 p in planFuite)
+            {
+                TestRayGaz.CreatePointPath(p);
+            }*/
+        }
+
+        /*private void OldFuite()
+        {
             // pour l'instant je vais juste gérer le cas où y'a qu'un chasseur
             var position = Tr.position;
             float angleY = Calcul.Angle(0, position, Vus[0].position, Calcul.Coord.Y);
@@ -151,29 +171,38 @@ namespace Script.Bot
             
             tempsRestantFuite = tempsMaxFuite; // il regonfle son temps de fuite son temps de fuite
             etat = Etat.Fuite;
-        }
+        }*/
 
         protected override void FiniDeTourner()
         {} // lorsqu'il a fini de tourner, il ne fait rien de plus
 
         private void Fuir()
         {
-            if (tempsRestantFuite < 0) // s'il a couru assez longtemps,...
+            int len = planFuite.Count;
+            Vector3 dest = planFuite[len - 1];
+            
+            // s'il a finit une étape de son plan
+            if (Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.5f)
             {
-                MoveAmount = Vector3.zero; // ...il s'arrête
-                etat = Etat.Attend;
-                Vus.Clear();
-                AnimationStop();
-                return;
+                planFuite.RemoveAt(len - 1);
+                
+                if (planFuite.Count == 0) // il finit sa cavale,...
+                {
+                    MoveAmount = Vector3.zero; // ...il s'arrête...
+                    etat = Etat.Attend;
+                    Vus.Clear();
+                    AnimationStop();
+                    return; // ...et ne fait rien d'autre
+                }
+                
+                AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, planFuite[len-2], Calcul.Coord.Y);
             }
-
-            tempsRestantFuite -= Time.deltaTime; // décrémenter son temps de fuite
             
             if (SimpleMath.Abs(AmountRotation) > 0)
                 Tourner();
             
             // set sa vitesse actuel (se déplace toujours droit devant lui)
-            SetMoveAmount(new Vector3(0, 0, 1), SprintSpeed);
+            SetMoveAmount(Vector3.forward, SprintSpeed);
             
             // animation
             anim.enabled = true;

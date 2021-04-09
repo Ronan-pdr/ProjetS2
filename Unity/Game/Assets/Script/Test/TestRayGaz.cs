@@ -12,7 +12,7 @@ namespace Script.Test
 
         private void Start()
         {
-            List<Vector3> path = RayGaz.GetPath(gameObject, destination);
+            List<Vector3> path = RayGaz.GetPath(gameObject.transform.position, destination.transform.position);
 
             foreach (Vector3 p in path)
             {
@@ -28,7 +28,7 @@ namespace Script.Test
         
         public static void CreatePointPath(Vector3 position)
         {
-            GameObject g = Instantiate(MasterManager.Instance.PointPath, position + Vector3.up * 1f, Quaternion.identity);
+            GameObject g = Instantiate(MasterManager.Instance.PointPath, position + Vector3.up * 1, Quaternion.identity);
             g.transform.parent = MasterManager.Instance.GetDossierBodyChercheur();
         }
     }

@@ -14,7 +14,8 @@ namespace Script.Bot
         {
             EnChemin,
             SeTourne,
-            Attend // il attend seulement lorsqu'il est sur un point qui possède 0 voisin
+            Attend, // il attend seulement lorsqu'il est sur un point qui possède 0 voisin
+            Fuite
         }
         private Etat etat = Etat.Attend;
 
