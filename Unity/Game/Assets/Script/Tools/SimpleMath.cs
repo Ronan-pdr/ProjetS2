@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using static System.Math;
 
 namespace Script.Tools
@@ -11,6 +12,11 @@ namespace Script.Tools
             if (r < 0)
                 return b + r;
             return r;
+        }
+
+        public static Vector3 Mod(Vector3 v, float f)
+        {
+            return new Vector3(v.x % f, v.y % f, v.z % f);
         }
     
         public static float Abs(float a)

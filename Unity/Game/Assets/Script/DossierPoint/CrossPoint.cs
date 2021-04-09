@@ -60,8 +60,7 @@ namespace Script.DossierPoint
 
             CrossPoint potentialNeighboor;
             Vector3 ownCoord = transform.position;
-            Vector3 destCoord;
-            float distanceThisWithDest, amountRotation;
+            float distanceThisWithDest;
             int len = CrossManager.Instance.GetNumberPoint();
             
             for (int i = 0; i < len; i++)
@@ -70,23 +69,19 @@ namespace Script.DossierPoint
                 if (Neighboors.Contains(potentialNeighboor)) // si je l'ai déjà placé dans ma liste, il est inutile de le tester
                     continue;
                 
-                destCoord = potentialNeighboor.transform.position;
-                
-                distanceThisWithDest = Calcul.Distance(ownCoord, destCoord);
+                distanceThisWithDest = Calcul.Distance(ownCoord, potentialNeighboor.transform.position);
 
-                if (0.2f < distanceThisWithDest && distanceThisWithDest < 100) // on ne veut pas lancer un body chercheur la où on se situe et on ne veux pas des voisins trop loins
+                if (0.2f < distanceThisWithDest && distanceThisWithDest < 30) // on ne veut pas lancer un body chercheur la où on se situe et on ne veux pas des voisins trop loins
                 {
                     nAttenduBodyChercher += 1;
-                    
-                    amountRotation = Calcul.Angle(0, ownCoord, destCoord, Calcul.Coord.Y);
-                    BodyChercheur.InstancierStatic(this, potentialNeighboor, new Vector3(0, amountRotation, 0));
+                    BodyRectilgne.InstancierStatic(gameObject, potentialNeighboor.gameObject);
                 }
-            }
-        }
-
-        private void LoadNeighboors()
-        {
+            } 
             
+            if (nAttenduBodyChercher == 0) // aucun voisin potentiel donc c'est la fin de la recherche
+            {
+                CrossManager.Instance.EndOfOneResearch(Neighboors);
+            } 
         }
     }
 }

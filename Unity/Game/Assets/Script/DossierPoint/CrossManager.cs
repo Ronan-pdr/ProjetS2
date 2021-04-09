@@ -43,8 +43,7 @@ namespace Script.DossierPoint
                 previousIndex = len;
             else
                 max -= 1;
-                
-    
+
             int index = Random.Range(0, max);
             if (index >= previousIndex)
                 index++;
@@ -94,7 +93,7 @@ namespace Script.DossierPoint
         {
             if (indexResearch >= crossPoints.Length)
                 throw new Exception("Il y a plus de recherche que de CrossPoint...");
-
+            
             contentOutput[indexResearch] = NeighboorsToContent(neighboors);
             
             NextResearch();
@@ -112,7 +111,6 @@ namespace Script.DossierPoint
             {
                 Ouput();
                 Debug.Log("Maintenance terminé");
-                PauseMenu.Instance.StartQuit();
             }
         }
         

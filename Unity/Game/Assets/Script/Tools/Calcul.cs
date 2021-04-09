@@ -8,7 +8,8 @@ namespace Script.Tools
         {
             X,
             Y,
-            Z
+            Z,
+            None
         }
         
         // distance entre deux points à deux coordonnées
@@ -21,7 +22,9 @@ namespace Script.Tools
             return Norme(x, y, z);
         }
 
-        public static float Distance(Vector3 a, Vector3 b, Coord coordWithout) // 
+        // fait la différence entre deux positions avec seulement deux coordonnées sans la "coordWithout",
+        // si elle est égale à None, c'est avec les trois coordonnées
+        public static float Distance(Vector3 a, Vector3 b, Coord coordWithout)
         {
             (float x, float y, float z) = (0, 0, 0);
             if (coordWithout != Coord.X)

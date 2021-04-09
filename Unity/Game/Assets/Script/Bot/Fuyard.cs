@@ -26,17 +26,20 @@ namespace Script.Bot
         // si le bot n'en a pas vu, la liste est vide
         private List<(Chasseur chasseur, Vector3 position)> Vus = new List<(Chasseur chasseur, Vector3 position)>();
         
-            // Les fuyards doivent attendre qu'on donne les infos relatives à la caméra pour qu'il puisse repérer/fuir le chasseur
+        // Les fuyards doivent attendre qu'on donne les infos relatives à la caméra pour qu'il puisse repérer/fuir le chasseur
         private static bool FeuVert = false;
         
         // masterManager
         private MasterManager master;
         
         // fuite
-        private float tempsMaxFuite = 5f;
+        private float tempsMaxFuite = 3f;
         private float tempsRestantFuite;
         private float distanceFuite;
         
+        // variable relative à sa capsule
+        private (float hauteur, float rayon) capsule;
+
         // Setter
         public override void SetBot(CrossPoint crossPoint)
         {}
@@ -48,6 +51,11 @@ namespace Script.Bot
 
         private void Start()
         {
+            CapsuleCollider cap = GetComponent<CapsuleCollider>();
+            float scale = cap.transform.localScale.y;
+            capsule.hauteur = cap.height * scale;
+            capsule.rayon = cap.radius * scale;
+            
             rotationSpeed = 600;
             
             StartBot(); // tout le monde le fait pour qu'il soit parenter
@@ -83,8 +91,6 @@ namespace Script.Bot
 
             if (etat == Etat.Fuite)
                 Fuir();
-            else
-                AnimationStop();
         }
 
         private void FixedUpdate()
@@ -98,7 +104,7 @@ namespace Script.Bot
         private void IsChasseurInMyVision()
         {
             int nChasseur = master.GetNbChasseur();
-            Vector3 positionCamera = Tr.position + PositionCamera;
+            Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
             
             for (int i = 0; i < nChasseur; i++)
             {
@@ -113,7 +119,7 @@ namespace Script.Bot
 
                     if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
                     {
-                        if (hit.collider.GetComponent<Chasseur>()) // si l'obstacle est le chasseur alors le bot "VOIt" le chasseur
+                        if (hit.collider.GetComponent<Chasseur>()) // si l'obstacle est le chasseur alors le bot "VOIT" le chasseur
                         {
                             NewVu(hit.collider.GetComponent<Chasseur>());
                         }
@@ -122,7 +128,7 @@ namespace Script.Bot
             }
         }
 
-        private void NewVu(Chasseur vu)
+        private void NewVu(Chasseur vu) // en gros, changement de direction
         {
             int i;
             int len = Vus.Count;
@@ -140,38 +146,44 @@ namespace Script.Bot
             
             angleY += 180 * (angleY > 0 ? -1 : 1); // il va rotater pour aller le plus loin possible des chasseur
 
-            // test ses directions pour déterminer s'il n'y a pas d'obstacle
+            // teste ses directions pour déterminer s'il n'y a pas d'obstacle
             int ecartAngle = 0; // prendra les valeurs successives 0 ; 1 ; -1 ; 2 ; -2 ; 3 ; -3...
-            bool bo = true;
-            Vector3 positionCamera = position + PositionCamera;
             
-            for (int j = 0; bo; j++)
+            for (int j = 0; !CanIPass(Calcul.FromAngleToDirection(angleY + ecartAngle), distanceFuite) && ecartAngle < 130; j++)
             {
-                Ray ray = new Ray(positionCamera, Calcul.FromAngleToDirection(angleY + ecartAngle));
-
-                if (Physics.Raycast(ray, out RaycastHit hit) && hit.distance < distanceFuite) // true --> il a trouvé un obstacle
-                {
-                    ecartAngle += j * (j % 2 == 1 ? 1 : -1);
-                }
-                else
-                {
-                    /*try
-                    {
-                        Debug.Log($"hit = {hit.collider.name}");
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.Log("rien touché");
-                    }*/
-                    
-                    bo = false;
-                }
+                
+                ecartAngle += j * 5 * (j % 2 == 1 ? 1 : -1);
             }
 
-            AmountRotation = Calcul.GiveAmoutRotation(angleY + ecartAngle, Tr.eulerAngles.y); 
+            AmountRotation = Calcul.GiveAmoutRotation(angleY + ecartAngle, Tr.eulerAngles.y);
             
             tempsRestantFuite = tempsMaxFuite; // il regonfle son temps de fuite son temps de fuite
             etat = Etat.Fuite;
+        }
+
+        private bool CanIPass(Vector3 direction, float distanceMax)
+        {
+            Vector3 position = Tr.position + Tr.TransformDirection(capsule.rayon * Vector3.forward);
+            
+            Vector3 hautDuCorps = position + Vector3.up * (capsule.hauteur - capsule.rayon);
+
+            Ray ray = new Ray(hautDuCorps, direction);
+
+            if (Physics.Raycast(ray, out RaycastHit hit1) && hit1.distance < distanceMax)
+            {
+                return false;
+            }
+            
+            Vector3 basDuCorps = position + Vector3.up * capsule.rayon;
+
+            ray = new Ray(basDuCorps, direction);
+
+            if (Physics.Raycast(ray, out RaycastHit hit2) && hit2.distance < distanceMax)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         protected override void FiniDeTourner()
@@ -184,10 +196,11 @@ namespace Script.Bot
                 MoveAmount = Vector3.zero; // ...il s'arrête
                 etat = Etat.Attend;
                 Vus.Clear();
+                AnimationStop();
                 return;
             }
 
-            tempsRestantFuite -= Time.deltaTime;
+            tempsRestantFuite -= Time.deltaTime; // décrémenter son temps de fuite
             
             if (SimpleMath.Abs(AmountRotation) > 0)
                 Tourner();

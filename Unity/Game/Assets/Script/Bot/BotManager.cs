@@ -34,7 +34,8 @@ namespace Script.Bot
             
             Bots = new List<BotClass>();
 
-            int nBot = 1;
+            int nBot = 0;
+            string type;
             int indexPlayer;
             Player[] players = PhotonNetwork.PlayerList;
             for (indexPlayer = players.Length - 1; indexPlayer >= 0 && !players[indexPlayer].Equals(PhotonNetwork.LocalPlayer); indexPlayer--)
@@ -42,16 +43,18 @@ namespace Script.Bot
 
             for (int i = 0; i < nBot; i++) // Instancier, ranger (dans la liste) et positionner sur la map tous les bots
             {
-                BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "BotRectiligne"),
+                if (i == 0)
+                    type = "Fuyard";
+                else
+                    type = "BotRectiligne";
+                
+                BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
                     Vector3.zero, Quaternion.identity).GetComponent<BotClass>();
-
-                CrossPoint crossPoint = CrossManager.Instance.GetPoint(i + indexPlayer * nBot);
                 
+                CrossPoint crossPoint = CrossManager.Instance.GetPoint(i + indexPlayer * nBot); // récupérer son cross point
                 bot.transform.position = crossPoint.transform.position; // le placer sur la map
-                
                 bot.SetBot(crossPoint);
-
-                bot.SetOwnBotManager(this); // lui indiquer quel est son père
+                bot.SetOwnBotManager(this); // lui indiquer quel est son père (dans la hiérarchie de Unity)
             
                 Bots.Add(bot); // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)
             }

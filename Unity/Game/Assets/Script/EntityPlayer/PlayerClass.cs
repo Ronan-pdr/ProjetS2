@@ -32,9 +32,7 @@ namespace Script.EntityPlayer
     
         //Jump
         protected string touchJump = "space";
-        private float lastJump; // le temps la dernière fois que le joueur a sauté
-        private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
-    
+
         //Look
         private float verticalLookRotation; 
         private float mouseSensitivity = 3f;
@@ -74,7 +72,12 @@ namespace Script.EntityPlayer
         {
             Look();
             Move();
-            Jump();
+            
+            if (Input.GetKey(touchJump) && etat == Etat.Debout)
+            {
+                Jump();
+            }
+            
         
             UpdateHumanoide();
         }
@@ -114,16 +117,6 @@ namespace Script.EntityPlayer
             Vector3 moveDir = new Vector3(xMov, 0, zMov);
 
             SetMoveAmount(moveDir, speed);
-        }
-    
-        private void Jump()
-        {
-            if (Input.GetKey(touchJump) && Time.time - lastJump > periodeJump && Grounded && etat == Etat.Debout) //il faut qu'il soit debout
-            {
-                JumpHumanoide();
-
-                lastJump = Time.time;
-            }
         }
 
         void Look()

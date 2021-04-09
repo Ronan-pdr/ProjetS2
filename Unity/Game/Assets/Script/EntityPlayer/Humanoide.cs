@@ -24,6 +24,10 @@ namespace Script.EntityPlayer
     
         // photon
         protected PhotonView Pv;
+        
+        // Jump 
+        private float lastJump; // le temps la dernière fois que le joueur a sauté
+        private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
     
         //Getter
         public int GetCurrentHealth() => CurrentHealth;
@@ -31,9 +35,9 @@ namespace Script.EntityPlayer
         public PhotonView GetPv() => Pv;
         public Player GetPlayer() => Pv.Owner;
         
-        public void SetGroundedState(bool grounded)
+        public void SetGroundedState(bool value)
         {
-            Grounded = grounded;
+            Grounded = value;
         }
 
         protected void AwakeHuman()
@@ -68,10 +72,14 @@ namespace Script.EntityPlayer
     
         //Déplacment
 
-        protected void JumpHumanoide()
+        public void Jump()
         {
-            Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
-            Grounded = false;
+            if (Time.time - lastJump > periodeJump && Grounded)
+            {
+                Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
+                Grounded = false;
+                lastJump = Time.time;
+            }
         }
 
         //Animation
@@ -111,10 +119,24 @@ namespace Script.EntityPlayer
 
         public static bool operator ==(Humanoide hum1, Humanoide hum2)
         {
-            if (hum1 is null || hum2 is null)
-                throw new Exception("Tu as testé l'égalité de deux humains dont au moins un est null");
+            if ((object)hum1 is null || (object)hum2 is null)
+            {
+                Debug.Log("WARNING : Tu as testé l'égalité de deux humains dont au moins un est null");
+                return false;
+            }
+
+            try
+            {
+                return hum1.name == hum2.name;
+            }
+            catch (Exception e)
+            {
+                if (false) // grâce à ça j'ai plus de WARNING bordel
+                    Debug.Log(e);
+                
+                return false;
+            }
             
-            return hum1.name == hum2.name;
         }
         
         public static bool operator !=(Humanoide hum1, Humanoide hum2)

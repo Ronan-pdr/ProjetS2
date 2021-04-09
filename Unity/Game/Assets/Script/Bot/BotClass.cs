@@ -16,7 +16,6 @@ namespace Script.Bot
         protected float AmountRotation;
     
         // Getter
-        public string GetName() => name;
 
         // Setter
         public abstract void SetBot(CrossPoint crossPoint);
@@ -25,7 +24,7 @@ namespace Script.Bot
             BotManager = value;
         }
 
-        // cette fonction indique si un bot est ton bot
+        // cette fonction indique si un bot est contrôlé par ton ordinateur
         public bool IsMyBot()
         {
             return BotManager != null;
@@ -89,13 +88,11 @@ namespace Script.Bot
             enabled = false;
             BotManager.Die(gameObject);
         }
-        
-        
-    
+
         // réception des hash
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
-            if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
+            if (!Pv.Owner.Equals(targetPlayer) || !this) // si c'est pas toi la target, tu ne changes rien
                 return;
         
             // point de vie -> TakeDamage (Humanoide)
@@ -112,7 +109,6 @@ namespace Script.Bot
                 {
                     int vie = int.Parse(deuxInfos.Substring(len - 3, 3));
                             
-                    Debug.Log($"Update de la vie de {name}");
                     CurrentHealth = vie;
                 }
             }

@@ -137,15 +137,11 @@ public class Launcher : MonoBehaviourPunCallbacks
         Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
-    void StartName()
-    {
-        SetUpInputField();
-    }
-
     public void SetUpInputField()
     {
         if (!PlayerPrefs.HasKey(PlayerPrefsNameKey))
             return;
+        
         string defaultName = PlayerPrefs.GetString(PlayerPrefsNameKey);
         nameInputField.text = defaultName;
         SetPlayerName(defaultName);

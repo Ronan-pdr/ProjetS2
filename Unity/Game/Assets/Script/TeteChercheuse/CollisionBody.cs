@@ -22,12 +22,12 @@ namespace Script.TeteChercheuse
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrête pas
-                return;
-
-            _collider.isTrigger = false;
+            if (!other.gameObject.GetComponent<Entity>())
+            {
+                _collider.isTrigger = false;
+            }
         }
-    
+
         private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrête pas
@@ -35,6 +35,7 @@ namespace Script.TeteChercheuse
                 _collider.isTrigger = true;
                 return;
             }
+                
 
             ContactPoint[] listContact = other.contacts;
             int len = listContact.Length;
@@ -50,13 +51,25 @@ namespace Script.TeteChercheuse
             }
         }
         
-        
-        
         private void OnCollisionStay(Collision other)
         {
             if (other.gameObject.GetComponent<Entity>()) // Si ça a touché une 'Entity', ça ne s'arrête pas
             {
                 _collider.isTrigger = true;
+                return;
+            }
+            
+            ContactPoint[] listContact = other.contacts;
+            int len = listContact.Length;
+            
+            int i;
+            for (i = 0; i < len && Calcul.Distance(listContact[i].point.y, GetYSol()) < _collider.radius * 1.2f; i++)
+            {}
+
+            if (i < len) // cela signifie qu'un objet (qui n'est pas entity) l'a touché à une hauteur supérieur au rayon 
+            {
+                teteChercheuse.SetFind(true);
+                teteChercheuse.SetHittenObj(other.gameObject);
             }
         }
     }

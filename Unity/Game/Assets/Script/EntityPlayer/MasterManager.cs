@@ -19,9 +19,15 @@ namespace Script.EntityPlayer
         public static MasterManager Instance;
         
         // les prefabs
-        [SerializeField] private BodyChercheur originalBodyChercheur; // prefab des body
+        [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
+        
+        [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
+        [SerializeField] private GameObject[] contour;
+        public GameObject marqueur;
+        
         [SerializeField] private Transform dossierBodyChercheur; // ranger les 'BodyChercheur'
         [SerializeField] private Transform dossierBalleFusil; // ranger les 'BalleFusil'
+        
         [SerializeField] private Transform dossierOtherBot; // le dossier où les bots que ton ordinateur ne contrôle pas seront rangés
         
         // nombre de participant (sera utilisé pour déterminer le moment lorsque tous les joueurs auront instancié leur playerController)
@@ -35,7 +41,6 @@ namespace Script.EntityPlayer
 
         // attribut relatif à ton avatar
         private PlayerClass ownPlayer;
-        private string typeOwnPlayer; // c'est le masterManager qui envoie le type via un hash
         
         // attribut que seul le masterClient utilisera
         // la string contenant les infos du joueur seront sous la forme :
@@ -71,12 +76,13 @@ namespace Script.EntityPlayer
         public int GetNbPlayer() => players.Count;
         public int GetNbChasseur() => chasseurs.Count;
         public int GetNbChassé() => chassés.Count;
+        public PlayerClass GetOwnPlayer() => ownPlayer;
         public List<PlayerClass> GetListPlayer() => players;
         public PlayerClass GetPlayer(int index) => players[index];
         public Chasseur GetChasseur(int index) => chasseurs[index];
         public Chassé GetChassé(int index) => chassés[index];
-        public PlayerClass GetOwnPlayer() => ownPlayer;
-        public BodyChercheur GetOriginalBodyChercheur() => originalBodyChercheur;
+        public BodyRectilgne GetOriginalBodyRectilgne() => originalBodyRectilgne;
+        public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
         public Transform GetDossierOtherBot() => dossierOtherBot;
@@ -87,8 +93,10 @@ namespace Script.EntityPlayer
             {} // cherche l'index du joueur
             
             nBotParJoueur[i] += 1;
-            return player.NickName + "Bot" +  nBotParJoueur[i];
+            return player.NickName + "Bot" + nBotParJoueur[i];
         }
+
+        public GameObject[] GetContour() => contour; 
 
         public bool IsInMaintenance() => Maintenance != TypeMaintenance.None;
         public bool IsInCrossPointMaintenance() => Maintenance == TypeMaintenance.CrossManager;
@@ -96,7 +104,10 @@ namespace Script.EntityPlayer
         //Setter
         public void SetOwnPlayer(PlayerClass value)
         {
-            ownPlayer = value;
+            if (ownPlayer is null)
+                ownPlayer = value;
+            else
+                throw new Exception("Un script a tenté de réinitialiser la variable ownPLayer");
         }
         public void AjoutPlayer(PlayerClass player)
         {
@@ -118,6 +129,7 @@ namespace Script.EntityPlayer
             
             if (CrossManager.IsMaintenance()) // maintenance des cross point
             {
+                Debug.Log("Début Maintenance des CrossPoints");
                 Maintenance = TypeMaintenance.CrossManager;
             }
             else
