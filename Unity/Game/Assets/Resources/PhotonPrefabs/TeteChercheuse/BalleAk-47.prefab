@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2581349910312231490}
   - component: {fileID: 1177922259885409118}
   - component: {fileID: 8573762035261330013}
-  - component: {fileID: 8565350698293349687}
   - component: {fileID: 6549001519841511836}
   m_Layer: 0
   m_Name: BalleAk-47
@@ -104,19 +103,6 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!114 &8565350698293349687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487588487554745167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf3f63d53352f8641bfbb0a547521250, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  teteChercheuse: {fileID: 2581349910312231490}
 --- !u!136 &6549001519841511836
 CapsuleCollider:
   m_ObjectHideFlags: 0

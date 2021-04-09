@@ -1870,7 +1870,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4261902594927881119, guid: 40a9d2ac9024b064fbc4bbca068ba57a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 68.3
+      value: -11.54
       objectReference: {fileID: 0}
     - target: {fileID: 4261902594927881119, guid: 40a9d2ac9024b064fbc4bbca068ba57a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1878,7 +1878,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4261902594927881119, guid: 40a9d2ac9024b064fbc4bbca068ba57a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -43.2
+      value: 9.49
       objectReference: {fileID: 0}
     - target: {fileID: 4261902594927881119, guid: 40a9d2ac9024b064fbc4bbca068ba57a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6162,7 +6162,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1507229308}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46b0a19a2d9c4ac0b32e906f74395802, type: 3}
+  m_Script: {fileID: 11500000, guid: 2915f3c67e9c42c1ae248e137d34bcfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   destination: {fileID: 757114068}
@@ -6223,7 +6223,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1507229308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.1, y: 1, z: 22.08}
+  m_LocalPosition: {x: -8.1, y: 1, z: 14.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -8895,6 +8895,10 @@ PrefabInstance:
       propertyPath: marqueur
       value: 
       objectReference: {fileID: 3585927519866693003, guid: 0e66d6dd787fcdd4bbb0ae626121f634, type: 3}
+    - target: {fileID: -525982530942577693, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
+      propertyPath: capsuleBot
+      value: 
+      objectReference: {fileID: 2764116466850601302, guid: 6159320856f812d4c97820308b638921, type: 3}
     - target: {fileID: -525982530942577693, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
       propertyPath: DossierOtherBot
       value: 

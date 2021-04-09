@@ -24,7 +24,10 @@ namespace Script.EntityPlayer
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
         [SerializeField] private GameObject[] contour;
         public GameObject marqueur;
-        
+        public GameObject PointPath;
+
+        [SerializeField] private CapsuleCollider capsuleBot;
+
         [SerializeField] private Transform dossierBodyChercheur; // ranger les 'BodyChercheur'
         [SerializeField] private Transform dossierBalleFusil; // ranger les 'BalleFusil'
         
@@ -86,6 +89,8 @@ namespace Script.EntityPlayer
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
         public Transform GetDossierOtherBot() => dossierOtherBot;
+        public GameObject[] GetContour() => contour;
+        public CapsuleCollider GetCapsuleBot() => capsuleBot;
         public string GetNameBot(Player player)
         {
             int i;
@@ -95,8 +100,6 @@ namespace Script.EntityPlayer
             nBotParJoueur[i] += 1;
             return player.NickName + "Bot" + nBotParJoueur[i];
         }
-
-        public GameObject[] GetContour() => contour; 
 
         public bool IsInMaintenance() => Maintenance != TypeMaintenance.None;
         public bool IsInCrossPointMaintenance() => Maintenance == TypeMaintenance.CrossManager;

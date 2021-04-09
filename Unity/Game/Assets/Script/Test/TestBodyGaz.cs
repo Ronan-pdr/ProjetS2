@@ -11,7 +11,7 @@ namespace Script.Test
 
         private void Start()
         {
-            BodyGaz.InstancierStatic(gameObject, destination);
+            //BodyGaz.InstancierStatic(gameObject, destination);
         }
     }
 }

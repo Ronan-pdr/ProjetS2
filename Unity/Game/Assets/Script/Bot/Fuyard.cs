@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.TeteChercheuse;
 using Script.Tools;
 using UnityEngine;
 
@@ -25,9 +26,6 @@ namespace Script.Bot
         // cette liste va contenir la position des chasseurs lorsque le bot les a "vu"
         // si le bot n'en a pas vu, la liste est vide
         private List<(Chasseur chasseur, Vector3 position)> Vus = new List<(Chasseur chasseur, Vector3 position)>();
-        
-        // Les fuyards doivent attendre qu'on donne les infos relatives à la caméra pour qu'il puisse repérer/fuir le chasseur
-        private static bool FeuVert = false;
         
         // masterManager
         private MasterManager master;
@@ -72,9 +70,7 @@ namespace Script.Bot
             //AngleCamera = camera.fieldOfView;
             AngleCamera = 80;
 
-            PositionCamera = new Vector3(0, 1.4f, -0.5f);
-
-            FeuVert = true;
+            PositionCamera = new Vector3(0, 1.4f, 0.3f);
         }
 
         private void Update()
@@ -82,11 +78,8 @@ namespace Script.Bot
             if (!IsMyBot())
                 return;
             
-            UpdateBot(); // quoi que soit son état, il fait ça
-            
-            if (!FeuVert)
-                return;
-
+            // quoi que soit son état, il fait ça
+            UpdateBot(); 
             IsChasseurInMyVision();
 
             if (etat == Etat.Fuite)
@@ -149,9 +142,8 @@ namespace Script.Bot
             // teste ses directions pour déterminer s'il n'y a pas d'obstacle
             int ecartAngle = 0; // prendra les valeurs successives 0 ; 1 ; -1 ; 2 ; -2 ; 3 ; -3...
             
-            for (int j = 0; !CanIPass(Calcul.FromAngleToDirection(angleY + ecartAngle), distanceFuite) && ecartAngle < 130; j++)
+            for (int j = 0; !RayGaz.CanIPass(capsule, Tr.position, Calcul.FromAngleToDirection(angleY + ecartAngle), distanceFuite) && ecartAngle < 130; j++)
             {
-                
                 ecartAngle += j * 5 * (j % 2 == 1 ? 1 : -1);
             }
 
@@ -159,31 +151,6 @@ namespace Script.Bot
             
             tempsRestantFuite = tempsMaxFuite; // il regonfle son temps de fuite son temps de fuite
             etat = Etat.Fuite;
-        }
-
-        private bool CanIPass(Vector3 direction, float distanceMax)
-        {
-            Vector3 position = Tr.position + Tr.TransformDirection(capsule.rayon * Vector3.forward);
-            
-            Vector3 hautDuCorps = position + Vector3.up * (capsule.hauteur - capsule.rayon);
-
-            Ray ray = new Ray(hautDuCorps, direction);
-
-            if (Physics.Raycast(ray, out RaycastHit hit1) && hit1.distance < distanceMax)
-            {
-                return false;
-            }
-            
-            Vector3 basDuCorps = position + Vector3.up * capsule.rayon;
-
-            ray = new Ray(basDuCorps, direction);
-
-            if (Physics.Raycast(ray, out RaycastHit hit2) && hit2.distance < distanceMax)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         protected override void FiniDeTourner()

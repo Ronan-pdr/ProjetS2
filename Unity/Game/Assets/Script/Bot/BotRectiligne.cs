@@ -86,7 +86,7 @@ namespace Script.Bot
                 else // avancer
                     Avancer();
             }
-            else // se tourne
+            else // se tourne (etat = Etat.SeTourne)
             {
                 MoveAmount = Vector3.zero; // Le bot rectiligne n'avançera jamais lorqu'il tournera
                 Tourner();
@@ -117,7 +117,7 @@ namespace Script.Bot
         }
 
         // Cette fonction trouve le degré nécessaire (entre ]-180, 180]) afin que le soit orienté face à sa destination
-        public void FindAmountRotation() // Change aussi l'état du joueur
+        public void FindAmountRotation() // Change potentiellement l'état du joueur
         {
             AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, PointDestination.transform.position, Calcul.Coord.Y);
 

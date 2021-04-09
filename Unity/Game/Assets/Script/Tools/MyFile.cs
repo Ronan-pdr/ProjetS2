@@ -2,45 +2,11 @@
 
 namespace Script.Tools
 {
-    public class NodeFile<T>
-    {
-        private NodeFile<T> _after;
-        private T _key;
-
-        // getters et setters
-        public T Key
-        {
-            get => _key;
-        }
-        public NodeFile<T> After
-        {
-            // attribut
-            get => _after;
-            set
-            {
-                if (value == this)
-                    throw new Exception("You try to link a node with himself");
-
-                if (!(_after is null))
-                    throw new Exception("Impossible to change \'After\' of a node in a file");
-                
-                _after = value;
-            }
-        }
-
-        // constructeur
-        public NodeFile(T key)
-        {
-            _key = key;
-            _after = null;
-        }
-    }
-    
     public class MyFile<T>
     {
         // attribut
-        private NodeFile<T> _tete;
-        private NodeFile<T> _queue;
+        private Node<T> _tete;
+        private Node<T> _queue;
         
         // constructeur
         public MyFile()
@@ -54,7 +20,7 @@ namespace Script.Tools
 
         public void Enfiler(T key)
         {
-            NodeFile<T> node = new NodeFile<T>(key);
+            Node<T> node = new Node<T>(key);
             
             if (_tete is null)
             {
@@ -85,6 +51,40 @@ namespace Script.Tools
             }
 
             return res;
+        }
+        
+        private class Node<T>
+        {
+            private Node<T> _after;
+            private T _key;
+
+            // getters et setters
+            public T Key
+            {
+                get => _key;
+            }
+            public Node<T> After
+            {
+                // attribut
+                get => _after;
+                set
+                {
+                    if (value == this)
+                        throw new Exception("You try to link a node with himself");
+
+                    if (!(_after is null))
+                        throw new Exception("Impossible to change \'After\' of a node in a file");
+                
+                    _after = value;
+                }
+            }
+
+            // constructeur
+            public Node(T key)
+            {
+                _key = key;
+                _after = null;
+            }
         }
     }
 }

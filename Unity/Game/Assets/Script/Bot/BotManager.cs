@@ -34,7 +34,7 @@ namespace Script.Bot
             
             Bots = new List<BotClass>();
 
-            int nBot = 0;
+            int nBot = 4;
             string type;
             int indexPlayer;
             Player[] players = PhotonNetwork.PlayerList;

@@ -6,8 +6,22 @@ using UnityEngine;
 
 namespace Script.TeteChercheuse
 {
+    
+    
     public class BodyGaz : BodyChercheur
     {
+        private class Node
+        {
+            private Node After { get; }
+            private Vector3 Key { get; }
+
+            public Node(Node after, Vector3 key)
+            {
+                After = after;
+                Key = key;
+            }
+        }
+        
         enum Etat
         {
             Attente,
@@ -145,6 +159,7 @@ namespace Script.TeteChercheuse
             
             CheckPosition();
 
+            // est ce que le gaz est arrivé à destination
             if (Calcul.Distance(Tr.position, Destination.transform.position, Calcul.Coord.Y) < bond)
             {
                 Destroy(gameObject);
