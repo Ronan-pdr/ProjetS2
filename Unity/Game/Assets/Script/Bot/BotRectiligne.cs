@@ -137,8 +137,7 @@ namespace Script.Bot
         {
             SetMoveAmount(new Vector3(0, 0, 1), WalkSpeed);
         
-            anim.enabled = true;
-            anim.Play("Avant");
+            ActiverAnimation("Avant");
         }
 
         protected override void FiniDeTourner()

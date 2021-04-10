@@ -92,7 +92,15 @@ public class Launcher : MonoBehaviourPunCallbacks
     
     public void StartGame()
     {
-        PhotonNetwork.LoadLevel(1);
+        if (PhotonNetwork.MasterClient.NickName == "Labyrinthe")
+        {
+            PhotonNetwork.LoadLevel(2);
+        }
+        else
+        {
+            PhotonNetwork.LoadLevel(1);
+        }
+        
     }
     
     //Est appelé par un boutton

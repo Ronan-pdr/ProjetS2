@@ -35,7 +35,7 @@ namespace Script.Bot
             
             Bots = new List<BotClass>();
 
-            int nBot = 3;
+            int nBot = 2;
             string type;
             int indexPlayer;
             Player[] players = PhotonNetwork.PlayerList;
@@ -79,9 +79,6 @@ namespace Script.Bot
 
                 float distWithFuyard = Calcul.Distance(posFuyard, posBot);
                 float distWithChasseur = Calcul.Distance(posChasseur, posBot);
-                
-                Debug.Log($"fuy = {distWithFuyard}");
-                Debug.Log($"cha = {distWithChasseur}");
 
                 if (3 < distWithFuyard && distWithFuyard < minDist && distWithFuyard < distWithChasseur)
                 {
@@ -92,11 +89,11 @@ namespace Script.Bot
             
             Debug.Log($"best = {bestPos}");
 
-            if (bestPos == Vector3.up) // aucun bon spot
+            if (SimpleMath.IsEncadré(bestPos, Vector3.zero)) // aucun bon spot
             {
-                return Vector3.up;
+                return Vector3.zero;
             }
-            
+
             // y'a un bon spot et je vais répupérer la position
             // du cross point le plus proche
             CrossManager crossMan = CrossManager.Instance;
@@ -116,6 +113,8 @@ namespace Script.Bot
                     minDist = dist;
                 }
             }
+            
+            Debug.Log($"dest in botmanager = {res}");
 
             return res;
         }

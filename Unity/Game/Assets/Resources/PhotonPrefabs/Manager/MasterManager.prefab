@@ -43,7 +43,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5d6700a739f4b9580380d1142fc7ab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originalBodyChercheur: {fileID: 0}
+  originalBodyRectilgne: {fileID: 7475188350239458209, guid: 2048a9e2cf0bee04c8d9eb36c2785e7f, type: 3}
+  originalBodyGaz: {fileID: 8424364165130499839, guid: 866c659c271f014479473fc1e543201e, type: 3}
+  originalRayGaz: {fileID: 5939710653004678706, guid: 05224721a27744443ad888b4b3e1ef77, type: 3}
+  contour: []
+  marqueur: {fileID: 3585927519866693003, guid: 0e66d6dd787fcdd4bbb0ae626121f634, type: 3}
+  PointPath: {fileID: 5996575914678207512, guid: 56067a1d690c13c4ebf00b3e9b19ada7, type: 3}
+  capsuleBot: {fileID: 2764116466850601302, guid: 6159320856f812d4c97820308b638921, type: 3}
   dossierBodyChercheur: {fileID: 0}
   dossierBalleFusil: {fileID: 0}
-  DossierOtherBot: {fileID: 0}
+  dossierOtherBot: {fileID: 0}

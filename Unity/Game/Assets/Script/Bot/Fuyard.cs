@@ -16,7 +16,8 @@ namespace Script.Bot
         {
             Attend,
             FuiteSansPlan,
-            Fuite
+            Fuite,
+            Poule
         }
 
         private Etat etat = Etat.Attend;
@@ -27,11 +28,8 @@ namespace Script.Bot
         
         // cette liste va contenir la position des chasseurs lorsque le bot les a "vu"
         // si le bot n'en a pas vu, la liste est vide
-        private List<(Chasseur chasseur, Vector3 position)> Vus = new List<(Chasseur chasseur, Vector3 position)>();
-        
-        // masterManager
-        private MasterManager master;
-        
+        private List<(PlayerClass chasseur, Vector3 position)> Vus = new List<(PlayerClass chasseur, Vector3 position)>();
+
         // fuite
         private List<Vector3> planFuite;
         
@@ -58,7 +56,7 @@ namespace Script.Bot
             capsule.hauteur = cap.height * scale;
             capsule.rayon = cap.radius * scale;
             
-            rotationSpeed = 800;
+            rotationSpeed = 600;
             
             StartBot(); // tout le monde le fait pour qu'il soit parenter
             
@@ -106,12 +104,12 @@ namespace Script.Bot
 
         private void IsChasseurInMyVision()
         {
-            int nChasseur = master.GetNbChasseur();
+            int nPlayer = master.GetNbPlayer();
             Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
             
-            for (int i = 0; i < nChasseur; i++)
+            for (int i = 0; i < nPlayer; i++)
             {
-                Vector3 positionChasseur = master.GetChasseur(i).transform.position;
+                Vector3 positionChasseur = master.GetPlayer(i).transform.position;
 
                 float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
                     positionChasseur, Calcul.Coord.Y);
@@ -122,16 +120,16 @@ namespace Script.Bot
 
                     if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
                     {
-                        if (hit.collider.GetComponent<Chasseur>()) // si l'obstacle est le chasseur alors le bot "VOIT" le chasseur
+                        if (hit.collider.GetComponent<PlayerClass>()) // si l'obstacle est le chasseur alors le bot "VOIT" le chasseur
                         {
-                            NewVu(hit.collider.GetComponent<Chasseur>());
+                            NewVu(hit.collider.GetComponent<PlayerClass>());
                         }
                     }
                 }
             }
         }
 
-        private void NewVu(Chasseur vu) // en gros, changement de direction
+        private void NewVu(PlayerClass vu) // en gros, changement de direction
         {
             int i;
             int len = Vus.Count;
@@ -143,13 +141,28 @@ namespace Script.Bot
             else
                 Vus.Add((vu, vu.transform.position)); // on le rajoute
             
-            Debug.Log($"J'ai vu {Vus.Count} chasseurs différents");
-            
             // cherche un plan bien rodé vers une destination stratégique
-            Vector3 dest = BotManager.Instance.GetGoodSpot(this, Vus[0].position);
-            RayGaz.GetPath(Tr.position, dest, this);
+            Vector3 dest;
+            if (master.GetTypeScene() == MasterManager.TypeScene.Game)
+            {
+                dest = BotManager.Instance.GetGoodSpot(this, Vus[0].position);
+            }
+            else
+            {
+                dest = master.destinationFuyard.transform.position;
+            }
 
-            etat = Etat.FuiteSansPlan;
+            if (SimpleMath.IsEncadré(dest, Vector3.zero)) // aucun bon spot
+            {
+                // n'a pas de destination
+                etat = Etat.Poule;
+                ActiverAnimation("Assis");
+            }
+            else // attend son plan de fuite
+            {
+                RayGaz.GetPath(Tr.position, dest, this);
+                etat = Etat.FuiteSansPlan;
+            }
         }
 
         public void RecepRayGaz(List<Vector3> path)
@@ -157,7 +170,8 @@ namespace Script.Bot
             if (path.Count == 0)
             {
                 // n'a pas de destination, n'a vraiment pas de plan...
-                //etat = Etat.Attend;
+                etat = Etat.Poule;
+                ActiverAnimation("Assis");
             } 
             else
             {
@@ -203,7 +217,7 @@ namespace Script.Bot
             Vector3 dest = planFuite[len - 1];
             
             // s'il a finit une étape de son plan
-            if (Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 1f)
+            if (Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.8f)
             {
                 planFuite.RemoveAt(len - 1);
                 

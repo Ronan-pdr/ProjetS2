@@ -138,6 +138,15 @@ namespace Script.EntityPlayer
             }
         }
         
+        // animation
+        
+        protected void ActiverAnimation(string strAnimation)
+        {
+            anim.enabled = true;
+            anim.Play(strAnimation);
+        }
+        
+        // surchargeur
         public static bool operator !=(Humanoide hum1, Humanoide hum2)
         {
             return !(hum1 == hum2);

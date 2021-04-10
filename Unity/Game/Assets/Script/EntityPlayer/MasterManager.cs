@@ -24,6 +24,7 @@ namespace Script.EntityPlayer
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
         [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
         [SerializeField] private GameObject[] contour;
+        public GameObject destinationFuyard;
         public GameObject marqueur;
         public GameObject PointPath;
 
@@ -31,6 +32,7 @@ namespace Script.EntityPlayer
 
         [SerializeField] private Transform dossierBodyChercheur; // ranger les 'BodyChercheur'
         [SerializeField] private Transform dossierBalleFusil; // ranger les 'BalleFusil'
+        [SerializeField] private Transform dossierRayGaz; // ranger les marqueurs des 'RayGaz'
         
         [SerializeField] private Transform dossierOtherBot; // le dossier où les bots que ton ordinateur ne contrôle pas seront rangés
         
@@ -74,6 +76,15 @@ namespace Script.EntityPlayer
             Chassé = 1,
             Spectateur = 2
         }
+        
+        // pour savoir sur quel scène nous sommes
+        public enum TypeScene
+        {
+            Game,
+            Labyrinthe
+        }
+
+        [SerializeField] private TypeScene scene;
 
         // Getter
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -90,9 +101,11 @@ namespace Script.EntityPlayer
         public RayGaz GetOriginalRayGaz() => originalRayGaz;
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
+        public Transform GetDossierRayGaz() => dossierRayGaz;
         public Transform GetDossierOtherBot() => dossierOtherBot;
         public GameObject[] GetContour() => contour;
         public CapsuleCollider GetCapsuleBot() => capsuleBot;
+        public TypeScene GetTypeScene() => scene;
         public string GetNameBot(Player player)
         {
             int i;
@@ -174,7 +187,7 @@ namespace Script.EntityPlayer
             Random random = new Random();
             for (int i = 0; i < nParticipant; i++)
             {
-                if (i == 0) // pour l'instant, seul le premier de liste est un chasseur 
+                if (i == 5) // pour l'instant, seul le premier de liste est un chasseur 
                 {
                     indexSpot = listChasseur[random.Next(listChasseur.Count)];
                     listChasseur.Remove(indexSpot);
@@ -216,6 +229,11 @@ namespace Script.EntityPlayer
                 }
 
                 EnvoieDuTypeJoueurs = true;
+            }
+
+            if (scene == TypeScene.Labyrinthe)
+            {
+                return;
             }
 
             // ce if s'active lorsque tous les joueurs ont créé leur avatar et l'ont ajouté à la liste 'players'

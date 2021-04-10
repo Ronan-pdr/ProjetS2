@@ -23,16 +23,18 @@ namespace Script.Test
             }
         }
 
-        public static void CreateMarqueur(Vector3 position)
+        public static GameObject CreateMarqueur(Vector3 position)
         {
-            GameObject g = Instantiate(MasterManager.Instance.marqueur, position, Quaternion.identity);
-            g.transform.parent = MasterManager.Instance.GetDossierBodyChercheur();
+            GameObject g = Instantiate(MasterManager.Instance.marqueur, position + Vector3.up * 0.8f, Quaternion.identity);
+            g.transform.parent = MasterManager.Instance.GetDossierRayGaz();
+
+            return g;
         }
         
         public static void CreatePointPath(Vector3 position)
         {
             GameObject g = Instantiate(MasterManager.Instance.PointPath, position + Vector3.up * 1, Quaternion.identity);
-            g.transform.parent = MasterManager.Instance.GetDossierBodyChercheur();
+            g.transform.parent = MasterManager.Instance.GetDossierRayGaz();
         }
     }
 }

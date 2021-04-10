@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Script.EntityPlayer;
 using Script.Test;
 using Script.Tools;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Script.TeteChercheuse
 {
@@ -34,7 +36,7 @@ namespace Script.TeteChercheuse
         private int width;
         
         // calculer la complexité
-        private float begin;
+        private Stopwatch time;
 
         // cette file contient des positions valides (mais il y est peut-être déjà allé)
         // où il devra se répendre autour
@@ -75,13 +77,14 @@ namespace Script.TeteChercheuse
             CapsuleCollider cap = MasterManager.Instance.GetCapsuleBot();
             float scale = cap.transform.localScale.y;
             capsule.hauteur = cap.height * scale;
-            capsule.rayon = cap.radius * scale * 2;
+            capsule.rayon = cap.radius * scale;
             
             // initialiser destination
             destination = posDestination;
             
             // enregistrer temps au début de la recherche
-            begin = Time.time;
+            time = new Stopwatch();
+            time.Start();
 
             // enfiler la première position and Let's this party started
             Node first = new Node(null, posInitiale);
@@ -112,7 +115,7 @@ namespace Script.TeteChercheuse
                     node = file.Defiler();
                 
                 // temporaire
-                //TestRayGaz.CreateMarqueur(node.Position);
+                TestRayGaz.CreateMarqueur(node.Position);
 
                 // devant
                 NewPosition(node, Vector3.forward, bond);
@@ -144,8 +147,9 @@ namespace Script.TeteChercheuse
             }
             else if (Arrivé(node.Position))
             {
+                time.Stop();
                 // bien arrivé
-                Debug.Log($"Le gaz s'est répendu en {Time.time - begin} senconde(s)");
+                Debug.Log($"Le gaz s'est répendu en {time.ElapsedMilliseconds} milisecondes");
                 Lanceur.RecepRayGaz(GetBestPath(node));
                 Destroy(gameObject); // c'est fini donc il se détruit
             }

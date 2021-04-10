@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
@@ -15,6 +16,9 @@ namespace Script.EntityPlayer
         protected Vector3 MoveAmount;
         private Vector3 smoothMoveVelocity;
         private float smouthTime = 0.15f;
+        
+        // masterManager
+        protected MasterManager master;
         
         // Getter
         public string GetTypeEntity()
@@ -36,7 +40,12 @@ namespace Script.EntityPlayer
 
             return type;
         }
-        
+
+        private void Start()
+        {
+            master = MasterManager.Instance;
+        }
+
         //Setter
         protected void SetRbTr()
         {
