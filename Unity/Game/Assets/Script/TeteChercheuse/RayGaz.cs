@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Script.TeteChercheuse
 {
-    public class RayGaz
+    public class RayGaz : MonoBehaviour
     {
         private class Node
         {
@@ -20,7 +20,8 @@ namespace Script.TeteChercheuse
                 Position = p;
             }
         }
-        
+
+        private ISReceveurRayGaz Lanceur;
         private Vector3 coordOrigin;
 
         // Quelle est la distance qu'il va parcourir losqu'il va se déplacer ?
@@ -44,10 +45,12 @@ namespace Script.TeteChercheuse
         
         // destination
         private Vector3 destination;
-        
+
         // constructeur
-        public RayGaz(Vector3 posInitiale, Vector3 posDestination)
+        private void Instancier(Vector3 posInitiale, Vector3 posDestination, ISReceveurRayGaz lanceur)
         {
+            Lanceur = lanceur;
+            
             // légèrement modifier la position initilae en fonction du bond
             // c'est pour que les positions soit toujours bien calé avec la matrice
             posInitiale -= SimpleMath.Mod(posInitiale, bond) + Vector3.up * 0f;
@@ -76,6 +79,9 @@ namespace Script.TeteChercheuse
             
             // initialiser destination
             destination = posDestination;
+            
+            // enregistrer temps au début de la recherche
+            begin = Time.time;
 
             // enfiler la première position and Let's this party started
             Node first = new Node(null, posInitiale);
@@ -84,22 +90,26 @@ namespace Script.TeteChercheuse
             CheckPosition(first);
         }
 
-        public static List<Vector3> GetPath(Vector3 depart, Vector3 destination)
+        // ce qu'on l'on est amené à appeler dans les autres classes
+        // s'il n'y a aucun chemin possible, renvoie une liste vide
+        public static void GetPath(Vector3 depart, Vector3 destination, ISReceveurRayGaz lanceur)
         {
-            RayGaz rayGaz = new RayGaz(depart, destination);
-            
-            return rayGaz.Resarch();
+            RayGaz rayGaz = Instantiate(MasterManager.Instance.GetOriginalRayGaz(), Vector3.up * 50, Quaternion.identity);
+
+            rayGaz.Instancier(depart, destination, lanceur);
         }
 
-        private List<Vector3> Resarch()
+        // la fonction principale du rayGaz
+        // inspiré du parcours largeur
+        private void Update()
         {
-            // enreegistrer temps au début de la recherche
-            begin = Time.time;
+            // Impossible que la file soit empty ici
+            Node node = file.Defiler();
             
-            Node node;
-            do
+            for (int i = 0; i < 50 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
             {
-                node = file.Defiler();
+                if (i > 0)
+                    node = file.Defiler();
                 
                 // temporaire
                 //TestRayGaz.CreateMarqueur(node.Position);
@@ -123,19 +133,22 @@ namespace Script.TeteChercheuse
                 NewPosition(node, new Vector3(1, 0, -1), maxDist);
                 // derrière - gauche
                 NewPosition(node, new Vector3(-1, 0, -1), maxDist);
-
-            } while (!file.IsEmpty() && !Arrivé(node.Position));
+            }
 
             if (file.IsEmpty())
             {
                 Debug.Log("Il existe aucun chemin pour y accéder");
 
-                return null;
+                Lanceur.RecepRayGaz(new List<Vector3>());
+                Destroy(gameObject); // c'est fini donc il se détruit
             }
-            
-            // bien arrivé
-            Debug.Log($"Le gaz s'est répendu en {Time.time - begin} senconde(s)");
-            return GetBestPath(node);
+            else if (Arrivé(node.Position))
+            {
+                // bien arrivé
+                Debug.Log($"Le gaz s'est répendu en {Time.time - begin} senconde(s)");
+                Lanceur.RecepRayGaz(GetBestPath(node));
+                Destroy(gameObject); // c'est fini donc il se détruit
+            }
         }
 
         private void CheckPosition(Node node)
@@ -193,9 +206,9 @@ namespace Script.TeteChercheuse
             // bas du corps (vers le haut des pieds)
             Vector3 basDuCorps = position + Vector3.up * cap.rayon;
             
-            if (Physics.CapsuleCast(hautDuCorps, basDuCorps, cap.rayon, direction, maxDistance))
+            if (Physics.CapsuleCast(hautDuCorps, basDuCorps, cap.rayon, direction, out RaycastHit hit, maxDistance))
             {
-                return false;
+                return hit.collider.GetComponent<Entity>();
             }
 
             return true;
@@ -236,5 +249,10 @@ namespace Script.TeteChercheuse
         {
             return (int)((p.z - coordOrigin.z) / bond);
         }
+    }
+
+    public interface ISReceveurRayGaz
+    {
+        public void RecepRayGaz(List<Vector3> path);
     }
 }

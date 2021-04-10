@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Script.TeteChercheuse;
 using UnityEngine;
 
 namespace Script.Tools
@@ -42,6 +44,22 @@ namespace Script.Tools
         {
             return SimpleMath.Abs(a - b);
         }
+        
+        // la distance en prenant en compte les obstacles
+        // IMPORTANT : exclut y
+        /*public static float GetRealDistance(Vector3 a, Vector3 b)
+        {
+            List<Vector3> path = RayGaz.GetPath(a, b);
+            int len = path.Count;
+
+            float res = 0;
+            for (int i = 1; i < len; i++)
+            {
+                res += Distance(path[i - 1], path[i]);
+            }
+
+            return res;
+        }*/
 
         public static float Norme(float x, float y, float z)
         {

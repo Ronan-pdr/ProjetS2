@@ -9,12 +9,13 @@ using UnityEngine;
 
 namespace Script.Bot
 {
-    public class Fuyard : BotClass
+    public class Fuyard : BotClass, ISReceveurRayGaz
     {
         // Etat
         protected enum Etat
         {
             Attend,
+            FuiteSansPlan,
             Fuite
         }
 
@@ -83,11 +84,13 @@ namespace Script.Bot
             
             // quoi que soit son état, il fait ça
             UpdateBot();
-            
+
 
             if (etat == Etat.Fuite)
+            {
                 Fuir();
-            else
+            }
+            else if (etat == Etat.Attend)
             {
                 IsChasseurInMyVision();
             }
@@ -140,15 +143,33 @@ namespace Script.Bot
             else
                 Vus.Add((vu, vu.transform.position)); // on le rajoute
             
-            // part en cavale avec un plan bien rodé vers une destination stratégique
-            Vector3 dest = CrossManager.Instance.GetPosition(1);
-            planFuite = RayGaz.GetPath(Tr.position, dest);
-            etat = Etat.Fuite;
+            Debug.Log($"J'ai vu {Vus.Count} chasseurs différents");
             
-            /*foreach (Vector3 p in planFuite)
+            // cherche un plan bien rodé vers une destination stratégique
+            Vector3 dest = BotManager.Instance.GetGoodSpot(this, Vus[0].position);
+            RayGaz.GetPath(Tr.position, dest, this);
+
+            etat = Etat.FuiteSansPlan;
+        }
+
+        public void RecepRayGaz(List<Vector3> path)
+        {
+            if (path.Count == 0)
             {
-                TestRayGaz.CreatePointPath(p);
-            }*/
+                // n'a pas de destination, n'a vraiment pas de plan...
+                //etat = Etat.Attend;
+            } 
+            else
+            {
+                // part en cavale
+                planFuite = path;
+                etat = Etat.Fuite;
+            
+                foreach (Vector3 p in planFuite)
+                {
+                    TestRayGaz.CreatePointPath(p);
+                }
+            }
         }
 
         /*private void OldFuite()
@@ -182,7 +203,7 @@ namespace Script.Bot
             Vector3 dest = planFuite[len - 1];
             
             // s'il a finit une étape de son plan
-            if (Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.5f)
+            if (Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 1f)
             {
                 planFuite.RemoveAt(len - 1);
                 

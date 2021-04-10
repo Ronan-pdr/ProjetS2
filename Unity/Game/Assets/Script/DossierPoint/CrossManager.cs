@@ -35,6 +35,11 @@ namespace Script.DossierPoint
         public int GetNumberPoint() => crossPoints.Length;
         public CrossPoint GetPoint(int index) => crossPoints[index];
         
+        public static bool IsMaintenance()
+        {
+            return PhotonNetwork.PlayerList.Length == 1 && PhotonNetwork.LocalPlayer.NickName == "maintenance";
+        }
+        
         public (Vector3, int) GetRandomPosition(int previousIndex)
         {
             int len = crossPoints.Length;
@@ -55,9 +60,7 @@ namespace Script.DossierPoint
         {
             if (index >= crossPoints.Length)
             {
-                Debug.Log("GetPostion cross manager : index out of range");
-                Debug.Log("Mais je fais un modulo rien que pour tes beaux yeux");
-                index = SimpleMath.Mod(index, crossPoints.Length);
+                throw new Exception("index out of range");
             }
             
             return crossPoints[index].transform.position;
@@ -182,11 +185,6 @@ namespace Script.DossierPoint
                     Debug.Log("WARNING : Le fichier de sauvegarde des crossPoints n'est pas compatible avec les crossPoint --> faire une maintenance");
                 }
             }
-        }
-
-        public static bool IsMaintenance()
-        {
-            return PhotonNetwork.PlayerList.Length == 1 && PhotonNetwork.LocalPlayer.NickName == "maintenance";
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
 using Script.TeteChercheuse;

@@ -6,14 +6,17 @@ using UnityEngine;
 
 namespace Script.Test
 {
-    public class TestRayGaz : Entity
+    public class TestRayGaz : Entity, ISReceveurRayGaz
     {
         [SerializeField] private GameObject destination;
 
         private void Start()
         {
-            List<Vector3> path = RayGaz.GetPath(gameObject.transform.position, destination.transform.position);
-
+            RayGaz.GetPath(gameObject.transform.position, destination.transform.position, this);
+        }
+        
+        public void RecepRayGaz(List<Vector3> path)
+        {
             foreach (Vector3 p in path)
             {
                 CreatePointPath(p);

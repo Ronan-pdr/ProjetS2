@@ -22,6 +22,7 @@ namespace Script.EntityPlayer
         [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
         
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
+        [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
         [SerializeField] private GameObject[] contour;
         public GameObject marqueur;
         public GameObject PointPath;
@@ -86,6 +87,7 @@ namespace Script.EntityPlayer
         public Chassé GetChassé(int index) => chassés[index];
         public BodyRectilgne GetOriginalBodyRectilgne() => originalBodyRectilgne;
         public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
+        public RayGaz GetOriginalRayGaz() => originalRayGaz;
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
         public Transform GetDossierOtherBot() => dossierOtherBot;

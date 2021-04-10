@@ -119,12 +119,12 @@ namespace Script.EntityPlayer
 
         public static bool operator ==(Humanoide hum1, Humanoide hum2)
         {
-            if ((object)hum1 is null || (object)hum2 is null)
+            if (hum1 is null || hum2 is null)
             {
                 Debug.Log("WARNING : Tu as testé l'égalité de deux humains dont au moins un est null");
                 return false;
             }
-
+            
             try
             {
                 return hum1.name == hum2.name;
@@ -136,7 +136,6 @@ namespace Script.EntityPlayer
                 
                 return false;
             }
-            
         }
         
         public static bool operator !=(Humanoide hum1, Humanoide hum2)

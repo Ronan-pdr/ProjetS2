@@ -53,17 +53,17 @@ namespace Script.Tools
             return res;
         }
         
-        private class Node<T>
+        private class Node<TN>
         {
-            private Node<T> _after;
-            private T _key;
+            private Node<TN> _after;
+            private TN _key;
 
             // getters et setters
-            public T Key
+            public TN Key
             {
                 get => _key;
             }
-            public Node<T> After
+            public Node<TN> After
             {
                 // attribut
                 get => _after;
@@ -80,7 +80,7 @@ namespace Script.Tools
             }
 
             // constructeur
-            public Node(T key)
+            public Node(TN key)
             {
                 _key = key;
                 _after = null;
