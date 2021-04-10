@@ -191,13 +191,15 @@ namespace Script.EntityPlayer
                 {
                     indexSpot = listChasseur[random.Next(listChasseur.Count)];
                     listChasseur.Remove(indexSpot);
+                    
                     listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int)TypePlayer.Chasseur;
                 }
                 else
                 {
                     indexSpot = listChassé[random.Next(listChassé.Count)];
                     listChassé.Remove(indexSpot);
-                    listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int)TypePlayer.Chassé;
+
+                    listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int) TypePlayer.Chassé;
                 }
             }
         }
