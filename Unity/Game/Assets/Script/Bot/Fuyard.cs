@@ -179,10 +179,10 @@ namespace Script.Bot
                 planFuite = path;
                 etat = Etat.Fuite;
             
-                foreach (Vector3 p in planFuite)
+                /*foreach (Vector3 p in planFuite)
                 {
                     TestRayGaz.CreatePointPath(p);
-                }
+                }*/
             }
         }
 
@@ -217,7 +217,7 @@ namespace Script.Bot
             Vector3 dest = planFuite[len - 1];
             
             // s'il a finit une étape de son plan
-            if (Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.8f)
+            if (Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.5f)
             {
                 planFuite.RemoveAt(len - 1);
                 

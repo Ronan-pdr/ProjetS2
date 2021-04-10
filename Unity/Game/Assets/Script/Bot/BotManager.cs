@@ -35,7 +35,7 @@ namespace Script.Bot
             
             Bots = new List<BotClass>();
 
-            int nBot = 2;
+            int nBot = 25;
             string type;
             int indexPlayer;
             Player[] players = PhotonNetwork.PlayerList;
@@ -44,7 +44,7 @@ namespace Script.Bot
 
             for (int i = 0; i < nBot; i++) // Instancier, ranger (dans la liste) et positionner sur la map tous les bots
             {
-                if (i <= 2)
+                if (i <= 25)
                     type = "Fuyard";
                 else
                     type = "BotRectiligne";

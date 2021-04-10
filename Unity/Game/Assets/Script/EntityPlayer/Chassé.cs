@@ -66,7 +66,7 @@ namespace Script.EntityPlayer
         }
         
         // Labyrinthe
-        private int nCallouMax = 5;
+        private int nCallouMax = 50;
         private int nCaillou;
 
         private List<GameObject> caillous = new List<GameObject>();

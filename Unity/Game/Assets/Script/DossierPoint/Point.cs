@@ -9,9 +9,6 @@ namespace Script.DossierPoint
     
         private void Awake()
         {
-            if (this is CrossPoint && MasterManager.Instance.IsInCrossPointMaintenance())
-                return;
-            
             graphics.SetActive(false);
         }
     }

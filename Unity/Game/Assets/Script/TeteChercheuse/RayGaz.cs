@@ -109,13 +109,13 @@ namespace Script.TeteChercheuse
             // Impossible que la file soit empty ici
             Node node = file.Defiler();
             
-            for (int i = 0; i < 50 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
+            for (int i = 0; i >= 0 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
             {
                 if (i > 0)
                     node = file.Defiler();
                 
                 // temporaire
-                TestRayGaz.CreateMarqueur(node.Position);
+                //TestRayGaz.CreateMarqueur(node.Position);
 
                 // devant
                 NewPosition(node, Vector3.forward, bond);
@@ -229,7 +229,7 @@ namespace Script.TeteChercheuse
             while (node.After != null)
             {
                 nextNode = node.After;
-                for (int i = 0; i >= 0 && nextNode.After != null && CanIPass(capsule, node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
+                for (int i = 0; i <= 2 && nextNode.After != null && CanIPass(capsule, node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
                     Calcul.Distance(nextNode.After.Position, node.Position)); i++)
                 {
                     nextNode = nextNode.After;
