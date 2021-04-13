@@ -14,7 +14,6 @@ namespace Script.EntityPlayer
         private int armeIndex;
         private int previousArmeIndex = -1;
     
-        //Getter
         private void Awake()
         {
             AwakePlayer();

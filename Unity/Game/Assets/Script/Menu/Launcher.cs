@@ -46,7 +46,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
-        MenuManager.Instance.OpenMenu("login");
+        MenuManager.Instance.OpenMenu("title");
         Debug.Log("Joined Lobby");
         SavePlayerName();
     }
@@ -92,8 +92,15 @@ public class Launcher : MonoBehaviourPunCallbacks
     
     public void StartGame()
     {
-        Debug.Log("la");
-        PhotonNetwork.LoadLevel(1);
+        if (PhotonNetwork.MasterClient.NickName == "Labyrinthe")
+        {
+            PhotonNetwork.LoadLevel(2);
+        }
+        else
+        {
+            PhotonNetwork.LoadLevel(1);
+        }
+        
     }
     
     //Est appelé par un boutton
@@ -138,15 +145,11 @@ public class Launcher : MonoBehaviourPunCallbacks
         Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
-    void StartName()
-    {
-        SetUpInputField();
-    }
-
     public void SetUpInputField()
     {
         if (!PlayerPrefs.HasKey(PlayerPrefsNameKey))
             return;
+        
         string defaultName = PlayerPrefs.GetString(PlayerPrefsNameKey);
         nameInputField.text = defaultName;
         SetPlayerName(defaultName);
