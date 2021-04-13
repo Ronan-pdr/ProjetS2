@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+#généralronan{
+    padding-top: 100px;
+    display: flex;
+    overflow: auto;
+    justify-content: space-evenly;
+}
+
+#imagesetupronan{
+    margin-left: 0.1%;
+}
+
+#CQLPNAronan h2{
+    font-family: 'Bebas Neue', cursive;
+    font-size: 42px;
+}
+
+#CQLPNAronan{
+    background-color: rgb(39, 98, 194);
+    text-align: center;
+    padding-top:7.5%;
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
