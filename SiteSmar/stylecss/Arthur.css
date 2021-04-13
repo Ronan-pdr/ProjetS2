@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+#généralarthur{
+    background-image: url('../Images/photo_arthur_background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-top: 100px;
+    overflow: auto;
+    height: 700px;
+    padding-right: 40%;
+    padding-top: 5%;
+}
+
+#CQLPNAarthur h2{
+    font-family: 'Bebas Neue', cursive;
+    font-size: 42px;
+    padding-top: 5%;
+}
+#CQLPNAarthur{
+    margin-left: 25%;
+    margin-top: 10%;
+    background-color:rgb(139, 125, 90);
+    width: 100%;
+    height: 50%;
+    text-align: center;
+}
+
+#CQLPNAarthur p{
+    padding-left: 10%;
+    padding-right: 10%;
+}

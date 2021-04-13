@@ -1,0 +1,10 @@
+#patchmain{
+    text-align: center;
+    position:relative;
+    width: 80%;
+    margin: auto;
+}
+
+#patchmain li{
+    list-style: none;
+}
