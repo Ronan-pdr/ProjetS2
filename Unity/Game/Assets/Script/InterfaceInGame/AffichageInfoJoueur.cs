@@ -20,7 +20,7 @@ namespace Script.InterfaceInGame
 
         public void Update()
         {
-            if (player == null)
+            if (player is null)
                 return;
             
             text.text = (player is Chassé?"Chassé":"Chasseur") + Environment.NewLine; // le type

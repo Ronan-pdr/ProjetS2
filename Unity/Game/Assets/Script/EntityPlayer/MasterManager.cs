@@ -19,9 +19,21 @@ namespace Script.EntityPlayer
         public static MasterManager Instance;
         
         // les prefabs
-        [SerializeField] private BodyChercheur originalBodyChercheur; // prefab des body
+        [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
+        
+        [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
+        [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
+        [SerializeField] private GameObject[] contour;
+        public GameObject destinationFuyard;
+        public GameObject marqueur;
+        public GameObject PointPath;
+
+        [SerializeField] private CapsuleCollider capsuleBot;
+
         [SerializeField] private Transform dossierBodyChercheur; // ranger les 'BodyChercheur'
         [SerializeField] private Transform dossierBalleFusil; // ranger les 'BalleFusil'
+        [SerializeField] private Transform dossierRayGaz; // ranger les marqueurs des 'RayGaz'
+        
         [SerializeField] private Transform dossierOtherBot; // le dossier où les bots que ton ordinateur ne contrôle pas seront rangés
         
         // nombre de participant (sera utilisé pour déterminer le moment lorsque tous les joueurs auront instancié leur playerController)
@@ -35,7 +47,6 @@ namespace Script.EntityPlayer
 
         // attribut relatif à ton avatar
         private PlayerClass ownPlayer;
-        private string typeOwnPlayer; // c'est le masterManager qui envoie le type via un hash
         
         // attribut que seul le masterClient utilisera
         // la string contenant les infos du joueur seront sous la forme :
@@ -49,6 +60,15 @@ namespace Script.EntityPlayer
         // cette liste va servir à donner les noms à chaque bot
         private int[] nBotParJoueur;
         
+        // si maintenance != None alors y'a pas de jeu
+        private TypeMaintenance Maintenance;
+
+        public enum TypeMaintenance
+        {
+            None,
+            CrossManager // la recherche des voisins de chaque SpawnPoint
+        }
+        
         // Enum pour la création des joueurs
         public enum TypePlayer
         {
@@ -56,21 +76,36 @@ namespace Script.EntityPlayer
             Chassé = 1,
             Spectateur = 2
         }
+        
+        // pour savoir sur quel scène nous sommes
+        public enum TypeScene
+        {
+            Game,
+            Labyrinthe
+        }
+
+        [SerializeField] private TypeScene scene;
 
         // Getter
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
         public int GetNbPlayer() => players.Count;
         public int GetNbChasseur() => chasseurs.Count;
         public int GetNbChassé() => chassés.Count;
+        public PlayerClass GetOwnPlayer() => ownPlayer;
         public List<PlayerClass> GetListPlayer() => players;
         public PlayerClass GetPlayer(int index) => players[index];
         public Chasseur GetChasseur(int index) => chasseurs[index];
         public Chassé GetChassé(int index) => chassés[index];
-        public PlayerClass GetOwnPlayer() => ownPlayer;
-        public BodyChercheur GetOriginalBodyChercheur() => originalBodyChercheur;
+        public BodyRectilgne GetOriginalBodyRectilgne() => originalBodyRectilgne;
+        public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
+        public RayGaz GetOriginalRayGaz() => originalRayGaz;
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
+        public Transform GetDossierRayGaz() => dossierRayGaz;
         public Transform GetDossierOtherBot() => dossierOtherBot;
+        public GameObject[] GetContour() => contour;
+        public CapsuleCollider GetCapsuleBot() => capsuleBot;
+        public TypeScene GetTypeScene() => scene;
         public string GetNameBot(Player player)
         {
             int i;
@@ -78,13 +113,19 @@ namespace Script.EntityPlayer
             {} // cherche l'index du joueur
             
             nBotParJoueur[i] += 1;
-            return player.NickName + "Bot" +  nBotParJoueur[i];
+            return player.NickName + "Bot" + nBotParJoueur[i];
         }
+
+        public bool IsInMaintenance() => Maintenance != TypeMaintenance.None;
+        public bool IsInCrossPointMaintenance() => Maintenance == TypeMaintenance.CrossManager;
         
         //Setter
         public void SetOwnPlayer(PlayerClass value)
         {
-            ownPlayer = value;
+            if (ownPlayer is null)
+                ownPlayer = value;
+            else
+                throw new Exception("Un script a tenté de réinitialiser la variable ownPLayer");
         }
         public void AjoutPlayer(PlayerClass player)
         {
@@ -104,6 +145,20 @@ namespace Script.EntityPlayer
             // On peut faire ça puisqu'il y en aura qu'un seul
             Instance = this;
             
+            if (CrossManager.IsMaintenance()) // maintenance des cross point
+            {
+                Debug.Log("Début Maintenance des CrossPoints");
+                Maintenance = TypeMaintenance.CrossManager;
+            }
+            else
+            {
+                Maintenance = TypeMaintenance.None;
+            }
+            
+            // pas de gestion de joueurs s'il y a maitenance
+            if (IsInMaintenance())
+                return;
+            
             // instancier le nombre de joueur
             nParticipant = PhotonNetwork.PlayerList.Length;
             
@@ -115,13 +170,13 @@ namespace Script.EntityPlayer
             
             // cette liste va servir à donner les noms à chaque bot
             nBotParJoueur = new int[nParticipant];
-            
-            
         }
 
         public void Start()
         {
-            if (!PhotonNetwork.IsMasterClient) // Seul le masterClient décide le type de chaque joueur, il l'envoie aux autres dans 'Update'
+            // Seul le masterClient décide le type de chaque joueur, il l'envoie aux autres dans 'Update'
+            // et s'il y a maintenance, alors il n'y a pas de joueur
+            if (!PhotonNetwork.IsMasterClient || IsInMaintenance())
                 return;
             
             listInfoCréationJoueur = new string[nParticipant]; // instancier la liste
@@ -132,23 +187,29 @@ namespace Script.EntityPlayer
             Random random = new Random();
             for (int i = 0; i < nParticipant; i++)
             {
-                if (i == 0) // pour l'instant, seul le premier de liste est un chasseur 
+                if (i == 5) // pour l'instant, seul le premier de liste est un chasseur 
                 {
                     indexSpot = listChasseur[random.Next(listChasseur.Count)];
                     listChasseur.Remove(indexSpot);
+                    
                     listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int)TypePlayer.Chasseur;
                 }
                 else
                 {
                     indexSpot = listChassé[random.Next(listChassé.Count)];
                     listChassé.Remove(indexSpot);
-                    listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int)TypePlayer.Chassé;
+
+                    listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int) TypePlayer.Chassé;
                 }
             }
         }
 
         private void Update()
         {
+            // S'il y a maintenance, il n'y a pas de joueur et pas leur gestion
+            if (IsInMaintenance())
+                return;
+            
             // J'ai implémenter des alertes qui indique les erreurs possible qui n'engendre pas forcément d'erreur de script
             if (players.Count > nParticipant)
             {
@@ -156,7 +217,7 @@ namespace Script.EntityPlayer
                 Debug.Log($"Il y a {players.Count} joueurs pour {nParticipant} participants");
                 Debug.Log("Vous préviendrez Sacha");
             }
-            
+
             // ce if sert à indiqué à tous les participants leur type de joueur (chasseur ou chassé)
             // ce if s'active losque tout le monde est déplacé son 'PlayerManager' dans le 'MasterManager' et losqu'il l'a pas déjà fait
             // seul le masterClient l'active
@@ -170,6 +231,11 @@ namespace Script.EntityPlayer
                 }
 
                 EnvoieDuTypeJoueurs = true;
+            }
+
+            if (scene == TypeScene.Labyrinthe)
+            {
+                return;
             }
 
             // ce if s'active lorsque tous les joueurs ont créé leur avatar et l'ont ajouté à la liste 'players'

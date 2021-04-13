@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
 using Script.InterfaceInGame;
+using Script.Test;
+using Script.Tools;
 
 namespace Script.EntityPlayer
 {
@@ -19,6 +22,8 @@ namespace Script.EntityPlayer
         {
             MaxHealth = 100;
             StartPlayer();
+
+            nCaillou = 0;
         }
         
         void Update()
@@ -37,6 +42,12 @@ namespace Script.EntityPlayer
 
             UpdatePlayer();
             Animation();
+
+            if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Labyrinthe)
+            {
+                PoserCaillou();
+                RetirerCaillou();
+            }
         }
 
         private void FixedUpdate()
@@ -52,6 +63,47 @@ namespace Script.EntityPlayer
             
             anim.enabled = false;
             PhotonNetwork.Destroy(gameObject);
+        }
+        
+        // Labyrinthe
+        private int nCallouMax = 50;
+        private int nCaillou;
+
+        private List<GameObject> caillous = new List<GameObject>();
+            
+        private void PoserCaillou()
+        {
+            if (Input.GetKeyDown("f"))
+            {
+                caillous.Add(TestRayGaz.CreateMarqueur(Tr.position));
+                nCaillou += 1;
+                
+                if (nCaillou == nCallouMax)
+                {
+                    SupprimerCaillou(0);
+                }
+            }
+        }
+
+        private void RetirerCaillou()
+        {
+            if (Input.GetKey("r"))
+            {
+                for (int i = caillous.Count - 1; i >= 0; i--)
+                {
+                    if (SimpleMath.IsEncadré(caillous[i].transform.position + Vector3.down * 0.8f, Tr.position))
+                    {
+                        SupprimerCaillou(i);
+                    }
+                }
+            }
+        }
+
+        private void SupprimerCaillou(int i)
+        {
+            Destroy(caillous[i]);
+            caillous.RemoveAt(i);
+            nCaillou -= 1;
         }
 
         // Animation
@@ -137,13 +189,6 @@ namespace Script.EntityPlayer
             {
                 AnimationStop();
             }
-        }
-        
-
-        private void ActiverAnimation(string strAnimation)
-        {
-            anim.enabled = true;
-            anim.Play(strAnimation);
         }
     }
 }

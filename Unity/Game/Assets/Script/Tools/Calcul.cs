@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Script.TeteChercheuse;
 using UnityEngine;
 
 namespace Script.Tools
@@ -8,7 +10,8 @@ namespace Script.Tools
         {
             X,
             Y,
-            Z
+            Z,
+            None
         }
         
         // distance entre deux points à deux coordonnées
@@ -21,7 +24,9 @@ namespace Script.Tools
             return Norme(x, y, z);
         }
 
-        public static float Distance(Vector3 a, Vector3 b, Coord coordWithout) // 
+        // fait la différence entre deux positions avec seulement deux coordonnées sans la "coordWithout",
+        // si elle est égale à None, c'est avec les trois coordonnées
+        public static float Distance(Vector3 a, Vector3 b, Coord coordWithout)
         {
             (float x, float y, float z) = (0, 0, 0);
             if (coordWithout != Coord.X)
@@ -39,6 +44,22 @@ namespace Script.Tools
         {
             return SimpleMath.Abs(a - b);
         }
+        
+        // la distance en prenant en compte les obstacles
+        // IMPORTANT : exclut y
+        /*public static float GetRealDistance(Vector3 a, Vector3 b)
+        {
+            List<Vector3> path = RayGaz.GetPath(a, b);
+            int len = path.Count;
+
+            float res = 0;
+            for (int i = 1; i < len; i++)
+            {
+                res += Distance(path[i - 1], path[i]);
+            }
+
+            return res;
+        }*/
 
         public static float Norme(float x, float y, float z)
         {
@@ -56,6 +77,27 @@ namespace Script.Tools
             float diffZ = destination.z - depart.z;
             
             return new Vector3(diffX, diffY, diffZ);
+        }
+
+        public static Vector3 FromAngleToDirection(float angleY)
+        {
+            float x = SimpleMath.Sin(angleY);
+            float z = SimpleMath.Cos(angleY);
+
+            return new Vector3(x, 0, z);
+        }
+
+        public static float GiveAmoutRotation(float angle, float angleEntity)
+        {
+            // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il était à 0 degré
+            angle -= angleEntity;
+
+            if (angle > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210° (par exemple)
+                angle -= 360;
+            else if (angle < -180)
+                angle += 360;
+
+            return angle;
         }
 
         // Calcul l'angle le plus faible pour qu'un objet à la position 'depart'
@@ -84,7 +126,6 @@ namespace Script.Tools
                 opposé = 0;
                 adjacent = 0;
             }
-                
 
             float amountRotation;
             if (opposé == 0)
@@ -113,16 +154,8 @@ namespace Script.Tools
                         amountRotation += 180; // amountRotation était négatif
                 }
             }
-        
-            // On doit ajouter sa rotation initiale à la rotation qu'il devait faire s'il était à 0 degré
-            amountRotation -= rotationInitiale; // eulerAngles pour récupérer l'angle en degré
 
-            if (amountRotation > 180) // Le degré est déjè valide, seulement, il est préférable de tourner de -150° que de 210° (par exemple)
-                amountRotation -= 360;
-            else if (amountRotation < -180)
-                amountRotation += 360;
-
-            return amountRotation;
+            return GiveAmoutRotation(amountRotation, rotationInitiale);
         }
     }
 }

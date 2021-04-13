@@ -75,6 +75,35 @@ namespace Script.TeteChercheuse
             
             MoveEntity();
         }
+        
+        private void OnTriggerEnter(Collider other)
+        {
+            OnCollisionAux(other);
+        }
+    
+        private void OnTriggerStay(Collider other)
+        {
+            OnCollisionAux(other);
+        }
+    
+        private void OnCollisionEnter(Collision other)
+        {
+            OnCollisionAux(other.collider);
+        }
+    
+        private void OnCollisionStay(Collision other)
+        {
+            OnCollisionAux(other.collider);
+        }
+
+        private void OnCollisionAux(Collider other)
+        {
+            if (other.gameObject == GetLanceur() || other.gameObject.GetComponent<TeteChercheuse>()) // Le cas où c'est avec notre propre personnage
+                return;
+    
+            SetFind(true);
+            SetHittenObj(other.gameObject);
+        }
     }
 }
 

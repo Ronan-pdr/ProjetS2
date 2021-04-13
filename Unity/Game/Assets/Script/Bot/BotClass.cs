@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Realtime;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Tools;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Script.Bot
@@ -9,9 +10,12 @@ namespace Script.Bot
     public abstract class BotClass : Humanoide
     {
         protected BotManager BotManager; // instancié lorsque le bot est créé dans son BotManager
+        
+        //Rotation
+        protected float rotationSpeed;
+        protected float AmountRotation;
     
         // Getter
-        public string GetName() => name;
 
         // Setter
         public abstract void SetBot(CrossPoint crossPoint);
@@ -20,7 +24,7 @@ namespace Script.Bot
             BotManager = value;
         }
 
-        // cette fonction indique si un bot est ton bot
+        // cette fonction indique si un bot est contrôlé par ton ordinateur
         public bool IsMyBot()
         {
             return BotManager != null;
@@ -51,17 +55,44 @@ namespace Script.Bot
             UpdateHumanoide();
         }
         
+        // Déplacement
+
+        protected abstract void FiniDeTourner();
+
+        protected void Tourner()
+        {
+            int sensRotation;
+            if (AmountRotation >= 0)
+                sensRotation = 1;
+            else
+                sensRotation = -1;
+
+            float yRot = sensRotation * rotationSpeed * Time.deltaTime;
+
+            if (SimpleMath.Abs(AmountRotation) < SimpleMath.Abs(yRot)) // Le cas où on a finis de tourner
+            {
+                Tr.Rotate(new Vector3(0, AmountRotation, 0));
+                AmountRotation = 0;
+                FiniDeTourner();
+            }
+            else
+            {
+                Tr.Rotate(new Vector3(0, yRot, 0));
+                AmountRotation -= yRot;
+            }
+        }
+        
         // GamePlay
         protected override void Die()
         {
             enabled = false;
             BotManager.Die(gameObject);
         }
-    
+
         // réception des hash
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
-            if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
+            if (!Pv.Owner.Equals(targetPlayer) || !this) // si c'est pas toi la target, tu ne changes rien
                 return;
         
             // point de vie -> TakeDamage (Humanoide)
@@ -78,7 +109,6 @@ namespace Script.Bot
                 {
                     int vie = int.Parse(deuxInfos.Substring(len - 3, 3));
                             
-                    Debug.Log($"Update de la vie de {name}");
                     CurrentHealth = vie;
                 }
             }

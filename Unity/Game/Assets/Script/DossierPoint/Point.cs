@@ -1,3 +1,4 @@
+using Script.EntityPlayer;
 using UnityEngine;
 
 namespace Script.DossierPoint
@@ -8,7 +9,7 @@ namespace Script.DossierPoint
     
         private void Awake()
         {
-            graphics.SetActive(true);
+            graphics.SetActive(false);
         }
     }
 }

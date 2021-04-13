@@ -32,9 +32,7 @@ namespace Script.EntityPlayer
     
         //Jump
         protected string touchJump = "space";
-        private float lastJump; // le temps la dernière fois que le joueur a sauté
-        private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
-    
+
         //Look
         private float verticalLookRotation; 
         private float mouseSensitivity = 3f;
@@ -62,6 +60,7 @@ namespace Script.EntityPlayer
         protected void StartPlayer()
         {
             StartHuman();
+            name = PhotonNetwork.NickName;
         
             if (!Pv.IsMine) 
             {
@@ -74,7 +73,12 @@ namespace Script.EntityPlayer
         {
             Look();
             Move();
-            Jump();
+            
+            if (Input.GetKey(touchJump) && etat == Etat.Debout)
+            {
+                Jump();
+            }
+            
         
             UpdateHumanoide();
         }
@@ -115,23 +119,13 @@ namespace Script.EntityPlayer
 
             SetMoveAmount(moveDir, speed);
         }
-    
-        private void Jump()
-        {
-            if (Input.GetKey(touchJump) && Time.time - lastJump > periodeJump && Grounded && etat == Etat.Debout) //il faut qu'il soit debout
-            {
-                JumpHumanoide();
-
-                lastJump = Time.time;
-            }
-        }
 
         void Look()
         {
             Tr.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
 
             verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -50f, 30f);
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -70f, 30f);
 
             cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
         }

@@ -1,4 +1,6 @@
 
+using System;
+using Script.TeteChercheuse;
 using UnityEngine;
 
 namespace Script.Bot
@@ -19,15 +21,19 @@ namespace Script.Bot
         
             if (other.gameObject == bot.gameObject) // si c'est son propre corps qu'il a percuté
                 return;
+
+            if (other.gameObject.GetComponent<BalleFusil>())
+            {
+                bot.Jump();
+            }
         }
 
-        private void OnCollisionExit(Collision other)
+        private void OnTriggerEnter(Collider other)
         {
-            if (!bot.IsMyBot()) // Ton ordi contrôle seulement tes bots
-                return;
-            
-            if (other.gameObject == bot.gameObject) // si c'est son propre corps qu'il a percuté
-                return;
+            if (other.GetComponent<BalleFusil>())
+            {
+                bot.Jump();
+            }
         }
     }
 }
