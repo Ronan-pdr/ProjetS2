@@ -5,37 +5,45 @@ using Photon.Pun;
 using System.IO;
 using Photon.Realtime;
 using Script.DossierPoint;
+using Script.EntityPlayer;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.InterfaceInGame;
 using Script.TeteChercheuse;
 using Script.Tools;
 using Random = System.Random;
 
-namespace Script.EntityPlayer
+namespace Script.Manager
 {
     public class MasterManager : MonoBehaviour
     {
-        //Cela permet d'y accéder facilement
         public static MasterManager Instance;
         
-        // les prefabs
+        [Header("Prefab")]
         [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
-        
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
         [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
-        [SerializeField] private GameObject[] contour;
-        public GameObject destinationFuyard;
         public GameObject marqueur;
         public GameObject PointPath;
 
-        [SerializeField] private CapsuleCollider capsuleBot;
-
+        [Header("Dossier")]
         [SerializeField] private Transform dossierBodyChercheur; // ranger les 'BodyChercheur'
         [SerializeField] private Transform dossierBalleFusil; // ranger les 'BalleFusil'
         [SerializeField] private Transform dossierRayGaz; // ranger les marqueurs des 'RayGaz'
-        
         [SerializeField] private Transform dossierOtherBot; // le dossier où les bots que ton ordinateur ne contrôle pas seront rangés
         
+        [Header("Bot")]
+        [SerializeField] private CapsuleCollider capsuleBot;
+        
+        [Header("Scene")]
+        [SerializeField] private TypeScene scene;
+        
+        [Header("Labyrinthe")]
+        [SerializeField] private GameObject destinationFuyard;
+        
+        private (float minZ, float minX, float maxZ, float maxX) contour;
+        
+        
+
         // nombre de participant (sera utilisé pour déterminer le moment lorsque tous les joueurs auront instancié leur playerController)
         private int nParticipant; // participant regroupe les joueurs ainsi que les spectateurs
 
@@ -68,23 +76,13 @@ namespace Script.EntityPlayer
             None,
             CrossManager // la recherche des voisins de chaque SpawnPoint
         }
-        
-        // Enum pour la création des joueurs
-        public enum TypePlayer
-        {
-            Chasseur = 0,
-            Chassé = 1,
-            Spectateur = 2
-        }
-        
+
         // pour savoir sur quel scène nous sommes
         public enum TypeScene
         {
             Game,
             Labyrinthe
         }
-
-        [SerializeField] private TypeScene scene;
 
         // Getter
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -103,7 +101,7 @@ namespace Script.EntityPlayer
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
         public Transform GetDossierRayGaz() => dossierRayGaz;
         public Transform GetDossierOtherBot() => dossierOtherBot;
-        public GameObject[] GetContour() => contour;
+        public (float, float, float, float) GetContour() => contour;
         public CapsuleCollider GetCapsuleBot() => capsuleBot;
         public TypeScene GetTypeScene() => scene;
         public string GetNameBot(Player player)
@@ -140,6 +138,7 @@ namespace Script.EntityPlayer
             chassés.Add(chassé);
         }
 
+        // constructeur
         private void Awake()
         {
             // On peut faire ça puisqu'il y en aura qu'un seul
@@ -174,6 +173,9 @@ namespace Script.EntityPlayer
 
         public void Start()
         {
+            // récupérer les contours
+            RecupContour();
+            
             // Seul le masterClient décide le type de chaque joueur, il l'envoie aux autres dans 'Update'
             // et s'il y a maintenance, alors il n'y a pas de joueur
             if (!PhotonNetwork.IsMasterClient || IsInMaintenance())
@@ -187,21 +189,40 @@ namespace Script.EntityPlayer
             Random random = new Random();
             for (int i = 0; i < nParticipant; i++)
             {
-                if (i == 5) // pour l'instant, seul le premier de liste est un chasseur 
+                if (i == 0) // pour l'instant, seul le premier de la liste est un chasseur 
                 {
                     indexSpot = listChasseur[random.Next(listChasseur.Count)];
                     listChasseur.Remove(indexSpot);
                     
-                    listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int)TypePlayer.Chasseur;
+                    listInfoCréationJoueur[i] = PlayerManager.EncodeFormatInfoJoueur(indexSpot, ManagerGame.TypePlayer.Chasseur);
                 }
                 else
                 {
                     indexSpot = listChassé[random.Next(listChassé.Count)];
                     listChassé.Remove(indexSpot);
 
-                    listInfoCréationJoueur[i] = ManString.Format(indexSpot.ToString(), 2) + (int) TypePlayer.Chassé;
+                    listInfoCréationJoueur[i] = PlayerManager.EncodeFormatInfoJoueur(indexSpot, ManagerGame.TypePlayer.Chassé);
                 }
             }
+        }
+
+        private void RecupContour()
+        {
+            Point[] contourPoint = GetComponentsInChildren<Point>();
+            int l = contourPoint.Length;
+            Vector3[] list = new Vector3[l];
+            
+            for (int i = 0; i < l; i++)
+            {
+                list[i] = contourPoint[i].transform.position;
+            }
+
+            // min
+            contour.minZ = ManList.GetMin(list, ManList.Coord.Z);
+            contour.minX = ManList.GetMin(list, ManList.Coord.X);
+            // max
+            contour.maxZ = ManList.GetMax(list, ManList.Coord.Z);
+            contour.maxX = ManList.GetMax(list, ManList.Coord.X);
         }
 
         private void Update()
@@ -219,7 +240,7 @@ namespace Script.EntityPlayer
             }
 
             // ce if sert à indiqué à tous les participants leur type de joueur (chasseur ou chassé)
-            // ce if s'active losque tout le monde est déplacé son 'PlayerManager' dans le 'MasterManager' et losqu'il l'a pas déjà fait
+            // ce if s'active losque tout le monde a déplacé son 'PlayerManager' dans le 'MasterManager' et losqu'il l'a pas déjà fait
             // seul le masterClient l'active
             if (!EnvoieDuTypeJoueurs && PhotonNetwork.IsMasterClient && GetComponentsInChildren<PlayerManager>().Length == nParticipant)
             {
@@ -271,14 +292,17 @@ namespace Script.EntityPlayer
             if (!pv.IsMine) // Seul le mourant envoie le hash et créé un spectateur
                 return;
             
+            // création du spectateur
             Spectateur spectateur = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "Spectateur"),
-                Vector3.zero, Quaternion.identity, 0, new object[]{pv.ViewID}).GetComponent<Spectateur>(); // création du spectateur
+                Vector3.zero, Quaternion.identity, 0, new object[]{pv.ViewID}).GetComponent<Spectateur>();
             
-            spectateurs.Add(spectateur); // ajout à la liste 'spectateurs'
-            
+            // ajout à la liste 'spectateurs'
+            spectateurs.Add(spectateur);
+
+            // envoie du hash pour que les autres le supprime de leurs listes
             Hashtable hash = new Hashtable();
             hash.Add("MortPlayer", player);
-            player.SetCustomProperties(hash); // envoie du hash pour que les autres le supprime de leurs listes
+            player.SetCustomProperties(hash);
         }
     }
 }

@@ -1,6 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Bot;
+using Script.Manager;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 

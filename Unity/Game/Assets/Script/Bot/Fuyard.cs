@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.Test;
 using Script.TeteChercheuse;
 using Script.Tools;
@@ -143,14 +144,7 @@ namespace Script.Bot
             
             // cherche un plan bien rodé vers une destination stratégique
             Vector3 dest;
-            if (master.GetTypeScene() == MasterManager.TypeScene.Game)
-            {
-                dest = BotManager.Instance.GetGoodSpot(this, Vus[0].position);
-            }
-            else
-            {
-                dest = master.destinationFuyard.transform.position;
-            }
+            dest = BotManager.Instance.GetGoodSpot(this, Vus[0].position);
 
             if (SimpleMath.IsEncadré(dest, Vector3.zero)) // aucun bon spot
             {

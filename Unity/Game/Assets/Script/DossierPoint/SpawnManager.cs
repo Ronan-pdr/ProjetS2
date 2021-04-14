@@ -15,8 +15,8 @@ namespace Script.DossierPoint
         // Getter
         public int GetLengthSpawnPointChasseur() => spawnPointsChasseur.Count;
         public int GetLengthSpawnPointChassé() => spawnPointsChassé.Count;
-        public Transform GetTrSpawnPointChasseur(int index) => spawnPointsChasseur[index].transform;
-        public Transform GetTrSpawnPointChassé(int index) => spawnPointsChassé[index].transform;
+        public Transform GetTrChasseur(int index) => spawnPointsChasseur[index].transform;
+        public Transform GetTrChassé(int index) => spawnPointsChassé[index].transform;
     
         private void Awake()
         {
@@ -29,7 +29,7 @@ namespace Script.DossierPoint
             int len = points.Length;
 
             int i;
-            for (i = 0; i < len && points[i].name != "SpawnChassé"; i++)
+            for (i = 0; i < len && points[i].name.Contains("Chasseur"); i++)
             {
                 spawnPointsChasseur.Add(points[i]);
             }
@@ -41,4 +41,3 @@ namespace Script.DossierPoint
         }
     }
 }
-

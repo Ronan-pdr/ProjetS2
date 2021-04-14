@@ -5,6 +5,7 @@ using Script.Tools;
 using Script.EntityPlayer;
 using Script.Bot;
 using Script.DossierArme;
+using Script.Manager;
 
 namespace Script.TeteChercheuse
 {

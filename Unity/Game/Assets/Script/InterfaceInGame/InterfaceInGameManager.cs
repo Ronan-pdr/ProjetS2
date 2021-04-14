@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Script.EntityPlayer;
+using Script.Manager;
 
 namespace Script.InterfaceInGame
 {

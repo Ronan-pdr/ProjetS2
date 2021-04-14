@@ -3,6 +3,7 @@ using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.DossierArme;
 using Script.InterfaceInGame;
+using Script.Manager;
 using Script.Tools;
 
 namespace Script.EntityPlayer

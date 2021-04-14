@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Realtime;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.Tools;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 

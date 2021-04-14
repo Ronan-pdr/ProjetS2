@@ -6,6 +6,7 @@ using System.IO;
 using Photon.Realtime;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.Tools;
 
 namespace Script.Bot

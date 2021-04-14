@@ -3,6 +3,7 @@ using UnityEngine;
 using Script.Tools;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 
 namespace Script.TeteChercheuse
 {

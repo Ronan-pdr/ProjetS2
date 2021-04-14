@@ -1,6 +1,7 @@
 ﻿using System;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.Tools;
 using UnityEngine;
 

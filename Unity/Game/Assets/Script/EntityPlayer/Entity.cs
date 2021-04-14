@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
+using Script.Manager;
 using Script.TeteChercheuse;
 
 namespace Script.EntityPlayer

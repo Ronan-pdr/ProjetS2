@@ -3,6 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
 using Script.InterfaceInGame;
+using Script.Manager;
 using Script.Test;
 using Script.Tools;
 

@@ -4,6 +4,7 @@ using System.IO;
 using Photon.Pun;
 using Script.EntityPlayer;
 using Script.InterfaceInGame;
+using Script.Manager;
 using Script.Tools;
 using UnityEngine;
 using Random = UnityEngine.Random;

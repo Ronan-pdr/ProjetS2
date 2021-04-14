@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.TeteChercheuse;
 using UnityEngine;
 
