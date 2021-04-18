@@ -4,7 +4,7 @@ namespace Script.Labyrinthe
 {
     public class Guide : BotClass
     {
-        // constructeurs
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             AwakeBot();
@@ -18,8 +18,7 @@ namespace Script.Labyrinthe
             StartBot();
         }
         
-        
-        // méthodes
+        // ------------ Méthodes ------------
         protected override void FiniDeTourner()
         {} // lorsqu'il a fini de tourner, il ne fait rien de plus
 

@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Script.Bot
 {
-    public class Fuyard : BotClass, ISReceveurRayGaz
+    public class Fuyard : BotClass
     {
         // Etat
         protected enum Etat
@@ -151,7 +151,7 @@ namespace Script.Bot
             }
             else // attend son plan de fuite
             {
-                RayGaz.GetPath(Tr.position, dest, this);
+                RayGaz.GetPath(Tr.position, dest, RecepRayGaz);
                 etat = Etat.FuiteSansPlan;
             }
         }

@@ -10,26 +10,29 @@ namespace Script.Bot
 {
     public abstract class BotClass : Humanoide
     {
+        // ------------ Attributs ------------
+        
         protected BotManager BotManager; // instancié lorsque le bot est créé dans son BotManager
         
         //Rotation
         protected float rotationSpeed;
         protected float AmountRotation;
-    
-        // Getter
-
-        // Setter
-        public void SetOwnBotManager(BotManager value)
-        {
-            BotManager = value;
-        }
-
+        
+        // ------------ Getters ------------
+        
         // cette fonction indique si un bot est contrôlé par ton ordinateur
         public bool IsMyBot()
         {
             return BotManager != null;
         }
 
+        // ------------ Setter ------------
+        public void SetOwnBotManager(BotManager value)
+        {
+            BotManager = value;
+        }
+
+        // ------------ Constructeurs ------------
         protected void AwakeBot()
         {
             AwakeHuman();
@@ -50,6 +53,7 @@ namespace Script.Bot
                 Tr.parent = BotManager.transform; // le parenter dans ton dossier de botManager
         }
 
+        // ------------ Méthodes ------------
         protected void UpdateBot()
         {
             UpdateHumanoide();
@@ -97,21 +101,39 @@ namespace Script.Bot
         
             // point de vie -> TakeDamage (Humanoide)
             // Tout le monde doit faire ce changement (trop compliqué de retrouvé celui qui l'a déjà fait)
-            changedProps.TryGetValue("PointDeVieBot", out object life);
-
-            if (life != null)
+            if (changedProps.TryGetValue("PointDeVieBot", out object mes))
             {
-                string deuxInfos = (string) life;
-                int len = deuxInfos.Length;
-                string nameTarget = deuxInfos.Substring(0, len - 3);
+                (string nameTarget, int vie) = DecodeFormatVieBot((string)mes);
 
-                if (name == nameTarget) // parce que chaque joueur contrôle plusieurs bot, il faut donc faire une deuxième vérification
+                // parce que chaque joueur contrôle plusieurs bot, il faut donc faire une deuxième vérification
+                if (name == nameTarget)
                 {
-                    int vie = int.Parse(deuxInfos.Substring(len - 3, 3));
-                            
                     CurrentHealth = vie;
                 }
             }
+        }
+
+        // le format -> name[n char]Vie[3 char]
+        public string EncodeFormatVieBot()
+        {
+            string mes = CurrentHealth.ToString();
+            while (mes.Length < 3) // on formate la vie à trois charactères
+            {
+                mes = " " + mes;
+            }
+
+            return name + mes;
+        }
+
+        private (string nameTarget, int vie) DecodeFormatVieBot(string mes)
+        {
+            string deuxInfos = mes;
+            int len = deuxInfos.Length;
+            string nameTarget = deuxInfos.Substring(0, len - 3);
+            
+            int vie = int.Parse(deuxInfos.Substring(len - 3, 3));
+
+            return (nameTarget, vie);
         }
     }
 }

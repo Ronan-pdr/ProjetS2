@@ -86,7 +86,7 @@ namespace Script.Manager
         public Transform GetDossierRayGaz() => dossierRayGaz;
         public Transform GetDossierOtherBot() => dossierOtherBot;
         public (float, float, float, float) GetContour() => contour;
-        public CapsuleCollider GetCapsuleBot() => capsuleBot;
+        public HumanCapsule GetHumanCapsule() => new HumanCapsule(capsuleBot);
         public TypeScene GetTypeScene() => scene;
         public ManagerGame GetManagerGame() => typeScene;
         public string GetNameBot(Player player)

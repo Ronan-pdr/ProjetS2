@@ -147,12 +147,10 @@ namespace Script.EntityPlayer
             }
 
             // point de vie -> TakeDamage (Humanoide)
-            if (!PhotonNetwork.IsMasterClient) // c'est le masterClient qui contrôle les balles donc qui enlève les point de vies
+            // Tout le monde doit faire ce changement (trop compliqué de retrouvé celui qui l'a déjà fait)
+            if (changedProps.TryGetValue("PointDeViePlayer", out object vie))
             {
-                if (changedProps.TryGetValue("PointDeViePlayer", out object value))
-                {
-                    CurrentHealth = (int)value;
-                }
+                CurrentHealth = (int)vie;
             }
         
             // les morts -> Die (MasterManager)
