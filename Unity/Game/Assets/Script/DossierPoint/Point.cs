@@ -7,7 +7,7 @@ namespace Script.DossierPoint
     {
         [SerializeField] private GameObject graphics;
     
-        private void Awake()
+        private void Start()
         {
             graphics.SetActive(false);
         }

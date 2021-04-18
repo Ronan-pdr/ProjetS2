@@ -33,11 +33,12 @@ namespace Script.Bot
         public Etat GetEtat() => etat;
         
         // Setter
-        public override void SetBot(CrossPoint crossPoint)
+        public void SetCrossPoint(CrossPoint crossPoint)
         {
             PointDestination = crossPoint;
         }
 
+        // constructeurs
         private void Awake()
         {
             AwakeBot();
@@ -143,6 +144,31 @@ namespace Script.Bot
         protected override void FiniDeTourner()
         {
             etat = Etat.EnChemin; // il va avancer maintenant
+        }
+        
+        // Event
+        private void OnCollisionEnter(Collision other)
+        {
+            OnCollisionAux(other);
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            OnCollisionAux(other);
+        }
+
+        private void OnCollisionAux(Collision other)
+        {
+            if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
+                return;
+            
+            if (other.gameObject == gameObject) // si c'est son propre corps qu'il a percuté
+                return;
+
+            if (GetEtat() == Etat.EnChemin) // recalcule seulement quand il avance
+            {
+                FindAmountRotation();
+            }
         }
     }
 }

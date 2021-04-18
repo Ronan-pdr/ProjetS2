@@ -20,7 +20,7 @@ namespace Script.TeteChercheuse
         protected GameObject Destination;
         
         //Ecart maximum entre sa destination et sa position pour qu'il soit considéré comme arrivé
-        protected float ecartDistance;
+        protected float EcartDistance;
 
         private void Awake()
         {
@@ -32,8 +32,6 @@ namespace Script.TeteChercheuse
             // parenter
             Tr.parent = MasterManager.Instance.GetDossierBodyChercheur();
 
-            Find = false;
-
             // on récupère toutes les caractéristiques du CapsuleCollider du bot
             ownCapsuleCollider.center = botCapsuleCollider.center;
             ownCapsuleCollider.height = botCapsuleCollider.height;
@@ -41,7 +39,7 @@ namespace Script.TeteChercheuse
 
             float rayon = ownCapsuleCollider.radius;
 
-            ecartDistance = rayon*2;
+            EcartDistance = rayon*2;
         }
     }
 }

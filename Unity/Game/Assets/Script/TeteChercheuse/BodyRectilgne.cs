@@ -9,10 +9,10 @@ namespace Script.TeteChercheuse
 {
     public class BodyRectilgne : BodyChercheur
     {
-        // la vitesse est si faible parce que sinon il fait n'importe quoi dans les escaliers
+        // attributs
         private float Vitesse = 4f;
         
-        // l'instancier de manière static
+        // constructeurs
         public static void InstancierStatic(GameObject lanceur, GameObject destination)
         {
             BodyRectilgne original = MasterManager.Instance.GetOriginalBodyRectilgne(); // récupérer la préfab
@@ -39,34 +39,31 @@ namespace Script.TeteChercheuse
             Tr.position += Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime;
         }
         
+        // méthodes
         private void Update()
         {
             MoveAmount = new Vector3(0, 0, Vitesse);
 
             float dist = Calcul.Distance(Tr.position, Destination.transform.position, Calcul.Coord.Y);
 
-            if (Find || dist > 100) // s'il rentre en contact avec un obstacle ou qu'il est trop loin de sa destination (il s'est perdu) c'est fini
+            if (dist > 100) // s'il il est trop loin de sa destination (il s'est perdu) c'est fini
             {
-                if (dist > 100)
-                    Debug.Log($"WARNING : la distance entre un body chercheur et sa destination était de {dist}");
-                
-                Destroy(gameObject);
-                Lanceur.GetComponent<CrossPoint>().EndResearchBody(null);
+                Debug.Log($"WARNING : la distance entre un body chercheur et sa destination était de {dist}");
+
+                FinDeCourse(null);
                 return;
             }
 
-            if (dist < ecartDistance) // il est arrivé à destination (est ce qu'il est à la bonne altitude ?) 
+            if (dist < EcartDistance) // il est arrivé à destination (est ce qu'il est à la bonne altitude ?) 
             {
                 if (Calcul.Distance(Tr.position.y, Destination.transform.position.y) < ownCapsuleCollider.height / 2) // c'est que c'est une destination valide
                 {
-                    Lanceur.GetComponent<CrossPoint>().EndResearchBody(Destination.GetComponent<CrossPoint>());
+                    FinDeCourse(Destination.GetComponent<CrossPoint>());
                 }
                 else // sur la bonne position en x et z mais pas sur y, ça veut dire qu'il dépasserait la destination s'il n'y avait pas ce cas
                 {
-                    Lanceur.GetComponent<CrossPoint>().EndResearchBody(null);
+                    FinDeCourse(null);
                 }
-
-                Destroy(gameObject);
             }
 
             // else il est trop loin de sa destination, donc il continue
@@ -113,9 +110,14 @@ namespace Script.TeteChercheuse
 
             if (i < len) // cela signifie qu'un objet (qui n'est pas entity) l'a touché à une hauteur supérieur au rayon 
             {
-                Find = true;
-                HittenObj = other.gameObject;
+                FinDeCourse(null);
             }
+        }
+
+        private void FinDeCourse(CrossPoint reponse)
+        {
+            Destroy(gameObject);
+            Lanceur.GetComponent<CrossPoint>().EndResearchBody(reponse);
         }
         
         private float GetYSol()

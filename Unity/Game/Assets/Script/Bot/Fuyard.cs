@@ -40,11 +40,8 @@ namespace Script.Bot
         
         // variable relative à sa capsule
         private (float hauteur, float rayon) capsule;
-
-        // Setter
-        public override void SetBot(CrossPoint crossPoint)
-        {}
         
+        // constructeurs
         private void Awake()
         {
             AwakeBot();
@@ -236,6 +233,31 @@ namespace Script.Bot
             // animation
             anim.enabled = true;
             anim.Play("Course");
+        }
+        
+        // Event
+        private void OnTriggerEnter(Collider other)
+        {
+            OnCollisionAux(other);
+        }
+        
+        private void OnCollisionEnter(Collision other)
+        {
+            OnCollisionAux(other.collider);
+        }
+
+        private void OnCollisionAux(Collider other)
+        {
+            if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
+                return;
+        
+            if (other.gameObject == gameObject) // si c'est son propre corps qu'il a percuté
+                return;
+
+            if (other.gameObject.GetComponent<BalleFusil>())
+            {
+                Jump();
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Script.TeteChercheuse
 {
     public class RayGaz : MonoBehaviour
     {
-        private class Node
+        public class Node
         {
             public Node After { get; }
             public Vector3 Position { get; }
@@ -44,7 +44,7 @@ namespace Script.TeteChercheuse
         private MyFile<Node> file;
         
         // variable relative à sa capsule
-        private (float hauteur, float rayon) capsule;
+        private HumanCapsule capsule;
         
         // destination
         private Vector3 destination;
@@ -54,7 +54,7 @@ namespace Script.TeteChercheuse
         {
             Lanceur = lanceur;
             
-            // légèrement modifier la position initilae en fonction du bond
+            // légèrement modifier la position initiale en fonction du bond
             // c'est pour que les positions soit toujours bien calé avec la matrice
             posInitiale -= SimpleMath.Mod(posInitiale, bond) + Vector3.up * 0f;
             
@@ -75,9 +75,7 @@ namespace Script.TeteChercheuse
             
             // récupérer les côtes des bots pour les ray
             CapsuleCollider cap = MasterManager.Instance.GetCapsuleBot();
-            float scale = cap.transform.localScale.y;
-            capsule.hauteur = cap.height * scale;
-            capsule.rayon = cap.radius * scale;
+            capsule = new HumanCapsule(cap);
             
             // initialiser destination
             destination = posDestination;
@@ -109,7 +107,7 @@ namespace Script.TeteChercheuse
             // Impossible que la file soit empty ici
             Node node = file.Defiler();
             
-            for (int i = 0; i >= 0 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
+            for (int i = 0; i < 40 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
             {
                 if (i > 0)
                     node = file.Defiler();
@@ -145,12 +143,12 @@ namespace Script.TeteChercheuse
                 Lanceur.RecepRayGaz(new List<Vector3>());
                 Destroy(gameObject); // c'est fini donc il se détruit
             }
-            else if (Arrivé(node.Position))
+            else if (Arrivé(node.Position)) // bien arrivé
             {
                 time.Stop();
-                // bien arrivé
                 Debug.Log($"Le gaz s'est répendu en {time.ElapsedMilliseconds} milisecondes");
-                Lanceur.RecepRayGaz(GetBestPath(node));
+                
+                Lanceur.RecepRayGaz(GetBestPath(capsule,node));
                 Destroy(gameObject); // c'est fini donc il se détruit
             }
         }
@@ -183,16 +181,16 @@ namespace Script.TeteChercheuse
 
             Vector3 newPos = position + direction * bond;
 
-            if (CanIPass(capsule, position, direction, maxDistance) && IsValidPosition(newPos))
+            if (capsule.CanIPass(position, direction, maxDistance) && IsValidPosition(newPos))
             {
                 // nous avons trouvé une position où le gaz va se répendre...
                 Node node = new Node(after, newPos);
                 
-                // ...plus qu'à l'enfiler et ...
+                // ...plus qu'à l'enfiler et...
                 file.Enfiler(node);
                 
                 // ...indiquer que cette position va être traiter,
-                // donc il sera inutile de la refaire
+                // ainsi, il sera inutile de la refaire
                 CheckPosition(node);
             }
         }
@@ -201,24 +199,8 @@ namespace Script.TeteChercheuse
         {
             return Calcul.Distance(p, destination, Calcul.Coord.Y) < bond;
         }
-        
-        public static bool CanIPass((float hauteur, float rayon) cap, Vector3 position, Vector3 direction, float maxDistance)
-        {
-            // haut du corps (vers les yeux)
-            Vector3 hautDuCorps = position + Vector3.up * (cap.hauteur - cap.rayon);
-            
-            // bas du corps (vers le haut des pieds)
-            Vector3 basDuCorps = position + Vector3.up * cap.rayon;
-            
-            if (Physics.CapsuleCast(hautDuCorps, basDuCorps, cap.rayon, direction, out RaycastHit hit, maxDistance))
-            {
-                return hit.collider.GetComponent<Entity>();
-            }
 
-            return true;
-        }
-
-        private List<Vector3> GetBestPath(Node node)
+        private static List<Vector3> GetBestPath(HumanCapsule capsule, Node node)
         {
             List<Vector3> path = new List<Vector3>();
             
@@ -229,7 +211,7 @@ namespace Script.TeteChercheuse
             while (node.After != null)
             {
                 nextNode = node.After;
-                for (int i = 0; i <= 2 && nextNode.After != null && CanIPass(capsule, node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
+                for (int i = 0; i <= 2 && nextNode.After != null && capsule.CanIPass(node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
                     Calcul.Distance(nextNode.After.Position, node.Position)); i++)
                 {
                     nextNode = nextNode.After;

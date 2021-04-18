@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Script.Tools
 {
     public static class ManList
     {
+        // constructeurs
+        
         // ex : CreateListRange(4) -> [0, 1, 2, 3]
         public static List<int> CreateListRange(int length)
         {
@@ -19,6 +22,8 @@ namespace Script.Tools
 
             return res;
         }
+
+        // manipulation
 
         public enum Coord
         {
@@ -74,6 +79,41 @@ namespace Script.Tools
             }
 
             return min;
+        }
+        
+        public static int[] RandomIndex(int length)
+        {
+            int[] arr = new int[length];
+            List<int> list = CreateListRange(length);
+            Random random = new Random();
+
+            for (int iArr = 0; iArr < length; iArr++)
+            {
+                int iList = random.Next(list.Count);
+                int n = list[iList];
+                list.RemoveAt(iList);
+
+                arr[iArr] = n;
+            }
+
+            return arr;
+        }
+    }
+    
+    public static class ManList<T>
+    {
+        // contructeur
+        public static T[] Copy(List<T> list)
+        {
+            int l = list.Count;
+            T[] arr = new T[l];
+
+            for (int i = 0; i < l; i++)
+            {
+                arr[i] = list[i];
+            }
+
+            return arr;
         }
     }
 }

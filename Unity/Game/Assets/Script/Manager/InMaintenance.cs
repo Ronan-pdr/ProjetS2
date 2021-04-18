@@ -1,9 +1,11 @@
-﻿namespace Script.Manager
+﻿using System;
+
+namespace Script.Manager
 {
-    public class InLabyrinthe : ManagerGame
+    public class InMaintenance : ManagerGame
     {
         // constructeur
-        public InLabyrinthe(int nJoueur)
+        public InMaintenance(int nJoueur)
         {
             NJoueur = nJoueur;
         }
@@ -11,12 +13,17 @@
         // méthodes
         protected override NtypeJoueur GetNJoueur()
         {
+            if (NJoueur > 1)
+            {
+                throw new Exception($"Il ne peut y avoir plus d'un joueur, il y en a {NJoueur}");
+            }
+            
             NtypeJoueur n = new NtypeJoueur();
-            n.Blocard = NJoueur;
+            n.None = 1;
 
             return n;
         }
-        
+
         protected override NtypeBot GetNBot()
         {
             // 0 bot

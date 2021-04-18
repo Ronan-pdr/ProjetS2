@@ -38,7 +38,9 @@ namespace Script.DossierPoint
         
         public static bool IsMaintenance()
         {
-            return PhotonNetwork.PlayerList.Length == 1 && PhotonNetwork.LocalPlayer.NickName == "maintenance";
+            return PhotonNetwork.PlayerList.Length == 1 && 
+                   PhotonNetwork.LocalPlayer.NickName == "maintenance" && 
+                   MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Game;
         }
         
         public (Vector3, int) GetRandomPosition(int previousIndex)
@@ -82,7 +84,7 @@ namespace Script.DossierPoint
         // Maintenance
         private void Start()
         {
-            if (MasterManager.Instance.IsInCrossPointMaintenance())
+            if (MasterManager.Instance.IsInMaintenance())
             {
                 indexResearch = -1;
                 NextResearch();
@@ -172,8 +174,6 @@ namespace Script.DossierPoint
                         Debug.Log("WARNING : Le fichier de sauvegarde des crossPoints n'est pas compatible avec les crossPoint --> faire une maintenance");
 
                     // set les neighboors du cross point
-                    crossPoints[iCrossPoint].InitialiserNeighboors();
-                    
                     int nInfo = infos.Length;
                     for (int i = 1; i < nInfo; i++)
                     {

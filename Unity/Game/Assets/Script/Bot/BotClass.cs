@@ -19,7 +19,6 @@ namespace Script.Bot
         // Getter
 
         // Setter
-        public abstract void SetBot(CrossPoint crossPoint);
         public void SetOwnBotManager(BotManager value)
         {
             BotManager = value;

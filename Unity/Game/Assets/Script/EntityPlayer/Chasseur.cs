@@ -10,11 +10,14 @@ namespace Script.EntityPlayer
 {
     public class Chasseur : PlayerClass
     {
+        // attributs
+        
         // Relatif aux armes
         [SerializeField] private Arme[] armes;
         private int armeIndex;
         private int previousArmeIndex = -1;
     
+        // constructeurs
         private void Awake()
         {
             AwakePlayer();
@@ -31,6 +34,7 @@ namespace Script.EntityPlayer
             EquipItem(0);
         }
         
+        // méthodes
         void Update()
         {
             if (!Pv.IsMine)
@@ -111,8 +115,6 @@ namespace Script.EntityPlayer
                 PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
             }
         }
-
-        // GamePlay
 
         protected override void Die()
         {

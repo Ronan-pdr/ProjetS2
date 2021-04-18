@@ -37,12 +37,8 @@ namespace Script.Manager
         [Header("Scene")]
         [SerializeField] private TypeScene scene;
         
-        [Header("Labyrinthe")]
-        [SerializeField] private GameObject destinationFuyard;
-        
+        // les contours de la scène (notamment utilisé par le gaz)
         private (float minZ, float minX, float maxZ, float maxX) contour;
-        
-        
 
         // nombre de participant (sera utilisé pour déterminer le moment lorsque tous les joueurs auront instancié leur playerController)
         private int nParticipant; // participant regroupe les joueurs ainsi que les spectateurs
@@ -55,34 +51,22 @@ namespace Script.Manager
 
         // attribut relatif à ton avatar
         private PlayerClass ownPlayer;
-        
-        // attribut que seul le masterClient utilisera
-        // la string contenant les infos du joueur seront sous la forme :
-        // indexCoordPoint(2 caractères) + type(1 caractère)
-        private string[] listInfoCréationJoueur;
-        
+
         // les booléens qui indiquent ce que le MasterClient a fait ou non dans le Update
-        private bool EnvoieDuTypeJoueurs; // Est ce que les hash indiquant le type des joueurs ont été envoyés ?
         private bool SetInterfaceInGame; // Est que l'interface in game a déjà été set ?
         
         // cette liste va servir à donner les noms à chaque bot
         private int[] nBotParJoueur;
-        
-        // si maintenance != None alors y'a pas de jeu
-        private TypeMaintenance Maintenance;
-
-        public enum TypeMaintenance
-        {
-            None,
-            CrossManager // la recherche des voisins de chaque SpawnPoint
-        }
 
         // pour savoir sur quel scène nous sommes
         public enum TypeScene
         {
             Game,
-            Labyrinthe
+            Labyrinthe,
+            Maintenance
         }
+
+        private ManagerGame typeScene;
 
         // Getter
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -104,6 +88,7 @@ namespace Script.Manager
         public (float, float, float, float) GetContour() => contour;
         public CapsuleCollider GetCapsuleBot() => capsuleBot;
         public TypeScene GetTypeScene() => scene;
+        public ManagerGame GetManagerGame() => typeScene;
         public string GetNameBot(Player player)
         {
             int i;
@@ -114,8 +99,7 @@ namespace Script.Manager
             return player.NickName + "Bot" + nBotParJoueur[i];
         }
 
-        public bool IsInMaintenance() => Maintenance != TypeMaintenance.None;
-        public bool IsInCrossPointMaintenance() => Maintenance == TypeMaintenance.CrossManager;
+        public bool IsInMaintenance() => typeScene is InMaintenance;
         
         //Setter
         public void SetOwnPlayer(PlayerClass value)
@@ -144,19 +128,19 @@ namespace Script.Manager
             // On peut faire ça puisqu'il y en aura qu'un seul
             Instance = this;
             
-            if (CrossManager.IsMaintenance()) // maintenance des cross point
+            if (CrossManager.IsMaintenance()) // maintenance des crossPoints
             {
                 Debug.Log("Début Maintenance des CrossPoints");
-                Maintenance = TypeMaintenance.CrossManager;
+                typeScene = new InMaintenance(nParticipant);
             }
-            else
+            else if (scene == TypeScene.Game) // guess who
             {
-                Maintenance = TypeMaintenance.None;
+                typeScene = new InGuessWho(nParticipant);
             }
-            
-            // pas de gestion de joueurs s'il y a maitenance
-            if (IsInMaintenance())
-                return;
+            else // labyrinthe
+            {
+                typeScene = new InLabyrinthe(nParticipant);
+            }
             
             // instancier le nombre de joueur
             nParticipant = PhotonNetwork.PlayerList.Length;
@@ -173,37 +157,14 @@ namespace Script.Manager
 
         public void Start()
         {
-            // récupérer les contours
+            // récupérer les contours de la map
             RecupContour();
             
-            // Seul le masterClient décide le type de chaque joueur, il l'envoie aux autres dans 'Update'
-            // et s'il y a maintenance, alors il n'y a pas de joueur
-            if (!PhotonNetwork.IsMasterClient || IsInMaintenance())
+            // Seul le masterClient décide le type de chaque joueur
+            if (!PhotonNetwork.IsMasterClient)
                 return;
-            
-            listInfoCréationJoueur = new string[nParticipant]; // instancier la liste
-            List<int> listChasseur = ManList.CreateListRange(SpawnManager.Instance.GetLengthSpawnPointChasseur());
-            List<int> listChassé = ManList.CreateListRange(SpawnManager.Instance.GetLengthSpawnPointChassé());
 
-            int indexSpot;
-            Random random = new Random();
-            for (int i = 0; i < nParticipant; i++)
-            {
-                if (i == 0) // pour l'instant, seul le premier de la liste est un chasseur 
-                {
-                    indexSpot = listChasseur[random.Next(listChasseur.Count)];
-                    listChasseur.Remove(indexSpot);
-                    
-                    listInfoCréationJoueur[i] = PlayerManager.EncodeFormatInfoJoueur(indexSpot, ManagerGame.TypePlayer.Chasseur);
-                }
-                else
-                {
-                    indexSpot = listChassé[random.Next(listChassé.Count)];
-                    listChassé.Remove(indexSpot);
-
-                    listInfoCréationJoueur[i] = PlayerManager.EncodeFormatInfoJoueur(indexSpot, ManagerGame.TypePlayer.Chassé);
-                }
-            }
+            SendInfoPlayer();
         }
 
         private void RecupContour()
@@ -225,34 +186,48 @@ namespace Script.Manager
             contour.maxX = ManList.GetMax(list, ManList.Coord.X);
         }
 
+        private void SendInfoPlayer()
+        {
+            // les spots
+            int[] indexSpotChasseur = SpawnManager.Instance.GetBeginPosition(TypePlayer.Chasseur);
+            int[] indexSpotChassé = SpawnManager.Instance.GetBeginPosition(TypePlayer.Chassé);
+
+            // les types en fonction du type de la partie
+            TypePlayer[] types = typeScene.GetTypePlayer();
+            string infoJoueur;
+
+            for (int i = 0; i < nParticipant; i++)
+            {
+                if (types[i] != TypePlayer.None) // on va devoir envoyer quelque chose au PlayerManager
+                {
+                    if (types[i] == TypePlayer.Chasseur) // chasseur
+                    {
+                        int indexSpot = indexSpotChasseur[i];
+                        infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpot, TypePlayer.Chasseur);
+                    }
+                    else if (types[i] == TypePlayer.Chassé) // chassé
+                    {
+                        int indexSpot = indexSpotChassé[i];
+                        infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpot, TypePlayer.Chassé);
+                    }
+                    else
+                    {
+                        throw new Exception($"Pas encore géré le cas du {types[i]}");
+                    }
+                    
+                    // envoi des infos au concerné(e)
+                    Hashtable hash = new Hashtable();
+                    hash.Add("InfoCréationJoueur", infoJoueur);
+                    PhotonNetwork.PlayerList[i].SetCustomProperties(hash);
+                }
+            }
+        }
+
         private void Update()
         {
             // S'il y a maintenance, il n'y a pas de joueur et pas leur gestion
             if (IsInMaintenance())
                 return;
-            
-            // J'ai implémenter des alertes qui indique les erreurs possible qui n'engendre pas forcément d'erreur de script
-            if (players.Count > nParticipant)
-            {
-                Debug.Log("ALERTE (Update du MasterManager) :");
-                Debug.Log($"Il y a {players.Count} joueurs pour {nParticipant} participants");
-                Debug.Log("Vous préviendrez Sacha");
-            }
-
-            // ce if sert à indiqué à tous les participants leur type de joueur (chasseur ou chassé)
-            // ce if s'active losque tout le monde a déplacé son 'PlayerManager' dans le 'MasterManager' et losqu'il l'a pas déjà fait
-            // seul le masterClient l'active
-            if (!EnvoieDuTypeJoueurs && PhotonNetwork.IsMasterClient && GetComponentsInChildren<PlayerManager>().Length == nParticipant)
-            {
-                for (int i = 0; i < nParticipant; i++) // envoie le type à tous les joueurs grâce à un hash
-                {
-                    Hashtable hash = new Hashtable();
-                    hash.Add("InfoCréationJoueur", listInfoCréationJoueur[i]);
-                    PhotonNetwork.PlayerList[i].SetCustomProperties(hash);
-                }
-
-                EnvoieDuTypeJoueurs = true;
-            }
 
             if (scene == TypeScene.Labyrinthe)
             {
@@ -274,17 +249,27 @@ namespace Script.Manager
             for (i = 0; i < players.Count && !players[i].GetPlayer().Equals(player); i++) //cherche le joueur dans la liste des players
             {}
 
-            PlayerClass playerClass = players[i]; // S'il y a un problème d'index à cette ligne c'est que tu tentes de supprimer un joueur de la liste qui n'y est plus
-            
+            if (i == players.Count)
+            {
+                throw new Exception("Un script tente de supprimer un joueur de la liste qui n'y est plus");
+            }
+
+            PlayerClass playerClass = players[i];
             players.RemoveAt(i); // remove de la liste players
 
             if (playerClass is Chassé)
             {
-                chassés.Remove((Chassé) playerClass); // remove de la liste chassés (si c'était un chassé)
+                // remove de la liste chassés (si c'était un chassé)
+                chassés.Remove((Chassé) playerClass);
+            }
+            else if (playerClass is Chasseur)
+            {
+                // remove de la liste chasseurs (si c'était un chasseur)
+                chasseurs.Remove((Chasseur) playerClass);
             }
             else
             {
-                chasseurs.Remove((Chasseur) playerClass); // remove de la liste chasseurs (si c'était un chasseur)
+                throw new Exception($"La mort du type de {playerClass} n'est pas encore implémenté");
             }
 
             PhotonView pv = playerClass.GetPv(); // on récupère le point de vue du mourant

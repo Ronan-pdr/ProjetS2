@@ -41,8 +41,7 @@ namespace Script.EntityPlayer
 
         //Rassembler les infos
         protected Transform masterManager;
-
-
+        
         protected void AwakePlayer()
         {
             SetRbTr();
@@ -140,9 +139,7 @@ namespace Script.EntityPlayer
             // arme du chasseur -> EquipItem (Chasseur)
             if (this is Chasseur && !Pv.IsMine) // ça ne doit pas être ton point de vie puisque tu l'as déjà fait
             {
-                changedProps.TryGetValue("itemIndex", out object indexArme);
-
-                if (indexArme != null)
+                if (changedProps.TryGetValue("itemIndex", out object indexArme))
                 {
                     Chasseur chasseur = (Chasseur) this;
                     chasseur.EquipItem((int)indexArme);
@@ -152,20 +149,16 @@ namespace Script.EntityPlayer
             // point de vie -> TakeDamage (Humanoide)
             if (!PhotonNetwork.IsMasterClient) // c'est le masterClient qui contrôle les balles donc qui enlève les point de vies
             {
-                changedProps.TryGetValue("PointDeViePlayer", out object value);
-
-                if (value != null)
+                if (changedProps.TryGetValue("PointDeViePlayer", out object value))
                 {
                     CurrentHealth = (int)value;
                 }
             }
         
-            // les morts
+            // les morts -> Die (MasterManager)
             if (!Pv.IsMine) // c'est le mourant qui envoie le hash
             {
-                changedProps.TryGetValue("MortPlayer", out object value);
-
-                if (value != null)
+                if (changedProps.TryGetValue("MortPlayer", out object value))
                 {
                     Player player = (Player)value;
                     MasterManager.Instance.Die(player);
