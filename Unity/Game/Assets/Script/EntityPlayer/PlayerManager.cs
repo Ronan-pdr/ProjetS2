@@ -17,7 +17,8 @@ namespace Script.EntityPlayer
         Chassé = 1,
         Blocard = 2,
         Spectateur = 3,
-        None = 4
+        None = 4,
+        Player = 5
     }
     
     public class PlayerManager : MonoBehaviourPunCallbacks

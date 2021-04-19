@@ -4,7 +4,7 @@ namespace Script.DossierPoint
 {
     public class SpawnPoint : Point
     {
-        // attributs
+        // ------------ Attributs ------------
         public enum Type
         {
             Chasseur,
@@ -13,24 +13,15 @@ namespace Script.DossierPoint
 
         private Type _type;
         public Type Typo => _type;
+        
+        // ------------ Getters ------------
 
-        /*private bool _pris;
-        public bool Pris
-        {
-            get => _pris;
-            set
-            {
-                if (!value)
-                {
-                    throw new Exception("Un spawn pris ne peut pas être 'dépris'");
-                }
+        public bool IsChasseurSpawn() => name.Contains("Chasseur");
 
-                _pris = true;
-            }
-        }*/
+        public bool IsChasséSpawn() => name.Contains("Chassé");
         
 
-        // constructeur
+        // ------------ Constructeur ------------
         private void Awake()
         {
             if (name.Contains("Chasseur"))

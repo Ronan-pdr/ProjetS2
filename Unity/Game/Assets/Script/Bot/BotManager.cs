@@ -14,7 +14,8 @@ namespace Script.Bot
     public enum TypeBot
     {
         Rectiligne,
-        Fuyard
+        Fuyard,
+        Guide
     }
     
     public class BotManager : MonoBehaviour
@@ -61,8 +62,9 @@ namespace Script.Bot
             CrossPoint crossPoint = CrossManager.Instance.GetPoint(indexSpot); // récupérer son cross point
             bot.transform.position = crossPoint.transform.position; // le placer sur la map
             bot.SetOwnBotManager(this); // lui indiquer quel est son père (dans la hiérarchie de Unity)
-            
-            Bots.Add(bot); // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)
+          
+            // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)
+            Bots.Add(bot);
 
             if (bot.GetComponent<BotRectiligne>())
             {
@@ -78,6 +80,8 @@ namespace Script.Bot
                     return "BotRectiligne";
                 case TypeBot.Fuyard:
                     return "Fuyard";
+                case TypeBot.Guide:
+                    return "Guide";
                 default:
                     throw new Exception($"Le cas du {type} n'a pas encore été géré");
             }
@@ -88,7 +92,7 @@ namespace Script.Bot
             int i;
             Player[] players = PhotonNetwork.PlayerList;
             
-            for (i = players.Length - 1; i >= 0 && !players[i].Equals(PhotonNetwork.LocalPlayer); i--)
+            for (i = players.Length - 1; i >= 0 && !players[i].Equals(player); i--)
             {}
 
             return i;
@@ -119,8 +123,6 @@ namespace Script.Bot
                     bestPos = posBot;
                 }
             }
-            
-            Debug.Log($"best = {bestPos}");
 
             if (SimpleMath.IsEncadré(bestPos, Vector3.zero)) // aucun bon spot
             {
@@ -146,8 +148,6 @@ namespace Script.Bot
                     minDist = dist;
                 }
             }
-            
-            Debug.Log($"dest in botmanager = {res}");
 
             return res;
         }

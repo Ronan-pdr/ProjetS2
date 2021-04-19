@@ -52,9 +52,9 @@ namespace Script.Tools
             float max = GetCoord(positions[0], coord);
             for (int i = 1; i < l; i++)
             {
-                if (GetCoord(positions[0], coord) > max)
+                if (GetCoord(positions[i], coord) > max)
                 {
-                    max = GetCoord(positions[0], coord);
+                    max = GetCoord(positions[i], coord);
                 }
             }
 
@@ -72,9 +72,9 @@ namespace Script.Tools
             float min = GetCoord(positions[0], coord);
             for (int i = 1; i < l; i++)
             {
-                if (GetCoord(positions[0], coord) < min)
+                if (GetCoord(positions[i], coord) < min)
                 {
-                    min = GetCoord(positions[0], coord);
+                    min = GetCoord(positions[i], coord);
                 }
             }
 

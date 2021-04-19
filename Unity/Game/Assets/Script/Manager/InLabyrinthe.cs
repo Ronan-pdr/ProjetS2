@@ -1,14 +1,16 @@
-﻿namespace Script.Manager
+﻿using Script.DossierPoint;
+
+namespace Script.Manager
 {
     public class InLabyrinthe : ManagerGame
     {
-        // constructeur
+        // ------------ Constructeur ------------
         public InLabyrinthe(int nJoueur)
         {
             NJoueur = nJoueur;
         }
         
-        // méthodes
+        // ------------ Méthodes ------------
         protected override NtypeJoueur GetNJoueur()
         {
             NtypeJoueur n = new NtypeJoueur();
@@ -19,8 +21,10 @@
         
         protected override NtypeBot GetNBot()
         {
-            // 0 bot
-            return new NtypeBot();
+            NtypeBot n = new NtypeBot();
+            n.Guide = CrossManager.Instance.GetNumberPoint() / NJoueur;
+            
+            return n;
         }
     }
 }

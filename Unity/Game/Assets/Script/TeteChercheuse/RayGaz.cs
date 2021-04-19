@@ -143,7 +143,7 @@ namespace Script.TeteChercheuse
             // Impossible que la file soit empty ici
             Node node = file.Defiler();
             
-            for (int i = 0; i < 40 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
+            for (int i = 0; i < 200 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
             {
                 if (i > 0)
                     node = file.Defiler();
@@ -188,16 +188,17 @@ namespace Script.TeteChercheuse
 
         private void FinForcé()
         {
-            Debug.Log("Il existe aucun chemin pour y accéder");
-            
             switch (type)
             {
                 case TypeRecherche.Path:
+                    Debug.Log("Il existe aucun chemin pour y accéder");
                     RecepGetPath(new List<Vector3>());
                     Destroy(gameObject);
                     break;
                 case TypeRecherche.Sonde:
+                    Debug.Log($"Le gaz s'est répendu en {time.ElapsedMilliseconds} milisecondes");
                     FinGetSonde();
+                    enabled = false;
                     break;
                 default:
                     throw new Exception($"Le cas de {type} n'a pas encore été géré");
@@ -256,6 +257,7 @@ namespace Script.TeteChercheuse
             return Calcul.Distance(p, destination, Calcul.Coord.Y) < bond;
         }
 
+        // La position donnée en argument sera le premier de la liste
         public List<Vector3> GetBestPath(Vector3 v)
         {
             int x = GetIndexX(v);
@@ -263,7 +265,7 @@ namespace Script.TeteChercheuse
 
             return GetBestPath(Sonde[z, x]);
         }
-
+        
         private List<Vector3> GetBestPath(Node node)
         {
             List<Vector3> path = new List<Vector3>();
@@ -275,7 +277,7 @@ namespace Script.TeteChercheuse
             while (node.After != null)
             {
                 nextNode = node.After;
-                for (int i = 0; i <= 2 && nextNode.After != null && capsule.CanIPass(node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
+                for (int i = 0; i >= 0 && nextNode.After != null && capsule.CanIPass(node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
                     Calcul.Distance(nextNode.After.Position, node.Position)); i++)
                 {
                     nextNode = nextNode.After;

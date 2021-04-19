@@ -42,14 +42,10 @@ namespace Script.EntityPlayer
             return type;
         }
 
-        private void Start()
-        {
-            master = MasterManager.Instance;
-        }
-
         //Setter
         protected void SetRbTr()
         {
+            master = MasterManager.Instance;
             Rb = GetComponent<Rigidbody>();
             Tr = GetComponent<Transform>();
         }

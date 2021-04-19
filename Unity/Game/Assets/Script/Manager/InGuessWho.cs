@@ -40,7 +40,7 @@ namespace Script.Manager
                     n.Fuyard = 1;
                     break;
                 default:
-                    n.Rectiligne = 4;
+                    n.Rectiligne = 1;
                     n.Fuyard = 1;
                     break;
             }

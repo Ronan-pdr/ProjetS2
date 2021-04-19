@@ -51,9 +51,6 @@ namespace Script.Manager
 
         // attribut relatif à ton avatar
         private PlayerClass ownPlayer;
-
-        // les booléens qui indiquent ce que le MasterClient a fait ou non dans le Update
-        private bool SetInterfaceInGame; // Est que l'interface in game a déjà été set ?
         
         // cette liste va servir à donner les noms à chaque bot
         private int[] nBotParJoueur;
@@ -112,6 +109,15 @@ namespace Script.Manager
         public void AjoutPlayer(PlayerClass player)
         {
             players.Add(player);
+
+            if (typeScene is InLabyrinthe)
+                return;
+            
+            // ce if s'active lorsque tous les joueurs ont créé leur avatar et l'ont ajouté à la liste 'players'
+            if (players.Count == nParticipant)
+            {
+                InterfaceInGameManager.Instance.Set();
+            }
         }
         public void AjoutChasseur(Chasseur chasseur)
         {
@@ -128,6 +134,9 @@ namespace Script.Manager
             // On peut faire ça puisqu'il y en aura qu'un seul
             Instance = this;
             
+            // instancier le nombre de joueur
+            nParticipant = PhotonNetwork.PlayerList.Length;
+            
             if (CrossManager.IsMaintenance()) // maintenance des crossPoints
             {
                 Debug.Log("Début Maintenance des CrossPoints");
@@ -141,10 +150,7 @@ namespace Script.Manager
             {
                 typeScene = new InLabyrinthe(nParticipant);
             }
-            
-            // instancier le nombre de joueur
-            nParticipant = PhotonNetwork.PlayerList.Length;
-            
+
             // instancier les listes
             players = new List<PlayerClass>();
             chasseurs = new List<Chasseur>();
@@ -210,6 +216,11 @@ namespace Script.Manager
                         int indexSpot = indexSpotChassé[i];
                         infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpot, TypePlayer.Chassé);
                     }
+                    else if (types[i] == TypePlayer.Blocard) // blocard
+                    {
+                        int indexSpot = indexSpotChassé[i];
+                        infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpot, TypePlayer.Blocard);
+                    }
                     else
                     {
                         throw new Exception($"Pas encore géré le cas du {types[i]}");
@@ -228,19 +239,6 @@ namespace Script.Manager
             // S'il y a maintenance, il n'y a pas de joueur et pas leur gestion
             if (IsInMaintenance())
                 return;
-
-            if (scene == TypeScene.Labyrinthe)
-            {
-                return;
-            }
-
-            // ce if s'active lorsque tous les joueurs ont créé leur avatar et l'ont ajouté à la liste 'players'
-            if (players.Count == nParticipant && !SetInterfaceInGame)
-            {
-                InterfaceInGameManager.Instance.Set();
-
-                SetInterfaceInGame = true;
-            }
         }
 
         public void Die(Player player)

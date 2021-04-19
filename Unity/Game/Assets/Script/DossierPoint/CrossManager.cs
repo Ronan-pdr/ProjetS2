@@ -13,6 +13,7 @@ namespace Script.DossierPoint
 {
     public class CrossManager : MonoBehaviour
     {
+        // ------------ Attributs ------------
         public static CrossManager Instance;
         private CrossPoint[] crossPoints;
         
@@ -32,7 +33,7 @@ namespace Script.DossierPoint
             contentOutput = new string[crossPoints.Length];
         }
     
-        //Getter
+        // ------------ Getter ------------
         public int GetNumberPoint() => crossPoints.Length;
         public CrossPoint GetPoint(int index) => crossPoints[index];
         
@@ -81,9 +82,14 @@ namespace Script.DossierPoint
             return positions;
         }
         
-        // Maintenance
+        // ------------ Constructeurs ------------
         private void Start()
         {
+            if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Labyrinthe)
+            {
+                return;
+            }
+            
             if (MasterManager.Instance.IsInMaintenance())
             {
                 indexResearch = -1;
@@ -94,6 +100,8 @@ namespace Script.DossierPoint
                 LoadNeighboors();
             }
         }
+        
+        // ------------ Méthodes ------------
 
         public void EndOfOneResearch(List<CrossPoint> neighboors)
         {

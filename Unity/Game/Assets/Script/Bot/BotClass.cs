@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
 using Script.DossierPoint;
@@ -17,6 +19,14 @@ namespace Script.Bot
         //Rotation
         protected float rotationSpeed;
         protected float AmountRotation;
+        
+        // variables relatives à la caméra artificiel des bots
+        private static float AngleCamera = 80; // le degré pour la vision périphérique
+        private static Vector3 PositionCamera = new Vector3(0, 1.4f, 0.3f); // correspond à la distance séparant le "cameraHolder" de la "camera" de type "Camera"
+
+        //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
+        protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
+
         
         // ------------ Getters ------------
         
@@ -45,8 +55,10 @@ namespace Script.Bot
             MaxHealth = 100;
             StartHuman(); // vie
 
+            // son nom (qui sera unique)
             name = MasterManager.Instance.GetNameBot(Pv.Owner);
 
+            // le parenter
             if (BotManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
                 Tr.parent = MasterManager.Instance.GetDossierOtherBot(); // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs
             else
@@ -58,10 +70,24 @@ namespace Script.Bot
         {
             UpdateHumanoide();
         }
+
+        protected void FixedUpdateBot()
+        {
+            if (IsMyBot())
+            {
+                MoveEntity();
+            }
+        }
         
         // Déplacement
 
         protected abstract void FiniDeTourner();
+
+        protected void CalculeRotation(Vector3 dest)
+        {
+            AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, dest, Calcul.Coord.Y);
+            LastCalculRotation = Time.time;
+        }
 
         protected void Tourner()
         {
@@ -84,6 +110,63 @@ namespace Script.Bot
                 Tr.Rotate(new Vector3(0, yRot, 0));
                 AmountRotation -= yRot;
             }
+        }
+
+        protected bool IsArrivé(Vector3 dest)
+        {
+            return Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.5f;
+        }
+        
+        protected List<PlayerClass> IsPlayerInMyVision(TypePlayer typePlayer)
+        {
+            Func<int, PlayerClass> getPlayer;
+            int l;
+
+            // récupérer la fonction pour récupérer le bon type de joueur et
+            // le nombre de ce type de joueur
+            switch (typePlayer)
+            {
+                case TypePlayer.Player:
+                    getPlayer = master.GetPlayer;
+                    l = master.GetNbPlayer();
+                    break;
+                case TypePlayer.Chasseur:
+                    getPlayer = master.GetChasseur;
+                    l = master.GetNbChasseur();
+                    break;
+                case TypePlayer.Chassé:
+                    getPlayer = master.GetChassé;
+                    l = master.GetNbChassé();
+                    break;
+                default:
+                    throw new Exception($"Le cas {typePlayer} n'est pas encore géré");
+            }
+            
+            Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
+            List<PlayerClass> playerInVision = new List<PlayerClass>();
+
+            for (int i = 0; i < l; i++)
+            {
+                Vector3 posPlayer = getPlayer(i).transform.position;
+
+                float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
+                    posPlayer, Calcul.Coord.Y);
+
+                if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
+                {
+                    Ray ray = new Ray(positionCamera, Calcul.Diff(posPlayer, positionCamera));
+
+                    if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
+                    {
+                        if (hit.collider.GetComponent<PlayerClass>()) // si l'obstacle est le joueur alors le bot "VOIT" le joueur
+                        {
+                            playerInVision.Add(hit.collider.GetComponent<PlayerClass>());
+                        }
+                    }
+                }
+            }
+
+            return playerInVision;
         }
         
         // GamePlay

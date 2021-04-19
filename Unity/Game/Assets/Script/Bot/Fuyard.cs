@@ -23,13 +23,9 @@ namespace Script.Bot
 
         private Etat etat = Etat.Attend;
         
-        // variables relatives à la caméra des chassés
-        private static float AngleCamera; // correspond au "Field Of View"
-        private static Vector3 PositionCamera; // correspond à la distance séparant le "cameraHolder" de la "camera" de type "Camera"
-        
         // cette liste va contenir la position des chasseurs lorsque le bot les a "vu"
         // si le bot n'en a pas vu, la liste est vide
-        private List<(PlayerClass chasseur, Vector3 position)> Vus = new List<(PlayerClass chasseur, Vector3 position)>();
+        private List<(Chasseur chasseur, Vector3 position)> Vus = new List<(Chasseur chasseur, Vector3 position)>();
 
         // fuite
         private List<Vector3> planFuite;
@@ -37,9 +33,6 @@ namespace Script.Bot
         /*private float tempsMaxFuite = 3f;
         private float tempsRestantFuite;
         private float distanceFuite;*/
-        
-        // variable relative à sa capsule
-        private (float hauteur, float rayon) capsule;
         
         // constructeurs
         private void Awake()
@@ -49,11 +42,6 @@ namespace Script.Bot
 
         private void Start()
         {
-            CapsuleCollider cap = GetComponent<CapsuleCollider>();
-            float scale = cap.transform.localScale.y;
-            capsule.hauteur = cap.height * scale;
-            capsule.rayon = cap.radius * scale;
-            
             rotationSpeed = 600;
             
             StartBot(); // tout le monde le fait pour qu'il soit parenter
@@ -61,16 +49,6 @@ namespace Script.Bot
             master = MasterManager.Instance;
 
             //distanceFuite = SprintSpeed * tempsMaxFuite;
-        }
-
-        public static void SetInfoCamera(PlayerClass player)
-        {
-            Camera camera = player.GetComponentInChildren<Camera>();
-            
-            //AngleCamera = camera.fieldOfView;
-            AngleCamera = 80;
-
-            PositionCamera = new Vector3(0, 1.4f, 0.3f);
         }
 
         private void Update()
@@ -81,53 +59,26 @@ namespace Script.Bot
             // quoi que soit son état, il fait ça
             UpdateBot();
 
-
             if (etat == Etat.Fuite)
             {
                 Fuir();
             }
             else if (etat == Etat.Attend)
             {
-                IsChasseurInMyVision();
+                foreach (PlayerClass chasseur in IsPlayerInMyVision(TypePlayer.Chasseur))
+                {
+                    // ce sont forcément des chasseurs
+                    NewVu((Chasseur)chasseur);
+                }
             }
         }
 
         private void FixedUpdate()
         {
-            if (IsMyBot())
-            {
-                MoveEntity();
-            }
+            FixedUpdateBot();
         }
 
-        private void IsChasseurInMyVision()
-        {
-            int nPlayer = master.GetNbPlayer();
-            Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
-            
-            for (int i = 0; i < nPlayer; i++)
-            {
-                Vector3 positionChasseur = master.GetPlayer(i).transform.position;
-
-                float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
-                    positionChasseur, Calcul.Coord.Y);
-
-                if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
-                {
-                    Ray ray = new Ray(positionCamera, Calcul.Diff(positionChasseur, positionCamera));
-
-                    if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
-                    {
-                        if (hit.collider.GetComponent<PlayerClass>()) // si l'obstacle est le chasseur alors le bot "VOIT" le chasseur
-                        {
-                            NewVu(hit.collider.GetComponent<PlayerClass>());
-                        }
-                    }
-                }
-            }
-        }
-
-        private void NewVu(PlayerClass vu) // en gros, changement de direction
+        private void NewVu(Chasseur vu) // en gros, changement de direction
         {
             int i;
             int len = Vus.Count;
@@ -205,14 +156,13 @@ namespace Script.Bot
         private void Fuir()
         {
             int len = planFuite.Count;
-            Vector3 dest = planFuite[len - 1];
-            
+
             // s'il a finit une étape de son plan
-            if (Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.5f)
+            if (IsArrivé(planFuite[len - 1]))
             {
                 planFuite.RemoveAt(len - 1);
                 
-                if (planFuite.Count == 0) // il finit sa cavale,...
+                if (len == 1) // il finit sa cavale,...
                 {
                     MoveAmount = Vector3.zero; // ...il s'arrête...
                     etat = Etat.Attend;
@@ -221,7 +171,13 @@ namespace Script.Bot
                     return; // ...et ne fait rien d'autre
                 }
                 
-                AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, planFuite[len-2], Calcul.Coord.Y);
+                CalculeRotation(planFuite[len - 2]);
+            }
+            
+            // il recalcule sa rotation tous les 0.5f
+            if (Time.time - LastCalculRotation > 0.5f)
+            {
+                CalculeRotation(planFuite[len - 1]);
             }
             
             if (SimpleMath.Abs(AmountRotation) > 0)

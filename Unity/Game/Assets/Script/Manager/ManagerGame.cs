@@ -8,7 +8,7 @@ namespace Script.Manager
 
     public abstract class ManagerGame
     {
-        // struct
+        // ------------ Struct ------------
         protected struct NtypeJoueur
         {
             public int Chassé;
@@ -21,12 +21,14 @@ namespace Script.Manager
         {
             public int Rectiligne;
             public int Fuyard;
+            public int Guide;
         }
         
-        // attributs
+        // ------------ Attributs ------------
+        
         protected int NJoueur;
 
-        // méthodes
+        // ------------ Getters ------------
         protected abstract NtypeJoueur GetNJoueur();
         protected abstract NtypeBot GetNBot();
 
@@ -72,9 +74,9 @@ namespace Script.Manager
                 }
                 
                 // le total doît toujours être égal au nombre de joueur (logique hehe)
-                if (n.Chasseur + n.Chassé + n.None != NJoueur)
+                if (n.Chasseur + n.Chassé + n.None + n.Blocard != NJoueur)
                 {
-                    throw new Exception($"{n.Chasseur} + {n.Chassé} + {n.None} != {NJoueur}");
+                    throw new Exception($"{n.Chasseur} + {n.Chassé} + {n.None} + {n.Blocard} != {NJoueur}");
                 }
                 
                 // avec le nombre de spawn
@@ -96,7 +98,7 @@ namespace Script.Manager
             // récupérer les taux en fonction du type de la partie
             NtypeBot n = GetNBot();
 
-            TypeBot[] res = new TypeBot[n.Fuyard + n.Rectiligne];
+            TypeBot[] res = new TypeBot[n.Fuyard + n.Rectiligne + n.Guide];
 
             // attribution des types (pour l'instant c'est pas random)
             int i;
@@ -108,6 +110,11 @@ namespace Script.Manager
             for (int j = 0; j < n.Rectiligne; i++, j++)
             {
                 res[i] = TypeBot.Rectiligne;
+            }
+
+            for (int j = 0; j < n.Guide; i++, j++)
+            {
+                res[i] = TypeBot.Guide;
             }
 
             return res;

@@ -27,7 +27,7 @@ namespace Script.EntityPlayer
             
             if (Physics.CapsuleCast(hautDuCorps, basDuCorps, _rayon, direction, out RaycastHit hit, maxDistance))
             {
-                return hit.collider.GetComponent<Entity>();
+                return false;
             }
 
             return true;

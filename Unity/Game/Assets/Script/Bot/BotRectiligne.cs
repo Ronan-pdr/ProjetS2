@@ -20,14 +20,7 @@ namespace Script.Bot
 
         //Destination
         private CrossPoint PointDestination;
-
-        //Ecart maximum entre le point et sa position pour qu'il soit considéré comme arrivé à destination
-        private float ecartDistance = 0.5f;
-    
-        //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
-        private float ecartTime = 0.5f;
-        private float lastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
-
+        
         //Getter
     
         public Etat GetEtat() => etat;
@@ -71,15 +64,15 @@ namespace Script.Bot
                 MoveAmount = Vector3.zero; // ...il ne se déplace pas...
                 return; // ...et ne fait rien d'autre
             }
-
-            if (Time.time - lastCalculRotation > ecartTime) // il recalcule sa rotation tous les 'ecartTime'
+            
+            if (Time.time - LastCalculRotation > 0.5f) // il recalcule sa rotation tous les 'ecartTime'
             {
                 FindAmountRotation();
             }
-        
+
             if (etat == Etat.EnChemin)
             {
-                if (Calcul.Distance(Tr.position, PointDestination.transform.position) < ecartDistance) // arrivé
+                if (IsArrivé(PointDestination.transform.position)) // arrivé
                 {
                     FindNewDestination();
                     AnimationStop();
@@ -96,10 +89,7 @@ namespace Script.Bot
 
         private void FixedUpdate()
         {
-            if (!IsMyBot()) // Chaque ordi contrôle seulement ses bots
-                return;
-        
-            MoveEntity();
+            FixedUpdateBot();
         }
 
         public void FindNewDestination()
@@ -118,10 +108,10 @@ namespace Script.Bot
         }
 
         // Cette fonction trouve le degré nécessaire (entre ]-180, 180]) afin que le soit orienté face à sa destination
-        public void FindAmountRotation() // Change potentiellement l'état du joueur
+        public void FindAmountRotation()
         {
-            AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, PointDestination.transform.position, Calcul.Coord.Y);
-
+            CalculeRotation(PointDestination.transform.position);
+            
             if (SimpleMath.Abs(AmountRotation) < 5) // Si le dégré est négligeable, le bot continue sa course
             {
                 etat = Etat.EnChemin; // va directement avancer
@@ -130,8 +120,6 @@ namespace Script.Bot
             {
                 etat = Etat.SeTourne; // va tourner
             }
-
-            lastCalculRotation = Time.time;
         }
 
         private void Avancer()

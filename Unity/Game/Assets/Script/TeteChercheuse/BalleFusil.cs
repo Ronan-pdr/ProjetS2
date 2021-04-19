@@ -52,6 +52,7 @@ namespace Script.TeteChercheuse
             // si max distance -> il s'arrête
             if (Calcul.Distance(Lanceur.transform.position, Tr.position) > armeInfo.GetPortéeAttaque())
             {
+                enabled = false;
                 PhotonNetwork.Destroy(gameObject);
             }
         }
@@ -87,6 +88,9 @@ namespace Script.TeteChercheuse
 
         private void OnCollisionAux(Collider other)
         {
+            if (!Pv)
+                return;
+            
             // Seul le créateur de la balle gère les collisions
             if (!Pv.IsMine)
                 return;

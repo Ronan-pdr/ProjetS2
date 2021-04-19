@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Script.EntityPlayer;
 using Script.Test;
 using Script.Tools;
@@ -8,12 +9,12 @@ namespace Script.Labyrinthe
 {
     public class Blocard : PlayerClass
     {
-        // attributs
+        // ------------ Attributs ------------
         private int nCaillouMax = 50;
         private int nCaillou;
         private List<GameObject> caillous = new List<GameObject>();
 
-        // constructeurs
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             AwakePlayer();
@@ -30,6 +31,11 @@ namespace Script.Labyrinthe
         // méthodes
         private void Update()
         {
+            if (!Pv.IsMine)
+                return;
+            
+            UpdatePlayer();
+            
             if (Input.GetKeyDown("f"))
             {
                 PoserCaillou();
@@ -39,6 +45,13 @@ namespace Script.Labyrinthe
             {
                 RetirerCaillou();
             }
+            
+            Animation();
+        }
+
+        private void FixedUpdate()
+        {
+            FixedUpdatePlayer();
         }
 
         private void PoserCaillou()

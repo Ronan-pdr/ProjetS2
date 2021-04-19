@@ -2456,9 +2456,9 @@ GameObject:
   - component: {fileID: 8211816108802394849}
   - component: {fileID: 3982942136922913934}
   - component: {fileID: 6024948099955840302}
-  - component: {fileID: 2721432822531607774}
+  - component: {fileID: 257465256366004360}
   m_Layer: 0
-  m_Name: Fuyard
+  m_Name: Guide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2549,7 +2549,7 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!114 &2721432822531607774
+--- !u!114 &257465256366004360
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2558,7 +2558,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7904250425746919107}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b51e362c84354b09b571232f5900176c, type: 3}
+  m_Script: {fileID: 11500000, guid: 74ffd3ddf92a4978bf99d54c86e9c6ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 2909232356640108291}

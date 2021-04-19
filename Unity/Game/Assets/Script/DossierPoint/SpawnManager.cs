@@ -11,12 +11,13 @@ namespace Script.DossierPoint
 {
     public class SpawnManager : MonoBehaviour
     {
+        // ------------ Attributs ------------
         public static SpawnManager Instance;
 
         private SpawnPoint[] spawnChasseur;
         private SpawnPoint[] spawnChassé;
         
-        // Getter
+        // ------------ Getter------------
         public int GetNbSpawnChasseur() => spawnChasseur.Length;
         public int GetNbSpawnChassé() => spawnChassé.Length;
         public Transform GetTrChasseur(int index) => spawnChasseur[index].transform;
@@ -25,9 +26,10 @@ namespace Script.DossierPoint
         private void Awake()
         {
             Instance = this;
+            RecupSpawns();
         }
 
-        private void Start()
+        private void RecupSpawns()
         {
             // les listes où sont temporairements stockées tous les spawnPoints
             SpawnPoint[] points = GetComponentsInChildren<SpawnPoint>();
@@ -38,11 +40,11 @@ namespace Script.DossierPoint
             int len = points.Length;
             for (i = 0; i < len; i++)
             {
-                if (points[i].Typo == SpawnPoint.Type.Chasseur)
+                if (points[i].IsChasseurSpawn())
                 {
                     spawnBeginChasseur.Add(points[i]);
                 }
-                else if (points[i].Typo == SpawnPoint.Type.Chassé)
+                else if (points[i].IsChasséSpawn())
                 {
                     spawnBeginChassé.Add(points[i]);
                 }
