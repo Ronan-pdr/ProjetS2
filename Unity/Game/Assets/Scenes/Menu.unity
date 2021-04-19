@@ -1146,7 +1146,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95b6e1a00f4d495ba0ccbfd4730fcdc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fullScreenToggle: {fileID: 827718508}
   resolutionDropdown: {fileID: 59577189}
+  graphicsDropdown: {fileID: 1405591858}
 --- !u!1 &199024702
 GameObject:
   m_ObjectHideFlags: 0

@@ -35,7 +35,6 @@ namespace Script.InterfaceInGame
         {
             int x = (100 * ownPlayerClass.GetCurrentHealth() / ownPlayerClass.GetMaxHealth()) - 1;
             Image image = SpriteContent.GetComponent<Image>();
-            Debug.Log(sprites);
             image.sprite = sprites[x/20];
         }
         public void Set()
