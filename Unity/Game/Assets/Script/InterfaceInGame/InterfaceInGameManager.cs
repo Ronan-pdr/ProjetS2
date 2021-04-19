@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Script.EntityPlayer;
+using UnityEngine.UI;
 
 namespace Script.InterfaceInGame
 {
@@ -11,6 +12,7 @@ namespace Script.InterfaceInGame
         
         // pour instancier sur la toile l'affichage du joueur
         [SerializeField] Transform infoContent;
+        [SerializeField] private Transform SpriteContent;
         [SerializeField] GameObject infoItemPrefab;
 
         // relatif à toi
@@ -19,13 +21,23 @@ namespace Script.InterfaceInGame
         
         // relatif aux autres
         private List<AffichageInfoJoueur> infosJoueur;
+        
+        //Listes des images pour la vie
+        [SerializeField] private Sprite[] sprites;
 
         private void Awake()
         {
             Instance = this;
             infosJoueur = new List<AffichageInfoJoueur>();
         }
-        
+
+        void Update()
+        {
+            int x = (100 * ownPlayerClass.GetCurrentHealth() / ownPlayerClass.GetMaxHealth()) - 1;
+            Image image = SpriteContent.GetComponent<Image>();
+            Debug.Log(sprites);
+            image.sprite = sprites[x/20];
+        }
         public void Set()
         {
             MasterManager masterManager = MasterManager.Instance;
