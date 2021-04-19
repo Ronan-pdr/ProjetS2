@@ -13,8 +13,10 @@ namespace Script.InterfaceInGame
         private bool isPaused;
         private bool disconnecting;
         
+        
         // Getter
         public bool GetIsPaused() => isPaused;
+        public bool Getdisconnecting() => disconnecting;
         
         public void Awake()
         {
@@ -25,23 +27,7 @@ namespace Script.InterfaceInGame
         }
 
         // Update is called once per frame
-        void Update()
-        {
-            if (disconnecting)
-                return;
-            
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                if (isPaused)
-                {
-                    Resume();
-                }
-                else
-                {
-                    Pause();
-                }
-            }
-        }
+        
 
         public void Resume()
         {
@@ -49,7 +35,7 @@ namespace Script.InterfaceInGame
             isPaused = false;
         }
 
-        void Pause()
+        public void Pause()
         {
             MenuManager.Instance.OpenMenu("pause");
             isPaused = true;

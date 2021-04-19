@@ -15,7 +15,7 @@ namespace Script.InterfaceInGame
         {
             player = value;
             
-            text.transform.position = new Vector3(largeur, hauteur + 131.5f, 0);
+            text.transform.position = new Vector3(largeur, hauteur + 115f, 0);
         }
 
         public void Update()
@@ -23,11 +23,11 @@ namespace Script.InterfaceInGame
             if (player == null)
                 return;
             
-            text.text = (player is Chassé?"Chassé":"Chasseur") + Environment.NewLine; // le type
-            text.text += player.GetPlayer().NickName + Environment.NewLine; // le nom
+            //text.text = (player is Chassé?"Chassé":"Chasseur") + Environment.NewLine; // le type
+            //text.text += player.GetPlayer().NickName + Environment.NewLine; // le nom
 
             int vie = player.GetCurrentHealth();
-            text.text += vie <= 0 ? "Dead" : vie + " / " + player.GetMaxHealth(); // la vie
+            text.text = vie <= 0 ? "Dead" : vie + " / " + player.GetMaxHealth(); // la vie
         }
     }
 }

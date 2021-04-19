@@ -53,6 +53,7 @@ namespace Script.EntityPlayer
         protected void StartPlayer()
         {
             StartHuman();
+            name = PhotonNetwork.NickName;
         
             if (!Pv.IsMine) 
             {

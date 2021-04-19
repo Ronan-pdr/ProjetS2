@@ -35,14 +35,19 @@ namespace Script.EntityPlayer
         {
             if (!Pv.IsMine)
                 return;
+            
         
-            Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
-            Cursor.visible = PauseMenu.Instance.GetIsPaused();
-        
-            if (PauseMenu.Instance.GetIsPaused())
+            if (PauseMenu.Instance && PauseMenu.Instance.GetIsPaused())
             {
+                Cursor.lockState = CursorLockMode.None;
                 MoveAmount = Vector3.zero;
+                Cursor.visible = true;
                 return;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = false;
             }
 
             ManipulerArme();

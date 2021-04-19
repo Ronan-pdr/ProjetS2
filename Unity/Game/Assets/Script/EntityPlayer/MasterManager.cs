@@ -176,7 +176,7 @@ namespace Script.EntityPlayer
             if (players.Count == nParticipant && !SetInterfaceInGame)
             {
                 InterfaceInGameManager.Instance.Set();
-
+                TabMenu.Instance.Set();
                 SetInterfaceInGame = true;
             }
         }
