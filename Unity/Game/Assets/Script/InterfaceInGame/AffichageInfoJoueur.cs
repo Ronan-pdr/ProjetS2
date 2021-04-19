@@ -15,7 +15,7 @@ namespace Script.InterfaceInGame
         {
             player = value;
             
-            text.transform.position = new Vector3(largeur, hauteur + 115f, 0);
+            text.transform.position = new Vector3(largeur, hauteur + 75f, 0);
         }
 
         public void Update()
