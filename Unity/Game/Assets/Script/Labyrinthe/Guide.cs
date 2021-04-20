@@ -73,7 +73,7 @@ namespace Script.Labyrinthe
         private bool IsDepart()
         {
             return Time.time - timeLastRegard > 1 &&
-                   IsPlayerInMyVision(TypePlayer.Player).Count > 0;
+                   GetPlayerInMyVision(TypePlayer.Player).Count > 0;
         }
 
         private void Depart()
@@ -103,7 +103,7 @@ namespace Script.Labyrinthe
                     return;
                 }
                 
-                AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, path[0], Calcul.Coord.Y);
+                CalculeRotation(path[0]);
             }
             
             // il recalcule sa rotation tous les 0.5f

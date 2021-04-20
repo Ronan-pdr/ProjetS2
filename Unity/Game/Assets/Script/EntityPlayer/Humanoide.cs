@@ -118,8 +118,8 @@ namespace Script.EntityPlayer
         {
             if (hum1 is null || hum2 is null)
             {
-                Debug.Log("WARNING : Tu as testé l'égalité de deux humains dont au moins un est null");
-                Debug.Log($"hum1 -> {hum1} ; hum2 -> {hum2}");
+                //Debug.Log("WARNING : Tu as testé l'égalité de deux humains dont au moins un est null");
+                //Debug.Log($"hum1 -> {hum1} ; hum2 -> {hum2}");
                 return false;
             }
             

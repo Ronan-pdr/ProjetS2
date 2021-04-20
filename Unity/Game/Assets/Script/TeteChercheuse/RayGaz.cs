@@ -149,7 +149,7 @@ namespace Script.TeteChercheuse
                     node = file.Defiler();
                 
                 // temporaire
-                //TestRayGaz.CreateMarqueur(node.Position);
+                TestRayGaz.CreateMarqueur(node.Position);
 
                 // devant
                 NewPosition(node, Vector3.forward, bond);

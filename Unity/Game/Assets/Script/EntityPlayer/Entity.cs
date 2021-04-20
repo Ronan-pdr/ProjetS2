@@ -59,7 +59,6 @@ namespace Script.EntityPlayer
     
         protected void MoveEntity()
         {
-            
             //Déplace le corps du human grâce à moveAmount précédemment calculé
             Rb.MovePosition(Rb.position + Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime);
         }

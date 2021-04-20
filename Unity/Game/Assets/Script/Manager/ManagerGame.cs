@@ -33,6 +33,7 @@ namespace Script.Manager
             public int Rectiligne;
             public int Fuyard;
             public int Guide;
+            public int Suiveur;
             
             public (TypeBot, int)[] GetList()
             {
@@ -40,7 +41,8 @@ namespace Script.Manager
                 {
                     (TypeBot.Rectiligne, Rectiligne),
                     (TypeBot.Fuyard, Fuyard),
-                    (TypeBot.Guide, Guide)
+                    (TypeBot.Guide, Guide),
+                    (TypeBot.Suiveur, Suiveur)
                 };
             }
         }
@@ -98,7 +100,7 @@ namespace Script.Manager
             NtypeBot n = GetNBot();
 
             // attribution des types (pour l'instant c'est pas random)
-            TypeBot[] listTrié = GetListTrié(n.GetList(), n.Fuyard + n.Rectiligne + n.Guide);
+            TypeBot[] listTrié = GetListTrié(n.GetList(), n.Fuyard + n.Rectiligne + n.Guide + n.Suiveur);
 
             return listTrié;
         }

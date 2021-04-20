@@ -15,7 +15,8 @@ namespace Script.Bot
     {
         Rectiligne,
         Fuyard,
-        Guide
+        Guide,
+        Suiveur
     }
     
     public class BotManager : MonoBehaviour
@@ -82,6 +83,8 @@ namespace Script.Bot
                     return "Fuyard";
                 case TypeBot.Guide:
                     return "Guide";
+                case TypeBot.Suiveur:
+                    return "Suiveur";
                 default:
                     throw new Exception($"Le cas du {type} n'a pas encore été géré");
             }

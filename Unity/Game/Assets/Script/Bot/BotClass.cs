@@ -97,7 +97,7 @@ namespace Script.Bot
             else
                 sensRotation = -1;
 
-            float yRot = sensRotation * rotationSpeed * Time.deltaTime;
+            float yRot = sensRotation * GetAmountYRot() * rotationSpeed * Time.deltaTime;
 
             if (SimpleMath.Abs(AmountRotation) < SimpleMath.Abs(yRot)) // Le cas où on a finis de tourner
             {
@@ -112,12 +112,31 @@ namespace Script.Bot
             }
         }
 
+        private float GetAmountYRot()
+        {
+            float absMoveAmount = SimpleMath.Abs(AmountRotation);
+            if (absMoveAmount < 5)
+                return 0.4f;
+            if (absMoveAmount < 30)
+                return 0.6f;
+            if (absMoveAmount < 60)
+                return 0.8f;
+            if (absMoveAmount < 90)
+                return 1f;
+            if (absMoveAmount < 120)
+                return 1.2f;
+            if (absMoveAmount < 150)
+                return 1.4f;
+            
+            return 1.6f;
+        }
+
         protected bool IsArrivé(Vector3 dest)
         {
             return Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.5f;
         }
         
-        protected List<PlayerClass> IsPlayerInMyVision(TypePlayer typePlayer)
+        protected List<PlayerClass> GetPlayerInMyVision(TypePlayer typePlayer)
         {
             Func<int, PlayerClass> getPlayer;
             int l;
@@ -142,31 +161,42 @@ namespace Script.Bot
                     throw new Exception($"Le cas {typePlayer} n'est pas encore géré");
             }
             
-            Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
-            List<PlayerClass> playerInVision = new List<PlayerClass>();
+            List<PlayerClass> playersInVision = new List<PlayerClass>();
 
             for (int i = 0; i < l; i++)
             {
-                Vector3 posPlayer = getPlayer(i).transform.position;
-
-                float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
-                    posPlayer, Calcul.Coord.Y);
-
-                if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
+                PlayerClass player = getPlayer(i);
+                if (IsInMyVision(player))
                 {
-                    Ray ray = new Ray(positionCamera, Calcul.Diff(posPlayer, positionCamera));
+                    playersInVision.Add(player);
+                }
+            }
 
-                    if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
+            return playersInVision;
+        }
+
+        private bool IsInMyVision(PlayerClass player)
+        {
+            Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
+            Vector3 posPlayer = player.transform.position;
+            
+            float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
+                posPlayer, Calcul.Coord.Y);
+
+            if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
+            {
+                Ray ray = new Ray(positionCamera, Calcul.Diff(posPlayer, positionCamera));
+
+                if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
+                {
+                    if (hit.collider.GetComponent<PlayerClass>() == player) // si l'obstacle est le joueur alors le bot "VOIT" le joueur
                     {
-                        if (hit.collider.GetComponent<PlayerClass>()) // si l'obstacle est le joueur alors le bot "VOIT" le joueur
-                        {
-                            playerInVision.Add(hit.collider.GetComponent<PlayerClass>());
-                        }
+                        return true;
                     }
                 }
             }
 
-            return playerInVision;
+            return false;
         }
         
         // GamePlay

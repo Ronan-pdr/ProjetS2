@@ -29,7 +29,6 @@ public class TabMenu : MonoBehaviour
         {
             PlayerClass playerclass = mastermanager.GetChasseur(i);
             infosChasseur.Add(Instantiate(playerInfoTabPrefab, ChasseurInfoContent).GetComponent<PlayerInfoTab>());
-            Debug.Log(infosChasseur[i]);
             infosChasseur[i].Set(playerclass);
         }
         

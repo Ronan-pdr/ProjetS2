@@ -12,7 +12,7 @@ namespace Script.Bot
 {
     public class Fuyard : BotClass
     {
-        // Etat
+        // ------------ Etat ------------
         protected enum Etat
         {
             Attend,
@@ -34,7 +34,7 @@ namespace Script.Bot
         private float tempsRestantFuite;
         private float distanceFuite;*/
         
-        // constructeurs
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             AwakeBot();
@@ -47,10 +47,9 @@ namespace Script.Bot
             StartBot(); // tout le monde le fait pour qu'il soit parenter
             
             master = MasterManager.Instance;
-
-            //distanceFuite = SprintSpeed * tempsMaxFuite;
         }
 
+        // ------------ Méthodes ------------
         private void Update()
         {
             if (!IsMyBot())
@@ -65,7 +64,7 @@ namespace Script.Bot
             }
             else if (etat == Etat.Attend)
             {
-                foreach (PlayerClass chasseur in IsPlayerInMyVision(TypePlayer.Chasseur))
+                foreach (PlayerClass chasseur in GetPlayerInMyVision(TypePlayer.Chasseur))
                 {
                     // ce sont forcément des chasseurs
                     NewVu((Chasseur)chasseur);
@@ -157,8 +156,23 @@ namespace Script.Bot
         {
             int len = planFuite.Count;
 
+            float dist = Calcul.Distance(Tr.position, planFuite[len - 1], Calcul.Coord.Y);
+
+            if (dist < 2)
+            {
+                // marche parce que proche
+                SetMoveAmount(Vector3.forward, WalkSpeed);
+                ActiverAnimation("Avant");
+            }
+            else
+            {
+                // court
+                SetMoveAmount(Vector3.forward, SprintSpeed);
+                ActiverAnimation("Course");
+            }
+
             // s'il a finit une étape de son plan
-            if (IsArrivé(planFuite[len - 1]))
+            if (dist < 0.5f)
             {
                 planFuite.RemoveAt(len - 1);
                 
@@ -182,13 +196,6 @@ namespace Script.Bot
             
             if (SimpleMath.Abs(AmountRotation) > 0)
                 Tourner();
-            
-            // set sa vitesse actuel (se déplace toujours droit devant lui)
-            SetMoveAmount(Vector3.forward, SprintSpeed);
-            
-            // animation
-            anim.enabled = true;
-            anim.Play("Course");
         }
         
         // Event
