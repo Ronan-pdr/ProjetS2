@@ -22,13 +22,15 @@ namespace Script.DossierPoint
         public int GetNbNeighboor() => Neighboors.Count;
         
         // Setter
-        public void InitialiserNeighboors()
-        {
-            Neighboors = new List<CrossPoint>();
-        }
         public void AddNeighboor(CrossPoint value)
         {
             Neighboors.Add(value);
+        }
+        
+        // constructeur
+        private void Awake()
+        {
+            Neighboors = new List<CrossPoint>();
         }
 
         public void EndResearchBody(CrossPoint neighboor) // est appelé dans la class 'BodyChercheur', dans la fonction 'Update'
@@ -53,10 +55,7 @@ namespace Script.DossierPoint
 
         public void SearchNeighboors()
         {
-            transform.position += new Vector3(0, 0, 0); // unity surélève le point de 0.3, je compense 
-            
-            if (Neighboors == null)
-                Neighboors = new List<CrossPoint>();
+            Neighboors = new List<CrossPoint>();
 
             CrossPoint potentialNeighboor;
             Vector3 ownCoord = transform.position;

@@ -1,6 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Bot;
+using Script.Manager;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -8,7 +9,7 @@ namespace Script.EntityPlayer
 {
     public abstract class PlayerClass : Humanoide
     {
-        // Etat
+        // ------------ Etat ------------
         protected enum Etat
         {
             Debout,
@@ -17,21 +18,9 @@ namespace Script.EntityPlayer
         }
 
         protected Etat etat = Etat.Debout;
-        protected string touchLeverAssoir = "c";
         protected float LastChangementEtat; // La dernière fois qu'on a changé de position entre assis et lever
-        protected string touchAccroupi = "x";
-
-        //Avancer
-        protected string touchAvancer = "z";
-        protected string touchReculer = "s";
-        protected string touchDroite = "d";
-        protected string touchGauche = "q";
-    
-        //Sprint
-        protected string touchSprint = "left shift";
-    
-        //Jump
-        protected string touchJump = "space";
+        
+        protected TouchesClass touchesClass;
 
         //Look
         private float verticalLookRotation; 
@@ -40,8 +29,7 @@ namespace Script.EntityPlayer
 
         //Rassembler les infos
         protected Transform masterManager;
-
-
+        
         protected void AwakePlayer()
         {
             SetRbTr();
@@ -50,17 +38,22 @@ namespace Script.EntityPlayer
             // parenter
             masterManager = MasterManager.Instance.transform;
             Tr.parent = masterManager;
+
+            if (Pv.IsMine)
+            {
+                // indiquer quel est ton propre joueur au MasterManager
+                MasterManager.Instance.SetOwnPlayer(this);
+            }
         
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);
-            
-            Fuyard.SetInfoCamera(this);
         }
 
         protected void StartPlayer()
         {
             StartHuman();
             name = PhotonNetwork.NickName;
+            touchesClass = TouchesClass.Instance;
         
             if (!Pv.IsMine) 
             {
@@ -74,7 +67,7 @@ namespace Script.EntityPlayer
             Look();
             Move();
             
-            if (Input.GetKey(touchJump) && etat == Etat.Debout)
+            if (Input.GetKey(touchesClass.GettouchJump()) && etat == Etat.Debout)
             {
                 Jump();
             }
@@ -97,14 +90,14 @@ namespace Script.EntityPlayer
                 return;
         
             int zMov = 0;
-            if (Input.GetKey(touchAvancer))
+            if (Input.GetKey(touchesClass.GettouchAvancer()))
                 zMov++;
-            if (Input.GetKey(touchReculer))
+            if (Input.GetKey(touchesClass.GettouchReculer()))
                 zMov--;
             int xMov = 0;
-            if (Input.GetKey(touchDroite))
+            if (Input.GetKey(touchesClass.GettouchDroite()))
                 xMov++;
-            if (Input.GetKey(touchGauche))
+            if (Input.GetKey(touchesClass.GettouchGauche()))
                 xMov--;
 
             float speed = WalkSpeed;
@@ -139,9 +132,7 @@ namespace Script.EntityPlayer
             // arme du chasseur -> EquipItem (Chasseur)
             if (this is Chasseur && !Pv.IsMine) // ça ne doit pas être ton point de vie puisque tu l'as déjà fait
             {
-                changedProps.TryGetValue("itemIndex", out object indexArme);
-
-                if (indexArme != null)
+                if (changedProps.TryGetValue("itemIndex", out object indexArme))
                 {
                     Chasseur chasseur = (Chasseur) this;
                     chasseur.EquipItem((int)indexArme);
@@ -149,26 +140,105 @@ namespace Script.EntityPlayer
             }
 
             // point de vie -> TakeDamage (Humanoide)
-            if (!PhotonNetwork.IsMasterClient) // c'est le masterClient qui contrôle les balles donc qui enlève les point de vies
+            // Tout le monde doit faire ce changement (trop compliqué de retrouvé celui qui l'a déjà fait)
+            if (changedProps.TryGetValue("PointDeViePlayer", out object vie))
             {
-                changedProps.TryGetValue("PointDeViePlayer", out object value);
-
-                if (value != null)
-                {
-                    CurrentHealth = (int)value;
-                }
+                CurrentHealth = (int)vie;
             }
         
-            // les morts
+            // les morts -> Die (MasterManager)
             if (!Pv.IsMine) // c'est le mourant qui envoie le hash
             {
-                changedProps.TryGetValue("MortPlayer", out object value);
-
-                if (value != null)
+                if (changedProps.TryGetValue("MortPlayer", out object value))
                 {
                     Player player = (Player)value;
                     MasterManager.Instance.Die(player);
                 }
+            }
+        }
+        
+        // Animation
+        protected void Animation()
+        {
+            (int xMov, int zMov) = (0, 0);
+            if (Input.GetKey(touchesClass.GettouchAvancer())) // avancer
+                zMov += 1;
+            if (Input.GetKey(touchesClass.GettouchReculer())) // reculer
+                zMov -= 1;
+            if (Input.GetKey(touchesClass.GettouchDroite())) // droite
+                xMov += 1;
+            if (Input.GetKey(touchesClass.GettouchGauche())) // gauche
+                xMov -= 1;
+
+
+            if (Input.GetKey(touchesClass.GettouchLeverAssoir()) && etat != Etat.Accroupi && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être accroupi
+            {
+                if (etat == Etat.Debout) // S'assoir puisqu'il est debout
+                {
+                    MoveAmount = Vector3.zero;
+                    ActiverAnimation("Assis");
+                    etat = Etat.Assis;
+                }
+                else // Se lever depuis assis
+                {
+                    ActiverAnimation("Lever PASS");
+                    etat = Etat.Debout;
+                }
+
+                LastChangementEtat = Time.time;
+            }
+            else if (Input.GetKey(touchesClass.GettouchLeverAssoir()) && etat != Etat.Assis && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être assis
+            {
+                if (etat == Etat.Debout) // s'accroupir puisqu'il est debout
+                {
+                    MoveAmount = Vector3.zero;
+                    ActiverAnimation("Accroupir");
+                    etat = Etat.Accroupi;
+                }
+                else // se lever depuis accroupi
+                {
+                    ActiverAnimation("Lever PAcc");
+                    etat = Etat.Debout;
+                }
+                
+                LastChangementEtat = Time.time;
+            }
+            else if (etat == Etat.Assis || Time.time - LastChangementEtat < 0.25f) // Aucune animation lorsque le chassé est assis
+            {}
+            else if (zMov == 1) // Avancer
+            {
+                if (etat == Etat.Accroupi) // avancer en étant accroupi
+                {
+                    ActiverAnimation("Marche acc");
+                }
+                else if (xMov == 0 && Input.GetKey(touchesClass.GettouchSprint())) // Sprinter
+                {
+                    ActiverAnimation("Course");
+                }
+                else // Avancer normalement
+                {
+                    ActiverAnimation("Avant");
+                }
+            }
+            else if (zMov == -1) // Reculer
+            {
+                ActiverAnimation("Arriere");
+            }
+            else if (xMov == 1) // Droite
+            {
+                ActiverAnimation("Droite");
+            }
+            else if (xMov == -1) // Gauche
+            {
+                ActiverAnimation("Gauche");
+            }
+            else if (Input.GetKey(touchesClass.GettouchJump())) // Jump
+            {
+                ActiverAnimation("Jump");
+            }
+            else
+            {
+                AnimationStop();
             }
         }
     }

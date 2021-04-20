@@ -2,30 +2,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Script.EntityPlayer;
+using Script.Manager;
+using Image = UnityEngine.UI.Image;
 
 namespace Script.InterfaceInGame
 {
     public class InterfaceInGameManager : MonoBehaviourPunCallbacks
     {
-        public static InterfaceInGameManager Instance;
+        // ------------ SerializedField ------------
         
-        // pour instancier sur la toile l'affichage du joueur
-        [SerializeField] Transform infoContent;
-        [SerializeField] GameObject infoItemPrefab;
+        [Header("Prefab")]
+        [SerializeField] private AffichageInfoJoueur tesInfos;
+
+        // ------------ Attributs ------------
+        
+        public static InterfaceInGameManager Instance;
 
         // relatif à toi
-        [SerializeField] private AffichageInfoJoueur tesInfos;
         private PlayerClass ownPlayerClass;
-        
-        // relatif aux autres
-        private List<AffichageInfoJoueur> infosJoueur;
 
+        // ------------ Constructeur ------------
         private void Awake()
         {
             Instance = this;
-            infosJoueur = new List<AffichageInfoJoueur>();
         }
         
+        // ------------ Méthodes ------------
+
         public void Set()
         {
             MasterManager masterManager = MasterManager.Instance;
@@ -34,18 +37,8 @@ namespace Script.InterfaceInGame
             int taille = 85;
             
             ownPlayerClass = masterManager.GetOwnPlayer();
-
+            Debug.Log($"Own Player = {ownPlayerClass}");
             tesInfos.SetUp(ownPlayerClass, 80, -25);
-
-            int index = 0;
-            foreach (PlayerClass playerClass in masterManager.GetListPlayer()) // pas grave si la liste est vide (mais elle est forcément instancié)
-            {
-                if (playerClass != ownPlayerClass)
-                {
-                    infosJoueur.Add(Instantiate(infoItemPrefab, infoContent).GetComponent<AffichageInfoJoueur>());
-                    infosJoueur[index++].SetUp(playerClass, hauteur - index*taille, 90);
-                }
-            }
         }
     }
 }

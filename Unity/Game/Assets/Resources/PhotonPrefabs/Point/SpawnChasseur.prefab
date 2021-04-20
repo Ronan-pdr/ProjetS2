@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1742918994626977570}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1471155032189001206}
@@ -186,7 +186,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 137084832827796878}
-  - component: {fileID: 5350929336690020032}
+  - component: {fileID: 2261760241306908708}
   m_Layer: 0
   m_Name: SpawnChasseur
   m_TagString: Untagged
@@ -209,7 +209,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5350929336690020032
+--- !u!114 &2261760241306908708
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -218,7 +218,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3300345083313298910}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 023b46c15a30ef041988aae1167792e8, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a1318f948ff4b6193a294a67661ab35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   graphics: {fileID: 1742918994626977570}
