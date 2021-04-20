@@ -9,7 +9,7 @@ namespace Script.EntityPlayer
 {
     public abstract class PlayerClass : Humanoide
     {
-        // Etat
+        // ------------ Etat ------------
         protected enum Etat
         {
             Debout,
@@ -18,21 +18,9 @@ namespace Script.EntityPlayer
         }
 
         protected Etat etat = Etat.Debout;
-        protected string touchLeverAssoir = "c";
         protected float LastChangementEtat; // La dernière fois qu'on a changé de position entre assis et lever
-        protected string touchAccroupi = "x";
-
-        //Avancer
-        protected string touchAvancer = "z";
-        protected string touchReculer = "s";
-        protected string touchDroite = "d";
-        protected string touchGauche = "q";
-    
-        //Sprint
-        protected string touchSprint = "left shift";
-    
-        //Jump
-        protected string touchJump = "space";
+        
+        protected TouchesClass touchesClass;
 
         //Look
         private float verticalLookRotation; 
@@ -65,6 +53,7 @@ namespace Script.EntityPlayer
         {
             StartHuman();
             name = PhotonNetwork.NickName;
+            touchesClass = TouchesClass.Instance;
         
             if (!Pv.IsMine) 
             {
@@ -78,7 +67,7 @@ namespace Script.EntityPlayer
             Look();
             Move();
             
-            if (Input.GetKey(touchJump) && etat == Etat.Debout)
+            if (Input.GetKey(touchesClass.GettouchJump()) && etat == Etat.Debout)
             {
                 Jump();
             }
@@ -101,14 +90,14 @@ namespace Script.EntityPlayer
                 return;
         
             int zMov = 0;
-            if (Input.GetKey(touchAvancer))
+            if (Input.GetKey(touchesClass.GettouchAvancer()))
                 zMov++;
-            if (Input.GetKey(touchReculer))
+            if (Input.GetKey(touchesClass.GettouchReculer()))
                 zMov--;
             int xMov = 0;
-            if (Input.GetKey(touchDroite))
+            if (Input.GetKey(touchesClass.GettouchDroite()))
                 xMov++;
-            if (Input.GetKey(touchGauche))
+            if (Input.GetKey(touchesClass.GettouchGauche()))
                 xMov--;
 
             float speed = WalkSpeed;
@@ -172,17 +161,17 @@ namespace Script.EntityPlayer
         protected void Animation()
         {
             (int xMov, int zMov) = (0, 0);
-            if (Input.GetKey(touchAvancer)) // avancer
+            if (Input.GetKey(touchesClass.GettouchAvancer())) // avancer
                 zMov += 1;
-            if (Input.GetKey(touchReculer)) // reculer
+            if (Input.GetKey(touchesClass.GettouchReculer())) // reculer
                 zMov -= 1;
-            if (Input.GetKey(touchDroite)) // droite
+            if (Input.GetKey(touchesClass.GettouchDroite())) // droite
                 xMov += 1;
-            if (Input.GetKey(touchGauche)) // gauche
+            if (Input.GetKey(touchesClass.GettouchGauche())) // gauche
                 xMov -= 1;
 
 
-            if (Input.GetKey(touchLeverAssoir) && etat != Etat.Accroupi && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être accroupi
+            if (Input.GetKey(touchesClass.GettouchLeverAssoir()) && etat != Etat.Accroupi && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être accroupi
             {
                 if (etat == Etat.Debout) // S'assoir puisqu'il est debout
                 {
@@ -198,7 +187,7 @@ namespace Script.EntityPlayer
 
                 LastChangementEtat = Time.time;
             }
-            else if (Input.GetKey(touchAccroupi) && etat != Etat.Assis && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être assis
+            else if (Input.GetKey(touchesClass.GettouchLeverAssoir()) && etat != Etat.Assis && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être assis
             {
                 if (etat == Etat.Debout) // s'accroupir puisqu'il est debout
                 {
@@ -222,7 +211,7 @@ namespace Script.EntityPlayer
                 {
                     ActiverAnimation("Marche acc");
                 }
-                else if (xMov == 0 && Input.GetKey(touchSprint)) // Sprinter
+                else if (xMov == 0 && Input.GetKey(touchesClass.GettouchSprint())) // Sprinter
                 {
                     ActiverAnimation("Course");
                 }
@@ -243,7 +232,7 @@ namespace Script.EntityPlayer
             {
                 ActiverAnimation("Gauche");
             }
-            else if (Input.GetKey(touchJump)) // Jump
+            else if (Input.GetKey(touchesClass.GettouchJump())) // Jump
             {
                 ActiverAnimation("Jump");
             }
