@@ -26,8 +26,6 @@ namespace Script.Bot
         private float timeLastRegard;
         private float timeLastFindDest;
 
-        private float speed;
-
         private static float rayonPerimetre = 10;
         
         // variable relative à la capsule
@@ -52,7 +50,6 @@ namespace Script.Bot
             
             master = MasterManager.Instance;
             etat = Etat.Attend;
-            speed = WalkSpeed;
             
             // récupérer les côtes des bots pour les ray
             capsule = MasterManager.Instance.GetHumanCapsule();
@@ -66,7 +63,7 @@ namespace Script.Bot
 
             if (etat == Etat.Attend)
             {
-                if (Time.time - timeLastRegard > 0.5f)
+                if (Time.time - timeLastRegard > 0.3f)
                 {
                     SearchChasseurWithVision();
                 }
@@ -101,6 +98,10 @@ namespace Script.Bot
             {
                 AnimationStop();
             }
+            else if (etat == Etat.Fuite)
+            {
+                ActiverAnimation("Course");
+            }
             else
             {
                 ActiverAnimation("Avant");
@@ -131,18 +132,20 @@ namespace Script.Bot
             if (dist < rayonPerimetre)
             {
                 etat = Etat.Fuite;
-                SetMoveAmount(Vector3.forward, speed);
+                destination = FindEscapePosition(Vu.position);
+                SetMoveAmount(Vector3.forward, SprintSpeed);
             }
             else if (SimpleMath.IsEncadré(dist, rayonPerimetre))
             {
                 etat = Etat.Attend;
+                CalculeRotation(Vu.position);
                 MoveAmount = Vector3.zero;
             }
             else
             {
                 etat = Etat.Poursuite;
                 destination = Vu.position;
-                SetMoveAmount(Vector3.forward, speed);
+                SetMoveAmount(Vector3.forward, WalkSpeed);
             }
         }
 
@@ -153,24 +156,21 @@ namespace Script.Bot
         
         private void Escape()
         {
-            if (Time.time - timeLastFindDest > 0.5f)
-            {
-                destination = FindEscapePosition(Vu.position);
-            }
+            
         }
 
         private Vector3 FindEscapePosition(Vector3 centre)
         {
             timeLastFindDest = Time.time;
 
-            (Vector3 bestDest, float minDist) res = (Vector3.zero, rayonPerimetre*2);
+            (Vector3 bestDest, float minDist) res = (Vector3.zero, rayonPerimetre*2.5f);
             for (int degre = 0; degre < 360; degre += 10)
             {
                 Vector3 pos = centre + rayonPerimetre * Calcul.Direction(degre);
-                float dist = Calcul.Distance(Tr.position, pos, Calcul.Coord.Y);
+                float dist = Calcul.Distance(Tr.position, pos);
 
-                if (dist < res.minDist && capsule.CanIPass(pos,
-                    Calcul.Diff(pos, Tr.position), dist*1.1f))
+                if (dist < res.minDist && capsule.CanIPass(Tr.position,
+                    Calcul.Diff(pos, Tr.position), dist))
                 {
                     // nouvelle meilleur destination
                     res = (pos, dist);

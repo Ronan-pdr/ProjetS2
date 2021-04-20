@@ -9,17 +9,17 @@ namespace Script.EntityPlayer
 {
     public abstract class Humanoide : Entity
     {
-        //Etat
+        // ------------Etat ------------
         protected bool Grounded;
 
-        //Avancer
+        // Avancer
         protected const float WalkSpeed = 3f;
         protected const float SprintSpeed = 5f;
 
-        //Jump
+        // Jump
         private const float JumpForce = 200f;
     
-        //GamePlay
+        // GamePlay
         protected int MaxHealth;
         protected int CurrentHealth;
     
@@ -30,17 +30,19 @@ namespace Script.EntityPlayer
         private float lastJump; // le temps la dernière fois que le joueur a sauté
         private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
     
-        //Getter
+        // ------------ Getters ------------
         public int GetCurrentHealth() => CurrentHealth;
         public int GetMaxHealth() => MaxHealth;
         public PhotonView GetPv() => Pv;
         public Player GetPlayer() => Pv.Owner;
         
+        // ------------ Setters ------------
         public void SetGroundedState(bool value)
         {
             Grounded = value;
         }
 
+        // ------------ Constructeurs ------------
         protected void AwakeHuman()
         {
             Pv = GetComponent<PhotonView>(); // doit obligatoirement être dans awake
@@ -51,6 +53,7 @@ namespace Script.EntityPlayer
             CurrentHealth = MaxHealth;
         }
 
+        // ------------ Méthodes ------------
         private void PotentielleMort()
         {
             // Mourir de chute
@@ -70,8 +73,8 @@ namespace Script.EntityPlayer
         {
             PotentielleMort();
         }
-    
-        //Déplacment
+     
+        // Déplacment
 
         public void Jump()
         {
@@ -83,16 +86,24 @@ namespace Script.EntityPlayer
             }
         }
 
-        //Animation
+        // ------------ Animation ------------
+        [Header("Animation")]
         [SerializeField] protected Animator anim;
 
         protected void AnimationStop()
         {
             anim.enabled = false;
         }
+        
+        protected void ActiverAnimation(string strAnimation)
+        {
+            anim.enabled = true;
+            anim.Play(strAnimation);
+        }
     
-        //GamePlay
-        public void TakeDamage(int damage) // Seul les chasseurs activent cette fonction
+        // Aucune information pertinente ne peut être retenu
+        // du script qui appelle cette fonction
+        public void TakeDamage(int damage)
         {
             CurrentHealth -= damage;
         
@@ -136,15 +147,7 @@ namespace Script.EntityPlayer
             }
         }
         
-        // animation
-        
-        protected void ActiverAnimation(string strAnimation)
-        {
-            anim.enabled = true;
-            anim.Play(strAnimation);
-        }
-        
-        // surchargeur
+        // ------------ Surchargeurs ------------
         public static bool operator !=(Humanoide hum1, Humanoide hum2)
         {
             return !(hum1 == hum2);
