@@ -45,6 +45,7 @@ namespace Script.EntityPlayer
                 MasterManager.Instance.SetOwnPlayer(this);
             }
         
+            name = PhotonNetwork.NickName;
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);
         }
@@ -52,7 +53,6 @@ namespace Script.EntityPlayer
         protected void StartPlayer()
         {
             StartHuman();
-            name = PhotonNetwork.NickName;
             touches = TouchesClass.Instance;
         
             if (!Pv.IsMine) 

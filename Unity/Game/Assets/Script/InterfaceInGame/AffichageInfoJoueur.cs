@@ -27,6 +27,7 @@ namespace Script.InterfaceInGame
             player = value;
             
             text.transform.position = new Vector3(largeur, hauteur + 85f, 0);
+            SpriteContent.transform.position = new Vector3(largeur - 45, hauteur + 80f, 0);
         }
         
         // ------------ Méthodes ------------

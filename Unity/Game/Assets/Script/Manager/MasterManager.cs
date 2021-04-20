@@ -105,8 +105,6 @@ namespace Script.Manager
         // ------------ Setters ------------
         public void SetOwnPlayer(PlayerClass value)
         {
-            Debug.Log("Set du ownPlayer");
-            
             if (ownPlayer is null)
                 ownPlayer = value;
             else
@@ -123,6 +121,7 @@ namespace Script.Manager
             if (players.Count == nParticipant)
             {
                 InterfaceInGameManager.Instance.Set();
+                TabMenu.Instance.Set();
             }
         }
         public void AjoutChasseur(Chasseur chasseur)

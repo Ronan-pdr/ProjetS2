@@ -24,6 +24,7 @@ namespace Script.Labyrinthe
         
         private float timeLastRegard;
         private List<Vector3> path;
+        private float speed;
         
         // ------------ Constructeurs ------------
         private void Awake()
@@ -35,6 +36,7 @@ namespace Script.Labyrinthe
         {
             rotationSpeed = 600;
             etat = Etat.Attend;
+            speed = SprintSpeed * 1.03f;
             
             // tout le monde le fait pour qu'il soit parenter
             StartBot();
@@ -86,7 +88,7 @@ namespace Script.Labyrinthe
 
         private void Guidage()
         {
-            MoveAmount = Vector3.forward * SprintSpeed;
+            MoveAmount = Vector3.forward * speed;
             
             // s'il a finit une étape de son plan
             if (IsArrivé(path[0]))
