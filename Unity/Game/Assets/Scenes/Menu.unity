@@ -3315,7 +3315,7 @@ MonoBehaviour:
   usernameRegisterField: {fileID: 910045274}
   emailRegisterField: {fileID: 100733294}
   passwordRegisterField: {fileID: 747323686}
-  confirmRegisterField: {fileID: 0}
+  confirmRegisterField: {fileID: 838615114}
   warningRegisterText: {fileID: 2107939963}
 --- !u!4 &535954603
 Transform:
@@ -6876,7 +6876,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1868060144}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2
@@ -9163,7 +9163,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 535954602}
         m_TargetAssemblyTypeName: AuthManager, Assembly-CSharp
         m_MethodName: RegisterButton
         m_Mode: 1
@@ -10719,7 +10719,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1868060144}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2
@@ -12167,6 +12167,8 @@ MonoBehaviour:
   - {fileID: 199024704}
   - {fileID: 1117353344}
   - {fileID: 198389077}
+  - {fileID: 42401850}
+  - {fileID: 218544559}
 --- !u!114 &1868060145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13881,7 +13883,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 535954602}
         m_TargetAssemblyTypeName: AuthManager, Assembly-CSharp
         m_MethodName: LoginButton
         m_Mode: 1
