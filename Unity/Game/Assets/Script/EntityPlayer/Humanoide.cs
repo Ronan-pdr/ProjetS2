@@ -1,5 +1,7 @@
-﻿using Photon.Pun;
+﻿using System;
+using Photon.Pun;
 using Photon.Realtime;
+using Script.Bot;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -23,6 +25,10 @@ namespace Script.EntityPlayer
     
         // photon
         protected PhotonView Pv;
+        
+        // Jump 
+        private float lastJump; // le temps la dernière fois que le joueur a sauté
+        private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
     
         //Getter
         public int GetCurrentHealth() => CurrentHealth;
@@ -30,9 +36,9 @@ namespace Script.EntityPlayer
         public PhotonView GetPv() => Pv;
         public Player GetPlayer() => Pv.Owner;
         
-        public void SetGroundedState(bool grounded)
+        public void SetGroundedState(bool value)
         {
-            Grounded = grounded;
+            Grounded = value;
         }
 
         protected void AwakeHuman()
@@ -67,10 +73,14 @@ namespace Script.EntityPlayer
     
         //Déplacment
 
-        protected void JumpHumanoide()
+        public void Jump()
         {
-            Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
-            Grounded = false;
+            if (Time.time - lastJump > periodeJump && Grounded)
+            {
+                Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
+                Grounded = false;
+                lastJump = Time.time;
+            }
         }
 
         //Animation
@@ -94,19 +104,64 @@ namespace Script.EntityPlayer
             }
             else
             {
-                string mes = CurrentHealth.ToString(); // comme il faut indiqué la vie ainsi que le bot à qui c'est concerné, on met les deux infos dans une string
-                while (mes.Length < 3) // on formate la vie à trois charactères
-                {
-                    mes = " " + mes;
-                }
-            
-                hash.Add("PointDeVieBot", name + mes);
+                // comme il faut indiqué la vie ainsi que le bot à qui c'est concerné, on met les deux infos dans une string
+                string mes = ((BotClass) this).EncodeFormatVieBot();
+                hash.Add("PointDeVieBot", mes);
             }
 
             Pv.Owner.SetCustomProperties(hash);
         }
 
         protected abstract void Die();
+
+        public static bool operator ==(Humanoide hum1, Humanoide hum2)
+        {
+            if (hum1 is null || hum2 is null)
+            {
+                Debug.Log("WARNING : Tu as testé l'égalité de deux humains dont au moins un est null");
+                Debug.Log($"hum1 -> {hum1} ; hum2 -> {hum2}");
+                return false;
+            }
+            
+            try
+            {
+                return hum1.name == hum2.name;
+            }
+            catch (Exception e)
+            {
+                if (false) // grâce à ça j'ai plus de WARNING bordel
+                    Debug.Log(e);
+                
+                return false;
+            }
+        }
+        
+        // animation
+        
+        protected void ActiverAnimation(string strAnimation)
+        {
+            anim.enabled = true;
+            anim.Play(strAnimation);
+        }
+        
+        // surchargeur
+        public static bool operator !=(Humanoide hum1, Humanoide hum2)
+        {
+            return !(hum1 == hum2);
+        }
+
+        public override bool Equals(object other)
+        {
+            if (other is Humanoide)
+                return this == (Humanoide)other;
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
 

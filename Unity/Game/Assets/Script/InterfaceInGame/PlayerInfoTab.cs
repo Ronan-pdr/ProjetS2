@@ -1,26 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using Script.EntityPlayer;
+using Script.Manager;
 using TMPro;
 using UnityEngine;
 
 public class PlayerInfoTab : MonoBehaviour
 {
+    // ------------ SerializedField ------------
+    
     [SerializeField] private TMP_Text text;
-    private MasterManager Instance = MasterManager.Instance;
+    
+    // ------------ Attributs ------------
     private PlayerClass player;
     private int limitation = 15;
     private string playerName;
 
+    // ------------ Constructeurs ------------
     public void Set(PlayerClass value)
     {
         player = value;
         playerName = player.name;
     }
+    
+    // ------------ Méthodes ------------
     void Update()
     {
-        if (player == null)
+        if (player is null)
             return;
+        
         int vie = player.GetCurrentHealth();
         if (playerName.Length < limitation)
         {

@@ -7,6 +7,9 @@ using TMPro;
 
 public class CommandsScript : MonoBehaviour
 {
+    // ------------ SerializedField ------------
+    
+    [Header("Button")]
     [SerializeField] Button ForwardButton;
     [SerializeField] Button BackwardButton;
     [SerializeField] Button LeftButton;
@@ -15,15 +18,19 @@ public class CommandsScript : MonoBehaviour
     [SerializeField] Button SprintButton;
     [SerializeField] Button CrouchButton;
     [SerializeField] Button SitButton;
-    // Start is called before the first frame update
+    
+    // ------------ Attributs ------------
     private Event keyEvent;
     private KeyCode newKey;
     private bool waitingForKey;
     private TMP_Text buttonText;
     TouchesClass touches;
+    
+    // ------------ Constructeurs ------------
     void Start()
     {
         touches = TouchesClass.Instance;
+        
         waitingForKey = false;
         ForwardButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchAvancer().ToString();
         BackwardButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchReculer().ToString();
@@ -35,6 +42,7 @@ public class CommandsScript : MonoBehaviour
         SitButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchLeverAssoir().ToString();
     }
 
+    // ------------ SerializedField ------------
     void OnGUI()
     {
         keyEvent = Event.current;

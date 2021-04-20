@@ -5,39 +5,43 @@ using UnityEngine;
 
 public class LauncherManager : MonoBehaviour
 {
-
-    [SerializeField] PauseMenu instance;
-
-    [SerializeField] private TabMenu instanced;
-    // Update is called once per frame
+    // ------------ SerializedField ------------
+    [SerializeField] private PauseMenu pauseMenu;
+    [SerializeField] private TabMenu tabMenu;
+    
+    // ------------ Constructeurs ------------
     void Start()
     {
-        PauseMenu.Instance = instance;
-        TabMenu.Instance = instanced;
-        Debug.Log(instance);
+        PauseMenu.Instance = pauseMenu;
+        TabMenu.Instance = tabMenu;
     }
+    
+    // ------------ Méthodes ------------
     void Update()
     {
-        if (instance.Getdisconnecting())
+        if (pauseMenu.Getdisconnecting())
             return;
-            
+        
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (instance.GetIsPaused())
+            // géré le menu pause
+            if (pauseMenu.GetIsPaused())
             {
-                instance.Resume();
+                pauseMenu.Resume();
             }
             else
             {
-                instance.Pause();
+                pauseMenu.Pause();
             }
         }
         else if (Input.GetKeyDown(KeyCode.Tab))
         {
+            // ouvrir menu tab
             MenuManager.Instance.OpenMenu("tab");
         }
         else if (Input.GetKeyUp(KeyCode.Tab))
         {
+            // fermé menu tab -> ouvrir interfaInGame
             MenuManager.Instance.OpenMenu("InterfaceInGame");
         }
     }

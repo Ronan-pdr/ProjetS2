@@ -7,27 +7,25 @@ namespace Script.InterfaceInGame
 {
     public class PauseMenu : MonoBehaviour
     {
+        // ------------ Attributs ------------
         public static PauseMenu Instance;
         
         // Etat
         private bool isPaused;
         private bool disconnecting;
         
-        
-        // Getter
+        // ------------ Getters ------------
         public bool GetIsPaused() => isPaused;
         public bool Getdisconnecting() => disconnecting;
         
+        // ------------ Constructeur ------------
         public void Awake()
         {
-            Instance = this;
-            
             isPaused = false;
             disconnecting = false;
         }
 
-        // Update is called once per frame
-        
+        // ------------ Méthodes ------------
 
         public void Resume()
         {

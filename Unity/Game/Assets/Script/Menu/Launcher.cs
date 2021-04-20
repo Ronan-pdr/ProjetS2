@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
+using Script.EntityPlayer;
 using UnityEngine.UI;
 
 public class Launcher : MonoBehaviourPunCallbacks
@@ -27,12 +28,12 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void Awake()
     {
+        new TouchesClass();
         Instance = this;
     }
     //Se connecte au serveur que l'on retrouve dans Assets/Photon/Photon/UnityNetworking/Ressources/PhotonSer...
     void Start()
     {
-        new TouchesClass();
         Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
         SetUpInputField();
@@ -47,7 +48,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
-        MenuManager.Instance.OpenMenu("title");
+        MenuManager.Instance.OpenMenu("login");
         Debug.Log("Joined Lobby");
         SavePlayerName();
     }
@@ -93,8 +94,15 @@ public class Launcher : MonoBehaviourPunCallbacks
     
     public void StartGame()
     {
-        Debug.Log("la");
-        PhotonNetwork.LoadLevel(1);
+        if (PhotonNetwork.MasterClient.NickName == "Labyrinthe")
+        {
+            PhotonNetwork.LoadLevel(2);
+        }
+        else
+        {
+            PhotonNetwork.LoadLevel(1);
+        }
+        
     }
     
     //Est appelé par un boutton
@@ -139,20 +147,15 @@ public class Launcher : MonoBehaviourPunCallbacks
         Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
-    void StartName()
-    {
-        SetUpInputField();
-    }
-
-    public void SetUpInputField()
+    private void SetUpInputField()
     {
         if (!PlayerPrefs.HasKey(PlayerPrefsNameKey))
             return;
+        
         string defaultName = PlayerPrefs.GetString(PlayerPrefsNameKey);
         nameInputField.text = defaultName;
         SetPlayerName(defaultName);
     }
-    
 
     public void SetPlayerName(string name)
     {

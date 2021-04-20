@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Script.EntityPlayer;
 using Script.TeteChercheuse;
 using Script.Tools;
 using UnityEngine;
@@ -10,49 +12,75 @@ namespace Script.DossierPoint
     {
         // Chaque CrossPoint envoie des 'bodyChercheur' à chaque fois qu'il souhaite trouvé une nouvelle destination
         // il les envoie vers les coordonnées (pas toute),
-        // ceux qui sont positifs sont ajoutés dans la liste 'neighboors'
-        [SerializeField] private List<CrossPoint> Neighboors;
+        // ceux qui sont positifs sont ajoutés dans la liste 'Neighboors'
+        private List<CrossPoint> Neighboors;
+
+        private int nAttenduBodyChercher;
         
         // Getter
-
         public CrossPoint GetNeighboor(int index) => Neighboors[index];
         public int GetNbNeighboor() => Neighboors.Count;
         
         // Setter
-        public void AddNeighboors(CrossPoint neighboor) // est appelé dans la class 'BodyChercheur', dans la fonction 'Update'
+        public void AddNeighboor(CrossPoint value)
         {
-            Neighboors.Add(neighboor);
+            Neighboors.Add(value);
         }
         
-        public void Start()
+        // constructeur
+        private void Awake()
         {
-            transform.position += new Vector3(0, 0, 0); // unity sur-élève le point de 0.3, je compense 
+            Neighboors = new List<CrossPoint>();
+        }
+
+        public void EndResearchBody(CrossPoint neighboor) // est appelé dans la class 'BodyChercheur', dans la fonction 'Update'
+        {
+            nAttenduBodyChercher -= 1;
             
-            if (Neighboors == null)
-                Neighboors = new List<CrossPoint>();
+            if (nAttenduBodyChercher < 0) // tout reçu
+            {
+                throw new Exception("trop de résultat de body chercheur ont été reçu");
+            }
+
+            if (!(neighboor is null)) // est-ce un voisin valide
+            {
+                Neighboors.Add(neighboor);
+            }
+
+            if (nAttenduBodyChercher == 0) // tous reçu
+            {
+                CrossManager.Instance.EndOfOneResearch(Neighboors);
+            }
+        }
+
+        public void SearchNeighboors()
+        {
+            Neighboors = new List<CrossPoint>();
 
             CrossPoint potentialNeighboor;
             Vector3 ownCoord = transform.position;
-            Vector3 destCoord;
-            float distanceThisWithDest, amountRotation;
+            float distanceThisWithDest;
             int len = CrossManager.Instance.GetNumberPoint();
             
             for (int i = 0; i < len; i++)
             {
                 potentialNeighboor = CrossManager.Instance.GetPoint(i);
-                if (Neighboors.Contains(potentialNeighboor)) // si je l'ai déjà placer dans ma liste, il est inutile de le tester
+                if (Neighboors.Contains(potentialNeighboor)) // si je l'ai déjà placé dans ma liste, il est inutile de le tester
                     continue;
                 
-                destCoord = potentialNeighboor.transform.position;
-                
-                distanceThisWithDest = Calcul.Distance(ownCoord, destCoord);
+                distanceThisWithDest = Calcul.Distance(ownCoord, potentialNeighboor.transform.position);
 
                 if (0.2f < distanceThisWithDest && distanceThisWithDest < 30) // on ne veut pas lancer un body chercheur la où on se situe et on ne veux pas des voisins trop loins
                 {
-                    amountRotation = Calcul.Angle(0, ownCoord, destCoord, Calcul.Coord.Y);
-                    BodyChercheur.InstancierStatic(this, potentialNeighboor, new Vector3(0, amountRotation, 0));
+                    nAttenduBodyChercher += 1;
+                    BodyRectilgne.InstancierStatic(gameObject, potentialNeighboor.gameObject);
                 }
-            }
+            } 
+            
+            if (nAttenduBodyChercher == 0) // aucun voisin potentiel donc c'est la fin de la recherche
+            {
+                CrossManager.Instance.EndOfOneResearch(Neighboors);
+            } 
         }
     }
 }

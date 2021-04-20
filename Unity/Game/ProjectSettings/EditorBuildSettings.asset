@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 97e4182aab623b8499252d391da0a986
+  - enabled: 1
+    path: Assets/Scenes/The maze runner.unity
+    guid: bf5c9718f318d184b86c602b55754857
   m_configObjects: {}

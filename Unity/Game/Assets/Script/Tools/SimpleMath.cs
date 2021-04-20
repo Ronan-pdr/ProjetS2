@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using static System.Math;
 
 namespace Script.Tools
@@ -11,6 +12,11 @@ namespace Script.Tools
             if (r < 0)
                 return b + r;
             return r;
+        }
+
+        public static Vector3 Mod(Vector3 v, float f)
+        {
+            return new Vector3(v.x % f, v.y % f, v.z % f);
         }
     
         public static float Abs(float a)
@@ -38,12 +44,14 @@ namespace Script.Tools
     
         public static float Cos(float angle)
         {
-            return (float)Math.Cos(angle);
+            float degre = DegreToRadian(angle);
+            return (float)Math.Cos(degre);
         }
         
         public static float Sin(float angle)
         {
-            return (float)Math.Sin(angle);
+            float degre = DegreToRadian(angle);
+            return (float)Math.Sin(degre);
         }
     
         public static float ArcTan(float opposé, float adjacent) // l'angle obtenu sera toujours positif
@@ -63,6 +71,13 @@ namespace Script.Tools
         public static float DegreToRadian(float angle)
         {
             return (float) (angle * 2 * PI / 360);
+        }
+
+        public static bool IsEncadré(Vector3 v, Vector3 e)
+        {
+            return e.x - 0.5f < v.x && v.x < e.x + 0.5f 
+                && e.y - 0.5f < v.y && v.y < e.y + 0.5f
+                && e.z - 0.5f < v.z && v.z < e.z + 0.5f;
         }
     }    
 }

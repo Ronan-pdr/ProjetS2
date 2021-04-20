@@ -3,24 +3,27 @@ using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.DossierArme;
 using Script.InterfaceInGame;
+using Script.Manager;
 using Script.Tools;
 
 namespace Script.EntityPlayer
 {
     public class Chasseur : PlayerClass
     {
+        // attributs
+        
         // Relatif aux armes
         [SerializeField] private Arme[] armes;
         private int armeIndex;
         private int previousArmeIndex = -1;
     
-        //Getter
+        // constructeurs
         private void Awake()
         {
-            AwakePlayer();
-        
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChasseur(this);
+            
+            AwakePlayer();
         }
 
         void Start()
@@ -31,23 +34,19 @@ namespace Script.EntityPlayer
             EquipItem(0);
         }
         
+        // méthodes
         void Update()
         {
             if (!Pv.IsMine)
                 return;
-            
         
-            if (PauseMenu.Instance && PauseMenu.Instance.GetIsPaused())
+            Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
+            Cursor.visible = PauseMenu.Instance.GetIsPaused();
+        
+            if (PauseMenu.Instance.GetIsPaused())
             {
-                Cursor.lockState = CursorLockMode.None;
                 MoveAmount = Vector3.zero;
-                Cursor.visible = true;
                 return;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = false;
             }
 
             ManipulerArme();
@@ -116,8 +115,6 @@ namespace Script.EntityPlayer
                 PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
             }
         }
-
-        // GamePlay
 
         protected override void Die()
         {

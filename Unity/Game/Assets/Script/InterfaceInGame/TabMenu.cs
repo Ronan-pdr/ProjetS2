@@ -1,23 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using Script.EntityPlayer;
+using Script.Manager;
 using TMPro;
 using UnityEngine;
 
 public class TabMenu : MonoBehaviour
 {
-    public static TabMenu Instance;
+    // ------------ SerializedField ------------
+    [Header("Prefab")]
     [SerializeField] Transform ChasseurInfoContent;
     [SerializeField] Transform ChasseInfoContent;
     [SerializeField] GameObject playerInfoTabPrefab;
+    
+    // ------------ Attributs ------------
+    public static TabMenu Instance;
+    
     private List<PlayerInfoTab> infosChasseur;
     private List<PlayerInfoTab> infosChasse;
 
-    void Awake()
-    {
-           
-    }
-
+    // ------------ Constructeurs ------------
     public void Set()
     {
         infosChasseur = new List<PlayerInfoTab>();
@@ -38,5 +40,4 @@ public class TabMenu : MonoBehaviour
             infosChasse[i].Set(playerclass);
         }
     }
-    
 } 
