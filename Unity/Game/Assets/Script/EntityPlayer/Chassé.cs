@@ -3,6 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
 using Script.InterfaceInGame;
+using Script.Manager;
 using Script.Test;
 using Script.Tools;
 
@@ -10,20 +11,19 @@ namespace Script.EntityPlayer
 {
     public class Chassé : PlayerClass
     {
+        // constructeurs
         private void Awake()
         {
-            AwakePlayer();
-            
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChassé(this);
+            
+            AwakePlayer();
         }
 
         void Start()
         {
             MaxHealth = 100;
             StartPlayer();
-
-            nCaillou = 0;
         }
         
         void Update()
@@ -42,12 +42,6 @@ namespace Script.EntityPlayer
 
             UpdatePlayer();
             Animation();
-
-            if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Labyrinthe)
-            {
-                PoserCaillou();
-                RetirerCaillou();
-            }
         }
 
         private void FixedUpdate()
@@ -63,132 +57,6 @@ namespace Script.EntityPlayer
             
             anim.enabled = false;
             PhotonNetwork.Destroy(gameObject);
-        }
-        
-        // Labyrinthe
-        private int nCallouMax = 50;
-        private int nCaillou;
-
-        private List<GameObject> caillous = new List<GameObject>();
-            
-        private void PoserCaillou()
-        {
-            if (Input.GetKeyDown("f"))
-            {
-                caillous.Add(TestRayGaz.CreateMarqueur(Tr.position));
-                nCaillou += 1;
-                
-                if (nCaillou == nCallouMax)
-                {
-                    SupprimerCaillou(0);
-                }
-            }
-        }
-
-        private void RetirerCaillou()
-        {
-            if (Input.GetKey("r"))
-            {
-                for (int i = caillous.Count - 1; i >= 0; i--)
-                {
-                    if (SimpleMath.IsEncadré(caillous[i].transform.position + Vector3.down * 0.8f, Tr.position))
-                    {
-                        SupprimerCaillou(i);
-                    }
-                }
-            }
-        }
-
-        private void SupprimerCaillou(int i)
-        {
-            Destroy(caillous[i]);
-            caillous.RemoveAt(i);
-            nCaillou -= 1;
-        }
-
-        // Animation
-        private void Animation()
-        {
-            (int xMov, int zMov) = (0, 0);
-            if (Input.GetKey(touchAvancer)) // avancer
-                zMov += 1;
-            if (Input.GetKey(touchReculer)) // reculer
-                zMov -= 1;
-            if (Input.GetKey(touchDroite)) // droite
-                xMov += 1;
-            if (Input.GetKey(touchGauche)) // gauche
-                xMov -= 1;
-
-
-            if (Input.GetKey(touchLeverAssoir) && etat != Etat.Accroupi && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être accroupi
-            {
-                if (etat == Etat.Debout) // S'assoir puisqu'il est debout
-                {
-                    MoveAmount = Vector3.zero;
-                    ActiverAnimation("Assis");
-                    etat = Etat.Assis;
-                }
-                else // Se lever depuis assis
-                {
-                    ActiverAnimation("Lever PASS");
-                    etat = Etat.Debout;
-                }
-
-                LastChangementEtat = Time.time;
-            }
-            else if (Input.GetKey(touchAccroupi) && etat != Etat.Assis && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être assis
-            {
-                if (etat == Etat.Debout) // s'accroupir puisqu'il est debout
-                {
-                    MoveAmount = Vector3.zero;
-                    ActiverAnimation("Accroupir");
-                    etat = Etat.Accroupi;
-                }
-                else // se lever depuis accroupi
-                {
-                    ActiverAnimation("Lever PAcc");
-                    etat = Etat.Debout;
-                }
-                
-                LastChangementEtat = Time.time;
-            }
-            else if (etat == Etat.Assis || Time.time - LastChangementEtat < 0.25f) // Aucune animation lorsque le chassé est assis
-            {}
-            else if (zMov == 1) // Avancer
-            {
-                if (etat == Etat.Accroupi) // avancer en étant accroupi
-                {
-                    ActiverAnimation("Marche acc");
-                }
-                else if (xMov == 0 && Input.GetKey(touchSprint)) // Sprinter
-                {
-                    ActiverAnimation("Course");
-                }
-                else // Avancer normalement
-                {
-                    ActiverAnimation("Avant");
-                }
-            }
-            else if (zMov == -1) // Reculer
-            {
-                ActiverAnimation("Arriere");
-            }
-            else if (xMov == 1) // Droite
-            {
-                ActiverAnimation("Droite");
-            }
-            else if (xMov == -1) // Gauche
-            {
-                ActiverAnimation("Gauche");
-            }
-            else if (Input.GetKey(touchJump)) // Jump
-            {
-                ActiverAnimation("Jump");
-            }
-            else
-            {
-                AnimationStop();
-            }
         }
     }
 }

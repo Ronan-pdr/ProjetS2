@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using UnityEngine.SceneManagement;
 
 public class RoomManager : MonoBehaviourPunCallbacks

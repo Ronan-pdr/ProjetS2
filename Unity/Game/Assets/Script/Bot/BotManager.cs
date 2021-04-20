@@ -6,20 +6,28 @@ using System.IO;
 using Photon.Realtime;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.Tools;
 
 namespace Script.Bot
 {
+    public enum TypeBot
+    {
+        Rectiligne,
+        Fuyard,
+        Guide
+    }
+    
     public class BotManager : MonoBehaviour
     {
         // Chaque joueur va contrôler un certain nombre de bots,
         // les leurs seront stockés dans le dossier 'BotManager' sur Unity
         // et ceux controlés pas les autres dans 'DossierOtherBot'
+        
+        // c'est possible puisqu'il y en a qu'un par joueur
+        public static BotManager Instance; 
     
-    
-        public static BotManager Instance; //c'est possible puisqu'il y en a qu'un par joueur
-    
-        // stocké tous les bots
+        // stocker tous les bots
         private List<BotClass> Bots;
 
         private void Awake()
@@ -29,36 +37,65 @@ namespace Script.Bot
 
         void Start()
         {
-            // pas de création de bot s'il y a maintenance
-            if (MasterManager.Instance.IsInMaintenance())
-                return;
-            
             Bots = new List<BotClass>();
 
-            int nBot = 7;
-            string type;
-            int indexPlayer;
-            Player[] players = PhotonNetwork.PlayerList;
-            for (indexPlayer = players.Length - 1; indexPlayer >= 0 && !players[indexPlayer].Equals(PhotonNetwork.LocalPlayer); indexPlayer--)
-            {} // trouver l'index du player du bot
+            // récupérer les type des bots ainsi que leur nombre
+            TypeBot[] types = MasterManager.Instance.GetManagerGame().GetTypeBot();
+            int nBot = types.Length;
+            
+            // trouver l'index du player du bot
+            int indexPlayer = GetIndexPlayer(PhotonNetwork.LocalPlayer);
 
             for (int i = 0; i < nBot; i++) // Instancier, ranger (dans la liste) et positionner sur la map tous les bots
             {
-                if (i <= 25)
-                    type = "Fuyard";
-                else
-                    type = "BotRectiligne";
-                
-                BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
-                    Vector3.zero, Quaternion.identity).GetComponent<BotClass>();
-                
-                CrossPoint crossPoint = CrossManager.Instance.GetPoint(i + indexPlayer * nBot); // récupérer son cross point
-                bot.transform.position = crossPoint.transform.position; // le placer sur la map
-                bot.SetBot(crossPoint);
-                bot.SetOwnBotManager(this); // lui indiquer quel est son père (dans la hiérarchie de Unity)
-            
-                Bots.Add(bot); // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)
+                CreateBot(types[i], i + indexPlayer * nBot);
             }
+        }
+
+        private void CreateBot(TypeBot t, int indexSpot)
+        {
+            string type = GetStringBot(t);
+            
+            BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
+                Vector3.zero, Quaternion.identity).GetComponent<BotClass>();
+            
+            CrossPoint crossPoint = CrossManager.Instance.GetPoint(indexSpot); // récupérer son cross point
+            bot.transform.position = crossPoint.transform.position; // le placer sur la map
+            bot.SetOwnBotManager(this); // lui indiquer quel est son père (dans la hiérarchie de Unity)
+          
+            // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)
+            Bots.Add(bot);
+
+            if (bot.GetComponent<BotRectiligne>())
+            {
+                ((BotRectiligne)bot).SetCrossPoint(crossPoint);
+            }
+        }
+
+        private string GetStringBot(TypeBot type)
+        {
+            switch (type)
+            {
+                case TypeBot.Rectiligne:
+                    return "BotRectiligne";
+                case TypeBot.Fuyard:
+                    return "Fuyard";
+                case TypeBot.Guide:
+                    return "Guide";
+                default:
+                    throw new Exception($"Le cas du {type} n'a pas encore été géré");
+            }
+        }
+
+        private int GetIndexPlayer(Player player)
+        {
+            int i;
+            Player[] players = PhotonNetwork.PlayerList;
+            
+            for (i = players.Length - 1; i >= 0 && !players[i].Equals(player); i--)
+            {}
+
+            return i;
         }
 
         // si la valeur de retour est le "Vector.zero", alors il n'y a pas de bon spot
@@ -86,8 +123,6 @@ namespace Script.Bot
                     bestPos = posBot;
                 }
             }
-            
-            Debug.Log($"best = {bestPos}");
 
             if (SimpleMath.IsEncadré(bestPos, Vector3.zero)) // aucun bon spot
             {
@@ -113,8 +148,6 @@ namespace Script.Bot
                     minDist = dist;
                 }
             }
-            
-            Debug.Log($"dest in botmanager = {res}");
 
             return res;
         }

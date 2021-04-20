@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
+using Script.Manager;
 using Script.TeteChercheuse;
 
 namespace Script.EntityPlayer
@@ -41,14 +42,10 @@ namespace Script.EntityPlayer
             return type;
         }
 
-        private void Start()
-        {
-            master = MasterManager.Instance;
-        }
-
         //Setter
         protected void SetRbTr()
         {
+            master = MasterManager.Instance;
             Rb = GetComponent<Rigidbody>();
             Tr = GetComponent<Transform>();
         }
