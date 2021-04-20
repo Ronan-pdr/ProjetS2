@@ -32,7 +32,7 @@ RectTransform:
   m_Children:
   - {fileID: 2444814146858160681}
   m_Father: {fileID: 2444814146115811883}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -123,24 +123,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2444814145811399754}
         m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
-        m_MethodName: SendText
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2444814146858160678}
-          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2444814145811399754}
-        m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
         m_MethodName: StartAssignment
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: left
           m_BoolArgument: 0
@@ -536,24 +524,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2444814145811399754}
         m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
-        m_MethodName: SendText
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2444814145464994921}
-          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: crouch
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2444814145811399754}
-        m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
         m_MethodName: StartAssignment
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 6
           m_FloatArgument: 0
           m_StringArgument: crouch
           m_BoolArgument: 0
@@ -590,7 +566,7 @@ RectTransform:
   m_Children:
   - {fileID: 2444814146237821337}
   m_Father: {fileID: 2444814146115811883}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -681,24 +657,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2444814145811399754}
         m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
-        m_MethodName: SendText
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2444814146237821334}
-          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2444814145811399754}
-        m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
         m_MethodName: StartAssignment
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: right
           m_BoolArgument: 0
@@ -1439,14 +1403,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c2f1a1b9a29b914fa11b538bed70295, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ForwardButton: {fileID: 2444814145825075738}
-  BackwardButton: {fileID: 2444814147109831921}
-  LeftButton: {fileID: 2444814145206841837}
-  RightButton: {fileID: 2444814145371230094}
-  JumpButton: {fileID: 2444814146677054630}
-  SprintButton: {fileID: 2444814146468126211}
-  CrouchButton: {fileID: 2444814145343994112}
-  SitButton: {fileID: 2444814146408235979}
+  Forward: {fileID: 2444814145727911082}
+  Backward: {fileID: 2444814145668166823}
+  Left: {fileID: 2444814146858160678}
+  Right: {fileID: 2444814146237821334}
+  Jump: {fileID: 2444814146562693138}
+  Sprint: {fileID: 2444814146359658908}
+  Crouch: {fileID: 2444814145464994921}
+  Sit: {fileID: 2444814147109309493}
 --- !u!222 &2444814145811399757
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1608,26 +1572,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2444814145811399754}
         m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
-        m_MethodName: SendText
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2444814145727911082}
-          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2444814145811399754}
-        m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
         m_MethodName: StartAssignment
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: forward
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &2444814145875225728
@@ -1971,10 +1923,10 @@ RectTransform:
   m_Children:
   - {fileID: 2444814145825075741}
   - {fileID: 2444814147109831920}
-  - {fileID: 2444814145206841836}
   - {fileID: 2444814145371230097}
-  - {fileID: 2444814146677054633}
+  - {fileID: 2444814145206841836}
   - {fileID: 2444814146468126210}
+  - {fileID: 2444814146677054633}
   - {fileID: 2444814145343994115}
   - {fileID: 2444814146408235978}
   - {fileID: 2444814145404438995}
@@ -2511,24 +2463,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2444814145811399754}
         m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
-        m_MethodName: SendText
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2444814147109309493}
-          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2444814145811399754}
-        m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
         m_MethodName: StartAssignment
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 7
           m_FloatArgument: 0
           m_StringArgument: sit
           m_BoolArgument: 0
@@ -2699,7 +2639,7 @@ RectTransform:
   m_Children:
   - {fileID: 2444814146359658911}
   m_Father: {fileID: 2444814146115811883}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -2790,24 +2730,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2444814145811399754}
         m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
-        m_MethodName: SendText
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2444814146359658908}
-          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2444814145811399754}
-        m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
         m_MethodName: StartAssignment
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: sprint
           m_BoolArgument: 0
@@ -3112,7 +3040,7 @@ RectTransform:
   m_Children:
   - {fileID: 2444814146562693141}
   m_Father: {fileID: 2444814146115811883}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -3203,24 +3131,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2444814145811399754}
         m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
-        m_MethodName: SendText
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2444814146562693138}
-          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2444814145811399754}
-        m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
         m_MethodName: StartAssignment
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 5
           m_FloatArgument: 0
           m_StringArgument: jump
           m_BoolArgument: 0
@@ -3884,24 +3800,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2444814145811399754}
         m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
-        m_MethodName: SendText
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2444814145668166823}
-          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2444814145811399754}
-        m_TargetAssemblyTypeName: CommandsScript, Assembly-CSharp
         m_MethodName: StartAssignment
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: backward
           m_BoolArgument: 0

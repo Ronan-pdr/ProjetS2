@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1061283474011121433}
   - component: {fileID: 8979038781084736845}
   - component: {fileID: 2537409153096429155}
-  - component: {fileID: 8742748504277840597}
+  - component: {fileID: 4833503181551762634}
   m_Layer: 5
   m_Name: PlayerInfoTab
   m_TagString: Untagged
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &8742748504277840597
+--- !u!114 &4833503181551762634
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 724580577580382686}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daf47c66e3046964f8a5a087a1ce0c3d, type: 3}
+  m_Script: {fileID: 11500000, guid: f328ed17bc23dfd40b61176ce88bdde8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 2537409153096429155}
+  text: {fileID: 0}

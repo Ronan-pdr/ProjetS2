@@ -34,15 +34,18 @@ public class LauncherManager : MonoBehaviour
                 pauseMenu.Pause();
             }
         }
-        else if (Input.GetKeyDown(KeyCode.Tab))
+        else if (!pauseMenu.GetIsPaused())
         {
-            // ouvrir menu tab
-            MenuManager.Instance.OpenMenu("tab");
-        }
-        else if (Input.GetKeyUp(KeyCode.Tab))
-        {
-            // fermé menu tab -> ouvrir interfaInGame
-            MenuManager.Instance.OpenMenu("InterfaceInGame");
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                // ouvrir menu tab
+                MenuManager.Instance.OpenMenu("tab");
+            }
+            else if (Input.GetKeyUp(KeyCode.Tab))
+            {
+                // fermé menu tab -> ouvrir interfaInGame
+                MenuManager.Instance.OpenMenu("InterfaceInGame");
+            }
         }
     }
 }

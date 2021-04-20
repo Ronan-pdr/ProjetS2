@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Script.EntityPlayer;
@@ -7,16 +8,18 @@ using UnityEngine;
 
 public class PlayerInfoTab : MonoBehaviour
 {
-    // ------------ SerializedField ------------
-    
-    [SerializeField] private TMP_Text text;
-    
     // ------------ Attributs ------------
     private PlayerClass player;
     private int limitation = 15;
     private string playerName;
+    private TMP_Text text;
 
     // ------------ Constructeurs ------------
+    private void Awake()
+    {
+        text = GetComponent<TMP_Text>();
+    }
+
     public void Set(PlayerClass value)
     {
         player = value;
