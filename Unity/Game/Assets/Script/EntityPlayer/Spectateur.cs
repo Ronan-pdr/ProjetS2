@@ -1,6 +1,7 @@
 ﻿using Photon.Pun;
 using UnityEngine;
 using Script.InterfaceInGame;
+using Script.Manager;
 using Script.Tools;
 
 namespace Script.EntityPlayer

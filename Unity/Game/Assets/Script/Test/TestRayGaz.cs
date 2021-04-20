@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.TeteChercheuse;
 using UnityEngine;
 
 namespace Script.Test
 {
-    public class TestRayGaz : Entity, ISReceveurRayGaz
+    public class TestRayGaz : Entity
     {
         [SerializeField] private GameObject destination;
 
         private void Start()
         {
-            RayGaz.GetPath(gameObject.transform.position, destination.transform.position, this);
+            RayGaz.GetPath(gameObject.transform.position, destination.transform.position, RecepRayGaz);
         }
         
         public void RecepRayGaz(List<Vector3> path)

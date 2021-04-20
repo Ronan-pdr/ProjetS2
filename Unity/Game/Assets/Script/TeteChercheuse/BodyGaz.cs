@@ -1,6 +1,7 @@
 ﻿using System;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.Tools;
 using UnityEngine;
 
@@ -105,13 +106,12 @@ namespace Script.TeteChercheuse
             Destination = destination;
             
             // Déterminer l'origine de notre matrice ainsi que ses dimensions avec les contours
-            GameObject[] contour = MasterManager.Instance.GetContour();
+            (float minZ, float minX, float maxZ, float maxX) contour = MasterManager.Instance.GetContour();
             
-            Vector3 origin = contour[0].transform.position;
-            coordOrigin = new Vector3(origin.x, 0, origin.z);
+            coordOrigin = new Vector3(contour.minX, 0, contour.minZ);
             
-            heigth = (int) ((contour[1].transform.position.z - origin.z) / bond);
-            width = (int) ((contour[2].transform.position.x - origin.x) / bond);
+            heigth = (int) ((contour.maxZ - contour.minZ) / bond);
+            width = (int) ((contour.maxX - contour.minX) / bond);
             Sonde = new bool[heigth, width];
 
             // le positioner aux mêmes coordonnées que le lanceur mais calé avec bond

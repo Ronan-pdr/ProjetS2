@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.Test;
 using Script.Tools;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Script.TeteChercheuse
 {
     public class RayGaz : MonoBehaviour
     {
+        // ------------ Attributs ------------
         private class Node
         {
             public Node After { get; }
@@ -23,7 +25,19 @@ namespace Script.TeteChercheuse
             }
         }
 
-        private ISReceveurRayGaz Lanceur;
+        enum TypeRecherche
+        {
+            Sonde,
+            Path
+        }
+
+        private TypeRecherche type;
+
+        // fonctionde renvoi (lorsque l'algo se termine pour envoyer la réponse)
+        private Action<List<Vector3>> RecepGetPath;
+        private Action FinGetSonde;
+
+        // les coordonnées origines
         private Vector3 coordOrigin;
 
         // Quelle est la distance qu'il va parcourir losqu'il va se déplacer ?
@@ -34,37 +48,70 @@ namespace Script.TeteChercheuse
         private Node[,] Sonde;
         private int heigth;
         private int width;
-        
+
         // calculer la complexité
         private Stopwatch time;
 
         // cette file contient des positions valides (mais il y est peut-être déjà allé)
         // où il devra se répendre autour
         private MyFile<Node> file;
-        
+
         // variable relative à sa capsule
-        private (float hauteur, float rayon) capsule;
-        
+        private HumanCapsule capsule;
+
         // destination
         private Vector3 destination;
-
-        // constructeur
-        private void Instancier(Vector3 posInitiale, Vector3 posDestination, ISReceveurRayGaz lanceur)
+        
+        // ------------ Getters ------------
+        
+        // ce qu'on l'on est amené à appeler dans les autres classes
+        // s'il n'y a aucun chemin possible, renvoie une liste vide
+        public static void GetPath(Vector3 depart, Vector3 destination, Action<List<Vector3>> f)
         {
-            Lanceur = lanceur;
+            RayGaz rayGaz = Instantiate(MasterManager.Instance.GetOriginalRayGaz(), Vector3.up * 50, Quaternion.identity);
+
+            rayGaz.SetRecepGetPath(f, destination);
+            rayGaz.Instancier(depart, TypeRecherche.Path);
+        }
+
+        public static RayGaz GetSonde(Vector3 depart, Action f)
+        {
+            RayGaz rayGaz = Instantiate(MasterManager.Instance.GetOriginalRayGaz(), Vector3.up * 50, Quaternion.identity);
+
+            rayGaz.SetFinGetSonde(f);
+            rayGaz.Instancier(depart, TypeRecherche.Sonde);
+
+            return rayGaz;
+        }
+
+        // ------------ Setters ------------
+        private void SetRecepGetPath(Action<List<Vector3>> f, Vector3 dest)
+        {
+            RecepGetPath = f;
+            destination = dest;
+        }
+
+        private void SetFinGetSonde(Action f)
+        {
+            FinGetSonde = f;
+        }
+
+        // ------------ Constructeur ------------
+        private void Instancier(Vector3 posInitiale, TypeRecherche t)
+        {
+            type = t;
             
-            // légèrement modifier la position initilae en fonction du bond
+            // légèrement modifier la position initiale en fonction du bond
             // c'est pour que les positions soit toujours bien calé avec la matrice
             posInitiale -= SimpleMath.Mod(posInitiale, bond) + Vector3.up * 0f;
             
             // Déterminer l'origine de notre matrice ainsi que ses dimensions grâce aux contours
-            GameObject[] contour = MasterManager.Instance.GetContour();
+            (float minZ, float minX, float maxZ, float maxX) contour = MasterManager.Instance.GetContour();
             
-            Vector3 origin = contour[0].transform.position;
-            coordOrigin = new Vector3(origin.x, 0, origin.z);
+            coordOrigin = new Vector3(contour.minX, 0, contour.minZ);
             
-            heigth = (int) ((contour[1].transform.position.z - origin.z) / bond);
-            width = (int) ((contour[2].transform.position.x - origin.x) / bond);
+            heigth = (int) ((contour.maxZ - contour.minZ) / bond);
+            width = (int) ((contour.maxX - contour.minX) / bond);
             Sonde = new Node[heigth, width];
             
             // vérifiez que la position ininiale est bien comprise dans les bornes
@@ -73,14 +120,8 @@ namespace Script.TeteChercheuse
                 throw new Exception("Un RayGaz ne peut-être lancé en dehors des contours");
             }
             
-            // récupérer les côtes des bots pour les ray
-            CapsuleCollider cap = MasterManager.Instance.GetCapsuleBot();
-            float scale = cap.transform.localScale.y;
-            capsule.hauteur = cap.height * scale;
-            capsule.rayon = cap.radius * scale;
-            
-            // initialiser destination
-            destination = posDestination;
+            // récupérer les côtes des bots pour les ray ------------
+            capsule = MasterManager.Instance.GetHumanCapsule();
             
             // enregistrer temps au début de la recherche
             time = new Stopwatch();
@@ -92,15 +133,8 @@ namespace Script.TeteChercheuse
             file.Enfiler(first);
             CheckPosition(first);
         }
-
-        // ce qu'on l'on est amené à appeler dans les autres classes
-        // s'il n'y a aucun chemin possible, renvoie une liste vide
-        public static void GetPath(Vector3 depart, Vector3 destination, ISReceveurRayGaz lanceur)
-        {
-            RayGaz rayGaz = Instantiate(MasterManager.Instance.GetOriginalRayGaz(), Vector3.up * 50, Quaternion.identity);
-
-            rayGaz.Instancier(depart, destination, lanceur);
-        }
+        
+        // ------------ Méthodes ------------
 
         // la fonction principale du rayGaz
         // inspiré du parcours largeur
@@ -109,7 +143,7 @@ namespace Script.TeteChercheuse
             // Impossible que la file soit empty ici
             Node node = file.Defiler();
             
-            for (int i = 0; i >= 0 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
+            for (int i = 0; i < 200 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
             {
                 if (i > 0)
                     node = file.Defiler();
@@ -140,18 +174,34 @@ namespace Script.TeteChercheuse
 
             if (file.IsEmpty())
             {
-                Debug.Log("Il existe aucun chemin pour y accéder");
-
-                Lanceur.RecepRayGaz(new List<Vector3>());
-                Destroy(gameObject); // c'est fini donc il se détruit
+                FinForcé();
             }
-            else if (Arrivé(node.Position))
+            else if (Arrivé(node.Position)) // bien arrivé
             {
                 time.Stop();
-                // bien arrivé
                 Debug.Log($"Le gaz s'est répendu en {time.ElapsedMilliseconds} milisecondes");
-                Lanceur.RecepRayGaz(GetBestPath(node));
+                
+                RecepGetPath(GetBestPath(node)); // on est obligé d'être dans 'GetPath'
                 Destroy(gameObject); // c'est fini donc il se détruit
+            }
+        }
+
+        private void FinForcé()
+        {
+            switch (type)
+            {
+                case TypeRecherche.Path:
+                    Debug.Log("Il existe aucun chemin pour y accéder");
+                    RecepGetPath(new List<Vector3>());
+                    Destroy(gameObject);
+                    break;
+                case TypeRecherche.Sonde:
+                    Debug.Log($"Le gaz s'est répendu en {time.ElapsedMilliseconds} milisecondes");
+                    FinGetSonde();
+                    enabled = false;
+                    break;
+                default:
+                    throw new Exception($"Le cas de {type} n'a pas encore été géré");
             }
         }
 
@@ -183,41 +233,39 @@ namespace Script.TeteChercheuse
 
             Vector3 newPos = position + direction * bond;
 
-            if (CanIPass(capsule, position, direction, maxDistance) && IsValidPosition(newPos))
+            if (capsule.CanIPass(position, direction, maxDistance) && IsValidPosition(newPos))
             {
                 // nous avons trouvé une position où le gaz va se répendre...
                 Node node = new Node(after, newPos);
                 
-                // ...plus qu'à l'enfiler et ...
+                // ...plus qu'à l'enfiler et...
                 file.Enfiler(node);
                 
                 // ...indiquer que cette position va être traiter,
-                // donc il sera inutile de la refaire
+                // ainsi, il sera inutile de la refaire
                 CheckPosition(node);
             }
         }
 
         private bool Arrivé(Vector3 p)
         {
+            if (type == TypeRecherche.Sonde)
+            {
+                return false;
+            }
+            
             return Calcul.Distance(p, destination, Calcul.Coord.Y) < bond;
         }
-        
-        public static bool CanIPass((float hauteur, float rayon) cap, Vector3 position, Vector3 direction, float maxDistance)
+
+        // La position donnée en argument sera le premier de la liste
+        public List<Vector3> GetBestPath(Vector3 v)
         {
-            // haut du corps (vers les yeux)
-            Vector3 hautDuCorps = position + Vector3.up * (cap.hauteur - cap.rayon);
-            
-            // bas du corps (vers le haut des pieds)
-            Vector3 basDuCorps = position + Vector3.up * cap.rayon;
-            
-            if (Physics.CapsuleCast(hautDuCorps, basDuCorps, cap.rayon, direction, out RaycastHit hit, maxDistance))
-            {
-                return hit.collider.GetComponent<Entity>();
-            }
+            int x = GetIndexX(v);
+            int z = GetIndexZ(v);
 
-            return true;
+            return GetBestPath(Sonde[z, x]);
         }
-
+        
         private List<Vector3> GetBestPath(Node node)
         {
             List<Vector3> path = new List<Vector3>();
@@ -229,7 +277,7 @@ namespace Script.TeteChercheuse
             while (node.After != null)
             {
                 nextNode = node.After;
-                for (int i = 0; i <= 2 && nextNode.After != null && CanIPass(capsule, node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
+                for (int i = 0; i >= 0 && nextNode.After != null && capsule.CanIPass(node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
                     Calcul.Distance(nextNode.After.Position, node.Position)); i++)
                 {
                     nextNode = nextNode.After;
@@ -253,10 +301,5 @@ namespace Script.TeteChercheuse
         {
             return (int)((p.z - coordOrigin.z) / bond);
         }
-    }
-
-    public interface ISReceveurRayGaz
-    {
-        public void RecepRayGaz(List<Vector3> path);
     }
 }
