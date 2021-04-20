@@ -4,6 +4,7 @@ using System.IO;
 using Photon.Pun;
 using Script.EntityPlayer;
 using Script.InterfaceInGame;
+using Script.Manager;
 using Script.Tools;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -12,6 +13,7 @@ namespace Script.DossierPoint
 {
     public class CrossManager : MonoBehaviour
     {
+        // ------------ Attributs ------------
         public static CrossManager Instance;
         private CrossPoint[] crossPoints;
         
@@ -31,13 +33,15 @@ namespace Script.DossierPoint
             contentOutput = new string[crossPoints.Length];
         }
     
-        //Getter
+        // ------------ Getter ------------
         public int GetNumberPoint() => crossPoints.Length;
         public CrossPoint GetPoint(int index) => crossPoints[index];
         
         public static bool IsMaintenance()
         {
-            return PhotonNetwork.PlayerList.Length == 1 && PhotonNetwork.LocalPlayer.NickName == "maintenance";
+            return PhotonNetwork.PlayerList.Length == 1 && 
+                   PhotonNetwork.LocalPlayer.NickName == "maintenance" && 
+                   MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Game;
         }
         
         public (Vector3, int) GetRandomPosition(int previousIndex)
@@ -78,10 +82,15 @@ namespace Script.DossierPoint
             return positions;
         }
         
-        // Maintenance
+        // ------------ Constructeurs ------------
         private void Start()
         {
-            if (MasterManager.Instance.IsInCrossPointMaintenance())
+            if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Labyrinthe)
+            {
+                return;
+            }
+            
+            if (MasterManager.Instance.IsInMaintenance())
             {
                 indexResearch = -1;
                 NextResearch();
@@ -91,6 +100,8 @@ namespace Script.DossierPoint
                 LoadNeighboors();
             }
         }
+        
+        // ------------ Méthodes ------------
 
         public void EndOfOneResearch(List<CrossPoint> neighboors)
         {
@@ -171,8 +182,6 @@ namespace Script.DossierPoint
                         Debug.Log("WARNING : Le fichier de sauvegarde des crossPoints n'est pas compatible avec les crossPoint --> faire une maintenance");
 
                     // set les neighboors du cross point
-                    crossPoints[iCrossPoint].InitialiserNeighboors();
-                    
                     int nInfo = infos.Length;
                     for (int i = 1; i < nInfo; i++)
                     {

@@ -3,23 +3,27 @@ using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.DossierArme;
 using Script.InterfaceInGame;
+using Script.Manager;
 using Script.Tools;
 
 namespace Script.EntityPlayer
 {
     public class Chasseur : PlayerClass
     {
+        // attributs
+        
         // Relatif aux armes
         [SerializeField] private Arme[] armes;
         private int armeIndex;
         private int previousArmeIndex = -1;
     
+        // constructeurs
         private void Awake()
         {
-            AwakePlayer();
-        
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChasseur(this);
+            
+            AwakePlayer();
         }
 
         void Start()
@@ -30,6 +34,7 @@ namespace Script.EntityPlayer
             EquipItem(0);
         }
         
+        // méthodes
         void Update()
         {
             if (!Pv.IsMine)
@@ -110,8 +115,6 @@ namespace Script.EntityPlayer
                 PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
             }
         }
-
-        // GamePlay
 
         protected override void Die()
         {
