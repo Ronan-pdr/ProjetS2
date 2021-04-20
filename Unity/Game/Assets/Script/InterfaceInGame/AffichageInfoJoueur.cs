@@ -3,31 +3,56 @@ using Photon.Pun;
 using UnityEngine;
 using TMPro;
 using Script.EntityPlayer;
+using UnityEngine.UI;
 
 namespace Script.InterfaceInGame
 {
     public class AffichageInfoJoueur : MonoBehaviourPunCallbacks
     {
+        // ------------ SerializedField ------------
+        [Header("Texte nom/vie")]
         [SerializeField] private TMP_Text text;
+
+        [Header("Image vie")]
+        [SerializeField] private Transform SpriteContent;
+        [SerializeField] private Sprite[] sprites;
+        
+        // ------------ Attributs ------------
+        
         private PlayerClass player;
 
+        // ------------ Constructeurs ------------
         public void SetUp(PlayerClass value, int largeur, int hauteur)
         {
             player = value;
             
-            text.transform.position = new Vector3(largeur, hauteur + 131.5f, 0);
+            text.transform.position = new Vector3(largeur, hauteur + 85f, 0);
         }
-
-        public void Update()
+        
+        // ------------ Méthodes ------------
+        private void Update()
         {
             if (player is null)
                 return;
             
-            text.text = (player is Chassé?"Chassé":"Chasseur") + Environment.NewLine; // le type
-            text.text += player.GetPlayer().NickName + Environment.NewLine; // le nom
+            UpdateImageVie();
+            UpadteText();
+        }
 
+        private void UpdateImageVie()
+        {
+            int v = player.GetCurrentHealth();
+            int maxV = player.GetMaxHealth();
+            int len = sprites.Length;
+                     
+            Image image = SpriteContent.GetComponent<Image>();
+            image.sprite = sprites[v * (len - 1) / maxV];
+        }
+
+        private void UpadteText()
+        {
             int vie = player.GetCurrentHealth();
-            text.text += vie <= 0 ? "Dead" : vie + " / " + player.GetMaxHealth(); // la vie
+            text.text = vie <= 0 ? "Dead" : vie + " / " + player.GetMaxHealth(); // la vie
         }
     }
 }

@@ -52,11 +52,8 @@ namespace Script.EntityPlayer
                     break;
             }
 
-            GameObject controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", t),
+            PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", t),
                 tr.position, tr.rotation, 0, new object[]{Pv.ViewID});
-        
-            // indiquer quel est ton propre joueur au MasterManager
-            MasterManager.Instance.SetOwnPlayer(controller.GetComponent<PlayerClass>());
         }
 
         // la string contenant les infos du joueur seront sous la forme :

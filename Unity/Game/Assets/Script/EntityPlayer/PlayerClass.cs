@@ -50,6 +50,12 @@ namespace Script.EntityPlayer
             // parenter
             masterManager = MasterManager.Instance.transform;
             Tr.parent = masterManager;
+
+            if (Pv.IsMine)
+            {
+                // indiquer quel est ton propre joueur au MasterManager
+                MasterManager.Instance.SetOwnPlayer(this);
+            }
         
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);

@@ -20,10 +20,10 @@ namespace Script.EntityPlayer
         // constructeurs
         private void Awake()
         {
-            AwakePlayer();
-        
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChasseur(this);
+            
+            AwakePlayer();
         }
 
         void Start()

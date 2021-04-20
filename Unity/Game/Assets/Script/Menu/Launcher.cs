@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
+using Script.EntityPlayer;
 using UnityEngine.UI;
 
 public class Launcher : MonoBehaviourPunCallbacks
@@ -27,6 +28,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void Awake()
     {
+        new TouchesClass();
         Instance = this;
     }
     //Se connecte au serveur que l'on retrouve dans Assets/Photon/Photon/UnityNetworking/Ressources/PhotonSer...
@@ -145,7 +147,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
-    public void SetUpInputField()
+    private void SetUpInputField()
     {
         if (!PlayerPrefs.HasKey(PlayerPrefsNameKey))
             return;
@@ -154,7 +156,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         nameInputField.text = defaultName;
         SetPlayerName(defaultName);
     }
-    
 
     public void SetPlayerName(string name)
     {

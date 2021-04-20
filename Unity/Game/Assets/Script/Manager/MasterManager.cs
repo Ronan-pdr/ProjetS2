@@ -16,7 +16,7 @@ namespace Script.Manager
 {
     public class MasterManager : MonoBehaviour
     {
-        public static MasterManager Instance;
+        // ------------ SerializedField ------------
         
         [Header("Prefab")]
         [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
@@ -36,6 +36,10 @@ namespace Script.Manager
         
         [Header("Scene")]
         [SerializeField] private TypeScene scene;
+        
+        // ------------ Attributs ------------
+        
+        public static MasterManager Instance;
         
         // les contours de la scène (notamment utilisé par le gaz)
         private (float minZ, float minX, float maxZ, float maxX) contour;
@@ -65,7 +69,7 @@ namespace Script.Manager
 
         private ManagerGame typeScene;
 
-        // Getter
+        // ------------ Getters ------------
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
         public int GetNbPlayer() => players.Count;
         public int GetNbChasseur() => chasseurs.Count;
@@ -98,9 +102,11 @@ namespace Script.Manager
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
-        //Setter
+        // ------------ Setters ------------
         public void SetOwnPlayer(PlayerClass value)
         {
+            Debug.Log("Set du ownPlayer");
+            
             if (ownPlayer is null)
                 ownPlayer = value;
             else
@@ -128,7 +134,7 @@ namespace Script.Manager
             chassés.Add(chassé);
         }
 
-        // constructeur
+        // ------------ Constructeur ------------
         private void Awake()
         {
             // On peut faire ça puisqu'il y en aura qu'un seul
@@ -173,6 +179,7 @@ namespace Script.Manager
             SendInfoPlayer();
         }
 
+        // ------------ Méthodes ------------
         private void RecupContour()
         {
             Point[] contourPoint = GetComponentsInChildren<Point>();

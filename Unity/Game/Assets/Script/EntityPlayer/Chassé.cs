@@ -14,10 +14,10 @@ namespace Script.EntityPlayer
         // constructeurs
         private void Awake()
         {
-            AwakePlayer();
-            
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChassé(this);
+            
+            AwakePlayer();
         }
 
         void Start()
