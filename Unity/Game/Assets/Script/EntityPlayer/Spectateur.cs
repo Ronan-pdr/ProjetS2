@@ -18,7 +18,7 @@ namespace Script.EntityPlayer
         protected PhotonView Pv;
 
         //Rassembler les infos
-        private Transform masterManager;
+        private MasterManager master;
         
         //Variable similaire aux playerClass
         private float yLookRotation;
@@ -29,17 +29,17 @@ namespace Script.EntityPlayer
         private float hauteur = 1.4f;
         
         // ------------ Setter ------------
-        private void SetPorteur()
+        public void SetPorteur()
         {
-            Porteur = MasterManager.Instance.GetPlayer(indexPorteur).transform;
+            Porteur = master.GetPlayer(indexPorteur).transform;
         }
         
         // ------------ Constructeurs ------------
         private void Awake()
         {
             // Le ranger dans MasterClient
-            masterManager = MasterManager.Instance.transform;
-            transform.parent = masterManager;
+            master = MasterManager.Instance;
+            transform.parent = master.transform;
         
             SetRbTr();
             Pv = GetComponent<PhotonView>();
@@ -56,7 +56,8 @@ namespace Script.EntityPlayer
             }
             else
             {
-                Destroy(GetComponentInChildren<Camera>().gameObject); // On veut détruire les caméras qui ne sont pas les tiennes
+                // On veut détruire les caméras qui ne sont pas les tiennes
+                Destroy(GetComponentInChildren<Camera>().gameObject);
             }
         }
 
@@ -103,11 +104,11 @@ namespace Script.EntityPlayer
             //changer d'arme avec la molette
             if (Input.GetAxisRaw("Mouse ScrollWheel") > 0)
             {
-                indexPorteur = SimpleMath.Mod(indexPorteur + 1, MasterManager.Instance.GetNbPlayer());
+                indexPorteur = SimpleMath.Mod(indexPorteur + 1, master.GetNbPlayer());
             }
             else if (Input.GetAxisRaw("Mouse ScrollWheel") < 0)
             {
-                indexPorteur = SimpleMath.Mod(indexPorteur - 1, MasterManager.Instance.GetNbPlayer());
+                indexPorteur = SimpleMath.Mod(indexPorteur - 1, master.GetNbPlayer());
             }
             
             SetPorteur();

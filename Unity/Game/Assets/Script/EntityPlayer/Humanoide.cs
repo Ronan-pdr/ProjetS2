@@ -98,6 +98,10 @@ namespace Script.EntityPlayer
         // du script qui appelle cette fonction
         public void TakeDamage(int damage)
         {
+            // Personne prend de dommage lorsque la partie est terminé
+            if (master.IsGameEnded())
+                return;
+            
             CurrentHealth -= damage;
         
             Hashtable hash = new Hashtable();

@@ -118,10 +118,10 @@ namespace Script.Bot
                 running = Running.Course;
                 SetMoveAmount(Vector3.forward, PleineVitesse);
             
-                foreach (Vector3 p in planFuite)
+                /*foreach (Vector3 p in planFuite)
                 {
                     TestRayGaz.CreatePointPath(p);
-                }
+                }*/
             }
         }
 

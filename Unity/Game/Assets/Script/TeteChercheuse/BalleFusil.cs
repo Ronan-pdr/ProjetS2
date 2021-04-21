@@ -48,8 +48,18 @@ namespace Script.TeteChercheuse
         // ------------ Update ------------
         public void Update()
         {
-            if (!Pv.IsMine) // Seul le créateur de la balle la contrôle
+            // Seul le créateur de la balle la contrôle
+            if (!Pv.IsMine)
                 return;
+            
+            // Si le tireur n'existe plus, la balle se détruit
+            if (!Lanceur)
+            {
+                PhotonNetwork.Destroy(gameObject);
+                return;
+            }
+                
+            
     
             // si max distance -> il s'arrête
             if (Calcul.Distance(Lanceur.transform.position, Tr.position) > armeInfo.GetPortéeAttaque())
@@ -90,7 +100,7 @@ namespace Script.TeteChercheuse
 
         private void OnCollisionAux(Collider other)
         {
-            if (!Pv)
+            if (!Lanceur)
                 return;
             
             // Seul le créateur de la balle gère les collisions
@@ -114,7 +124,7 @@ namespace Script.TeteChercheuse
     
                     if (cibleHumaine is BotClass)
                     {
-                        Lanceur.GetComponent<Chasseur>().TakeDamage(1); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
+                        Lanceur.GetComponent<Chasseur>().TakeDamage(20); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
                     }
                 }
             }

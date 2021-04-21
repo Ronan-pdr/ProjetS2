@@ -10,6 +10,7 @@ using Script.EntityPlayer;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.InterfaceInGame;
 using Script.Labyrinthe;
+using Script.Menu;
 using Script.TeteChercheuse;
 using Script.Tools;
 using Random = System.Random;
@@ -49,6 +50,8 @@ namespace Script.Manager
         // nombre de participant (sera utilisé pour déterminer le moment lorsque tous les joueurs auront instancié leur playerController)
         private int nParticipant; // participant regroupe les joueurs ainsi que les spectateurs
 
+        private List<PlayerManager> playerManagers;
+        
         // Accéder aux différents joueurs, chaque joueur sera donc stocké deux fois, sauf s'il est mort, il sera juste un spectateur
         private List<PlayerClass> players;
         private List<Chasseur> chasseurs;
@@ -67,6 +70,8 @@ namespace Script.Manager
         }
 
         private ManagerGame typeScene;
+
+        private bool _endedGame;
 
         // ------------ Getters ------------
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -89,6 +94,7 @@ namespace Script.Manager
         public HumanCapsule GetHumanCapsule() => new HumanCapsule(capsuleBot);
         public TypeScene GetTypeScene() => scene;
         public ManagerGame GetManagerGame() => typeScene;
+        public bool IsGameEnded() => _endedGame;
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
@@ -147,6 +153,7 @@ namespace Script.Manager
             }
 
             // instancier les listes
+            playerManagers = new List<PlayerManager>();
             players = new List<PlayerClass>();
             chasseurs = new List<Chasseur>();
             chassés = new List<Chassé>();
@@ -278,11 +285,9 @@ namespace Script.Manager
 
         public void Die(PlayerClass playerClass)
         {
-            Debug.Log($"players = {ManList<PlayerClass>.ToString(players)}");
-            
             if (!players.Contains(playerClass))
             {
-                throw new Exception($"Un script tente de supprimer un joueur de la liste qui n'y est plus");
+                throw new Exception("Un script tente de supprimer un joueur de la liste qui n'y est plus");
             }
 
             players.Remove(playerClass); // remove de la liste players
@@ -291,11 +296,21 @@ namespace Script.Manager
             {
                 // remove de la liste chassés
                 chassés.Remove((Chassé) playerClass);
+
+                if (chassés.Count == 0)
+                {
+                    EndGame(TypePlayer.Chasseur);
+                }
             }
             else if (playerClass is Chasseur)
             {
                 // remove de la liste chasseurs
                 chasseurs.Remove((Chasseur) playerClass);
+
+                if (chasseurs.Count == 0)
+                {
+                    EndGame(TypePlayer.Chassé);
+                }
             }
             else if (playerClass is Blocard)
             {
@@ -310,13 +325,38 @@ namespace Script.Manager
 
             if (!pv.IsMine) // Seul le mourant créé un spectateur
                 return;
+
+            if (players.Count == 0)
+                return;
             
             // création du spectateur
             Spectateur spectateur = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "Spectateur"),
                 Vector3.zero, Quaternion.identity, 0, new object[]{pv.ViewID}).GetComponent<Spectateur>();
             
+            
             // ajout à la liste 'spectateurs'
             spectateurs.Add(spectateur);
+        }
+
+        private void EndGame(TypePlayer typeWinner)
+        {
+            /*PhotonNetwork.Destroy(ownPlayer.gameObject);
+            
+            players.Clear();
+            chasseurs.Clear();
+            chassés.Clear();
+            spectateurs.Clear();*/
+
+            _endedGame = true;
+            
+            if (PlayerManager.Own.Type == typeWinner)
+            {
+                MenuManager.Instance.OpenMenu("win");
+            }
+            else
+            {
+                MenuManager.Instance.OpenMenu("lose");
+            }
         }
     }
 }

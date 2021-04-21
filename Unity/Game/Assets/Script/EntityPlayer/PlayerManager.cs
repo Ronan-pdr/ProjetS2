@@ -24,24 +24,36 @@ namespace Script.EntityPlayer
     public class PlayerManager : MonoBehaviourPunCallbacks
     {
         // ------------ Attribut ------------
+
+        public static PlayerManager Own;
         
         private PhotonView Pv;
-    
         
-        // ------------ Constructeur ------------
+        // Pour savoir ce que tu étais au début
+        private TypePlayer _type;
+        
+        // ------------ Getter ------------
+
+        public TypePlayer Type => _type;
+        
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             transform.parent = MasterManager.Instance.transform;
-        
             Pv = GetComponent<PhotonView>();
+
+            if (Pv.IsMine)
+            {
+                Own = this;
+            }
         }
-        
+
         // ------------ Méthodes ------------
-        private void CreateController(TypePlayer type, int indexSpawn) // Instanstiate our player
+        private void CreateController(int indexSpawn) // Instanstiate our player
         {
             string t;
             Transform tr;
-            switch (type)
+            switch (_type)
             {
                 case TypePlayer.Chasseur:
                     t = "Chasseur";
@@ -99,7 +111,8 @@ namespace Script.EntityPlayer
 
                 (int indexSpawn, TypePlayer typePlayer) = DecodeFormatInfoJoueur((string) value);
 
-                CreateController(typePlayer, indexSpawn);
+                _type = typePlayer;
+                CreateController(indexSpawn);
             }
         }
     }

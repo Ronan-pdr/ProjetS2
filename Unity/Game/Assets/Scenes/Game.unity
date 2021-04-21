@@ -857,9 +857,17 @@ PrefabInstance:
       value: OpenMenu
       objectReference: {fileID: 0}
     - target: {fileID: 2444814145404438992, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Script.Menu.MenuManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2444814145404438992, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 521742179}
+    - target: {fileID: 2444814145404438992, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: Script.Menu.Menu, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 2444814145464994921, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_fontColor.b
       value: 1
@@ -1750,9 +1758,17 @@ PrefabInstance:
       value: OpenMenu
       objectReference: {fileID: 0}
     - target: {fileID: 7868893355417309396, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Script.Menu.MenuManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868893355417309396, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 1238104742}
+    - target: {fileID: 7868893355417309396, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: Script.Menu.Menu, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 7868893355417309399, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0.000020467
@@ -1778,9 +1794,17 @@ PrefabInstance:
       value: OpenMenu
       objectReference: {fileID: 0}
     - target: {fileID: 7868893355572646789, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Script.Menu.MenuManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868893355572646789, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 344880519}
+    - target: {fileID: 7868893355572646789, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: Script.Menu.Menu, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 7868893355572646791, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -2326,12 +2350,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1014139045}
-        m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Script.Menu.MenuManager, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 521742179}
-          m_ObjectArgumentAssemblyTypeName: Menu, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Script.Menu.Menu, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
