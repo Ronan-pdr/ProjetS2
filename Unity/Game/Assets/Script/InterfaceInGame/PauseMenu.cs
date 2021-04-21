@@ -46,10 +46,12 @@ namespace Script.InterfaceInGame
             disconnecting = true;
             PhotonNetwork.Disconnect();
             Destroy(RoomManager.Instance.gameObject);
+            
             while(PhotonNetwork.IsConnected)
             {
                 yield return null;
             }
+            
             SceneManager.LoadScene(0);
         }
 

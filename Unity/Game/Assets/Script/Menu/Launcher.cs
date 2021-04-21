@@ -103,7 +103,6 @@ namespace Script.Menu
             {
                 PhotonNetwork.LoadLevel(1);
             }
-        
         }
     
         //Est appelé par un boutton

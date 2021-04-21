@@ -1,3 +1,4 @@
+using System.Collections;
 using Script.Manager;
 using Script.Menu;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Script.InterfaceInGame
         [Header("Menus")]
         [SerializeField] private PauseMenu pauseMenu;
         [SerializeField] private TabMenu tabMenu;
+        [SerializeField] private EndGameMenu endGameMenu;
     
         // ------------ Attributs------------
 
@@ -23,6 +25,7 @@ namespace Script.InterfaceInGame
         
             PauseMenu.Instance = pauseMenu;
             TabMenu.Instance = tabMenu;
+            EndGameMenu.Instance = endGameMenu;
         }
     
         // ------------ Update ------------
@@ -42,6 +45,7 @@ namespace Script.InterfaceInGame
             
         }
 
+        // ------------ Méthodes ------------
         private void GestioInGame()
         {
             if (Input.GetKeyDown(KeyCode.Escape))

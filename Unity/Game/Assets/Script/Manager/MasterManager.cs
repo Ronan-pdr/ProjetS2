@@ -348,15 +348,8 @@ namespace Script.Manager
             spectateurs.Clear();*/
 
             _endedGame = true;
-            
-            if (PlayerManager.Own.Type == typeWinner)
-            {
-                MenuManager.Instance.OpenMenu("win");
-            }
-            else
-            {
-                MenuManager.Instance.OpenMenu("lose");
-            }
+            MenuManager.Instance.OpenMenu("EndGame");
+            EndGameMenu.Instance.SetWinner(typeWinner);
         }
     }
 }
