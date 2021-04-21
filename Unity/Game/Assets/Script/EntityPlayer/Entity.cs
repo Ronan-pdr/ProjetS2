@@ -10,6 +10,8 @@ namespace Script.EntityPlayer
 {
     public class Entity : MonoBehaviourPunCallbacks
     {
+        // ------------ Attributs ------------
+        
         protected Transform Tr;
         protected Rigidbody Rb;
 
@@ -21,7 +23,7 @@ namespace Script.EntityPlayer
         // masterManager
         protected MasterManager master;
         
-        // Getter
+        // ------------ Getter ------------
         public string GetTypeEntity()
         {
             string type;
@@ -42,7 +44,7 @@ namespace Script.EntityPlayer
             return type;
         }
 
-        //Setter
+        // ------------ Setters ------------
         protected void SetRbTr()
         {
             master = MasterManager.Instance;
@@ -56,6 +58,8 @@ namespace Script.EntityPlayer
                 moveDir * speed,
                 ref smoothMoveVelocity, smouthTime);
         }
+        
+        // ------------ Méthodes ------------
     
         protected void MoveEntity()
         {
@@ -63,6 +67,7 @@ namespace Script.EntityPlayer
             Rb.MovePosition(Rb.position + Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime);
         }
 
+        // ------------ Surchargeurs ------------
         public override string ToString()
         {
             string type = GetTypeEntity();

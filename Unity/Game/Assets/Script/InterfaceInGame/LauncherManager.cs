@@ -6,17 +6,19 @@ using UnityEngine;
 public class LauncherManager : MonoBehaviour
 {
     // ------------ SerializedField ------------
+    
+    [Header("Menus")]
     [SerializeField] private PauseMenu pauseMenu;
     [SerializeField] private TabMenu tabMenu;
     
-    // ------------ Constructeurs ------------
+    // ------------ Constructeur ------------
     void Start()
     {
         PauseMenu.Instance = pauseMenu;
         TabMenu.Instance = tabMenu;
     }
     
-    // ------------ Méthodes ------------
+    // ------------ Update ------------
     void Update()
     {
         if (pauseMenu.Getdisconnecting())

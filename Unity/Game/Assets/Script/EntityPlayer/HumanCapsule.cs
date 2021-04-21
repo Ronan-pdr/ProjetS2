@@ -4,11 +4,12 @@ namespace Script.EntityPlayer
 {
     public class HumanCapsule
     {
-        // attributs
+        // ------------ Attributs ------------
+        
         private float _hauteur;
         private float _rayon;
         
-        // constructeurs
+        // ------------ Constructeur ------------
         public HumanCapsule(CapsuleCollider cap)
         {
             float scale = cap.transform.localScale.y;
@@ -16,7 +17,7 @@ namespace Script.EntityPlayer
             _rayon = cap.radius * scale;
         }
         
-        // méthodes
+        // ------------ Méthode ------------
 
         public bool CanIPass(Vector3 position, Vector3 direction, float maxDistance)
         {

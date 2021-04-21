@@ -11,11 +11,12 @@ namespace Script.TeteChercheuse
 {
     public class BalleFusil : TeteChercheuse
     {
-        // attributs
+        // ------------ Attributs ------------
+        
         private ArmeInfo armeInfo;
         private PhotonView Pv;
     
-        // constructeurs
+        // ------------ Constructeurs ------------
         private void Start()
         {
             SetRbTr();
@@ -27,6 +28,7 @@ namespace Script.TeteChercheuse
             
             MoveAmount = new Vector3(0, 0, 50);
         }
+        
         
         public static void Tirer(Vector3 coord, GameObject ownObj, Vector3 rotation, ArmeInfo armeInf)
         {
@@ -43,7 +45,7 @@ namespace Script.TeteChercheuse
             transform.Rotate(rotation);
         }
     
-        // méthodes
+        // ------------ Update ------------
         public void Update()
         {
             if (!Pv.IsMine) // Seul le créateur de la balle la contrôle
@@ -65,7 +67,7 @@ namespace Script.TeteChercheuse
             MoveEntity();
         }
         
-        // collision
+        // ------------ Event ------------
         private void OnTriggerEnter(Collider other)
         {
             OnCollisionAux(other);

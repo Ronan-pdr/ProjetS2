@@ -14,6 +14,7 @@ namespace Script.DossierPoint
     public class CrossManager : MonoBehaviour
     {
         // ------------ Attributs ------------
+        
         public static CrossManager Instance;
         private CrossPoint[] crossPoints;
         
@@ -24,17 +25,9 @@ namespace Script.DossierPoint
         private string[] contentOutput;
         
         private string Path = "Build/SauvegardeCrossManager";
-    
-        private void Awake()
-        {
-            Instance = this;
-            crossPoints = GetComponentsInChildren<CrossPoint>();
-
-            contentOutput = new string[crossPoints.Length];
-        }
-    
-        // ------------ Getter ------------
+        // ------------ Getters ------------
         public int GetNumberPoint() => crossPoints.Length;
+        
         public CrossPoint GetPoint(int index) => crossPoints[index];
         
         public static bool IsMaintenance()
@@ -83,6 +76,13 @@ namespace Script.DossierPoint
         }
         
         // ------------ Constructeurs ------------
+        private void Awake()
+        {
+            Instance = this;
+            crossPoints = GetComponentsInChildren<CrossPoint>();
+
+            contentOutput = new string[crossPoints.Length];
+        }
         private void Start()
         {
             if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Labyrinthe)
@@ -148,6 +148,7 @@ namespace Script.DossierPoint
             return res;
         }
 
+        // ------------ Parsing ------------
         private void Ouput()
         {
             using (StreamWriter sw = File.CreateText(Path))

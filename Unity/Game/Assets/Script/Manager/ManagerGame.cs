@@ -47,7 +47,7 @@ namespace Script.Manager
             }
         }
         
-        // ------------ Attributs ------------
+        // ------------ Attribut ------------
         
         protected int NJoueur;
 

@@ -8,6 +8,7 @@ namespace Script.InterfaceInGame
     public class PauseMenu : MonoBehaviour
     {
         // ------------ Attributs ------------
+        
         public static PauseMenu Instance;
         
         // Etat

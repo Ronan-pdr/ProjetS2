@@ -40,7 +40,7 @@ namespace Script.Labyrinthe
             StartBot();
         }
         
-        // ------------ Méthodes ------------
+        // ------------ Update ------------
         private void Update()
         {
             if (!IsMyBot())
@@ -72,6 +72,8 @@ namespace Script.Labyrinthe
         {
             FixedUpdateBot();
         }
+        
+        // ------------ Méthodes ------------
         
         private bool IsDepart()
         {

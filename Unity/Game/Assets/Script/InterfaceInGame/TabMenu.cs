@@ -8,18 +8,20 @@ using UnityEngine;
 public class TabMenu : MonoBehaviour
 {
     // ------------ SerializedField ------------
+    
     [Header("Prefab")]
     [SerializeField] Transform ChasseurInfoContent;
     [SerializeField] Transform ChasseInfoContent;
     [SerializeField] GameObject playerInfoTabPrefab;
     
     // ------------ Attributs ------------
+    
     public static TabMenu Instance;
     
     private List<PlayerInfoTab> infosChasseur;
     private List<PlayerInfoTab> infosChasse;
 
-    // ------------ Constructeurs ------------
+    // ------------ Constructeur ------------
     public void Set()
     {
         infosChasseur = new List<PlayerInfoTab>();

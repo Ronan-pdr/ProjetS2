@@ -51,11 +51,11 @@ namespace Script.EntityPlayer
         }
         
         // ------------ Attributs ------------
+        
         public static TouchesClass Instance;
-
         private Dictionary<TypeTouche, Touche> dict;
         
-        // ------------ Constructeurs ------------
+        // ------------ Constructeur ------------
         
         public TouchesClass()
         {
@@ -100,13 +100,13 @@ namespace Script.EntityPlayer
         
         public static KeyCode GetNullKeyCode() => KeyCode.Joystick1Button19;
         
-        // ------------ Setters ------------
+        // ------------ Setter ------------
         public void SetKey(TypeTouche typeTouche, KeyCode keyCode)
         {
             dict[typeTouche].Key = keyCode;
         }
         
-        // ------------ Méthodes ------------
+        // ------------ Méthode ------------
         public string ToString(TypeTouche typeTouche)
         {
             return dict[typeTouche].ToString();

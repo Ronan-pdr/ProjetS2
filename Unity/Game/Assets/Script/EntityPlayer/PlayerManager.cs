@@ -23,9 +23,12 @@ namespace Script.EntityPlayer
     
     public class PlayerManager : MonoBehaviourPunCallbacks
     {
-        // photon
+        // ------------ Attribut ------------
+        
         private PhotonView Pv;
     
+        
+        // ------------ Constructeur ------------
         private void Awake()
         {
             transform.parent = MasterManager.Instance.transform;
@@ -33,6 +36,7 @@ namespace Script.EntityPlayer
             Pv = GetComponent<PhotonView>();
         }
         
+        // ------------ Méthodes ------------
         private void CreateController(TypePlayer type, Transform tr) // Instanstiate our player
         {
             string t = "";
@@ -76,6 +80,7 @@ namespace Script.EntityPlayer
             return (indexSpot, typePlayer);
         }
 
+        // ------------ Photon ------------
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien

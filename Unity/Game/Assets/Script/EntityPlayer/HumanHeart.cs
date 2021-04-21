@@ -12,7 +12,7 @@ namespace Script.EntityPlayer
         private float _timeLastHit;
         private int _degatHit;
 
-        // ------------ Constructeurs ------------
+        // ------------ Constructeur ------------
         private void Start()
         {
             _human = GetComponentInParent<Humanoide>();

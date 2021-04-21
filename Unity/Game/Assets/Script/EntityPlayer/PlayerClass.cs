@@ -1,6 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Bot;
+using Script.InterfaceInGame;
 using Script.Manager;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -9,6 +10,11 @@ namespace Script.EntityPlayer
 {
     public abstract class PlayerClass : Humanoide
     {
+        // ------------ SerializeField ------------
+        
+        [Header("Camera")]
+        [SerializeField] protected Transform cameraHolder;
+        
         // ------------ Etat ------------
         protected enum Etat
         {
@@ -20,16 +26,18 @@ namespace Script.EntityPlayer
         protected Etat etat = Etat.Debout;
         protected float LastChangementEtat; // La dernière fois qu'on a changé de position entre assis et lever
         
-        protected TouchesClass touches;
+        // ------------ Attributs ------------
+        
+        private TouchesClass touches;
 
         //Look
         private float verticalLookRotation; 
         private float mouseSensitivity = 3f;
-        [SerializeField] protected Transform cameraHolder;
 
         //Rassembler les infos
         protected Transform masterManager;
         
+        // ------------ Constructeurs ------------
         protected void AwakePlayer()
         {
             SetRbTr();
@@ -62,6 +70,7 @@ namespace Script.EntityPlayer
             }
         }
 
+        // ------------ Update ------------
         protected void UpdatePlayer()
         {
             Look();
@@ -83,6 +92,7 @@ namespace Script.EntityPlayer
             MoveEntity();
         }
     
+        // ------------ Méthodes ------------
         private void Move()
         {
             if (etat == Etat.Assis) // il se déplace pas quand il est assis
@@ -112,7 +122,7 @@ namespace Script.EntityPlayer
             SetMoveAmount(moveDir, speed);
         }
 
-        void Look()
+        private void Look()
         {
             Tr.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
 
@@ -121,6 +131,31 @@ namespace Script.EntityPlayer
 
             cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
         }
+
+        public static bool IsPause()
+        {
+            if (PauseMenu.Instance.GetIsPaused())
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                return true;
+            }
+            
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = false;
+
+            return false;
+        }
+
+        protected override void Die()
+        {
+            MasterManager.Instance.Die(Pv.Owner);
+            
+            anim.enabled = false;
+            PhotonNetwork.Destroy(gameObject);
+        }
+        
+        // ------------ Photon ------------
     
         // Communication par hash
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -156,7 +191,7 @@ namespace Script.EntityPlayer
             }
         }
         
-        // Animation
+        // ------------ Animation ------------
         protected void Animation()
         {
             (int xMov, int zMov) = (0, 0);

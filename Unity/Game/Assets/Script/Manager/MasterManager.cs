@@ -133,7 +133,7 @@ namespace Script.Manager
             chassés.Add(chassé);
         }
 
-        // ------------ Constructeur ------------
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             // On peut faire ça puisqu'il y en aura qu'un seul
@@ -238,13 +238,6 @@ namespace Script.Manager
                     PhotonNetwork.PlayerList[i].SetCustomProperties(hash);
                 }
             }
-        }
-
-        private void Update()
-        {
-            // S'il y a maintenance, il n'y a pas de joueur et pas leur gestion
-            if (IsInMaintenance())
-                return;
         }
 
         public void Die(Player player)

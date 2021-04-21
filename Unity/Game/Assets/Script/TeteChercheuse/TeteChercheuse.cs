@@ -8,7 +8,7 @@ namespace Script.TeteChercheuse
         // Cette classe mère va regrouper tous les objets lancés depuis une entité
         // pour vérifier les collisions et, pottentiellement récupérer les objets touchés
         
-        // attributs
+        // ------------ Attributs ------------
         protected GameObject Lanceur;
     }
 }

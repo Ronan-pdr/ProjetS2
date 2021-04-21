@@ -12,23 +12,26 @@ namespace Script.DossierPoint
     public class SpawnManager : MonoBehaviour
     {
         // ------------ Attributs ------------
+        
         public static SpawnManager Instance;
 
         private SpawnPoint[] spawnChasseur;
         private SpawnPoint[] spawnChassé;
         
-        // ------------ Getter------------
+        // ------------ Getters ------------
         public int GetNbSpawnChasseur() => spawnChasseur.Length;
         public int GetNbSpawnChassé() => spawnChassé.Length;
         public Transform GetTrChasseur(int index) => spawnChasseur[index].transform;
         public Transform GetTrChassé(int index) => spawnChassé[index].transform;
         
+        // ------------ Constructeur ------------
         private void Awake()
         {
             Instance = this;
             RecupSpawns();
         }
 
+        // ------------ Méthodes ------------
         private void RecupSpawns()
         {
             // les listes où sont temporairements stockées tous les spawnPoints

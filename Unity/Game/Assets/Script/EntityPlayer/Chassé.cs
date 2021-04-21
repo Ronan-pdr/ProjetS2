@@ -11,7 +11,7 @@ namespace Script.EntityPlayer
 {
     public class Chassé : PlayerClass
     {
-        // constructeurs
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             // Le ranger dans la liste du MasterManager
@@ -26,15 +26,14 @@ namespace Script.EntityPlayer
             StartPlayer();
         }
         
+        // ------------ Update ------------
+        
         void Update()
         {
             if (!Pv.IsMine)
                 return;
             
-            Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
-            Cursor.visible = PauseMenu.Instance.GetIsPaused();
-            
-            if (PauseMenu.Instance.GetIsPaused())
+            if (IsPause())
             {
                 MoveAmount = Vector3.zero;
                 return;
@@ -47,16 +46,6 @@ namespace Script.EntityPlayer
         private void FixedUpdate()
         {
             FixedUpdatePlayer();
-        }
-        
-        //GamePlay
-
-        protected override void Die() // Est appelé lorsqu'il vient de mourir
-        {
-            MasterManager.Instance.Die(Pv.Owner);
-            
-            anim.enabled = false;
-            PhotonNetwork.Destroy(gameObject);
         }
     }
 }

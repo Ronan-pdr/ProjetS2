@@ -10,6 +10,7 @@ namespace Script.Labyrinthe
     public class Blocard : PlayerClass
     {
         // ------------ Attributs ------------
+        
         private int nCaillouMax = 50;
         private int nCaillou;
         private List<GameObject> caillous = new List<GameObject>();
@@ -28,7 +29,7 @@ namespace Script.Labyrinthe
             nCaillou = 0;
         }
 
-        // méthodes
+        // ------------ Update ------------
         private void Update()
         {
             if (!Pv.IsMine)
@@ -53,6 +54,8 @@ namespace Script.Labyrinthe
         {
             FixedUpdatePlayer();
         }
+        
+        // ------------ Méthodes ------------
 
         private void PoserCaillou()
         {
@@ -81,11 +84,6 @@ namespace Script.Labyrinthe
             Destroy(caillous[i]);
             caillous.RemoveAt(i);
             nCaillou -= 1;
-        }
-        
-        protected override void Die()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

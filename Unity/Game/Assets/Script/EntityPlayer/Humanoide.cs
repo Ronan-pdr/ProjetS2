@@ -19,7 +19,7 @@ namespace Script.EntityPlayer
         // Jump
         private const float JumpForce = 200f;
     
-        // GamePlay
+        // Vie
         protected int MaxHealth;
         protected int CurrentHealth;
     
@@ -52,6 +52,13 @@ namespace Script.EntityPlayer
         {
             CurrentHealth = MaxHealth;
         }
+        
+        // ------------ Update ------------
+        
+        protected void UpdateHumanoide()
+        {
+            PotentielleMort();
+        }
 
         // ------------ Méthodes ------------
         private void PotentielleMort()
@@ -69,13 +76,6 @@ namespace Script.EntityPlayer
             }
         }
 
-        protected void UpdateHumanoide()
-        {
-            PotentielleMort();
-        }
-     
-        // Déplacment
-
         public void Jump()
         {
             if (Time.time - lastJump > periodeJump && Grounded)
@@ -85,22 +85,7 @@ namespace Script.EntityPlayer
                 lastJump = Time.time;
             }
         }
-
-        // ------------ Animation ------------
-        [Header("Animation")]
-        [SerializeField] protected Animator anim;
-
-        protected void AnimationStop()
-        {
-            anim.enabled = false;
-        }
         
-        protected void ActiverAnimation(string strAnimation)
-        {
-            anim.enabled = true;
-            anim.Play(strAnimation);
-        }
-    
         // Aucune information pertinente ne peut être retenu
         // du script qui appelle cette fonction
         public void TakeDamage(int damage)
@@ -125,6 +110,24 @@ namespace Script.EntityPlayer
 
         protected abstract void Die();
 
+        // ------------ Animation ------------
+        
+        [Header("Animation")]
+        [SerializeField] protected Animator anim;
+
+        protected void AnimationStop()
+        {
+            anim.enabled = false;
+        }
+        
+        protected void ActiverAnimation(string strAnimation)
+        {
+            anim.enabled = true;
+            anim.Play(strAnimation);
+        }
+        
+        // ------------ Surchargeurs ------------
+
         public static bool operator ==(Humanoide hum1, Humanoide hum2)
         {
             if (hum1 is null || hum2 is null)
@@ -146,8 +149,6 @@ namespace Script.EntityPlayer
                 return false;
             }
         }
-        
-        // ------------ Surchargeurs ------------
         public static bool operator !=(Humanoide hum1, Humanoide hum2)
         {
             return !(hum1 == hum2);

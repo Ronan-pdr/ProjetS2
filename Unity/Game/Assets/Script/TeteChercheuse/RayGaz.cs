@@ -134,7 +134,7 @@ namespace Script.TeteChercheuse
             CheckPosition(first);
         }
         
-        // ------------ Méthodes ------------
+        // ------------ Update ------------
 
         // la fonction principale du rayGaz
         // inspiré du parcours largeur
@@ -185,6 +185,8 @@ namespace Script.TeteChercheuse
                 Destroy(gameObject); // c'est fini donc il se détruit
             }
         }
+        
+        // ------------ Méthodes ------------
 
         private void FinForcé()
         {

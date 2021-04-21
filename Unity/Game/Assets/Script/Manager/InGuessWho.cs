@@ -5,13 +5,13 @@ namespace Script.Manager
 {
     public class InGuessWho : ManagerGame
     {
-        // constructeur
+        // ------------ Constructeur ------------
         public InGuessWho(int nJoueur)
         {
             NJoueur = nJoueur;
         }
         
-        // méthodes
+        // ------------ Méthodes ------------
         protected override NtypeJoueur GetNJoueur()
         {
             NtypeJoueur n = new NtypeJoueur();
