@@ -38,11 +38,12 @@ namespace Script.Manager
                 case 1:
                     n.Rectiligne = 1;
                     n.Fuyard = 1;
-                    n.Suiveur = 1;
+                    n.Suiveur = 2;
                     break;
                 default:
-                    n.Rectiligne = 1;
-                    n.Fuyard = 1;
+                    n.Rectiligne = 4;
+                    n.Fuyard = 2;
+                    n.Suiveur = 1;
                     break;
             }
             

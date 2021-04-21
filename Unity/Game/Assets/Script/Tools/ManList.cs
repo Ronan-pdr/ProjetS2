@@ -153,14 +153,34 @@ namespace Script.Tools
 
         public static string ToString(T[] arr)
         {
+            return ToString(new List<T>(arr));
+        }
+
+        public static string ToString(List<T> list)
+        {
             string res = "[";
 
-            foreach (T e in arr)
+            foreach (T e in list)
             {
                 res += $"{e}, ";
             }
 
             return res + "]";
+        }
+        
+        // recherce
+        public static int GetIndex(T[] arr, T e)
+        {
+            int l = arr.Length;
+            for (int i = 0; i < l; i++)
+            {
+                if (arr[i].Equals(e))
+                {
+                    return i;
+                }
+            }
+
+            throw new Exception($"{e} n'est pas contenu dans {arr}");
         }
     }
 }

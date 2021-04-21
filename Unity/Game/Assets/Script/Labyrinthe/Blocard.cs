@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Script.EntityPlayer;
 using Script.Test;
 using Script.Tools;
@@ -16,16 +15,13 @@ namespace Script.Labyrinthe
         private List<GameObject> caillous = new List<GameObject>();
 
         // ------------ Constructeurs ------------
-        private void Awake()
-        {
-            AwakePlayer();
-        }
+        
+        protected override void AwakePlayer()
+        {}
 
-        void Start()
+        protected override void StartPlayer()
         {
             MaxHealth = 100;
-            StartPlayer();
-
             nCaillou = 0;
         }
 

@@ -264,6 +264,9 @@ namespace Script.Manager
 
                     infosBot[iBot].type = types[iType];
                 }
+                
+                if (infosBot.Length == 0)
+                    continue; // rien à envoyer
 
                 // envoi des infos au concerné(e)
                 string mes = BotManager.EncodeFormatInfoBot(infosBot);
@@ -275,9 +278,11 @@ namespace Script.Manager
 
         public void Die(PlayerClass playerClass)
         {
+            Debug.Log($"players = {ManList<PlayerClass>.ToString(players)}");
+            
             if (!players.Contains(playerClass))
             {
-                throw new Exception("Un script tente de supprimer un joueur de la liste qui n'y est plus");
+                throw new Exception($"Un script tente de supprimer un joueur de la liste qui n'y est plus");
             }
 
             players.Remove(playerClass); // remove de la liste players

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
+using Script.Labyrinthe;
 using Script.Manager;
 using Script.TeteChercheuse;
 
@@ -28,8 +29,14 @@ namespace Script.EntityPlayer
         {
             string type;
             
-            if (this is BotClass)
-                type = "Bot";
+            if (this is BotRectiligne)
+                type = "Rectiligne";
+            else if (this is Fuyard)
+                type = "Fuyard";
+            else if (this is Suiveur)
+                type = "Suiveur";
+            else if (this is Guide)
+                type = "Guide";
             else if (this is Chasseur)
                 type = "Chasseur";
             else if (this is Chassé)

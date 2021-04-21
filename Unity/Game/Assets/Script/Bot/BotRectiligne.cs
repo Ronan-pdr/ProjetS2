@@ -15,6 +15,7 @@ namespace Script.Bot
             EnChemin,
             Attend // il attend seulement lorsqu'il est sur un point qui possède 0 voisin
         }
+        
         private Etat etat = Etat.Attend;
 
         private CrossPoint PointDestination;
@@ -26,30 +27,20 @@ namespace Script.Bot
         }
 
         // ------------ Constructeurs ------------
-        private void Awake()
-        {
-            AwakeBot();
-        }
+        protected override void AwakeBot()
+        {}
 
-        public void Start()
-        {
-            StartBot(); // tout le monde le fait pour qu'il soit parenter
-        
-            if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
-                return;
-        }
+        protected override void StartBot()
+        {}
 
         // ------------ Update ------------
         protected override void UpdateBot()
         {
             if (etat == Etat.Attend) // s'il est en train d'attendre,...
             {
-                if (PointDestination.GetNbNeighboor() > 0)
-                {
-                    FindNewDestination();
-                }
-                
                 MoveAmount = Vector3.zero; // ...il ne se déplace pas...
+                FindNewDestination(); // ...tente de trouve une nouvelle destination...
+
                 return; // ...et ne fait rien d'autre
             }
             
@@ -75,10 +66,13 @@ namespace Script.Bot
                 PointDestination = PointDestination.GetNeighboor(Random.Range(0, nNeighboor));
                 CalculeRotation(PointDestination.transform.position);
                 etat = Etat.EnChemin;
+                running = Running.Marche;
+                SetMoveAmount(Vector3.forward, TranquilleVitesse);
             }
             else
             {
                 etat = Etat.Attend;
+                running = Running.Arret;
             }
         }
         

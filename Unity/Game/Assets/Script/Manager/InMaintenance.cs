@@ -26,7 +26,6 @@ namespace Script.Manager
 
         protected override NtypeBot GetNBot()
         {
-            // 0 bot
             return new NtypeBot();
         }
     }

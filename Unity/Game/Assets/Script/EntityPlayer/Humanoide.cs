@@ -2,6 +2,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Bot;
+using Script.Manager;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -10,6 +11,7 @@ namespace Script.EntityPlayer
     public abstract class Humanoide : Entity
     {
         // ------------Etat ------------
+        
         protected bool Grounded;
 
         // Avancer
@@ -29,6 +31,9 @@ namespace Script.EntityPlayer
         // Jump 
         private float lastJump; // le temps la dernière fois que le joueur a sauté
         private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
+        
+        // Collision
+        protected HumanCapsule capsule;
     
         // ------------ Getters ------------
         public int GetCurrentHealth() => CurrentHealth;
@@ -45,19 +50,23 @@ namespace Script.EntityPlayer
         // ------------ Constructeurs ------------
         protected void AwakeHuman()
         {
+            SetRbTr();
             Pv = GetComponent<PhotonView>(); // doit obligatoirement être dans awake
         }
 
         protected void StartHuman()
         {
             CurrentHealth = MaxHealth;
+            master = MasterManager.Instance;
+
+            // récupérer les côtes des bots pour les ray
+            capsule = MasterManager.Instance.GetHumanCapsule();
         }
         
         // ------------ Update ------------
         
         protected void UpdateHumanoide()
-        {
-        }
+        {}
 
         // ------------ Méthodes ------------
         protected void PotentielleMort()

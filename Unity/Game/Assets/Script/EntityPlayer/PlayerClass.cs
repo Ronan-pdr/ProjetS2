@@ -39,10 +39,12 @@ namespace Script.EntityPlayer
         protected Transform masterManager;
         
         // ------------ Constructeurs ------------
-        protected void AwakePlayer()
+        
+        protected abstract void AwakePlayer();
+        private void Awake()
         {
-            SetRbTr();
             AwakeHuman();
+            AwakePlayer();
         
             // parenter
             masterManager = MasterManager.Instance.transform;
@@ -54,20 +56,21 @@ namespace Script.EntityPlayer
                 MasterManager.Instance.SetOwnPlayer(this);
             }
         
-            name = PhotonNetwork.NickName;
+            name = Pv.Owner.NickName;
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);
         }
-
-        protected void StartPlayer()
+        protected abstract void StartPlayer();
+        private void Start()
         {
+            StartPlayer();
             StartHuman();
             touches = TouchesClass.Instance;
         
             if (!Pv.IsMine) 
             {
-                Destroy(GetComponentInChildren<Camera>().gameObject); // On veut détruire les caméras qui ne sont pas les tiennes
-                Destroy(Rb);
+                // On veut détruire les caméras qui ne sont pas les tiennes
+                Destroy(GetComponentInChildren<Camera>().gameObject);
             }
         }
 
@@ -167,7 +170,8 @@ namespace Script.EntityPlayer
         protected override void Die()
         {
             MasterManager.Instance.Die(this);
-            
+
+            enabled = false;
             anim.enabled = false;
 
             // On ne détruit pas le corps des autres joueurs
@@ -201,16 +205,6 @@ namespace Script.EntityPlayer
             {
                 CurrentHealth = (int)vie;
             }
-        
-            /*// les morts -> Die (MasterManager)
-            if (!Pv.IsMine) // c'est le mourant qui envoie le hash
-            {
-                if (changedProps.TryGetValue("MortPlayer", out object value))
-                {
-                    Player player = (Player)value;
-                    MasterManager.Instance.Die(player);
-                }
-            }*/
         }
         
         // ------------ Animation ------------

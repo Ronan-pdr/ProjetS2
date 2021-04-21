@@ -27,9 +27,9 @@ namespace Script.EntityPlayer
             // bas du corps (vers le haut des pieds)
             Vector3 basDuCorps = position + Vector3.up * _rayon;
 
-            if (Physics.CapsuleCast(hautDuCorps, basDuCorps, _rayon, direction, maxDistance))
+            if (Physics.CapsuleCast(hautDuCorps, basDuCorps, _rayon, direction, out RaycastHit hit, maxDistance))
             {
-                return false;
+                return hit.collider.GetComponent<Entity>();
             }
 
             return true;

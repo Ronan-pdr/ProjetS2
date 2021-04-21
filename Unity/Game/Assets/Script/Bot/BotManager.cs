@@ -36,13 +36,15 @@ namespace Script.Bot
         private List<BotClass> Bots;
         
         // cette liste va servir à donner les noms à chaque bot
-        private int nBotNamed;
+        private int[] nBotNamed;
         
         // ------------ Getter ------------
-        public string GetNameBot(Player player)
+        public string GetNameBot(BotClass bot, Player player)
         {
-            nBotNamed += 1;
-            return $"{player.NickName}Bot{nBotNamed}";
+            int i = ManList<Player>.GetIndex(PhotonNetwork.PlayerList, player);
+            
+            nBotNamed[i] += 1;
+            return $"{player.NickName}{bot.GetTypeEntity()}{nBotNamed[i]}";
         }
 
         // ------------ Constructeurs ------------
@@ -54,6 +56,7 @@ namespace Script.Bot
         void Start()
         {
             Bots = new List<BotClass>();
+            nBotNamed = new int[PhotonNetwork.PlayerList.Length];
         }
 
         // ------------ Méthodes ------------
@@ -159,13 +162,14 @@ namespace Script.Bot
 
         public void Die(BotClass bot)
         {
-            Bots.Remove(bot); // le supprimer de la liste
-
             // seul le créateur détruit son bot
             if (bot.IsMyBot())
-                return;
-            
-            PhotonNetwork.Destroy(bot.gameObject); // détruire l'objet
+            {
+                // le supprimer de la liste
+                Bots.Remove(bot);
+                // détruire l'objet
+                PhotonNetwork.Destroy(bot.gameObject);
+            }
         }
         
         // ------------ Multijoueur ------------

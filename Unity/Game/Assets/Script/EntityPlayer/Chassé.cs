@@ -12,18 +12,16 @@ namespace Script.EntityPlayer
     public class Chassé : PlayerClass
     {
         // ------------ Constructeurs ------------
-        private void Awake()
+
+        protected override void AwakePlayer()
         {
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChassé(this);
-            
-            AwakePlayer();
         }
 
-        void Start()
+        protected override void StartPlayer()
         {
             MaxHealth = 100;
-            StartPlayer();
         }
         
         // ------------ Update ------------

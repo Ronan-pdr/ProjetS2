@@ -21,19 +21,16 @@ namespace Script.EntityPlayer
         private int previousArmeIndex = -1;
     
         // ------------ Constructeurs ------------
-        private void Awake()
+        
+        protected override void AwakePlayer()
         {
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChasseur(this);
-            
-            AwakePlayer();
         }
 
-        void Start()
+        protected override void StartPlayer()
         {
             MaxHealth = 100;
-            StartPlayer();
-        
             EquipItem(0);
         }
         

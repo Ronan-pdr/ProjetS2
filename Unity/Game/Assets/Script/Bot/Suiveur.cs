@@ -28,29 +28,18 @@ namespace Script.Bot
 
         private static float rayonPerimetre = 25;
         
-        // variable relative à la capsule
-        private HumanCapsule capsule;
-        
         // destination
         private Vector3 destination;
 
 
         // ------------ Constructeurs ------------
-        private void Awake()
-        {
-            AwakeBot();
-        }
+        
+        protected override void AwakeBot()
+        {}
 
-        private void Start()
+        protected override void StartBot()
         {
-            // tout le monde le fait pour qu'il soit parenter
-            StartBot();
-            
-            master = MasterManager.Instance;
             etat = Etat.Attend;
-            
-            // récupérer les côtes des bots pour les ray
-            capsule = MasterManager.Instance.GetHumanCapsule();
         }
     
         // ------------ Update ------------
@@ -111,13 +100,14 @@ namespace Script.Bot
             {
                 // trop proche
                 etat = Etat.Fuite;
+                running = Running.Course;
                 destination = FindEscapePosition(Vu.position);
-                NearAndFar(Calcul.Distance(Tr.position, destination));
             }
             else if (SimpleMath.IsEncadré(dist, rayonPerimetre))
             {
                 // pile à la bonne distance
                 etat = Etat.Attend;
+                running = Running.Arret;
                 CalculeRotation(Vu.position);
                 MoveAmount = Vector3.zero;
                 AnimationStop();
@@ -126,9 +116,8 @@ namespace Script.Bot
             {
                 // trop loin
                 etat = Etat.Poursuite;
+                running = Running.Marche;
                 destination = Vu.position;
-                SetMoveAmount(Vector3.forward, WalkSpeed);
-                ActiverAnimation("Course");
             }
         }
 
@@ -148,10 +137,10 @@ namespace Script.Bot
         {
             timeLastFindDest = Time.time;
 
-            (Vector3 bestDest, float minDist) res = (Vector3.zero, rayonPerimetre*2.5f);
+            (Vector3 bestDest, float minDist) res = (Vector3.zero, rayonPerimetre*2.1f);
             for (int degre = 0; degre < 360; degre += 10)
             {
-                Vector3 pos = centre + rayonPerimetre * Calcul.Direction(degre);
+                Vector3 pos = centre + rayonPerimetre * 1.1f * Calcul.Direction(degre);
                 float dist = Calcul.Distance(Tr.position, pos);
 
                 if (dist < res.minDist && capsule.CanIPass(Tr.position,

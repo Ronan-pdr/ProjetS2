@@ -35,17 +35,12 @@ namespace Script.Bot
         private float distanceFuite;*/
         
         // ------------ Constructeurs ------------
-        private void Awake()
-        {
-            AwakeBot();
-        }
+        
+        protected override void AwakeBot()
+        {}
 
-        private void Start()
-        {
-            StartBot(); // tout le monde le fait pour qu'il soit parenter
-            
-            master = MasterManager.Instance;
-        }
+        protected override void StartBot()
+        {}
 
         // ------------ Upadate ------------
         protected override void UpdateBot()
@@ -72,6 +67,7 @@ namespace Script.Bot
                 {
                     ActiverAnimation("Lever PASS");
                     etat = Etat.Attend;
+                    running = Running.Arret;
                 }
             }
         }
@@ -119,11 +115,13 @@ namespace Script.Bot
                 // part en cavale
                 planFuite = path;
                 etat = Etat.Fuite;
+                running = Running.Course;
+                SetMoveAmount(Vector3.forward, PleineVitesse);
             
-                /*foreach (Vector3 p in planFuite)
+                foreach (Vector3 p in planFuite)
                 {
                     TestRayGaz.CreatePointPath(p);
-                }*/
+                }
             }
         }
 
@@ -154,7 +152,7 @@ namespace Script.Bot
             int len = planFuite.Count;
 
             // s'il a finit une étape de son plan
-            if (IsArrivé(planFuite[len - 1]))
+            if (IsArrivé(planFuite[len - 1], 0.8f))
             {
                 planFuite.RemoveAt(len - 1);
                 len -= 1;
@@ -163,6 +161,7 @@ namespace Script.Bot
                 {
                     MoveAmount = Vector3.zero; // ...il s'arrête...
                     etat = Etat.Attend;
+                    running = Running.Arret;
                     Vus.Clear();
                     AnimationStop();
                     return; // ...et ne fait rien d'autre

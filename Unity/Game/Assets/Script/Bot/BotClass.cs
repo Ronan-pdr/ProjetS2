@@ -12,6 +12,16 @@ namespace Script.Bot
 {
     public abstract class BotClass : Humanoide
     {
+        // ------------ Enum ------------
+        protected enum Running
+        {
+            Arret,
+            Marche,
+            Course
+        }
+
+        protected Running running = Running.Arret;
+        
         // ------------ Attributs ------------
         
         protected BotManager BotManager; // instancié lorsque le bot est créé dans son BotManager
@@ -28,8 +38,8 @@ namespace Script.Bot
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
 
         // Vitesse
-        protected float OwnSprintSpeed = SprintSpeed;
-        protected float OwnWalkSpeed = WalkSpeed;
+        protected float TranquilleVitesse = WalkSpeed;
+        protected float PleineVitesse = SprintSpeed;
         
         // ------------ Getters ------------
         
@@ -46,26 +56,35 @@ namespace Script.Bot
         }
 
         // ------------ Constructeurs ------------
-        protected void AwakeBot()
+        protected abstract void AwakeBot();
+        
+        protected void Awake()
         {
             AwakeHuman();
+            AwakeBot();
         }
 
-        protected void StartBot()
-        {
-            SetRbTr();
-        
-            MaxHealth = 100;
-            StartHuman(); // vie
+        protected abstract void StartBot();
 
+        private void Start()
+        {
+            MaxHealth = 100;
+            StartHuman();
+            StartBot();
+            
             // son nom (qui sera unique)
-            name = BotManager.GetNameBot(Pv.Owner);
+            name = BotManager.Instance.GetNameBot(this, Pv.Owner);
 
             // le parenter
             if (BotManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
-                Tr.parent = MasterManager.Instance.GetDossierOtherBot(); // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs
+            {
+                // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs
+                Tr.parent = MasterManager.Instance.GetDossierOtherBot();
+            }
             else
+            {
                 Tr.parent = BotManager.transform; // le parenter dans ton dossier de botManager
+            }
         }
 
         // ------------ Update ------------
@@ -82,6 +101,8 @@ namespace Script.Bot
             
             UpdateBot();
             UpdateHumanoide();
+
+            SetSpeed();
         }
 
         protected void FixedUpdate()
@@ -98,7 +119,7 @@ namespace Script.Bot
         protected void GestionRotation(Vector3 dest)
         {
             // il recalcule sa rotation tous les 0.3f
-            if (Time.time - LastCalculRotation > 0.3f)
+            if (Time.time - LastCalculRotation > 1f)
             {
                 CalculeRotation(dest);
             }
@@ -139,53 +160,56 @@ namespace Script.Bot
         {
             float absMoveAmount = SimpleMath.Abs(AmountRotation);
             if (absMoveAmount < 5)
-                return 0.4f;
+                return 0.7f;
             if (absMoveAmount < 30)
-                return 0.6f;
-            if (absMoveAmount < 60)
                 return 0.8f;
+            if (absMoveAmount < 60)
+                return 0.9f;
             if (absMoveAmount < 90)
                 return 1f;
             if (absMoveAmount < 120)
-                return 1.2f;
+                return 1.1f;
             if (absMoveAmount < 150)
-                return 1.4f;
+                return 1.2f;
             
-            return 1.6f;
+            return 1.3f;
         }
-
-        // Destination
-        protected bool IsArrivé(Vector3 dest)
+        
+        // vitesse
+        private void SetSpeed()
         {
-            float dist = Calcul.Distance(Tr.position, dest, Calcul.Coord.Y);
-
-            if (dist < 0.5f)
+            if (running == Running.Arret)
             {
-                // est arrivé
-                return true;
+                MoveAmount = Vector3.zero;
             }
-            
-            NearAndFar(dist);
-            
-            return false;
-        }
-
-        protected void NearAndFar(float dist)
-        {
-            if (dist < 1)
+            else if (AmountRotation > 80)
             {
-                // marche parce que proche
-                SetMoveAmount(Vector3.forward, OwnWalkSpeed);
+                // ralenti pour le virage
+                SetMoveAmount(Vector3.forward, 1);
                 ActiverAnimation("Avant");
             }
-            else
+            else if (running == Running.Marche)
+            {
+                // marche
+                SetMoveAmount(Vector3.forward, TranquilleVitesse);
+                ActiverAnimation("Avant");
+            }
+            else if (running == Running.Course)
             {
                 // court
-                SetMoveAmount(Vector3.forward, OwnSprintSpeed);
+                SetMoveAmount(Vector3.forward, PleineVitesse);
                 ActiverAnimation("Course");
             }
         }
-        
+
+        // Destination
+        protected bool IsArrivé(Vector3 dest) => IsArrivé(dest, 0.5f);
+
+        protected bool IsArrivé(Vector3 dest, float ecart)
+        {
+            return Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < ecart;
+        }
+
         // Vision
         protected List<PlayerClass> GetPlayerInMyVision(TypePlayer typePlayer)
         {

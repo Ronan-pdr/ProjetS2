@@ -26,18 +26,14 @@ namespace Script.Labyrinthe
         private List<Vector3> path;
         
         // ------------ Constructeurs ------------
-        private void Awake()
-        {
-            AwakeBot();
-        }
+        
+        protected override void AwakeBot()
+        {}
 
-        public void Start()
+        protected override void StartBot()
         {
             etat = Etat.Attend;
-            OwnSprintSpeed = SprintSpeed * 1.15f;
-            
-            // tout le monde le fait pour qu'il soit parenter
-            StartBot();
+            PleineVitesse = SprintSpeed * 1.15f;
         }
         
         // ------------ Update ------------
@@ -81,6 +77,8 @@ namespace Script.Labyrinthe
             if (path.Count > 0)
             {
                 etat = Etat.Guidage;
+                running = Running.Course;
+                SetMoveAmount(Vector3.forward, PleineVitesse);
             }
         }
 
