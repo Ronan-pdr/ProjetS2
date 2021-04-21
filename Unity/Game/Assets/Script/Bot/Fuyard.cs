@@ -48,14 +48,8 @@ namespace Script.Bot
         }
 
         // ------------ Upadate ------------
-        private void Update()
+        protected override void UpdateBot()
         {
-            if (!IsMyBot())
-                return;
-            
-            // quoi que soit son état, il fait ça
-            UpdateBot();
-
             if (etat == Etat.Fuite)
             {
                 Fuir();
@@ -80,11 +74,6 @@ namespace Script.Bot
                     etat = Etat.Attend;
                 }
             }
-        }
-
-        private void FixedUpdate()
-        {
-            FixedUpdateBot();
         }
 
         // ------------ Méthodes ------------

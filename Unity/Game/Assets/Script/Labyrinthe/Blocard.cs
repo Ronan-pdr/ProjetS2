@@ -30,13 +30,8 @@ namespace Script.Labyrinthe
         }
 
         // ------------ Update ------------
-        private void Update()
+        protected override void UpdatePlayer()
         {
-            if (!Pv.IsMine)
-                return;
-            
-            UpdatePlayer();
-            
             if (Input.GetKeyDown("f"))
             {
                 PoserCaillou();
@@ -47,14 +42,9 @@ namespace Script.Labyrinthe
                 RetirerCaillou();
             }
             
-            Animation();
+            AnimationTernier();
         }
 
-        private void FixedUpdate()
-        {
-            FixedUpdatePlayer();
-        }
-        
         // ------------ Méthodes ------------
 
         private void PoserCaillou()

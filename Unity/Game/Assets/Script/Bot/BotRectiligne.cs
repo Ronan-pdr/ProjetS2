@@ -40,13 +40,8 @@ namespace Script.Bot
         }
 
         // ------------ Update ------------
-        void Update()
+        protected override void UpdateBot()
         {
-            if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
-                return;
-        
-            UpdateBot(); // quoi que soit son état, il fait ça
-
             if (etat == Etat.Attend) // s'il est en train d'attendre,...
             {
                 if (PointDestination.GetNbNeighboor() > 0)
@@ -68,11 +63,6 @@ namespace Script.Bot
                     AnimationStop();
                 }
             }
-        }
-
-        private void FixedUpdate()
-        {
-            FixedUpdateBot();
         }
 
         // ------------ Méthodes ------------

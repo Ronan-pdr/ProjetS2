@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Script.DossierPoint
 {
@@ -8,7 +9,8 @@ namespace Script.DossierPoint
         public enum Type
         {
             Chasseur,
-            Chassé
+            Chassé,
+            Bot
         }
 
         private Type _type;
@@ -19,18 +21,24 @@ namespace Script.DossierPoint
         public bool IsChasseurSpawn() => name.Contains("Chasseur");
 
         public bool IsChasséSpawn() => name.Contains("Chassé");
+
+        public bool IsBotSpawn() => name.Contains("Bot");
         
 
         // ------------ Constructeur ------------
         private void Awake()
         {
-            if (name.Contains("Chasseur"))
+            if (IsChasseurSpawn())
             {
                 _type = Type.Chasseur;
             }
-            else if (name.Contains("Chassé"))
+            else if (IsChasséSpawn())
             {
-                _type = Type.Chasseur;
+                _type = Type.Chassé;
+            }
+            else if (IsBotSpawn())
+            {
+                _type = Type.Bot;
             }
             else
             {

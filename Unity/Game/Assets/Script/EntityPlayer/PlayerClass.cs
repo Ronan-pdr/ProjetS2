@@ -1,3 +1,4 @@
+using System;
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Bot;
@@ -71,8 +72,24 @@ namespace Script.EntityPlayer
         }
 
         // ------------ Update ------------
-        protected void UpdatePlayer()
+        protected abstract void UpdatePlayer();
+
+        private void Update()
         {
+            // tout les ordis doivent le faire
+            PotentielleMort();
+
+            if (!Pv.IsMine)
+                return;
+            
+            if (IsPause())
+            {
+                MoveAmount = Vector3.zero;
+                return;
+            }
+            
+            UpdatePlayer();
+            
             Look();
             Move();
             
@@ -83,8 +100,8 @@ namespace Script.EntityPlayer
 
             UpdateHumanoide();
         }
-    
-        protected void FixedUpdatePlayer()
+
+        private void FixedUpdate()
         {
             if (!Pv.IsMine)
                 return;
@@ -149,10 +166,15 @@ namespace Script.EntityPlayer
 
         protected override void Die()
         {
-            MasterManager.Instance.Die(Pv.Owner);
+            MasterManager.Instance.Die(this);
             
             anim.enabled = false;
-            PhotonNetwork.Destroy(gameObject);
+
+            // On ne détruit pas le corps des autres joueurs
+            if (Pv.IsMine)
+            {
+                PhotonNetwork.Destroy(gameObject);
+            }
         }
         
         // ------------ Photon ------------
@@ -180,7 +202,7 @@ namespace Script.EntityPlayer
                 CurrentHealth = (int)vie;
             }
         
-            // les morts -> Die (MasterManager)
+            /*// les morts -> Die (MasterManager)
             if (!Pv.IsMine) // c'est le mourant qui envoie le hash
             {
                 if (changedProps.TryGetValue("MortPlayer", out object value))
@@ -188,11 +210,11 @@ namespace Script.EntityPlayer
                     Player player = (Player)value;
                     MasterManager.Instance.Die(player);
                 }
-            }
+            }*/
         }
         
         // ------------ Animation ------------
-        protected void Animation()
+        protected void AnimationTernier()
         {
             (int xMov, int zMov) = (0, 0);
             if (Input.GetKey(touches.GetKey(TypeTouche.Avancer))) // avancer

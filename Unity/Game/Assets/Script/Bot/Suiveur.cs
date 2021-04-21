@@ -54,14 +54,8 @@ namespace Script.Bot
         }
     
         // ------------ Update ------------
-        private void Update()
+        protected override void UpdateBot()
         {
-            if (!IsMyBot())
-                return;
-            
-            // quoi que soit son état, il fait ça
-            UpdateBot();
-
             if (etat == Etat.Attend)
             {
                 if (Time.time - timeLastRegard > 0.3f)
@@ -91,27 +85,6 @@ namespace Script.Bot
 
             if (SimpleMath.Abs(AmountRotation) > 0)
                 Tourner();
-        }
-        
-        private void FixedUpdate()
-        {
-            if (!IsMyBot())
-                return;
-            
-            if (MoveAmount == Vector3.zero)
-            {
-                AnimationStop();
-            }
-            else if (etat == Etat.Fuite)
-            {
-                ActiverAnimation("Course");
-            }
-            else if (etat == Etat.Poursuite)
-            {
-                ActiverAnimation("Avant");
-            }
-            
-            FixedUpdateBot();
         }
 
         // ------------ Méthodes ------------
@@ -147,6 +120,7 @@ namespace Script.Bot
                 etat = Etat.Attend;
                 CalculeRotation(Vu.position);
                 MoveAmount = Vector3.zero;
+                AnimationStop();
             }
             else
             {
@@ -154,6 +128,7 @@ namespace Script.Bot
                 etat = Etat.Poursuite;
                 destination = Vu.position;
                 SetMoveAmount(Vector3.forward, WalkSpeed);
+                ActiverAnimation("Course");
             }
         }
 

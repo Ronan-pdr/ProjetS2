@@ -27,25 +27,10 @@ namespace Script.EntityPlayer
         }
         
         // ------------ Update ------------
-        
-        void Update()
-        {
-            if (!Pv.IsMine)
-                return;
-            
-            if (IsPause())
-            {
-                MoveAmount = Vector3.zero;
-                return;
-            }
 
-            UpdatePlayer();
-            Animation();
-        }
-
-        private void FixedUpdate()
+        protected override void UpdatePlayer()
         {
-            FixedUpdatePlayer();
+            AnimationTernier();
         }
     }
 }

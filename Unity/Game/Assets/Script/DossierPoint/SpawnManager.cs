@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Photon.Pun;
+using Script.Bot;
 using Script.EntityPlayer;
 using Script.Manager;
 using Script.Tools;
@@ -17,12 +18,15 @@ namespace Script.DossierPoint
 
         private SpawnPoint[] spawnChasseur;
         private SpawnPoint[] spawnChassé;
+        private SpawnPoint[] spawnBot;
         
         // ------------ Getters ------------
         public int GetNbSpawnChasseur() => spawnChasseur.Length;
         public int GetNbSpawnChassé() => spawnChassé.Length;
+        public int GetNbSpawnBot() => spawnBot.Length;
         public Transform GetTrChasseur(int index) => spawnChasseur[index].transform;
         public Transform GetTrChassé(int index) => spawnChassé[index].transform;
+        public Transform GetTrBot(int index) => spawnBot[index].transform;
         
         // ------------ Constructeur ------------
         private void Awake()
@@ -38,6 +42,7 @@ namespace Script.DossierPoint
             SpawnPoint[] points = GetComponentsInChildren<SpawnPoint>();
             List<SpawnPoint> spawnBeginChasseur = new List<SpawnPoint>();
             List<SpawnPoint> spawnBeginChassé = new List<SpawnPoint>();
+            List<SpawnPoint> spawnBeginBot = new List<SpawnPoint>();
 
             int i;
             int len = points.Length;
@@ -51,6 +56,10 @@ namespace Script.DossierPoint
                 {
                     spawnBeginChassé.Add(points[i]);
                 }
+                else if (points[i].IsBotSpawn())
+                {
+                    spawnBeginBot.Add(points[i]);
+                }
                 else
                 {
                     throw new Exception($"Le spawn {points[i].Typo} n'est pas encore répétorié");
@@ -59,9 +68,10 @@ namespace Script.DossierPoint
 
             spawnChasseur = ManList<SpawnPoint>.Copy(spawnBeginChasseur);
             spawnChassé = ManList<SpawnPoint>.Copy(spawnBeginChassé);
+            spawnBot = ManList<SpawnPoint>.Copy(spawnBeginBot);
         }
 
-        public int[] GetBeginPosition(TypePlayer typePlayer)
+        public int[] GetSpawnPlayer(TypePlayer typePlayer)
         {
             switch (typePlayer)
             {
@@ -73,10 +83,11 @@ namespace Script.DossierPoint
                     throw new Exception($"Pas de spawn pour {typePlayer}");
             }
             
-            int[] Aux(int length)
-            {
-                return ManList.RandomIndex(length);
-            }
+            // c'est ce qui créé le random des spawns
+            int[] Aux(int l) => ManList.RandomIndex(l);
         }
+
+        // pour l'instant c'est pas random
+        public int[] GetSpawnBot() => ManList.CreateArrRange(spawnBot.Length);
     }
 }

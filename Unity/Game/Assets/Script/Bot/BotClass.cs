@@ -59,7 +59,7 @@ namespace Script.Bot
             StartHuman(); // vie
 
             // son nom (qui sera unique)
-            name = MasterManager.Instance.GetNameBot(Pv.Owner);
+            name = BotManager.GetNameBot(Pv.Owner);
 
             // le parenter
             if (BotManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
@@ -68,21 +68,31 @@ namespace Script.Bot
                 Tr.parent = BotManager.transform; // le parenter dans ton dossier de botManager
         }
 
-        // ------------ Méthodes ------------
+        // ------------ Update ------------
         
         // Upadte
-        protected void UpdateBot()
+        protected abstract void UpdateBot();
+
+        private void Update()
         {
+            PotentielleMort();
+            
+            if (!IsMyBot())
+                return;
+            
+            UpdateBot();
             UpdateHumanoide();
         }
 
-        protected void FixedUpdateBot()
+        protected void FixedUpdate()
         {
             if (IsMyBot())
             {
                 MoveEntity();
             }
         }
+        
+        // ------------ Méthodes ------------
 
         // Rotation
         protected void GestionRotation(Vector3 dest)
@@ -244,9 +254,11 @@ namespace Script.Bot
         protected override void Die()
         {
             enabled = false;
-            BotManager.Die(gameObject);
+            BotManager.Die(this);
         }
 
+        // ------------ Mulitijoueur ------------
+        
         // réception des hash
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {

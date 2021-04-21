@@ -57,11 +57,10 @@ namespace Script.EntityPlayer
         
         protected void UpdateHumanoide()
         {
-            PotentielleMort();
         }
 
         // ------------ Méthodes ------------
-        private void PotentielleMort()
+        protected void PotentielleMort()
         {
             // Mourir de chute
             if (transform.position.y < -10f)

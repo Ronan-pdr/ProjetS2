@@ -37,23 +37,26 @@ namespace Script.EntityPlayer
         }
         
         // ------------ Méthodes ------------
-        private void CreateController(TypePlayer type, Transform tr) // Instanstiate our player
+        private void CreateController(TypePlayer type, int indexSpawn) // Instanstiate our player
         {
-            string t = "";
+            string t;
+            Transform tr;
             switch (type)
             {
                 case TypePlayer.Chasseur:
                     t = "Chasseur";
+                    tr = SpawnManager.Instance.GetTrChasseur(indexSpawn);
                     break;
                 case TypePlayer.Chassé:
                     t = "Chassé";
+                    tr = SpawnManager.Instance.GetTrChassé(indexSpawn);
                     break;
                 case TypePlayer.Blocard:
                     t = "Blocard";
+                    tr = SpawnManager.Instance.GetTrChassé(indexSpawn);
                     break;
                 default:
-                    Debug.Log($"Un script a tenté de créer un joueur de type {type}");
-                    break;
+                    throw new Exception("Un script a tenté de créer un joueur de type {type}");
             }
 
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", t),
@@ -80,7 +83,7 @@ namespace Script.EntityPlayer
             return (indexSpot, typePlayer);
         }
 
-        // ------------ Photon ------------
+        // ------------ Multijoueur ------------
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
@@ -94,26 +97,9 @@ namespace Script.EntityPlayer
                 if (value == null) // bien vérifier que le changement a été fait
                     return;
 
-                (int indexSpot, TypePlayer typePlayer) = DecodeFormatInfoJoueur((string) value);
+                (int indexSpawn, TypePlayer typePlayer) = DecodeFormatInfoJoueur((string) value);
 
-                // récupérer le transform du point en fonction du type du joueur (les chasseurs et les chassés n'ont pas les mêmes spawns)
-                Transform trPoint;
-                switch (typePlayer)
-                {
-                    case TypePlayer.Chasseur:
-                        trPoint = SpawnManager.Instance.GetTrChasseur(indexSpot);
-                        break;
-                    case TypePlayer.Chassé:
-                        trPoint = SpawnManager.Instance.GetTrChassé(indexSpot);
-                        break;
-                    case TypePlayer.Blocard:
-                        trPoint = SpawnManager.Instance.GetTrChassé(indexSpot);
-                        break;
-                    default:
-                        throw new Exception($"Le type {typePlayer} n'est pas encore géré");
-                }
-                    
-                CreateController(typePlayer, trPoint);
+                CreateController(typePlayer, indexSpawn);
             }
         }
     }

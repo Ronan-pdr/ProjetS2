@@ -38,26 +38,9 @@ namespace Script.EntityPlayer
         }
         
         // ------------ Upadte ------------
-        void Update()
+        protected override void UpdatePlayer()
         {
-            if (!Pv.IsMine)
-                return;
-
-            if (IsPause())
-            {
-                MoveAmount = Vector3.zero;
-                return;
-            }
-                
-
             ManipulerArme();
-            
-            UpdatePlayer();
-        }
-
-        private void FixedUpdate()
-        {
-            FixedUpdatePlayer();
         }
     
         // ------------ Méthodes ------------

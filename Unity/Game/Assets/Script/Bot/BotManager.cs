@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+using ExitGames.Client.Photon;
 using Photon.Realtime;
 using Script.DossierPoint;
 using Script.EntityPlayer;
@@ -11,6 +12,7 @@ using Script.Tools;
 
 namespace Script.Bot
 {
+    // ------------ Type ------------
     public enum TypeBot
     {
         Rectiligne,
@@ -19,18 +21,31 @@ namespace Script.Bot
         Suiveur
     }
     
-    public class BotManager : MonoBehaviour
+    public class BotManager : MonoBehaviourPunCallbacks
     {
         // Chaque joueur va contrôler un certain nombre de bots,
         // les leurs seront stockés dans le dossier 'BotManager' sur Unity
         // et ceux controlés pas les autres dans 'DossierOtherBot'
+        
+        // ------------ Attributs ------------
         
         // c'est possible puisqu'il y en a qu'un par joueur
         public static BotManager Instance; 
     
         // stocker tous les bots
         private List<BotClass> Bots;
+        
+        // cette liste va servir à donner les noms à chaque bot
+        private int nBotNamed;
+        
+        // ------------ Getter ------------
+        public string GetNameBot(Player player)
+        {
+            nBotNamed += 1;
+            return $"{player.NickName}Bot{nBotNamed}";
+        }
 
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             Instance = this;
@@ -39,66 +54,53 @@ namespace Script.Bot
         void Start()
         {
             Bots = new List<BotClass>();
-
-            // récupérer les type des bots ainsi que leur nombre
-            TypeBot[] types = MasterManager.Instance.GetManagerGame().GetTypeBot();
-            int nBot = types.Length;
-            
-            // trouver l'index du player du bot
-            int indexPlayer = GetIndexPlayer(PhotonNetwork.LocalPlayer);
-
-            for (int i = 0; i < nBot; i++) // Instancier, ranger (dans la liste) et positionner sur la map tous les bots
-            {
-                CreateBot(types[i], i + indexPlayer * nBot);
-            }
         }
 
-        private void CreateBot(TypeBot t, int indexSpot)
+        // ------------ Méthodes ------------
+        private void CreateBot(TypeBot t, int indexSpawn)
         {
-            string type = GetStringBot(t);
-            
+            (Transform tr, string type) = GetTrAndString(t, indexSpawn);
+
             BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
-                Vector3.zero, Quaternion.identity).GetComponent<BotClass>();
+                tr.position, tr.rotation).GetComponent<BotClass>();
             
-            CrossPoint crossPoint = CrossManager.Instance.GetPoint(indexSpot); // récupérer son cross point
-            bot.transform.position = crossPoint.transform.position; // le placer sur la map
+            if (bot is BotRectiligne)
+            {
+                ((BotRectiligne)bot).SetCrossPoint(CrossManager.Instance.GetPoint(indexSpawn));
+            }
+
             bot.SetOwnBotManager(this); // lui indiquer quel est son père (dans la hiérarchie de Unity)
           
             // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)
             Bots.Add(bot);
-
-            if (bot.GetComponent<BotRectiligne>())
-            {
-                ((BotRectiligne)bot).SetCrossPoint(crossPoint);
-            }
         }
 
-        private string GetStringBot(TypeBot type)
+        private (Transform, string) GetTrAndString(TypeBot t, int indexSpawn)
         {
-            switch (type)
+            Transform tr;
+            if (t == TypeBot.Rectiligne)
             {
-                case TypeBot.Rectiligne:
-                    return "BotRectiligne";
-                case TypeBot.Fuyard:
-                    return "Fuyard";
-                case TypeBot.Guide:
-                    return "Guide";
-                case TypeBot.Suiveur:
-                    return "Suiveur";
-                default:
-                    throw new Exception($"Le cas du {type} n'a pas encore été géré");
-            }
-        }
+                string type = "BotRectiligne";
+                tr = CrossManager.Instance.GetPoint(indexSpawn).transform;
+                
+                // pas de rotation initiale avec les crossPoints
+                tr.transform.rotation = Quaternion.identity;
 
-        private int GetIndexPlayer(Player player)
-        {
-            int i;
-            Player[] players = PhotonNetwork.PlayerList;
+                return (tr, type);
+            }
             
-            for (i = players.Length - 1; i >= 0 && !players[i].Equals(player); i--)
-            {}
-
-            return i;
+            tr = SpawnManager.Instance.GetTrBot(indexSpawn);
+            switch (t)
+            {
+                case TypeBot.Fuyard:
+                    return (tr, "Fuyard");
+                case TypeBot.Guide:
+                    return (tr, "Guide");
+                case TypeBot.Suiveur:
+                    return (tr, "Suiveur");
+                default:
+                    throw new Exception($"Le cas du {t} n'a pas encore été géré");
+            }
         }
 
         // si la valeur de retour est le "Vector.zero", alors il n'y a pas de bon spot
@@ -155,11 +157,75 @@ namespace Script.Bot
             return res;
         }
 
-        public void Die(GameObject bot)
+        public void Die(BotClass bot)
         {
-            Bots.Remove(bot.GetComponent<BotClass>()); // le supprimer de la liste
-        
+            Bots.Remove(bot); // le supprimer de la liste
+
+            // seul le créateur détruit son bot
+            if (bot.IsMyBot())
+                return;
+            
             PhotonNetwork.Destroy(bot.gameObject); // détruire l'objet
+        }
+        
+        // ------------ Multijoueur ------------
+        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        {
+            // Si c'est pas toi la target, tu ne créés pas les bots
+            if (!PhotonNetwork.LocalPlayer.Equals(targetPlayer))
+                return;
+            
+            // bien vérifier que le changement a été fait
+            if (!changedProps.TryGetValue("InfoCréationBots", out object value))
+                return;
+
+            foreach ((int indexSpot, TypeBot typeBot) in DecodeFormatInfoBot((string) value))
+            {
+                CreateBot(typeBot, indexSpot);
+            }
+        }
+        
+        // Exemple -> "1 2;3 2;15 0"
+        public static string EncodeFormatInfoBot((int indexSpot, TypeBot type)[] arr)
+        {
+            int l = arr.Length;
+            if (l == 0)
+                return "";
+            
+            string res = Aux(arr[0].indexSpot, arr[0].type);
+            
+            for (int i = 1; i < l; i++)
+            {
+                (int indexSpot, TypeBot type) = arr[i];
+                res += ";" + Aux(indexSpot, type);
+            }
+
+            return res;
+
+            string Aux(int indexSpot, TypeBot type) => $"{indexSpot} {(int)type}";
+        }
+
+        private static (int indexSpot, TypeBot typeBot)[] DecodeFormatInfoBot(string s)
+        {
+            string[] listInfos = s.Split(';');
+            int l = listInfos.Length;
+            
+            (int, TypeBot)[] res = new (int, TypeBot)[l];
+
+            for (int i = 0; i < l; i++)
+            {
+                string[] infos = listInfos[i].Split(' ');
+                
+                // type du bot
+                TypeBot typeBot = (TypeBot) int.Parse(infos[1]);
+                    
+                // index du point que l'on retrouve dans le SpawnManager
+                int indexSpot = int.Parse(infos[0]);
+
+                res[i] = (indexSpot, typeBot);
+            }
+            
+            return res;
         }
     }
 }

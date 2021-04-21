@@ -98,11 +98,23 @@ namespace Script.Manager
         {
             // récupérer les taux en fonction du type de la partie
             NtypeBot n = GetNBot();
+            
+            CasErreur();
 
             // attribution des types (pour l'instant c'est pas random)
             TypeBot[] listTrié = GetListTrié(n.GetList(), n.Fuyard + n.Rectiligne + n.Guide + n.Suiveur);
 
             return listTrié;
+
+            void CasErreur()
+            {
+                if (n.Rectiligne > CrossManager.Instance.GetNumberPoint())
+                    throw new Exception($"Y'a seulement {CrossManager.Instance.GetNumberPoint()}" +
+                                        $"crossPint pour {n.Suiveur} botRectiligne");
+
+                if (n.Fuyard + n.Guide + n.Suiveur > SpawnManager.Instance.GetNbSpawnBot())
+                    throw new Exception("Pas assez de spawn bot");
+            }
         }
 
         // Regarde les exemples si tu comprends pas

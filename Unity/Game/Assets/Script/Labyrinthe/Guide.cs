@@ -41,14 +41,8 @@ namespace Script.Labyrinthe
         }
         
         // ------------ Update ------------
-        private void Update()
+        protected override void UpdateBot()
         {
-            if (!IsMyBot())
-                return;
-            
-            // quoi que soit son état, il fait ça
-            UpdateBot();
-            
             switch (etat)
             {
                 case Etat.Attend:
@@ -66,11 +60,6 @@ namespace Script.Labyrinthe
                 default:
                     throw new Exception($"Le cas de {etat} n'est pas encore géré");
             }
-        }
-        
-        private void FixedUpdate()
-        {
-            FixedUpdateBot();
         }
         
         // ------------ Méthodes ------------
