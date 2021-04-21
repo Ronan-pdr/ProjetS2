@@ -17,14 +17,15 @@ namespace Script.EntityPlayer
         }
         
         // méthodes
+
         public bool CanIPass(Vector3 position, Vector3 direction, float maxDistance)
         {
             // haut du corps (vers les yeux)
-            Vector3 hautDuCorps = position + Vector3.up * (_hauteur - _rayon) / 2;
+            Vector3 hautDuCorps = position + Vector3.up * (_hauteur - _rayon);
             
             // bas du corps (vers le haut des pieds)
-            Vector3 basDuCorps = position + Vector3.up * (_rayon - _hauteur) / 2;
-            
+            Vector3 basDuCorps = position + Vector3.up * _rayon;
+
             if (Physics.CapsuleCast(hautDuCorps, basDuCorps, _rayon, direction, maxDistance))
             {
                 return false;

@@ -83,7 +83,7 @@ namespace Script.EntityPlayer
             return dict[typeTouche].StrSauvegarde;
         }
 
-        public List<TypeTouche> GetSameTouches(TypeTouche typeTouche, KeyCode keyCode)
+        public List<TypeTouche> GetSameTouches(KeyCode keyCode)
         {
             List<TypeTouche> res = new List<TypeTouche>();
             

@@ -42,14 +42,12 @@ namespace Script.Bot
 
         private void Start()
         {
-            rotationSpeed = 600;
-            
             StartBot(); // tout le monde le fait pour qu'il soit parenter
             
             master = MasterManager.Instance;
         }
 
-        // ------------ Méthodes ------------
+        // ------------ Upadate ------------
         private void Update()
         {
             if (!IsMyBot())
@@ -70,6 +68,18 @@ namespace Script.Bot
                     NewVu((Chasseur)chasseur);
                 }
             }
+            else if (etat == Etat.FuiteSansPlan)
+            {
+                // attend son plan, ne fait strictement rien
+            }
+            else if (etat == Etat.Poule)
+            {
+                if (GetPlayerInMyVision(TypePlayer.Chasseur).Count == 0)
+                {
+                    ActiverAnimation("Lever PASS");
+                    etat = Etat.Attend;
+                }
+            }
         }
 
         private void FixedUpdate()
@@ -77,6 +87,7 @@ namespace Script.Bot
             FixedUpdateBot();
         }
 
+        // ------------ Méthodes ------------
         private void NewVu(Chasseur vu) // en gros, changement de direction
         {
             int i;
@@ -149,34 +160,17 @@ namespace Script.Bot
             etat = Etat.Fuite;
         }*/
 
-        protected override void FiniDeTourner()
-        {} // lorsqu'il a fini de tourner, il ne fait rien de plus
-
         private void Fuir()
         {
             int len = planFuite.Count;
 
-            float dist = Calcul.Distance(Tr.position, planFuite[len - 1], Calcul.Coord.Y);
-
-            if (dist < 2)
-            {
-                // marche parce que proche
-                SetMoveAmount(Vector3.forward, WalkSpeed);
-                ActiverAnimation("Avant");
-            }
-            else
-            {
-                // court
-                SetMoveAmount(Vector3.forward, SprintSpeed);
-                ActiverAnimation("Course");
-            }
-
             // s'il a finit une étape de son plan
-            if (dist < 0.5f)
+            if (IsArrivé(planFuite[len - 1]))
             {
                 planFuite.RemoveAt(len - 1);
+                len -= 1;
                 
-                if (len == 1) // il finit sa cavale,...
+                if (len == 0) // il finit sa cavale,...
                 {
                     MoveAmount = Vector3.zero; // ...il s'arrête...
                     etat = Etat.Attend;
@@ -185,20 +179,13 @@ namespace Script.Bot
                     return; // ...et ne fait rien d'autre
                 }
                 
-                CalculeRotation(planFuite[len - 2]);
-            }
-            
-            // il recalcule sa rotation tous les 0.5f
-            if (Time.time - LastCalculRotation > 0.5f)
-            {
                 CalculeRotation(planFuite[len - 1]);
             }
             
-            if (SimpleMath.Abs(AmountRotation) > 0)
-                Tourner();
+            GestionRotation(planFuite[len - 1]);
         }
         
-        // Event
+        // ------------ Event ------------
         private void OnTriggerEnter(Collider other)
         {
             OnCollisionAux(other);

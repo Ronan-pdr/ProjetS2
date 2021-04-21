@@ -143,13 +143,13 @@ namespace Script.TeteChercheuse
             // Impossible que la file soit empty ici
             Node node = file.Defiler();
             
-            for (int i = 0; i < 200 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
+            for (int i = 0; i < 100 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
             {
                 if (i > 0)
                     node = file.Defiler();
                 
                 // temporaire
-                TestRayGaz.CreateMarqueur(node.Position);
+                //TestRayGaz.CreateMarqueur(node.Position);
 
                 // devant
                 NewPosition(node, Vector3.forward, bond);

@@ -26,7 +26,7 @@ namespace Script.Bot
         private float timeLastRegard;
         private float timeLastFindDest;
 
-        private static float rayonPerimetre = 10;
+        private static float rayonPerimetre = 25;
         
         // variable relative à la capsule
         private HumanCapsule capsule;
@@ -43,8 +43,6 @@ namespace Script.Bot
 
         private void Start()
         {
-            rotationSpeed = 600;
-            
             // tout le monde le fait pour qu'il soit parenter
             StartBot();
             
@@ -55,11 +53,14 @@ namespace Script.Bot
             capsule = MasterManager.Instance.GetHumanCapsule();
         }
     
-        // ------------ Méthodes ------------
+        // ------------ Update ------------
         private void Update()
         {
             if (!IsMyBot())
                 return;
+            
+            // quoi que soit son état, il fait ça
+            UpdateBot();
 
             if (etat == Etat.Attend)
             {
@@ -81,8 +82,8 @@ namespace Script.Bot
                 
                 MustEscapeFollowOrWait();
                 
-                // il recalcule sa rotation tous les 0.5f
-                if (Time.time - LastCalculRotation > 0.1f)
+                // il recalcule sa rotation tous les 0.2f secondes
+                if (Time.time - LastCalculRotation > 0.2f)
                 {
                     CalculeRotation(destination);
                 }
@@ -94,6 +95,9 @@ namespace Script.Bot
         
         private void FixedUpdate()
         {
+            if (!IsMyBot())
+                return;
+            
             if (MoveAmount == Vector3.zero)
             {
                 AnimationStop();
@@ -102,7 +106,7 @@ namespace Script.Bot
             {
                 ActiverAnimation("Course");
             }
-            else
+            else if (etat == Etat.Poursuite)
             {
                 ActiverAnimation("Avant");
             }
@@ -110,6 +114,7 @@ namespace Script.Bot
             FixedUpdateBot();
         }
 
+        // ------------ Méthodes ------------
         private void SearchChasseurWithVision()
         {
             List<PlayerClass> vus = GetPlayerInMyVision(TypePlayer.Chasseur);
@@ -131,18 +136,21 @@ namespace Script.Bot
             
             if (dist < rayonPerimetre)
             {
+                // trop proche
                 etat = Etat.Fuite;
                 destination = FindEscapePosition(Vu.position);
-                SetMoveAmount(Vector3.forward, SprintSpeed);
+                NearAndFar(Calcul.Distance(Tr.position, destination));
             }
             else if (SimpleMath.IsEncadré(dist, rayonPerimetre))
             {
+                // pile à la bonne distance
                 etat = Etat.Attend;
                 CalculeRotation(Vu.position);
                 MoveAmount = Vector3.zero;
             }
             else
             {
+                // trop loin
                 etat = Etat.Poursuite;
                 destination = Vu.position;
                 SetMoveAmount(Vector3.forward, WalkSpeed);
@@ -159,6 +167,8 @@ namespace Script.Bot
             
         }
 
+        // Prend la position la plus proche du bot parmi toutes
+        // celles au périmètre (le cercle) du "Vu"
         private Vector3 FindEscapePosition(Vector3 centre)
         {
             timeLastFindDest = Time.time;
@@ -179,8 +189,5 @@ namespace Script.Bot
 
             return res.bestDest;
         }
-
-        protected override void FiniDeTourner()
-        {}
     }
 }

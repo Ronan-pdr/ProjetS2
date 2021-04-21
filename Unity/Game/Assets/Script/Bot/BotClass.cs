@@ -17,7 +17,7 @@ namespace Script.Bot
         protected BotManager BotManager; // instancié lorsque le bot est créé dans son BotManager
         
         //Rotation
-        protected float rotationSpeed;
+        protected float RotationSpeed = 400;
         protected float AmountRotation;
         
         // variables relatives à la caméra artificiel des bots
@@ -27,6 +27,9 @@ namespace Script.Bot
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
 
+        // Vitesse
+        protected float OwnSprintSpeed = SprintSpeed;
+        protected float OwnWalkSpeed = WalkSpeed;
         
         // ------------ Getters ------------
         
@@ -66,6 +69,8 @@ namespace Script.Bot
         }
 
         // ------------ Méthodes ------------
+        
+        // Upadte
         protected void UpdateBot()
         {
             UpdateHumanoide();
@@ -78,11 +83,20 @@ namespace Script.Bot
                 MoveEntity();
             }
         }
+
+        // Rotation
+        protected void GestionRotation(Vector3 dest)
+        {
+            // il recalcule sa rotation tous les 0.3f
+            if (Time.time - LastCalculRotation > 0.3f)
+            {
+                CalculeRotation(dest);
+            }
+
+            if (SimpleMath.Abs(AmountRotation) > 0)
+                Tourner();
+        }
         
-        // Déplacement
-
-        protected abstract void FiniDeTourner();
-
         protected void CalculeRotation(Vector3 dest)
         {
             AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, dest, Calcul.Coord.Y);
@@ -97,13 +111,12 @@ namespace Script.Bot
             else
                 sensRotation = -1;
 
-            float yRot = sensRotation * GetAmountYRot() * rotationSpeed * Time.deltaTime;
+            float yRot = sensRotation * GetAmountYRot() * RotationSpeed * Time.deltaTime;
 
             if (SimpleMath.Abs(AmountRotation) < SimpleMath.Abs(yRot)) // Le cas où on a finis de tourner
             {
                 Tr.Rotate(new Vector3(0, AmountRotation, 0));
                 AmountRotation = 0;
-                FiniDeTourner();
             }
             else
             {
@@ -131,11 +144,39 @@ namespace Script.Bot
             return 1.6f;
         }
 
+        // Destination
         protected bool IsArrivé(Vector3 dest)
         {
-            return Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.5f;
+            float dist = Calcul.Distance(Tr.position, dest, Calcul.Coord.Y);
+
+            if (dist < 0.5f)
+            {
+                // est arrivé
+                return true;
+            }
+            
+            NearAndFar(dist);
+            
+            return false;
+        }
+
+        protected void NearAndFar(float dist)
+        {
+            if (dist < 1)
+            {
+                // marche parce que proche
+                SetMoveAmount(Vector3.forward, OwnWalkSpeed);
+                ActiverAnimation("Avant");
+            }
+            else
+            {
+                // court
+                SetMoveAmount(Vector3.forward, OwnSprintSpeed);
+                ActiverAnimation("Course");
+            }
         }
         
+        // Vision
         protected List<PlayerClass> GetPlayerInMyVision(TypePlayer typePlayer)
         {
             Func<int, PlayerClass> getPlayer;
