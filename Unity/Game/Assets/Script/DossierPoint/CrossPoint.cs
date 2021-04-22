@@ -17,21 +17,23 @@ namespace Script.DossierPoint
 
         private int nAttenduBodyChercher;
         
-        // Getter
+        // ------------ Getters ------------
         public CrossPoint GetNeighboor(int index) => Neighboors[index];
         public int GetNbNeighboor() => Neighboors.Count;
         
-        // Setter
+        // ------------ Setter ------------
         public void AddNeighboor(CrossPoint value)
         {
             Neighboors.Add(value);
         }
         
-        // constructeur
+        // ------------ Constructeur ------------
         private void Awake()
         {
             Neighboors = new List<CrossPoint>();
         }
+        
+        // ------------ Méthodes ------------
 
         public void EndResearchBody(CrossPoint neighboor) // est appelé dans la class 'BodyChercheur', dans la fonction 'Update'
         {
@@ -47,7 +49,7 @@ namespace Script.DossierPoint
                 Neighboors.Add(neighboor);
             }
 
-            if (nAttenduBodyChercher == 0) // tous reçu
+            if (nAttenduBodyChercher == 0) // tout reçu
             {
                 CrossManager.Instance.EndOfOneResearch(Neighboors);
             }
@@ -65,9 +67,6 @@ namespace Script.DossierPoint
             for (int i = 0; i < len; i++)
             {
                 potentialNeighboor = CrossManager.Instance.GetPoint(i);
-                if (Neighboors.Contains(potentialNeighboor)) // si je l'ai déjà placé dans ma liste, il est inutile de le tester
-                    continue;
-                
                 distanceThisWithDest = Calcul.Distance(ownCoord, potentialNeighboor.transform.position);
 
                 if (0.2f < distanceThisWithDest && distanceThisWithDest < 30) // on ne veut pas lancer un body chercheur la où on se situe et on ne veux pas des voisins trop loins

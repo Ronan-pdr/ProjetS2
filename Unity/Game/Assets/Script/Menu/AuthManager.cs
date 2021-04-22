@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
+using Script.Menu;
 using TMPro;
 
 public class AuthManager : MonoBehaviour

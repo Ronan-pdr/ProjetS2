@@ -2,12 +2,14 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using Script.Menu;
 
 namespace Script.InterfaceInGame
 {
     public class PauseMenu : MonoBehaviour
     {
         // ------------ Attributs ------------
+        
         public static PauseMenu Instance;
         
         // Etat
@@ -44,10 +46,12 @@ namespace Script.InterfaceInGame
             disconnecting = true;
             PhotonNetwork.Disconnect();
             Destroy(RoomManager.Instance.gameObject);
+            
             while(PhotonNetwork.IsConnected)
             {
                 yield return null;
             }
+            
             SceneManager.LoadScene(0);
         }
 

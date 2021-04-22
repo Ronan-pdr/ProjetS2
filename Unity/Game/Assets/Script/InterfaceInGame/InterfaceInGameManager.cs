@@ -32,9 +32,8 @@ namespace Script.InterfaceInGame
         public void Set()
         {
             MasterManager masterManager = MasterManager.Instance;
-            int hauteur = Screen.height;
+            //int hauteur = Screen.height;
             //int largeur = Screen.width;
-            int taille = 85;
             
             ownPlayerClass = masterManager.GetOwnPlayer();
             tesInfos.SetUp(ownPlayerClass, 80, -25);

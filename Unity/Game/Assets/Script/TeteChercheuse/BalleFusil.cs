@@ -11,11 +11,12 @@ namespace Script.TeteChercheuse
 {
     public class BalleFusil : TeteChercheuse
     {
-        // attributs
+        // ------------ Attributs ------------
+        
         private ArmeInfo armeInfo;
         private PhotonView Pv;
     
-        // constructeurs
+        // ------------ Constructeurs ------------
         private void Start()
         {
             SetRbTr();
@@ -27,6 +28,7 @@ namespace Script.TeteChercheuse
             
             MoveAmount = new Vector3(0, 0, 50);
         }
+        
         
         public static void Tirer(Vector3 coord, GameObject ownObj, Vector3 rotation, ArmeInfo armeInf)
         {
@@ -43,11 +45,21 @@ namespace Script.TeteChercheuse
             transform.Rotate(rotation);
         }
     
-        // méthodes
+        // ------------ Update ------------
         public void Update()
         {
-            if (!Pv.IsMine) // Seul le créateur de la balle la contrôle
+            // Seul le créateur de la balle la contrôle
+            if (!Pv.IsMine)
                 return;
+            
+            // Si le tireur n'existe plus, la balle se détruit
+            if (!Lanceur)
+            {
+                PhotonNetwork.Destroy(gameObject);
+                return;
+            }
+                
+            
     
             // si max distance -> il s'arrête
             if (Calcul.Distance(Lanceur.transform.position, Tr.position) > armeInfo.GetPortéeAttaque())
@@ -65,7 +77,7 @@ namespace Script.TeteChercheuse
             MoveEntity();
         }
         
-        // collision
+        // ------------ Event ------------
         private void OnTriggerEnter(Collider other)
         {
             OnCollisionAux(other);
@@ -88,7 +100,7 @@ namespace Script.TeteChercheuse
 
         private void OnCollisionAux(Collider other)
         {
-            if (!Pv)
+            if (!Lanceur)
                 return;
             
             // Seul le créateur de la balle gère les collisions
@@ -112,7 +124,7 @@ namespace Script.TeteChercheuse
     
                     if (cibleHumaine is BotClass)
                     {
-                        Lanceur.GetComponent<Chasseur>().TakeDamage(1); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
+                        Lanceur.GetComponent<Chasseur>().TakeDamage(20); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
                     }
                 }
             }

@@ -9,10 +9,11 @@ namespace Script.TeteChercheuse
 {
     public class BodyRectilgne : BodyChercheur
     {
-        // attributs
+        // ------------ Attributs ------------
+        
         private float Vitesse = 4f;
         
-        // constructeurs
+        // ------------ Constructeurs ------------
         public static void InstancierStatic(GameObject lanceur, GameObject destination)
         {
             BodyRectilgne original = MasterManager.Instance.GetOriginalBodyRectilgne(); // récupérer la préfab
@@ -39,7 +40,7 @@ namespace Script.TeteChercheuse
             Tr.position += Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime;
         }
         
-        // méthodes
+        // ------------ Update ------------
         private void Update()
         {
             MoveAmount = new Vector3(0, 0, Vitesse);
@@ -74,7 +75,7 @@ namespace Script.TeteChercheuse
             MoveEntity();
         }
         
-        // Event
+        // ------------ Event ------------
         private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.GetComponent<Entity>())
@@ -114,6 +115,7 @@ namespace Script.TeteChercheuse
             }
         }
 
+        // ------------ Méthodes ------------
         private void FinDeCourse(CrossPoint reponse)
         {
             Destroy(gameObject);

@@ -24,56 +24,50 @@ namespace Script.Labyrinthe
         
         private float timeLastRegard;
         private List<Vector3> path;
-        private float speed;
         
         // ------------ Constructeurs ------------
-        private void Awake()
-        {
-            AwakeBot();
-        }
+        
+        protected override void AwakeBot()
+        {}
 
-        public void Start()
+        protected override void StartBot()
         {
-            rotationSpeed = 600;
             etat = Etat.Attend;
-            speed = SprintSpeed * 1.03f;
-            
-            // tout le monde le fait pour qu'il soit parenter
-            StartBot();
+            PleineVitesse = SprintSpeed * 1.15f;
         }
         
-        // ------------ Méthodes ------------
-        private void Update()
+        // ------------ Update ------------
+        protected override void UpdateBot()
         {
-            if (!IsMyBot())
-                return;
-            
             switch (etat)
             {
                 case Etat.Attend:
                     if (IsDepart())
                     {
-                        timeLastRegard = Time.time;
                         Depart();
                     }
                     break;
                 case Etat.Guidage:
                     Guidage();
                     break;
+                case Etat.Arrivé:
+                    // il ne fait plus rien
+                    break;
                 default:
                     throw new Exception($"Le cas de {etat} n'est pas encore géré");
             }
         }
         
-        private void FixedUpdate()
-        {
-            FixedUpdateBot();
-        }
+        // ------------ Méthodes ------------
         
         private bool IsDepart()
         {
-            return Time.time - timeLastRegard > 1 &&
-                   IsPlayerInMyVision(TypePlayer.Player).Count > 0;
+            if (Time.time - timeLastRegard < 1)
+                return false;
+            
+            timeLastRegard = Time.time;
+            
+            return GetPlayerInMyVision(TypePlayer.Player).Count > 0;
         }
 
         private void Depart()
@@ -83,13 +77,13 @@ namespace Script.Labyrinthe
             if (path.Count > 0)
             {
                 etat = Etat.Guidage;
+                running = Running.Course;
+                SetMoveAmount(Vector3.forward, PleineVitesse);
             }
         }
 
         private void Guidage()
         {
-            MoveAmount = Vector3.forward * speed;
-            
             // s'il a finit une étape de son plan
             if (IsArrivé(path[0]))
             {
@@ -99,29 +93,15 @@ namespace Script.Labyrinthe
                 if (path.Count == 0)
                 {
                     // Il ne fait plus jamais rien
+                    etat = Etat.Arrivé;
                     enabled = false;
                     return;
                 }
                 
-                AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, path[0], Calcul.Coord.Y);
-            }
-            
-            // il recalcule sa rotation tous les 0.5f
-            if (Time.time - LastCalculRotation > 0.5f)
-            {
                 CalculeRotation(path[0]);
             }
-
-            if (SimpleMath.Abs(AmountRotation) > 0)
-                Tourner();
-        }
-
-        protected override void FiniDeTourner()
-        {} // lorsqu'il a fini de tourner, il ne fait rien de plus
-
-        protected override void Die()
-        {
-            throw new System.NotImplementedException();
+            
+            GestionRotation(path[0]);
         }
     }
 }

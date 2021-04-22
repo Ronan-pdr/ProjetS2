@@ -4,10 +4,13 @@ using UnityEngine;
 using Photon.Pun;
 using System.IO;
 using Photon.Realtime;
+using Script.Bot;
 using Script.DossierPoint;
 using Script.EntityPlayer;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.InterfaceInGame;
+using Script.Labyrinthe;
+using Script.Menu;
 using Script.TeteChercheuse;
 using Script.Tools;
 using Random = System.Random;
@@ -47,6 +50,8 @@ namespace Script.Manager
         // nombre de participant (sera utilisé pour déterminer le moment lorsque tous les joueurs auront instancié leur playerController)
         private int nParticipant; // participant regroupe les joueurs ainsi que les spectateurs
 
+        private List<PlayerManager> playerManagers;
+        
         // Accéder aux différents joueurs, chaque joueur sera donc stocké deux fois, sauf s'il est mort, il sera juste un spectateur
         private List<PlayerClass> players;
         private List<Chasseur> chasseurs;
@@ -55,9 +60,6 @@ namespace Script.Manager
 
         // attribut relatif à ton avatar
         private PlayerClass ownPlayer;
-        
-        // cette liste va servir à donner les noms à chaque bot
-        private int[] nBotParJoueur;
 
         // pour savoir sur quel scène nous sommes
         public enum TypeScene
@@ -68,6 +70,8 @@ namespace Script.Manager
         }
 
         private ManagerGame typeScene;
+
+        private bool _endedGame;
 
         // ------------ Getters ------------
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -90,15 +94,7 @@ namespace Script.Manager
         public HumanCapsule GetHumanCapsule() => new HumanCapsule(capsuleBot);
         public TypeScene GetTypeScene() => scene;
         public ManagerGame GetManagerGame() => typeScene;
-        public string GetNameBot(Player player)
-        {
-            int i;
-            for (i = 0; i < nParticipant && !PhotonNetwork.PlayerList[i].Equals(player); i++)
-            {} // cherche l'index du joueur
-            
-            nBotParJoueur[i] += 1;
-            return player.NickName + "Bot" + nBotParJoueur[i];
-        }
+        public bool IsGameEnded() => _endedGame;
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
@@ -133,7 +129,7 @@ namespace Script.Manager
             chassés.Add(chassé);
         }
 
-        // ------------ Constructeur ------------
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             // On peut faire ça puisqu'il y en aura qu'un seul
@@ -157,13 +153,11 @@ namespace Script.Manager
             }
 
             // instancier les listes
+            playerManagers = new List<PlayerManager>();
             players = new List<PlayerClass>();
             chasseurs = new List<Chasseur>();
             chassés = new List<Chassé>();
             spectateurs = new List<Spectateur>();
-            
-            // cette liste va servir à donner les noms à chaque bot
-            nBotParJoueur = new int[nParticipant];
         }
 
         public void Start()
@@ -171,11 +165,11 @@ namespace Script.Manager
             // récupérer les contours de la map
             RecupContour();
             
-            // Seul le masterClient décide le type de chaque joueur
             if (!PhotonNetwork.IsMasterClient)
                 return;
 
             SendInfoPlayer();
+            SendInfoBot();
         }
 
         // ------------ Méthodes ------------
@@ -200,13 +194,15 @@ namespace Script.Manager
 
         private void SendInfoPlayer()
         {
-            // les spots
-            int[] indexSpotChasseur = SpawnManager.Instance.GetBeginPosition(TypePlayer.Chasseur);
-            int[] indexSpotChassé = SpawnManager.Instance.GetBeginPosition(TypePlayer.Chassé);
+            // les spawns
+            int[] indexSpawnChasseur = SpawnManager.Instance.GetSpawnPlayer(TypePlayer.Chasseur);
+            int iChasseur = 0;
+            int[] indexSpawnChassé = SpawnManager.Instance.GetSpawnPlayer(TypePlayer.Chassé);
+            int iChassé = 0;
 
             // les types en fonction du type de la partie
             TypePlayer[] types = typeScene.GetTypePlayer();
-            string infoJoueur;
+            int indexSpawn;
 
             for (int i = 0; i < nParticipant; i++)
             {
@@ -214,24 +210,25 @@ namespace Script.Manager
                 {
                     if (types[i] == TypePlayer.Chasseur) // chasseur
                     {
-                        int indexSpot = indexSpotChasseur[i];
-                        infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpot, TypePlayer.Chasseur);
+                        indexSpawn = indexSpawnChasseur[iChasseur];
+                        iChasseur++;
                     }
                     else if (types[i] == TypePlayer.Chassé) // chassé
                     {
-                        int indexSpot = indexSpotChassé[i];
-                        infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpot, TypePlayer.Chassé);
+                        indexSpawn = indexSpawnChassé[iChassé];
+                        iChassé++;
                     }
                     else if (types[i] == TypePlayer.Blocard) // blocard
                     {
-                        int indexSpot = indexSpotChassé[i];
-                        infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpot, TypePlayer.Blocard);
+                        indexSpawn = indexSpawnChassé[iChassé];
+                        iChassé++;
                     }
                     else
                     {
                         throw new Exception($"Pas encore géré le cas du {types[i]}");
                     }
                     
+                    string infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpawn, types[i]);
                     // envoi des infos au concerné(e)
                     Hashtable hash = new Hashtable();
                     hash.Add("InfoCréationJoueur", infoJoueur);
@@ -240,36 +237,84 @@ namespace Script.Manager
             }
         }
 
-        private void Update()
+        private void SendInfoBot()
         {
-            // S'il y a maintenance, il n'y a pas de joueur et pas leur gestion
-            if (IsInMaintenance())
-                return;
+            // les spawns
+            int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
+            int iRectiligne = 0;
+            int[] indexSpawnReste = SpawnManager.Instance.GetSpawnBot();
+            int iReste = 0;
+
+            // les types en fonction du type de la partie et du nombre de joueur
+            TypeBot[] types = typeScene.GetTypeBot();
+            int[] nBotParJoueur = ManList.SplitResponsabilité(types.Length, nParticipant);
+
+            int iType = 0;
+            for (int iPlayer = 0; iPlayer < nParticipant; iPlayer++)
+            {
+                // rassembler toutes les infos des bots qu'est responsable le joueur
+                int nBot = nBotParJoueur[iPlayer];
+                (int indexSpawn, TypeBot type)[] infosBot = new (int, TypeBot)[nBot];
+
+                for (int iBot = 0; iBot < nBot; iBot++, iType++)
+                {
+                    if (types[iType] == TypeBot.Rectiligne) // rectiligne
+                    {
+                        infosBot[iBot].indexSpawn = indexSpawnBotRectiligne[iRectiligne];
+                        iRectiligne++;
+                    }
+                    else  // le reste
+                    {
+                        infosBot[iBot].indexSpawn = indexSpawnReste[iReste];
+                        iReste++;
+                    }
+
+                    infosBot[iBot].type = types[iType];
+                }
+                
+                if (infosBot.Length == 0)
+                    continue; // rien à envoyer
+
+                // envoi des infos au concerné(e)
+                string mes = BotManager.EncodeFormatInfoBot(infosBot);
+                Hashtable hash = new Hashtable();
+                hash.Add("InfoCréationBots", mes);
+                PhotonNetwork.PlayerList[iPlayer].SetCustomProperties(hash);
+            }
         }
 
-        public void Die(Player player)
+        public void Die(PlayerClass playerClass)
         {
-            int i;
-            for (i = 0; i < players.Count && !players[i].GetPlayer().Equals(player); i++) //cherche le joueur dans la liste des players
-            {}
-
-            if (i == players.Count)
+            if (!players.Contains(playerClass))
             {
                 throw new Exception("Un script tente de supprimer un joueur de la liste qui n'y est plus");
             }
 
-            PlayerClass playerClass = players[i];
-            players.RemoveAt(i); // remove de la liste players
+            players.Remove(playerClass); // remove de la liste players
 
             if (playerClass is Chassé)
             {
-                // remove de la liste chassés (si c'était un chassé)
+                // remove de la liste chassés
                 chassés.Remove((Chassé) playerClass);
+
+                if (chassés.Count == 0)
+                {
+                    EndGame(TypePlayer.Chasseur);
+                }
             }
             else if (playerClass is Chasseur)
             {
-                // remove de la liste chasseurs (si c'était un chasseur)
+                // remove de la liste chasseurs
                 chasseurs.Remove((Chasseur) playerClass);
+
+                if (chasseurs.Count == 0)
+                {
+                    EndGame(TypePlayer.Chassé);
+                }
+            }
+            else if (playerClass is Blocard)
+            {
+                // rien, il n'est pas stocké dans une liste spécifique
             }
             else
             {
@@ -278,20 +323,33 @@ namespace Script.Manager
 
             PhotonView pv = playerClass.GetPv(); // on récupère le point de vue du mourant
 
-            if (!pv.IsMine) // Seul le mourant envoie le hash et créé un spectateur
+            if (!pv.IsMine) // Seul le mourant créé un spectateur
+                return;
+
+            if (players.Count == 0)
                 return;
             
             // création du spectateur
             Spectateur spectateur = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "Spectateur"),
                 Vector3.zero, Quaternion.identity, 0, new object[]{pv.ViewID}).GetComponent<Spectateur>();
             
+            
             // ajout à la liste 'spectateurs'
             spectateurs.Add(spectateur);
+        }
 
-            // envoie du hash pour que les autres le supprime de leurs listes
-            Hashtable hash = new Hashtable();
-            hash.Add("MortPlayer", player);
-            player.SetCustomProperties(hash);
+        private void EndGame(TypePlayer typeWinner)
+        {
+            /*PhotonNetwork.Destroy(ownPlayer.gameObject);
+            
+            players.Clear();
+            chasseurs.Clear();
+            chassés.Clear();
+            spectateurs.Clear();*/
+
+            _endedGame = true;
+            MenuManager.Instance.OpenMenu("EndGame");
+            EndGameMenu.Instance.SetWinner(typeWinner);
         }
     }
 }

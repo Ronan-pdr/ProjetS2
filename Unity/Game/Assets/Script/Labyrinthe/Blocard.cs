@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Script.EntityPlayer;
 using Script.Test;
 using Script.Tools;
@@ -10,32 +9,25 @@ namespace Script.Labyrinthe
     public class Blocard : PlayerClass
     {
         // ------------ Attributs ------------
+        
         private int nCaillouMax = 50;
         private int nCaillou;
         private List<GameObject> caillous = new List<GameObject>();
 
         // ------------ Constructeurs ------------
-        private void Awake()
-        {
-            AwakePlayer();
-        }
+        
+        protected override void AwakePlayer()
+        {}
 
-        void Start()
+        protected override void StartPlayer()
         {
             MaxHealth = 100;
-            StartPlayer();
-
             nCaillou = 0;
         }
 
-        // méthodes
-        private void Update()
+        // ------------ Update ------------
+        protected override void UpdatePlayer()
         {
-            if (!Pv.IsMine)
-                return;
-            
-            UpdatePlayer();
-            
             if (Input.GetKeyDown("f"))
             {
                 PoserCaillou();
@@ -46,13 +38,10 @@ namespace Script.Labyrinthe
                 RetirerCaillou();
             }
             
-            Animation();
+            AnimationTernier();
         }
 
-        private void FixedUpdate()
-        {
-            FixedUpdatePlayer();
-        }
+        // ------------ Méthodes ------------
 
         private void PoserCaillou()
         {
@@ -81,11 +70,6 @@ namespace Script.Labyrinthe
             Destroy(caillous[i]);
             caillous.RemoveAt(i);
             nCaillou -= 1;
-        }
-        
-        protected override void Die()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

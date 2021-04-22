@@ -134,7 +134,7 @@ namespace Script.TeteChercheuse
             CheckPosition(first);
         }
         
-        // ------------ Méthodes ------------
+        // ------------ Update ------------
 
         // la fonction principale du rayGaz
         // inspiré du parcours largeur
@@ -143,7 +143,7 @@ namespace Script.TeteChercheuse
             // Impossible que la file soit empty ici
             Node node = file.Defiler();
             
-            for (int i = 0; i < 200 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
+            for (int i = 0; i < 100 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
             {
                 if (i > 0)
                     node = file.Defiler();
@@ -185,6 +185,8 @@ namespace Script.TeteChercheuse
                 Destroy(gameObject); // c'est fini donc il se détruit
             }
         }
+        
+        // ------------ Méthodes ------------
 
         private void FinForcé()
         {

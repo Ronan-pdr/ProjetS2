@@ -14,6 +14,7 @@ namespace Script.DossierPoint
     public class CrossManager : MonoBehaviour
     {
         // ------------ Attributs ------------
+        
         public static CrossManager Instance;
         private CrossPoint[] crossPoints;
         
@@ -24,40 +25,34 @@ namespace Script.DossierPoint
         private string[] contentOutput;
         
         private string Path = "Build/SauvegardeCrossManager";
-    
-        private void Awake()
-        {
-            Instance = this;
-            crossPoints = GetComponentsInChildren<CrossPoint>();
-
-            contentOutput = new string[crossPoints.Length];
-        }
-    
-        // ------------ Getter ------------
+        
+        // pour le spawn des botRectiline
+        private List<int> indexPointLibre;
+        
+        // ------------ Getters ------------
         public int GetNumberPoint() => crossPoints.Length;
+        
         public CrossPoint GetPoint(int index) => crossPoints[index];
+        
+        // pour l'instant c'est pas random
+        public int[] GetSpawnBot() => ManList.CreateArrRange(crossPoints.Length);
+
+        public Vector3 GetPositionSpawn()
+        {
+            if (indexPointLibre.Count == 0)
+                throw new Exception("Pas asser de cross point pour spawn");
+
+            Vector3 res = crossPoints[indexPointLibre[0]].transform.position;
+            indexPointLibre.RemoveAt(0);
+
+            return res;
+        }
         
         public static bool IsMaintenance()
         {
             return PhotonNetwork.PlayerList.Length == 1 && 
                    PhotonNetwork.LocalPlayer.NickName == "maintenance" && 
                    MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Game;
-        }
-        
-        public (Vector3, int) GetRandomPosition(int previousIndex)
-        {
-            int len = crossPoints.Length;
-            int max = len;
-            if (previousIndex == -1) //Si bot vient d'aparaître
-                previousIndex = len;
-            else
-                max -= 1;
-
-            int index = Random.Range(0, max);
-            if (index >= previousIndex)
-                index++;
-            
-            return (crossPoints[index].transform.position, index);
         }
     
         public Vector3 GetPosition(int index)
@@ -69,27 +64,22 @@ namespace Script.DossierPoint
             
             return crossPoints[index].transform.position;
         }
-    
-        public Vector3[] GetListPosition()
-        {
-            int len = GetNumberPoint();
-            Vector3[] positions = new Vector3[len];
-            for (int i = 0; i < len; i++)
-            {
-                positions[i] = crossPoints[i].transform.position;
-            }
-    
-            return positions;
-        }
         
         // ------------ Constructeurs ------------
+        private void Awake()
+        {
+            Instance = this;
+            crossPoints = GetComponentsInChildren<CrossPoint>();
+
+            int l = crossPoints.Length;
+            indexPointLibre = ManList.CreateListRange(l);
+            contentOutput = new string[l];
+        }
         private void Start()
         {
             if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Labyrinthe)
-            {
                 return;
-            }
-            
+
             if (MasterManager.Instance.IsInMaintenance())
             {
                 indexResearch = -1;
@@ -148,6 +138,7 @@ namespace Script.DossierPoint
             return res;
         }
 
+        // ------------ Parsing ------------
         private void Ouput()
         {
             using (StreamWriter sw = File.CreateText(Path))

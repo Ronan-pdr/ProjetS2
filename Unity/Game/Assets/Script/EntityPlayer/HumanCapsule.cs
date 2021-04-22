@@ -4,11 +4,12 @@ namespace Script.EntityPlayer
 {
     public class HumanCapsule
     {
-        // attributs
+        // ------------ Attributs ------------
+        
         private float _hauteur;
         private float _rayon;
         
-        // constructeurs
+        // ------------ Constructeur ------------
         public HumanCapsule(CapsuleCollider cap)
         {
             float scale = cap.transform.localScale.y;
@@ -16,7 +17,8 @@ namespace Script.EntityPlayer
             _rayon = cap.radius * scale;
         }
         
-        // méthodes
+        // ------------ Méthode ------------
+
         public bool CanIPass(Vector3 position, Vector3 direction, float maxDistance)
         {
             // haut du corps (vers les yeux)
@@ -24,10 +26,10 @@ namespace Script.EntityPlayer
             
             // bas du corps (vers le haut des pieds)
             Vector3 basDuCorps = position + Vector3.up * _rayon;
-            
+
             if (Physics.CapsuleCast(hautDuCorps, basDuCorps, _rayon, direction, out RaycastHit hit, maxDistance))
             {
-                return false;
+                return hit.collider.GetComponent<Entity>();
             }
 
             return true;

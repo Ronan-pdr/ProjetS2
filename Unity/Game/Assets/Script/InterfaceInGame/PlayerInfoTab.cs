@@ -9,6 +9,7 @@ using UnityEngine;
 public class PlayerInfoTab : MonoBehaviour
 {
     // ------------ Attributs ------------
+    
     private PlayerClass player;
     private int limitation = 15;
     private string playerName;
@@ -26,7 +27,7 @@ public class PlayerInfoTab : MonoBehaviour
         playerName = player.name;
     }
     
-    // ------------ Méthodes ------------
+    // ------------ Upadte ------------
     void Update()
     {
         if (player is null)

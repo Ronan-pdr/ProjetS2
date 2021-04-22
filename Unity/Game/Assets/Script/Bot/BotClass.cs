@@ -12,12 +12,22 @@ namespace Script.Bot
 {
     public abstract class BotClass : Humanoide
     {
+        // ------------ Enum ------------
+        protected enum Running
+        {
+            Arret,
+            Marche,
+            Course
+        }
+
+        protected Running running = Running.Arret;
+        
         // ------------ Attributs ------------
         
         protected BotManager BotManager; // instancié lorsque le bot est créé dans son BotManager
         
         //Rotation
-        protected float rotationSpeed;
+        protected float RotationSpeed = 400;
         protected float AmountRotation;
         
         // variables relatives à la caméra artificiel des bots
@@ -27,6 +37,9 @@ namespace Script.Bot
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
 
+        // Vitesse
+        protected float TranquilleVitesse = WalkSpeed;
+        protected float PleineVitesse = SprintSpeed;
         
         // ------------ Getters ------------
         
@@ -43,35 +56,56 @@ namespace Script.Bot
         }
 
         // ------------ Constructeurs ------------
-        protected void AwakeBot()
+        protected abstract void AwakeBot();
+        
+        protected void Awake()
         {
             AwakeHuman();
+            AwakeBot();
         }
 
-        protected void StartBot()
-        {
-            SetRbTr();
-        
-            MaxHealth = 100;
-            StartHuman(); // vie
+        protected abstract void StartBot();
 
+        private void Start()
+        {
+            MaxHealth = 100;
+            StartHuman();
+            StartBot();
+            
             // son nom (qui sera unique)
-            name = MasterManager.Instance.GetNameBot(Pv.Owner);
+            name = BotManager.Instance.GetNameBot(this, Pv.Owner);
 
             // le parenter
             if (BotManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
-                Tr.parent = MasterManager.Instance.GetDossierOtherBot(); // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs
+            {
+                // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs
+                Tr.parent = MasterManager.Instance.GetDossierOtherBot();
+            }
             else
+            {
                 Tr.parent = BotManager.transform; // le parenter dans ton dossier de botManager
+            }
         }
 
-        // ------------ Méthodes ------------
-        protected void UpdateBot()
+        // ------------ Update ------------
+        
+        // Upadte
+        protected abstract void UpdateBot();
+
+        private void Update()
         {
+            PotentielleMort();
+            
+            if (!IsMyBot())
+                return;
+            
+            UpdateBot();
             UpdateHumanoide();
+
+            SetSpeed();
         }
 
-        protected void FixedUpdateBot()
+        protected void FixedUpdate()
         {
             if (IsMyBot())
             {
@@ -79,10 +113,21 @@ namespace Script.Bot
             }
         }
         
-        // Déplacement
+        // ------------ Méthodes ------------
 
-        protected abstract void FiniDeTourner();
+        // Rotation
+        protected void GestionRotation(Vector3 dest)
+        {
+            // il recalcule sa rotation tous les 0.3f
+            if (Time.time - LastCalculRotation > 1f)
+            {
+                CalculeRotation(dest);
+            }
 
+            if (SimpleMath.Abs(AmountRotation) > 0)
+                Tourner();
+        }
+        
         protected void CalculeRotation(Vector3 dest)
         {
             AmountRotation = Calcul.Angle(Tr.eulerAngles.y, Tr.position, dest, Calcul.Coord.Y);
@@ -97,13 +142,12 @@ namespace Script.Bot
             else
                 sensRotation = -1;
 
-            float yRot = sensRotation * rotationSpeed * Time.deltaTime;
+            float yRot = sensRotation * GetAmountYRot() * RotationSpeed * Time.deltaTime;
 
             if (SimpleMath.Abs(AmountRotation) < SimpleMath.Abs(yRot)) // Le cas où on a finis de tourner
             {
                 Tr.Rotate(new Vector3(0, AmountRotation, 0));
                 AmountRotation = 0;
-                FiniDeTourner();
             }
             else
             {
@@ -112,12 +156,62 @@ namespace Script.Bot
             }
         }
 
-        protected bool IsArrivé(Vector3 dest)
+        private float GetAmountYRot()
         {
-            return Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < 0.5f;
+            float absMoveAmount = SimpleMath.Abs(AmountRotation);
+            if (absMoveAmount < 5)
+                return 0.7f;
+            if (absMoveAmount < 30)
+                return 0.8f;
+            if (absMoveAmount < 60)
+                return 0.9f;
+            if (absMoveAmount < 90)
+                return 1f;
+            if (absMoveAmount < 120)
+                return 1.1f;
+            if (absMoveAmount < 150)
+                return 1.2f;
+            
+            return 1.3f;
         }
         
-        protected List<PlayerClass> IsPlayerInMyVision(TypePlayer typePlayer)
+        // vitesse
+        private void SetSpeed()
+        {
+            if (running == Running.Arret)
+            {
+                MoveAmount = Vector3.zero;
+            }
+            else if (AmountRotation > 80)
+            {
+                // ralenti pour le virage
+                SetMoveAmount(Vector3.forward, 1);
+                ActiverAnimation("Avant");
+            }
+            else if (running == Running.Marche)
+            {
+                // marche
+                SetMoveAmount(Vector3.forward, TranquilleVitesse);
+                ActiverAnimation("Avant");
+            }
+            else if (running == Running.Course)
+            {
+                // court
+                SetMoveAmount(Vector3.forward, PleineVitesse);
+                ActiverAnimation("Course");
+            }
+        }
+
+        // Destination
+        protected bool IsArrivé(Vector3 dest) => IsArrivé(dest, 0.5f);
+
+        protected bool IsArrivé(Vector3 dest, float ecart)
+        {
+            return Calcul.Distance(Tr.position, dest, Calcul.Coord.Y) < ecart;
+        }
+
+        // Vision
+        protected List<PlayerClass> GetPlayerInMyVision(TypePlayer typePlayer)
         {
             Func<int, PlayerClass> getPlayer;
             int l;
@@ -142,40 +236,53 @@ namespace Script.Bot
                     throw new Exception($"Le cas {typePlayer} n'est pas encore géré");
             }
             
-            Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
-            List<PlayerClass> playerInVision = new List<PlayerClass>();
+            List<PlayerClass> playersInVision = new List<PlayerClass>();
 
             for (int i = 0; i < l; i++)
             {
-                Vector3 posPlayer = getPlayer(i).transform.position;
-
-                float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
-                    posPlayer, Calcul.Coord.Y);
-
-                if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
+                PlayerClass player = getPlayer(i);
+                if (IsInMyVision(player))
                 {
-                    Ray ray = new Ray(positionCamera, Calcul.Diff(posPlayer, positionCamera));
+                    playersInVision.Add(player);
+                }
+            }
 
-                    if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
+            return playersInVision;
+        }
+
+        private bool IsInMyVision(PlayerClass player)
+        {
+            Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
+            Vector3 posPlayer = player.transform.position;
+            
+            float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
+                posPlayer, Calcul.Coord.Y);
+
+            if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
+            {
+                Ray ray = new Ray(positionCamera, Calcul.Diff(posPlayer, positionCamera));
+
+                if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
+                {
+                    if (hit.collider.GetComponent<PlayerClass>() == player) // si l'obstacle est le joueur alors le bot "VOIT" le joueur
                     {
-                        if (hit.collider.GetComponent<PlayerClass>()) // si l'obstacle est le joueur alors le bot "VOIT" le joueur
-                        {
-                            playerInVision.Add(hit.collider.GetComponent<PlayerClass>());
-                        }
+                        return true;
                     }
                 }
             }
 
-            return playerInVision;
+            return false;
         }
         
         // GamePlay
         protected override void Die()
         {
             enabled = false;
-            BotManager.Die(gameObject);
+            BotManager.Die(this);
         }
 
+        // ------------ Mulitijoueur ------------
+        
         // réception des hash
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {

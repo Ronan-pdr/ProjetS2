@@ -8,6 +8,8 @@ namespace Script.EntityPlayer
 {
     public class Spectateur : Entity
     {
+        // ------------ Attributs ------------
+        
         // Celui que l'on va suivre
         protected Transform Porteur;
         private int indexPorteur;
@@ -16,7 +18,7 @@ namespace Script.EntityPlayer
         protected PhotonView Pv;
 
         //Rassembler les infos
-        private Transform masterManager;
+        private MasterManager master;
         
         //Variable similaire aux playerClass
         private float yLookRotation;
@@ -24,19 +26,20 @@ namespace Script.EntityPlayer
         private float mouseSensitivity = 3f;
 
         // hauteur pour atteindre la tête
-        [SerializeField] private float hauteur;
+        private float hauteur = 1.4f;
         
-        // Setter
-        private void SetPorteur()
+        // ------------ Setter ------------
+        public void SetPorteur()
         {
-            Porteur = MasterManager.Instance.GetPlayer(indexPorteur).transform;
+            Porteur = master.GetPlayer(indexPorteur).transform;
         }
         
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             // Le ranger dans MasterClient
-            masterManager = MasterManager.Instance.transform;
-            transform.parent = masterManager;
+            master = MasterManager.Instance;
+            transform.parent = master.transform;
         
             SetRbTr();
             Pv = GetComponent<PhotonView>();
@@ -53,20 +56,21 @@ namespace Script.EntityPlayer
             }
             else
             {
-                Destroy(GetComponentInChildren<Camera>().gameObject); // On veut détruire les caméras qui ne sont pas les tiennes
+                // On veut détruire les caméras qui ne sont pas les tiennes
+                Destroy(GetComponentInChildren<Camera>().gameObject);
             }
         }
 
+        // ------------ Update ------------
         private void Update()
         {
-            Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
-            Cursor.visible = PauseMenu.Instance.GetIsPaused();
-            
-            if (!Pv.IsMine || PauseMenu.Instance.GetIsPaused())
-            {
+            if (!Pv.IsMine)
                 return;
-            }
 
+            if (PlayerClass.IsPause())
+                return;
+
+            // le cas ou l'ancier porteur est mort ou à quitter la partie
             if (!Porteur)
             {
                 indexPorteur = 0;
@@ -78,6 +82,8 @@ namespace Script.EntityPlayer
             ChangerPorteur();
         }
 
+        // ------------ Méthodes ------------
+        
         private void Position()
         {
             Tr.position = Porteur.position + Vector3.up * hauteur;
@@ -98,11 +104,11 @@ namespace Script.EntityPlayer
             //changer d'arme avec la molette
             if (Input.GetAxisRaw("Mouse ScrollWheel") > 0)
             {
-                indexPorteur = SimpleMath.Mod(indexPorteur + 1, MasterManager.Instance.GetNbPlayer());
+                indexPorteur = SimpleMath.Mod(indexPorteur + 1, master.GetNbPlayer());
             }
             else if (Input.GetAxisRaw("Mouse ScrollWheel") < 0)
             {
-                indexPorteur = SimpleMath.Mod(indexPorteur - 1, MasterManager.Instance.GetNbPlayer());
+                indexPorteur = SimpleMath.Mod(indexPorteur - 1, master.GetNbPlayer());
             }
             
             SetPorteur();
