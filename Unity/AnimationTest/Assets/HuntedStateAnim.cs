@@ -61,66 +61,39 @@ public class HuntedStateAnim : MonoBehaviour
         
         // -----------  State Action -----------
         if (squatPress)
-            {
-                if (isSquatting)
-                    animator.SetBool(isSquattingHash,false);
-                else
-                    animator.SetBool(isSquattingHash,true);
-            }
+            animator.SetBool(isSquattingHash,!isSquatting);
 
         if (sitPress)
-        {
-            if (isSitting)
-                animator.SetBool(isSittingHash,false);
-            else
-                animator.SetBool(isSittingHash,true);
-        }
-
+            animator.SetBool(isSittingHash,!isSitting);
+        
+        //To change when merging !
         if (isJumping && jumpEnded)
             animator.SetBool(isJumpingHash ,false);
         
         // ----------- Action -----------   
         // - Walking
-        if (!isWalking && walkPress)
-            animator.SetBool(isWalkingHash, true);
-        if (isWalking && !walkPress)
-            animator.SetBool(isWalkingHash, false);   
+        animator.SetBool(isWalkingHash, walkPress);
         
         // - Running
-        if (!isRunning && (runPress && walkPress))
-            animator.SetBool(isRunningHash, true);
-        if (isRunning && (!runPress || !walkPress))
-            animator.SetBool(isRunningHash, false);
+        animator.SetBool(isRunningHash, runPress && walkPress);
+        animator.SetBool(isRunningHash, !(!runPress || !walkPress));
 
         // - W Back
-        if (!isWkngBack && backPress)
-            animator.SetBool(isWkngBackHash, true);
-        if (isWkngBack && !backPress)
-            animator.SetBool(isWkngBackHash, false);
+        animator.SetBool(isWkngBackHash, backPress);
 
         // - Left
-        if (!isSideWalkingL && leftPress)
-            animator.SetBool(isSWLHash, true);
-        if (isSideWalkingL && !leftPress)
-            animator.SetBool(isSWLHash, false);
+        animator.SetBool(isSWLHash, leftPress);
 
         // - Right
-        if (!isSideWalkingR && rightPress)
-            animator.SetBool(isSWRHash, true);
-        if (isSideWalkingR && !rightPress)
-            animator.SetBool(isSWRHash, false);
+        animator.SetBool(isSWRHash, rightPress);
 
         // - Left & Forward (LF)
-        if (!isLF && (walkPress && leftPress))
-            animator.SetBool(isLFHash, true);
-        if (isLF && (!walkPress || !leftPress))
-            animator.SetBool(isLFHash, false);
+        animator.SetBool(isLFHash, walkPress && leftPress);
+        animator.SetBool(isLFHash, !(!walkPress || !leftPress));
 
         // - Right & Forward (RF)
-        if (!isRF && (walkPress && rightPress))
-            animator.SetBool(isRFHash, true);
-        if (isRF && (!walkPress || !rightPress))
-            animator.SetBool(isRFHash, false);
+        animator.SetBool(isRFHash, walkPress && rightPress);
+        animator.SetBool(isRFHash, !(!walkPress || !rightPress));
 
         // -----------  Jump  -----------
         if (!isSitting && jumpPress)
