@@ -11,10 +11,21 @@ namespace Script.Manager
         // ------------ Struct ------------
         protected struct NtypeJoueur
         {
-            public int Chassé;
             public int Chasseur;
+            public int Chassé;
             public int Blocard;
             public int None;
+            
+            public (TypePlayer, int)[] GetList()
+            {
+                return new[]
+                {
+                    (TypePlayer.Chasseur, Chasseur),
+                    (TypePlayer.Chassé, Chassé),
+                    (TypePlayer.Blocard, Blocard),
+                    (TypePlayer.None, None),
+                };
+            }
         }
         
         protected struct NtypeBot
@@ -22,6 +33,16 @@ namespace Script.Manager
             public int Rectiligne;
             public int Fuyard;
             public int Guide;
+            
+            public (TypeBot, int)[] GetList()
+            {
+                return new[]
+                {
+                    (TypeBot.Rectiligne, Rectiligne),
+                    (TypeBot.Fuyard, Fuyard),
+                    (TypeBot.Guide, Guide)
+                };
+            }
         }
         
         // ------------ Attributs ------------
@@ -40,31 +61,9 @@ namespace Script.Manager
 
             CasEreur();
 
-            TypePlayer[] res = new TypePlayer[NJoueur];
+            TypePlayer[] listTrié = GetListTrié(n.GetList(), NJoueur);
 
-            // attribution des rôles (pour l'instant c'est pas random)
-            int i;
-            for (i = 0; i < n.Chasseur; i++)
-            {
-                res[i] = TypePlayer.Chasseur;
-            }
-            
-            for (int j = 0; j < n.Chassé; i++, j++)
-            {
-                res[i] = TypePlayer.Chassé;
-            }
-            
-            for (int j = 0; j < n.Blocard; i++, j++)
-            {
-                res[i] = TypePlayer.Blocard;
-            }
-
-            for (int j = 0; j < n.None; i++, j++)
-            {
-                res[i] = TypePlayer.None;
-            }
-
-            return res;
+            return listTrié;
 
             void CasEreur()
             {
@@ -98,26 +97,27 @@ namespace Script.Manager
             // récupérer les taux en fonction du type de la partie
             NtypeBot n = GetNBot();
 
-            TypeBot[] res = new TypeBot[n.Fuyard + n.Rectiligne + n.Guide];
-
             // attribution des types (pour l'instant c'est pas random)
-            int i;
-            for (i = 0; i < n.Fuyard; i++)
-            {
-                res[i] = TypeBot.Fuyard;
-            }
+            TypeBot[] listTrié = GetListTrié(n.GetList(), n.Fuyard + n.Rectiligne + n.Guide);
+
+            return listTrié;
+        }
+
+        // Regarde les exemples si tu comprends pas
+        private T[] GetListTrié<T>((T, int)[] list, int l)
+        {
+            T[] listTrié = new T[l];
             
-            for (int j = 0; j < n.Rectiligne; i++, j++)
+            int i = 0;
+            foreach ((T type, int nBot) in list)
             {
-                res[i] = TypeBot.Rectiligne;
+                for (int j = 0; j < nBot; i++, j++)
+                {
+                    listTrié[i] = type;
+                }
             }
 
-            for (int j = 0; j < n.Guide; i++, j++)
-            {
-                res[i] = TypeBot.Guide;
-            }
-
-            return res;
+            return listTrié;
         }
     }
 }

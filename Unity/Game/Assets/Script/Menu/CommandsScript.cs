@@ -9,22 +9,23 @@ public class CommandsScript : MonoBehaviour
 {
     // ------------ SerializedField ------------
     
-    [Header("Button")]
-    [SerializeField] Button ForwardButton;
-    [SerializeField] Button BackwardButton;
-    [SerializeField] Button LeftButton;
-    [SerializeField] Button RightButton;
-    [SerializeField] Button JumpButton;
-    [SerializeField] Button SprintButton;
-    [SerializeField] Button CrouchButton;
-    [SerializeField] Button SitButton;
-    
+    [Header("Texte des boutons")]
+    [SerializeField] private TMP_Text Forward;
+    [SerializeField] private TMP_Text Backward;
+    [SerializeField] private TMP_Text Left;
+    [SerializeField] private TMP_Text Right;
+    [SerializeField] private TMP_Text Jump;
+    [SerializeField] private TMP_Text Sprint;
+    [SerializeField] private TMP_Text Crouch;
+    [SerializeField] private TMP_Text Sit;
+
     // ------------ Attributs ------------
     private Event keyEvent;
     private KeyCode newKey;
     private bool waitingForKey;
-    private TMP_Text buttonText;
     TouchesClass touches;
+    
+    private Dictionary<TypeTouche, TMP_Text> dict;
     
     // ------------ Constructeurs ------------
     void Start()
@@ -32,17 +33,25 @@ public class CommandsScript : MonoBehaviour
         touches = TouchesClass.Instance;
         
         waitingForKey = false;
-        ForwardButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchAvancer().ToString();
-        BackwardButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchReculer().ToString();
-        LeftButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchGauche().ToString();
-        RightButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchDroite().ToString();
-        JumpButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchJump().ToString();
-        SprintButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchSprint().ToString();
-        CrouchButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchAccroupi().ToString();
-        SitButton.GetComponentInChildren<TMP_Text>().text = touches.GettouchLeverAssoir().ToString();
+
+        dict = new Dictionary<TypeTouche, TMP_Text>();
+        dict.Add(TypeTouche.Avancer, Forward);
+        dict.Add(TypeTouche.Reculer, Backward);
+        dict.Add(TypeTouche.Droite, Right);
+        dict.Add(TypeTouche.Gauche, Left);
+        dict.Add(TypeTouche.Sprint, Sprint);
+        dict.Add(TypeTouche.Jump, Jump);
+        dict.Add(TypeTouche.Accroupi, Crouch);
+        dict.Add(TypeTouche.Assoir, Sit);
+
+        // afficher les string des KeyCode
+        foreach (KeyValuePair<TypeTouche, TMP_Text> e in dict)
+        {
+            e.Value.text = touches.ToString(e.Key);
+        }
     }
 
-    // ------------ SerializedField ------------
+    // ------------ Méthodes ------------
     void OnGUI()
     {
         keyEvent = Event.current;
@@ -53,17 +62,12 @@ public class CommandsScript : MonoBehaviour
         }
     }
 
-    public void StartAssignment(string keyName)
+    public void StartAssignment(int typeTouche)
     {
         if (!waitingForKey)
         {
-            StartCoroutine(AssignKey(keyName));
+            StartCoroutine(AssignKey((TypeTouche)typeTouche));
         }
-    }
-
-    public void SendText(TMP_Text text)
-    {
-        buttonText = text;
     }
 
     IEnumerator WaitForKey()
@@ -72,54 +76,25 @@ public class CommandsScript : MonoBehaviour
             yield return null;
     }
 
-    public IEnumerator AssignKey(string keyName)
+    public IEnumerator AssignKey(TypeTouche toucheAssigné)
     {
         waitingForKey = true;
         yield return WaitForKey();
-        switch (keyName)
+        
+        foreach (TypeTouche toucheReset in touches.GetSameTouches(toucheAssigné, newKey))
         {
-            case "forward":
-                touches.SettouchAvancer(newKey);
-                buttonText.text = touches.GettouchAvancer().ToString();
-                PlayerPrefs.SetString("forwardKey", touches.GettouchAvancer().ToString());
-                break;
-            case "backward":
-                touches.SettouchReculer(newKey);
-                buttonText.text = touches.GettouchReculer().ToString();
-                PlayerPrefs.SetString("backwardKey", touches.GettouchReculer().ToString());
-                break;
-            case "left":
-                touches.SettouchGauche(newKey);
-                buttonText.text = touches.GettouchGauche().ToString();
-                PlayerPrefs.SetString("leftKey", touches.GettouchGauche().ToString());
-                break;
-            case "right":
-                touches.SettouchDroite(newKey);
-                buttonText.text = touches.GettouchDroite().ToString();
-                PlayerPrefs.SetString("rightKey", touches.GettouchDroite().ToString());
-                break;
-            case "jump":
-                touches.SettouchJump(newKey);
-                buttonText.text = touches.GettouchJump().ToString();
-                PlayerPrefs.SetString("jumpKey", touches.GettouchJump().ToString());
-                break;
-            case "sprint":
-                touches.SettouchSprint(newKey);
-                buttonText.text = touches.GettouchSprint().ToString();
-                PlayerPrefs.SetString("sprintKey", touches.GettouchSprint().ToString());
-                break;
-            case "crouch":
-                touches.SettouchAccroupi(newKey);
-                buttonText.text = touches.GettouchAccroupi().ToString();
-                PlayerPrefs.SetString("crouchKey", touches.GettouchAccroupi().ToString());
-                break;
-            case "sit":
-                touches.SettouchLeverAssoir(newKey);
-                buttonText.text = touches.GettouchLeverAssoir().ToString();
-                PlayerPrefs.SetString("sitKey", touches.GettouchLeverAssoir().ToString());
-                break;
+            SetTouche(toucheReset, TouchesClass.GetNullKeyCode());
         }
+            
+        SetTouche(toucheAssigné, newKey);
 
         yield return null;
+
+        void SetTouche(TypeTouche toucheChangé, KeyCode key)
+        {
+            touches.SetKey(toucheChangé, key);
+            dict[toucheChangé].text = touches.ToString(toucheChangé);
+            PlayerPrefs.SetString(touches.GetStrSauvegarde(toucheChangé), touches.GetKey(toucheChangé).ToString());
+        }
     }
 }

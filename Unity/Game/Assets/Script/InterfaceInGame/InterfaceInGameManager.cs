@@ -37,7 +37,6 @@ namespace Script.InterfaceInGame
             int taille = 85;
             
             ownPlayerClass = masterManager.GetOwnPlayer();
-            Debug.Log($"Own Player = {ownPlayerClass}");
             tesInfos.SetUp(ownPlayerClass, 80, -25);
         }
     }

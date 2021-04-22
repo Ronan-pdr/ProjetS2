@@ -1,93 +1,115 @@
+using System.Collections.Generic;
+using Script.InterfaceInGame;
 using UnityEngine;
 
 namespace Script.EntityPlayer
 {
+    // ------------ Enum ------------
+        
+    public enum TypeTouche
+    {
+        Avancer = 0,
+        Reculer = 1,
+        Droite = 2,
+        Gauche = 3,
+        Sprint = 4,
+        Jump = 5,
+        Accroupi = 6,
+        Assoir = 7
+    }
+
     public class TouchesClass
     {
-        // ------------ Enum ------------
-        
-        public enum Touche
+        private class Touche
         {
-            Forward,
+            // ------------ Attributs ------------
+        
+            public KeyCode Key;
+            public string StrSauvegarde;
+        
+            // ------------ Constructeur ------------
+            public Touche(string strSauvegarde, string defaultValue)
+            {
+                Key = (KeyCode) System.Enum.Parse(typeof(KeyCode), 
+                    PlayerPrefs.GetString(strSauvegarde, defaultValue));
+
+                StrSauvegarde = strSauvegarde;
+            }
             
+            // ------------ Méthodes ------------
+            private bool IsNull() => Key == GetNullKeyCode();
+
+            public override string ToString()
+            {
+                if (IsNull())
+                {
+                    return "";
+                }
+
+                return Key.ToString();
+            }
         }
         
         // ------------ Attributs ------------
         public static TouchesClass Instance;
-    
-        protected KeyCode touchLeverAssoir;
-        protected KeyCode touchAccroupi;
 
-        //Avancer
-        protected KeyCode touchAvancer;
-        protected KeyCode touchReculer;
-        protected KeyCode touchDroite;
-        protected KeyCode touchGauche;
-    
-        //Sprint
-        protected KeyCode touchSprint;
-    
-        //Jump
-        protected KeyCode touchJump;
+        private Dictionary<TypeTouche, Touche> dict;
         
         // ------------ Constructeurs ------------
         
         public TouchesClass()
         {
             Instance = this;
-            touchJump = (KeyCode) System.Enum.Parse(typeof(KeyCode),
-                PlayerPrefs.GetString("jumpKey", "Space"));
-            touchSprint = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("sprintKey", "LeftShift"));
-            touchGauche = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("leftKey", "Q"));
-            touchDroite = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("rightKey", "D"));
-            touchReculer = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("backwardKey", "S"));
-            touchAvancer = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("forwardKey", "Z"));
-            touchAccroupi = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("crouchKey", "C"));
-            touchLeverAssoir = (KeyCode) System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("sitKey", "X"));
+
+            dict = new Dictionary<TypeTouche, Touche>();
+            dict.Add(TypeTouche.Avancer, new Touche("forwardKey", "Z"));
+            dict.Add(TypeTouche.Reculer, new Touche("backwardKey", "S"));
+            dict.Add(TypeTouche.Droite, new Touche("rightKey", "D"));
+            dict.Add(TypeTouche.Gauche, new Touche("leftKey", "Q"));
+            dict.Add(TypeTouche.Sprint, new Touche("sprintKey", "LeftShift"));
+            dict.Add(TypeTouche.Jump, new Touche("jumpKey", "Space"));
+            dict.Add(TypeTouche.Accroupi, new Touche("crouchKey", "C"));
+            dict.Add(TypeTouche.Assoir, new Touche("sitKey", "X"));
         }
     
         // ------------ Getters ------------
-        public KeyCode GettouchAvancer() => touchAvancer;
-        public KeyCode GettouchReculer() => touchReculer;
-        public KeyCode GettouchGauche() => touchGauche;
-        public KeyCode GettouchDroite() => touchDroite;
-        public KeyCode GettouchJump() => touchJump;
-        public KeyCode GettouchSprint() => touchSprint;
-        public KeyCode GettouchAccroupi() => touchAccroupi;
-        public KeyCode GettouchLeverAssoir() => touchLeverAssoir;
+        public KeyCode GetKey(TypeTouche typeTouche)
+        {
+            return dict[typeTouche].Key;
+        }
+
+        public string GetStrSauvegarde(TypeTouche typeTouche)
+        {
+            return dict[typeTouche].StrSauvegarde;
+        }
+
+        public List<TypeTouche> GetSameTouches(TypeTouche typeTouche, KeyCode keyCode)
+        {
+            List<TypeTouche> res = new List<TypeTouche>();
+            
+            foreach (KeyValuePair<TypeTouche, Touche> e in dict)
+            {
+                if (e.Value.Key == keyCode)
+                {
+                    res.Add(e.Key);
+                }
+            }
+
+            return res;
+        }
+        
+        public static KeyCode GetNullKeyCode() => KeyCode.Joystick1Button19;
         
         // ------------ Setters ------------
-        public void SettouchAvancer(KeyCode value)
+        public void SetKey(TypeTouche typeTouche, KeyCode keyCode)
         {
-            touchAvancer = value;
+            dict[typeTouche].Key = keyCode;
         }
-        public void SettouchReculer(KeyCode value)
+        
+        // ------------ Méthodes ------------
+        public string ToString(TypeTouche typeTouche)
         {
-            touchReculer = value;
-        }
-        public void SettouchGauche(KeyCode value)
-        {
-            touchGauche = value;
-        }
-        public void SettouchDroite(KeyCode value)
-        {
-            touchDroite = value;
-        }
-        public void SettouchJump(KeyCode value)
-        {
-            touchJump = value;
-        }
-        public void SettouchSprint(KeyCode value)
-        {
-            touchSprint = value;
-        }
-        public void SettouchAccroupi(KeyCode value)
-        {
-            touchAccroupi = value;
-        }
-        public void SettouchLeverAssoir(KeyCode value)
-        {
-            touchLeverAssoir = value;
+            return dict[typeTouche].ToString();
         }
     }
 }
