@@ -253,7 +253,7 @@ namespace Script.EntityPlayer
                 
                 LastChangementEtat = Time.time;
             }
-            else if (etat == Etat.Assis || Time.time - LastChangementEtat < 0.25f) // Aucune animation lorsque le chassé est assis
+            else if (etat == Etat.Assis || Time.time - LastChangementEtat < 0.25f) // Aucune animation lorsque le chassé est assis et s'assois/s'accroupi
             {}
             else if (zMov == 1) // Avancer
             {
