@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using Photon.Realtime;
 using Script.DossierPoint;
@@ -94,10 +95,13 @@ namespace Script.Bot
 
         private void Update()
         {
-            PotentielleMort();
-            
+            if (master.IsGameEnded())
+                return;
+
             if (!IsMyBot())
                 return;
+            
+            PotentielleMort();
             
             UpdateBot();
             UpdateHumanoide();
@@ -279,6 +283,9 @@ namespace Script.Bot
         {
             enabled = false;
             BotManager.Die(this);
+            
+            // détruire l'objet
+            PhotonNetwork.Destroy(gameObject);
         }
 
         // ------------ Mulitijoueur ------------

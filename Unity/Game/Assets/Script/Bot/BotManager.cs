@@ -162,13 +162,11 @@ namespace Script.Bot
 
         public void Die(BotClass bot)
         {
-            // seul le créateur détruit son bot
+            // seul le créateur contient son bot dans une liste
             if (bot.IsMyBot())
             {
                 // le supprimer de la liste
                 Bots.Remove(bot);
-                // détruire l'objet
-                PhotonNetwork.Destroy(bot.gameObject);
             }
         }
         

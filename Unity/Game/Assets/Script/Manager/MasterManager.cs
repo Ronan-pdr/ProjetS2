@@ -289,6 +289,8 @@ namespace Script.Manager
             {
                 throw new Exception("Un script tente de supprimer un joueur de la liste qui n'y est plus");
             }
+            
+            Debug.Log($"Remove de {playerClass} des listes");
 
             players.Remove(playerClass); // remove de la liste players
 
