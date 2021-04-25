@@ -79,10 +79,7 @@ namespace Script.EntityPlayer
 
         private void Update()
         {
-            // tout les ordis doivent le faire
-            PotentielleMort();
-
-            if (!Pv.IsMine)
+            if (!Pv.IsMine || master.IsGameEnded())
                 return;
             
             if (IsPause())
@@ -167,10 +164,13 @@ namespace Script.EntityPlayer
             return false;
         }
 
-        protected override void Die()
+        private void OnDestroy()
         {
             MasterManager.Instance.Die(this);
+        }
 
+        protected override void Die()
+        {
             enabled = false;
             anim.enabled = false;
 

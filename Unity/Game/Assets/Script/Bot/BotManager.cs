@@ -167,8 +167,6 @@ namespace Script.Bot
             {
                 // le supprimer de la liste
                 Bots.Remove(bot);
-                // détruire l'objet
-                PhotonNetwork.Destroy(bot.gameObject);
             }
         }
         

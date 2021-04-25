@@ -49,8 +49,6 @@ namespace Script.Manager
 
         // nombre de participant (sera utilisé pour déterminer le moment lorsque tous les joueurs auront instancié leur playerController)
         private int nParticipant; // participant regroupe les joueurs ainsi que les spectateurs
-
-        private List<PlayerManager> playerManagers;
         
         // Accéder aux différents joueurs, chaque joueur sera donc stocké deux fois, sauf s'il est mort, il sera juste un spectateur
         private List<PlayerClass> players;
@@ -138,7 +136,7 @@ namespace Script.Manager
             // instancier le nombre de joueur
             nParticipant = PhotonNetwork.PlayerList.Length;
             
-            if (CrossManager.IsMaintenance()) // maintenance des crossPoints
+            if (scene == TypeScene.Maintenance || CrossManager.Instance.IsMaintenance()) // maintenance des crossPoints
             {
                 Debug.Log("Début Maintenance des CrossPoints");
                 typeScene = new InMaintenance(nParticipant);
@@ -153,7 +151,6 @@ namespace Script.Manager
             }
 
             // instancier les listes
-            playerManagers = new List<PlayerManager>();
             players = new List<PlayerClass>();
             chasseurs = new List<Chasseur>();
             chassés = new List<Chassé>();
@@ -240,7 +237,11 @@ namespace Script.Manager
         private void SendInfoBot()
         {
             // les spawns
-            int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
+            //int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
+            int[] indexSpawnBotRectiligne =
+            {
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 38, 40, 41
+            };
             int iRectiligne = 0;
             int[] indexSpawnReste = SpawnManager.Instance.GetSpawnBot();
             int iReste = 0;

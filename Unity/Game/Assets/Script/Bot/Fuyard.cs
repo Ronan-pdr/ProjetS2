@@ -152,7 +152,7 @@ namespace Script.Bot
             int len = planFuite.Count;
 
             // s'il a finit une étape de son plan
-            if (IsArrivé(planFuite[len - 1], 0.8f))
+            if (IsArrivé(planFuite[len - 1], 0.5f))
             {
                 planFuite.RemoveAt(len - 1);
                 len -= 1;

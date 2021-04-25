@@ -64,9 +64,11 @@ namespace Script.EntityPlayer
         }
         
         // ------------ Update ------------
-        
+
         protected void UpdateHumanoide()
-        {}
+        {
+            PotentielleMort();
+        }
 
         // ------------ Méthodes ------------
         protected void PotentielleMort()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using Photon.Realtime;
 using Script.DossierPoint;
@@ -94,8 +95,6 @@ namespace Script.Bot
 
         private void Update()
         {
-            PotentielleMort();
-            
             if (!IsMyBot())
                 return;
             
@@ -203,7 +202,7 @@ namespace Script.Bot
         }
 
         // Destination
-        protected bool IsArrivé(Vector3 dest) => IsArrivé(dest, 0.5f);
+        protected bool IsArrivé(Vector3 dest) => IsArrivé(dest, 0.4f);
 
         protected bool IsArrivé(Vector3 dest, float ecart)
         {
@@ -279,6 +278,9 @@ namespace Script.Bot
         {
             enabled = false;
             BotManager.Die(this);
+            
+            // détruire l'objet
+            PhotonNetwork.Destroy(gameObject);
         }
 
         // ------------ Mulitijoueur ------------

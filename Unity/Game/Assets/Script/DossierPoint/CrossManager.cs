@@ -1,22 +1,31 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using JetBrains.Annotations;
 using Photon.Pun;
 using Script.EntityPlayer;
 using Script.InterfaceInGame;
 using Script.Manager;
 using Script.Tools;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 namespace Script.DossierPoint
 {
     public class CrossManager : MonoBehaviour
     {
+        // ------------ SerializeField ------------
+
+        [Header("Maintenance")]
+        [SerializeField] private bool InMaintenance;
+        [SerializeField] private SousCrossManager _sousCrossManager;
+        
         // ------------ Attributs ------------
         
         public static CrossManager Instance;
-        private CrossPoint[] crossPoints;
+        private CrossPoint[] allCrossPoints;
         
         // 'indexResearch'est utilisé lors de la maintenance pour savoir quel est le 
         // cross point qui doit chercher ses voisins
@@ -24,78 +33,116 @@ namespace Script.DossierPoint
 
         private string[] contentOutput;
         
-        private string Path = "Build/SauvegardeCrossManager";
+        private string Path = "Build/SauvegardeCrossManager/";
+        private string nameFile;
+        private CrossPoint[] _maintenanceCrossPoints;
+        private int nNewNeighboor;
         
-        // pour le spawn des botRectiline
-        private List<int> indexPointLibre;
+        // calculer la complexité
+        private Stopwatch time;
         
         // ------------ Getters ------------
-        public int GetNumberPoint() => crossPoints.Length;
+        public int GetNumberPoint() => allCrossPoints.Length;
         
-        public CrossPoint GetPoint(int index) => crossPoints[index];
+        public CrossPoint GetPoint(int index) => allCrossPoints[index];
+
+        public CrossPoint[] GetCrossPoints() => allCrossPoints;
         
         // pour l'instant c'est pas random
-        public int[] GetSpawnBot() => ManList.CreateArrRange(crossPoints.Length);
+        public int[] GetSpawnBot() => ManList.CreateArrRange(allCrossPoints.Length);
 
-        public Vector3 GetPositionSpawn()
-        {
-            if (indexPointLibre.Count == 0)
-                throw new Exception("Pas asser de cross point pour spawn");
-
-            Vector3 res = crossPoints[indexPointLibre[0]].transform.position;
-            indexPointLibre.RemoveAt(0);
-
-            return res;
-        }
-        
-        public static bool IsMaintenance()
-        {
-            return PhotonNetwork.PlayerList.Length == 1 && 
-                   PhotonNetwork.LocalPlayer.NickName == "maintenance" && 
-                   MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Game;
-        }
+        public bool IsMaintenance() => InMaintenance;
     
         public Vector3 GetPosition(int index)
         {
-            if (index >= crossPoints.Length)
+            if (index >= allCrossPoints.Length)
             {
                 throw new Exception("index out of range");
             }
             
-            return crossPoints[index].transform.position;
+            return allCrossPoints[index].transform.position;
+        }
+
+        // ------------ Setters ------------
+
+        public void OneNewNeighboorFind()
+        {
+            nNewNeighboor += 1;
+        }
+        
+        private void SetCrossPoint()
+        {
+            CrossPoint[] crossPoints = GetComponentsInChildren<CrossPoint>();
+            int l = crossPoints.Length;
+
+            allCrossPoints = new CrossPoint[l];
+
+            foreach (CrossPoint crossPoint in crossPoints)
+            {
+                int index = CrossPoint.GetIndexToName(crossPoint.name);
+
+                if (!(allCrossPoints[index] is null))
+                {
+                    throw new Exception($"Deux cross point ont le même numéro ({index})");
+                }
+                    
+                allCrossPoints[index] = crossPoint;
+            }
         }
         
         // ------------ Constructeurs ------------
         private void Awake()
         {
             Instance = this;
-            crossPoints = GetComponentsInChildren<CrossPoint>();
-
-            int l = crossPoints.Length;
-            indexPointLibre = ManList.CreateListRange(l);
-            contentOutput = new string[l];
+            SetCrossPoint();
+            
+            Debug.Log($"lenght = {allCrossPoints.Length}");
+            foreach (CrossPoint crossPoint in allCrossPoints)
+            {
+                if (crossPoint is null)
+                {
+                    throw new Exception("La liste allCrossPoints a mal été créé");
+                }
+            }
         }
         private void Start()
         {
             if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Labyrinthe)
                 return;
 
-            if (MasterManager.Instance.IsInMaintenance())
+            if (InMaintenance)
             {
-                indexResearch = -1;
-                NextResearch();
+                BeginMaintenance();
             }
             else
             {
-                LoadNeighboors();
+                LoadNeigboors(nameScMan => throw new Exception($"Le fichier de sauvegarde '{nameScMan}' des crossPoints n'existe pas --> faire une maintenance"));
             }
         }
         
         // ------------ Méthodes ------------
 
+        private void BeginMaintenance()
+        {
+            LoadNeigboors(nameScMan => Debug.Log($"{nameScMan} n'a encore jamais été initialisé"));
+                
+            _maintenanceCrossPoints = _sousCrossManager.CrossPoints;
+            nameFile = _sousCrossManager.name;
+                
+            contentOutput = new string[_maintenanceCrossPoints.Length];
+                
+            // Let's the party started
+            indexResearch = -1;
+            NextResearch();
+                
+            // enregistrer temps au début de la recherche
+            time = new Stopwatch();
+            time.Start();
+        }
+
         public void EndOfOneResearch(List<CrossPoint> neighboors)
         {
-            if (indexResearch >= crossPoints.Length)
+            if (indexResearch >= _maintenanceCrossPoints.Length)
                 throw new Exception("Il y a plus de recherche que de CrossPoint...");
             
             contentOutput[indexResearch] = NeighboorsToContent(neighboors);
@@ -107,30 +154,38 @@ namespace Script.DossierPoint
         {
             indexResearch += 1;
             
-            if (indexResearch < crossPoints.Length)
+            if (indexResearch < _maintenanceCrossPoints.Length)
             {
-                crossPoints[indexResearch].SearchNeighboors();
+                _maintenanceCrossPoints[indexResearch].SearchNeighboors();
             }
             else // toutes les recherches ont été faites
             {
                 Ouput();
-                Debug.Log("Maintenance terminé");
+                time.Stop();
+                Debug.Log($"Maintenance de '{nameFile}' est terminé et a trouvé {nNewNeighboor} nouveaux voisins");
+                Debug.Log($"La maintence s'est effectué en {time.ElapsedMilliseconds/60000} minutes et {time.ElapsedMilliseconds%60000/1000} secondes");
+
+                // c'est reparti pour un tour
+                if (nNewNeighboor > 0)
+                {
+                    BeginMaintenance();
+                }
             }
         }
         
         private string NeighboorsToContent(List<CrossPoint> neighboors)
         {
-            int nCrossPoint = crossPoints.Length;
-            string res = $"{crossPoints[indexResearch].name} : ";
+            int nCrossPoint = allCrossPoints.Length;
+            string res = $"{_maintenanceCrossPoints[indexResearch].name} : ";
             
             foreach (CrossPoint neighboor in neighboors)
             {
                 int i;
-                for (i = 0; i < nCrossPoint && neighboor != crossPoints[i]; i++)
+                for (i = 0; i < nCrossPoint && neighboor != allCrossPoints[i]; i++)
                 {}
 
                 if (i == nCrossPoint)
-                    throw new Exception("Un crossPoint n'est pas dans le crossManager");
+                    throw new Exception($"{neighboor} n'est pas dans le crossManager");
 
                 res += $",{i}";
             }
@@ -141,7 +196,13 @@ namespace Script.DossierPoint
         // ------------ Parsing ------------
         private void Ouput()
         {
-            using (StreamWriter sw = File.CreateText(Path))
+            // Créer le dossier s'il n'existe pas
+            if (!Directory.Exists(Path))
+            {
+                Directory.CreateDirectory(Path);
+            }
+
+            using (StreamWriter sw = File.CreateText(Path + nameFile))
             {
                 foreach (string ligne in contentOutput)
                 {
@@ -150,39 +211,62 @@ namespace Script.DossierPoint
             }
         }
 
-        private void LoadNeighboors()
+        private void LoadNeigboors(Action<string> notExist)
         {
-            if (!File.Exists(Path))
+            int l = allCrossPoints.Length;
+            int nTraité = 0;
+
+            foreach (SousCrossManager sousCrossManager in GetComponentsInChildren<SousCrossManager>())
             {
-                throw new Exception("Le fichier de sauvegarde des crossPoints n'existe pas --> faire une maintenance");
+                if (File.Exists(Path + sousCrossManager.name))
+                {
+                    Aux(sousCrossManager.name);
+                }
+                else
+                {
+                    notExist(sousCrossManager.name);
+                }
+            }
+
+            if (nTraité != l)
+            {
+                Debug.Log("WARNING : Le fichier de sauvegarde des crossPoints n'est pas compatible.");
+                Debug.Log($"Il y a eu {nTraité} crossPoint traités pour {l} en tout --> faire une maintenance");
             }
             
-            using (StreamReader sr = File.OpenText(Path))
+            void Aux(string fileName)
             {
-                string ligne;
-                int nCrossPoint = crossPoints.Length;
-
-                int iCrossPoint;
-                for (iCrossPoint = 0; iCrossPoint < nCrossPoint && (ligne = sr.ReadLine()) != null; iCrossPoint++)
+                using (StreamReader sr = File.OpenText(Path + fileName))
                 {
-                    string[] infos = ligne.Split(',');
-
-                    string nameCrossPoint = infos[0].Substring(0, infos[0].Length - 3);
-                    
-                    if (crossPoints[iCrossPoint].name != nameCrossPoint)
-                        Debug.Log("WARNING : Le fichier de sauvegarde des crossPoints n'est pas compatible avec les crossPoint --> faire une maintenance");
-
-                    // set les neighboors du cross point
-                    int nInfo = infos.Length;
-                    for (int i = 1; i < nInfo; i++)
+                    string ligne;
+                
+                    while ((ligne = sr.ReadLine()) != null)
                     {
-                        crossPoints[iCrossPoint].AddNeighboor(crossPoints[int.Parse(infos[i])]);
-                    }
-                }
+                        string[] infos = ligne.Split(',');
 
-                if (iCrossPoint < nCrossPoint)
-                {
-                    Debug.Log("WARNING : Le fichier de sauvegarde des crossPoints n'est pas compatible avec les crossPoint --> faire une maintenance");
+                        string nameCrossPoint = infos[0].Substring(0, infos[0].Length - 3);
+                        int iCrossPoint = CrossPoint.GetIndexToName(nameCrossPoint);
+
+                        if (iCrossPoint >= l)
+                        {
+                            throw new Exception(
+                                $"WARNING : Le fichier de sauvegarde '{fileName}' des crossPoints n'est pas compatible --> faire une maintenance");
+                        }
+
+                        if (allCrossPoints[iCrossPoint].name != nameCrossPoint)
+                        {
+                            Debug.Log($"WARNING : Le fichier de sauvegarde '{fileName}' des crossPoints n'est pas compatible --> faire une maintenance");
+                        }
+
+                        // set les neighboors du cross point
+                        int nInfo = infos.Length;
+                        for (int i = 1; i < nInfo; i++)
+                        {
+                            allCrossPoints[iCrossPoint].AddNeighboor(allCrossPoints[int.Parse(infos[i])]);
+                        }
+
+                        nTraité++;
+                    }
                 }
             }
         }

@@ -36,9 +36,9 @@ namespace Script.Manager
             switch (NJoueur)
             {
                 case 1:
-                    n.Rectiligne = 1;
-                    n.Fuyard = 1;
-                    n.Suiveur = 2;
+                    n.Rectiligne = 15;
+                    n.Fuyard = 0;
+                    n.Suiveur = 0;
                     break;
                 default:
                     n.Rectiligne = 4;

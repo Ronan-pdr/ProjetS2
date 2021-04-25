@@ -16,9 +16,6 @@ namespace Script.EntityPlayer
         
         //Photon
         protected PhotonView Pv;
-
-        //Rassembler les infos
-        private MasterManager master;
         
         //Variable similaire aux playerClass
         private float yLookRotation;
@@ -32,6 +29,7 @@ namespace Script.EntityPlayer
         public void SetPorteur()
         {
             Porteur = master.GetPlayer(indexPorteur).transform;
+            Position();
         }
         
         // ------------ Constructeurs ------------
@@ -64,7 +62,7 @@ namespace Script.EntityPlayer
         // ------------ Update ------------
         private void Update()
         {
-            if (!Pv.IsMine)
+            if (!Pv.IsMine || master.IsGameEnded())
                 return;
 
             if (PlayerClass.IsPause())

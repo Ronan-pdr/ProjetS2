@@ -37,6 +37,7 @@ namespace Script.InterfaceInGame
 
         private void Start()
         {
+            // Eécran win ou écran lose
             if (PlayerManager.Own.Type == _winner)
             {
                 ecranWin.SetActive(true);
@@ -46,7 +47,12 @@ namespace Script.InterfaceInGame
                 ecranLose.SetActive(true);
             }
             
+            // Le masterClient a le pouvoir de restart
             reStartGameButton.SetActive(PhotonNetwork.IsMasterClient);
+            
+            // Gérer la souris
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
         
         // ------------ Méthodes ------------
