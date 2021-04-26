@@ -26,8 +26,8 @@ namespace Script.InterfaceInGame
         {
             player = value;
             
-            text.transform.position = new Vector3(largeur, hauteur + 85f, 0);
-            SpriteContent.transform.position = new Vector3(largeur - 45, hauteur + 80f, 0);
+            text.transform.position = new Vector3(largeur-100f, hauteur + 110f, 0);
+            SpriteContent.transform.position = new Vector3(largeur, hauteur + 85f, 0);
         }
         
         // ------------ Méthodes ------------
@@ -37,7 +37,7 @@ namespace Script.InterfaceInGame
                 return;
             
             UpdateImageVie();
-            UpadteText();
+            UpdateText();
         }
 
         private void UpdateImageVie()
@@ -58,10 +58,10 @@ namespace Script.InterfaceInGame
             }
         }
 
-        private void UpadteText()
+        private void UpdateText()
         {
             int vie = player.GetCurrentHealth();
-            text.text = vie <= 0 ? "Dead" : vie + " / " + player.GetMaxHealth(); // la vie
+            text.text = vie <= 0 ? "Dead" : vie + ""; // la vie
         }
     }
 }
