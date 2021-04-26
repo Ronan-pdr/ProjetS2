@@ -2,6 +2,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Bot;
+using Script.Manager;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -9,17 +10,18 @@ namespace Script.EntityPlayer
 {
     public abstract class Humanoide : Entity
     {
-        //Etat
+        // ------------Etat ------------
+        
         protected bool Grounded;
 
-        //Avancer
+        // Avancer
         protected const float WalkSpeed = 3f;
         protected const float SprintSpeed = 5f;
 
-        //Jump
+        // Jump
         private const float JumpForce = 200f;
     
-        //GamePlay
+        // Vie
         protected int MaxHealth;
         protected int CurrentHealth;
     
@@ -29,29 +31,47 @@ namespace Script.EntityPlayer
         // Jump 
         private float lastJump; // le temps la dernière fois que le joueur a sauté
         private float periodeJump = 0.2f; // tous les combien de temps il peut sauter
+        
+        // Collision
+        protected HumanCapsule capsule;
     
-        //Getter
+        // ------------ Getters ------------
         public int GetCurrentHealth() => CurrentHealth;
         public int GetMaxHealth() => MaxHealth;
         public PhotonView GetPv() => Pv;
         public Player GetPlayer() => Pv.Owner;
         
+        // ------------ Setters ------------
         public void SetGroundedState(bool value)
         {
             Grounded = value;
         }
 
+        // ------------ Constructeurs ------------
         protected void AwakeHuman()
         {
+            SetRbTr();
             Pv = GetComponent<PhotonView>(); // doit obligatoirement être dans awake
         }
 
         protected void StartHuman()
         {
             CurrentHealth = MaxHealth;
+            master = MasterManager.Instance;
+
+            // récupérer les côtes des bots pour les ray
+            capsule = MasterManager.Instance.GetHumanCapsule();
+        }
+        
+        // ------------ Update ------------
+
+        protected void UpdateHumanoide()
+        {
+            PotentielleMort();
         }
 
-        private void PotentielleMort()
+        // ------------ Méthodes ------------
+        protected void PotentielleMort()
         {
             // Mourir de chute
             if (transform.position.y < -10f)
@@ -66,13 +86,6 @@ namespace Script.EntityPlayer
             }
         }
 
-        protected void UpdateHumanoide()
-        {
-            PotentielleMort();
-        }
-    
-        //Déplacment
-
         public void Jump()
         {
             if (Time.time - lastJump > periodeJump && Grounded)
@@ -82,18 +95,15 @@ namespace Script.EntityPlayer
                 lastJump = Time.time;
             }
         }
-
-        //Animation
-        [SerializeField] protected Animator anim;
-
-        protected void AnimationStop()
+        
+        // Aucune information pertinente ne peut être retenu
+        // du script qui appelle cette fonction
+        public void TakeDamage(int damage)
         {
-            anim.enabled = false;
-        }
-    
-        //GamePlay
-        public void TakeDamage(int damage) // Seul les chasseurs activent cette fonction
-        {
+            // Personne prend de dommage lorsque la partie est terminé
+            if (master.IsGameEnded())
+                return;
+            
             CurrentHealth -= damage;
         
             Hashtable hash = new Hashtable();
@@ -114,12 +124,30 @@ namespace Script.EntityPlayer
 
         protected abstract void Die();
 
+        // ------------ Animation ------------
+        
+        [Header("Animation")]
+        [SerializeField] protected Animator anim;
+
+        protected void AnimationStop()
+        {
+            anim.enabled = false;
+        }
+        
+        protected void ActiverAnimation(string strAnimation)
+        {
+            anim.enabled = true;
+            anim.Play(strAnimation);
+        }
+        
+        // ------------ Surchargeurs ------------
+
         public static bool operator ==(Humanoide hum1, Humanoide hum2)
         {
             if (hum1 is null || hum2 is null)
             {
-                Debug.Log("WARNING : Tu as testé l'égalité de deux humains dont au moins un est null");
-                Debug.Log($"hum1 -> {hum1} ; hum2 -> {hum2}");
+                //Debug.Log("WARNING : Tu as testé l'égalité de deux humains dont au moins un est null");
+                //Debug.Log($"hum1 -> {hum1} ; hum2 -> {hum2}");
                 return false;
             }
             
@@ -135,16 +163,6 @@ namespace Script.EntityPlayer
                 return false;
             }
         }
-        
-        // animation
-        
-        protected void ActiverAnimation(string strAnimation)
-        {
-            anim.enabled = true;
-            anim.Play(strAnimation);
-        }
-        
-        // surchargeur
         public static bool operator !=(Humanoide hum1, Humanoide hum2)
         {
             return !(hum1 == hum2);

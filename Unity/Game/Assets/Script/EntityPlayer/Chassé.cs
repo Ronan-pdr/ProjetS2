@@ -11,52 +11,24 @@ namespace Script.EntityPlayer
 {
     public class Chassé : PlayerClass
     {
-        // constructeurs
-        private void Awake()
+        // ------------ Constructeurs ------------
+
+        protected override void AwakePlayer()
         {
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChassé(this);
-            
-            AwakePlayer();
         }
 
-        void Start()
+        protected override void StartPlayer()
         {
             MaxHealth = 100;
-            StartPlayer();
         }
         
-        void Update()
-        {
-            if (!Pv.IsMine)
-                return;
-            
-            Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
-            Cursor.visible = PauseMenu.Instance.GetIsPaused();
-            
-            if (PauseMenu.Instance.GetIsPaused())
-            {
-                MoveAmount = Vector3.zero;
-                return;
-            }
+        // ------------ Update ------------
 
-            UpdatePlayer();
-            Animation();
-        }
-
-        private void FixedUpdate()
+        protected override void UpdatePlayer()
         {
-            FixedUpdatePlayer();
-        }
-        
-        //GamePlay
-
-        protected override void Die() // Est appelé lorsqu'il vient de mourir
-        {
-            MasterManager.Instance.Die(Pv.Owner);
-            
-            anim.enabled = false;
-            PhotonNetwork.Destroy(gameObject);
+            AnimationTernier();
         }
     }
 }

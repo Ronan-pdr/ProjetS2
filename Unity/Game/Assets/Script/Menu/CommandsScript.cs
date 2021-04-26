@@ -81,7 +81,7 @@ public class CommandsScript : MonoBehaviour
         waitingForKey = true;
         yield return WaitForKey();
         
-        foreach (TypeTouche toucheReset in touches.GetSameTouches(toucheAssigné, newKey))
+        foreach (TypeTouche toucheReset in touches.GetSameTouches(newKey))
         {
             SetTouche(toucheReset, TouchesClass.GetNullKeyCode());
         }

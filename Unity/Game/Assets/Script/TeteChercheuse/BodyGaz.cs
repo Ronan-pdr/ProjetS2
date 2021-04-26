@@ -7,8 +7,6 @@ using UnityEngine;
 
 namespace Script.TeteChercheuse
 {
-    
-    
     public class BodyGaz : BodyChercheur
     {
         private class Node

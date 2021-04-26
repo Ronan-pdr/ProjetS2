@@ -12,7 +12,7 @@ namespace Script.Bot
 {
     public class Fuyard : BotClass
     {
-        // Etat
+        // ------------ Etat ------------
         protected enum Etat
         {
             Attend,
@@ -34,50 +34,45 @@ namespace Script.Bot
         private float tempsRestantFuite;
         private float distanceFuite;*/
         
-        // constructeurs
-        private void Awake()
+        // ------------ Constructeurs ------------
+        
+        protected override void AwakeBot()
+        {}
+
+        protected override void StartBot()
+        {}
+
+        // ------------ Upadate ------------
+        protected override void UpdateBot()
         {
-            AwakeBot();
-        }
-
-        private void Start()
-        {
-            rotationSpeed = 600;
-            
-            StartBot(); // tout le monde le fait pour qu'il soit parenter
-            
-            master = MasterManager.Instance;
-
-            //distanceFuite = SprintSpeed * tempsMaxFuite;
-        }
-
-        private void Update()
-        {
-            if (!IsMyBot())
-                return;
-            
-            // quoi que soit son état, il fait ça
-            UpdateBot();
-
             if (etat == Etat.Fuite)
             {
                 Fuir();
             }
             else if (etat == Etat.Attend)
             {
-                foreach (PlayerClass chasseur in IsPlayerInMyVision(TypePlayer.Chasseur))
+                foreach (PlayerClass chasseur in GetPlayerInMyVision(TypePlayer.Chasseur))
                 {
                     // ce sont forcément des chasseurs
                     NewVu((Chasseur)chasseur);
                 }
             }
+            else if (etat == Etat.FuiteSansPlan)
+            {
+                // attend son plan, ne fait strictement rien
+            }
+            else if (etat == Etat.Poule)
+            {
+                if (GetPlayerInMyVision(TypePlayer.Chasseur).Count == 0)
+                {
+                    ActiverAnimation("Lever PASS");
+                    etat = Etat.Attend;
+                    running = Running.Arret;
+                }
+            }
         }
 
-        private void FixedUpdate()
-        {
-            FixedUpdateBot();
-        }
-
+        // ------------ Méthodes ------------
         private void NewVu(Chasseur vu) // en gros, changement de direction
         {
             int i;
@@ -120,6 +115,8 @@ namespace Script.Bot
                 // part en cavale
                 planFuite = path;
                 etat = Etat.Fuite;
+                running = Running.Course;
+                SetMoveAmount(Vector3.forward, PleineVitesse);
             
                 /*foreach (Vector3 p in planFuite)
                 {
@@ -150,48 +147,33 @@ namespace Script.Bot
             etat = Etat.Fuite;
         }*/
 
-        protected override void FiniDeTourner()
-        {} // lorsqu'il a fini de tourner, il ne fait rien de plus
-
         private void Fuir()
         {
             int len = planFuite.Count;
 
             // s'il a finit une étape de son plan
-            if (IsArrivé(planFuite[len - 1]))
+            if (IsArrivé(planFuite[len - 1], 0.5f))
             {
                 planFuite.RemoveAt(len - 1);
+                len -= 1;
                 
-                if (len == 1) // il finit sa cavale,...
+                if (len == 0) // il finit sa cavale,...
                 {
                     MoveAmount = Vector3.zero; // ...il s'arrête...
                     etat = Etat.Attend;
+                    running = Running.Arret;
                     Vus.Clear();
                     AnimationStop();
                     return; // ...et ne fait rien d'autre
                 }
                 
-                CalculeRotation(planFuite[len - 2]);
-            }
-            
-            // il recalcule sa rotation tous les 0.5f
-            if (Time.time - LastCalculRotation > 0.5f)
-            {
                 CalculeRotation(planFuite[len - 1]);
             }
             
-            if (SimpleMath.Abs(AmountRotation) > 0)
-                Tourner();
-            
-            // set sa vitesse actuel (se déplace toujours droit devant lui)
-            SetMoveAmount(Vector3.forward, SprintSpeed);
-            
-            // animation
-            anim.enabled = true;
-            anim.Play("Course");
+            GestionRotation(planFuite[len - 1]);
         }
         
-        // Event
+        // ------------ Event ------------
         private void OnTriggerEnter(Collider other)
         {
             OnCollisionAux(other);

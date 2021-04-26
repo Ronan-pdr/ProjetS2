@@ -10,61 +10,41 @@ namespace Script.EntityPlayer
 {
     public class Chasseur : PlayerClass
     {
-        // attributs
+        // ------------ Serialize Field ------------
         
-        // Relatif aux armes
+        [Header("Liste des armes")]
         [SerializeField] private Arme[] armes;
+        
+        // ------------ Attributs ------------
+
         private int armeIndex;
         private int previousArmeIndex = -1;
     
-        // constructeurs
-        private void Awake()
+        // ------------ Constructeurs ------------
+        
+        protected override void AwakePlayer()
         {
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChasseur(this);
-            
-            AwakePlayer();
         }
 
-        void Start()
+        protected override void StartPlayer()
         {
             MaxHealth = 100;
-            StartPlayer();
-        
             EquipItem(0);
         }
         
-        // méthodes
-        void Update()
+        // ------------ Upadte ------------
+        protected override void UpdatePlayer()
         {
-            if (!Pv.IsMine)
-                return;
-        
-            Cursor.lockState = PauseMenu.Instance.GetIsPaused() ? CursorLockMode.None : CursorLockMode.Confined;
-            Cursor.visible = PauseMenu.Instance.GetIsPaused();
-        
-            if (PauseMenu.Instance.GetIsPaused())
-            {
-                MoveAmount = Vector3.zero;
-                return;
-            }
-
             ManipulerArme();
-            
-            UpdatePlayer();
-        }
-
-        private void FixedUpdate()
-        {
-            FixedUpdatePlayer();
         }
     
+        // ------------ Méthodes ------------
 
-        //GamePlay
-    
         private void ManipulerArme()
         {
-            //changer d'arme avec les numéros
+            // changer d'arme avec les numéros
             for (int i = 0; i < armes.Length; i++)
             {
                 if (Input.GetKey((i + 1).ToString()))
@@ -74,7 +54,7 @@ namespace Script.EntityPlayer
                 }
             }
 
-            //changer d'arme avec la molette
+            // changer d'arme avec la molette
             if (Input.GetAxisRaw("Mouse ScrollWheel") > 0)
             {
                 EquipItem(SimpleMath.Mod(previousArmeIndex + 1, armes.Length));
@@ -114,11 +94,6 @@ namespace Script.EntityPlayer
                 hash.Add("itemIndex", armeIndex);
                 PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
             }
-        }
-
-        protected override void Die()
-        {
-        
         }
     }
 }

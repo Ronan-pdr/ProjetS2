@@ -5,13 +5,13 @@ namespace Script.Manager
 {
     public class InGuessWho : ManagerGame
     {
-        // constructeur
+        // ------------ Constructeur ------------
         public InGuessWho(int nJoueur)
         {
             NJoueur = nJoueur;
         }
         
-        // méthodes
+        // ------------ Méthodes ------------
         protected override NtypeJoueur GetNJoueur()
         {
             NtypeJoueur n = new NtypeJoueur();
@@ -36,12 +36,14 @@ namespace Script.Manager
             switch (NJoueur)
             {
                 case 1:
-                    n.Rectiligne = 1;
-                    n.Fuyard = 1;
+                    n.Rectiligne = 15;
+                    n.Fuyard = 0;
+                    n.Suiveur = 0;
                     break;
                 default:
-                    n.Rectiligne = 1;
-                    n.Fuyard = 1;
+                    n.Rectiligne = 4;
+                    n.Fuyard = 2;
+                    n.Suiveur = 1;
                     break;
             }
             

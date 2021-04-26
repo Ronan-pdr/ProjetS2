@@ -23,6 +23,11 @@ namespace Script.Tools
             return res;
         }
 
+        public static int[] CreateArrRange(int l)
+        {
+            return ManList<int>.Copy(CreateListRange(l));
+        }
+
         // manipulation
 
         public enum Coord
@@ -98,6 +103,36 @@ namespace Script.Tools
 
             return arr;
         }
+        
+        // Exemple :
+        // - (7, 3) --> [3, 2, 2]
+        // - (8, 5) --> [2, 2, 2, 1, 1]
+        public static int[] SplitResponsabilité(int n, int l)
+        {
+            int[] res = new int[l];
+            int mod = n % l;
+
+            for (int i = 0; i < l; i++)
+            {
+                res[i] = n / l + (mod > i ? 1 : 0);
+            }
+
+            if (n != Sum(res))
+                throw new Exception($"({n}, {l}) donne {ManList<int>.ToString(res)}");
+
+            return res;
+        }
+
+        private static int Sum(int[] arr)
+        {
+            int sum = 0;
+            foreach (int v in arr)
+            {
+                sum += v;
+            }
+
+            return sum;
+        }
     }
     
     public static class ManList<T>
@@ -114,6 +149,38 @@ namespace Script.Tools
             }
 
             return arr;
+        }
+
+        public static string ToString(T[] arr)
+        {
+            return ToString(new List<T>(arr));
+        }
+
+        public static string ToString(List<T> list)
+        {
+            string res = "[";
+
+            foreach (T e in list)
+            {
+                res += $"{e}, ";
+            }
+
+            return res + "]";
+        }
+        
+        // recherce
+        public static int GetIndex(T[] arr, T e)
+        {
+            int l = arr.Length;
+            for (int i = 0; i < l; i++)
+            {
+                if (arr[i].Equals(e))
+                {
+                    return i;
+                }
+            }
+
+            throw new Exception($"{e} n'est pas contenu dans {arr}");
         }
     }
 }

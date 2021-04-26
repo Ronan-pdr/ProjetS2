@@ -12,6 +12,8 @@ namespace Script.TeteChercheuse
         // Nous n'avons pas envie que tous les ordinateurs des joueurs suivent ce script.
         // Ainsi, les body checheur s'instancie localement (pas avec photon),
         
+        // ------------ Attributs ------------
+        
         // les capsules colliders
         [SerializeField] protected CapsuleCollider botCapsuleCollider;
         protected CapsuleCollider ownCapsuleCollider;
@@ -22,6 +24,7 @@ namespace Script.TeteChercheuse
         //Ecart maximum entre sa destination et sa position pour qu'il soit considéré comme arrivé
         protected float EcartDistance;
 
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             ownCapsuleCollider = GetComponent<CapsuleCollider>();

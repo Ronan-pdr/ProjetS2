@@ -47,7 +47,15 @@ namespace Script.InterfaceInGame
             int len = sprites.Length;
                      
             Image image = SpriteContent.GetComponent<Image>();
-            image.sprite = sprites[v * (len - 1) / maxV];
+            
+            if (v < 0)
+            {
+                image.sprite = sprites[0];
+            }
+            else
+            {
+               image.sprite = sprites[v * (len - 1) / maxV]; 
+            }
         }
 
         private void UpadteText()

@@ -4,13 +4,13 @@ namespace Script.Manager
 {
     public class InMaintenance : ManagerGame
     {
-        // constructeur
+        // ------------ Constructeur ------------
         public InMaintenance(int nJoueur)
         {
             NJoueur = nJoueur;
         }
         
-        // méthodes
+        // ------------ Méthodes ------------
         protected override NtypeJoueur GetNJoueur()
         {
             if (NJoueur > 1)
@@ -26,7 +26,6 @@ namespace Script.Manager
 
         protected override NtypeBot GetNBot()
         {
-            // 0 bot
             return new NtypeBot();
         }
     }

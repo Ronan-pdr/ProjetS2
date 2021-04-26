@@ -1,6 +1,8 @@
+using System;
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Bot;
+using Script.InterfaceInGame;
 using Script.Manager;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -9,6 +11,11 @@ namespace Script.EntityPlayer
 {
     public abstract class PlayerClass : Humanoide
     {
+        // ------------ SerializeField ------------
+        
+        [Header("Camera")]
+        [SerializeField] protected Transform cameraHolder;
+        
         // ------------ Etat ------------
         protected enum Etat
         {
@@ -20,20 +27,24 @@ namespace Script.EntityPlayer
         protected Etat etat = Etat.Debout;
         protected float LastChangementEtat; // La dernière fois qu'on a changé de position entre assis et lever
         
-        protected TouchesClass touches;
+        // ------------ Attributs ------------
+        
+        private TouchesClass touches;
 
         //Look
         private float verticalLookRotation; 
         private float mouseSensitivity = 3f;
-        [SerializeField] protected Transform cameraHolder;
 
         //Rassembler les infos
         protected Transform masterManager;
         
-        protected void AwakePlayer()
+        // ------------ Constructeurs ------------
+        
+        protected abstract void AwakePlayer();
+        private void Awake()
         {
-            SetRbTr();
             AwakeHuman();
+            AwakePlayer();
         
             // parenter
             masterManager = MasterManager.Instance.transform;
@@ -45,25 +56,40 @@ namespace Script.EntityPlayer
                 MasterManager.Instance.SetOwnPlayer(this);
             }
         
-            name = PhotonNetwork.NickName;
+            name = Pv.Owner.NickName;
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);
         }
-
-        protected void StartPlayer()
+        protected abstract void StartPlayer();
+        private void Start()
         {
+            StartPlayer();
             StartHuman();
             touches = TouchesClass.Instance;
         
             if (!Pv.IsMine) 
             {
-                Destroy(GetComponentInChildren<Camera>().gameObject); // On veut détruire les caméras qui ne sont pas les tiennes
-                Destroy(Rb);
+                // On veut détruire les caméras qui ne sont pas les tiennes
+                Destroy(GetComponentInChildren<Camera>().gameObject);
             }
         }
 
-        protected void UpdatePlayer()
+        // ------------ Update ------------
+        protected abstract void UpdatePlayer();
+
+        private void Update()
         {
+            if (!Pv.IsMine || master.IsGameEnded())
+                return;
+            
+            if (IsPause())
+            {
+                MoveAmount = Vector3.zero;
+                return;
+            }
+            
+            UpdatePlayer();
+            
             Look();
             Move();
             
@@ -74,8 +100,8 @@ namespace Script.EntityPlayer
 
             UpdateHumanoide();
         }
-    
-        protected void FixedUpdatePlayer()
+
+        private void FixedUpdate()
         {
             if (!Pv.IsMine)
                 return;
@@ -83,6 +109,7 @@ namespace Script.EntityPlayer
             MoveEntity();
         }
     
+        // ------------ Méthodes ------------
         private void Move()
         {
             if (etat == Etat.Assis) // il se déplace pas quand il est assis
@@ -112,7 +139,7 @@ namespace Script.EntityPlayer
             SetMoveAmount(moveDir, speed);
         }
 
-        void Look()
+        private void Look()
         {
             Tr.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
 
@@ -121,6 +148,40 @@ namespace Script.EntityPlayer
 
             cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
         }
+
+        public static bool IsPause()
+        {
+            if (PauseMenu.Instance.GetIsPaused())
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                return true;
+            }
+            
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = false;
+
+            return false;
+        }
+
+        private void OnDestroy()
+        {
+            MasterManager.Instance.Die(this);
+        }
+
+        protected override void Die()
+        {
+            enabled = false;
+            anim.enabled = false;
+
+            // On ne détruit pas le corps des autres joueurs
+            if (Pv.IsMine)
+            {
+                PhotonNetwork.Destroy(gameObject);
+            }
+        }
+        
+        // ------------ Photon ------------
     
         // Communication par hash
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -144,20 +205,10 @@ namespace Script.EntityPlayer
             {
                 CurrentHealth = (int)vie;
             }
-        
-            // les morts -> Die (MasterManager)
-            if (!Pv.IsMine) // c'est le mourant qui envoie le hash
-            {
-                if (changedProps.TryGetValue("MortPlayer", out object value))
-                {
-                    Player player = (Player)value;
-                    MasterManager.Instance.Die(player);
-                }
-            }
         }
         
-        // Animation
-        protected void Animation()
+        // ------------ Animation ------------
+        protected void AnimationTernier()
         {
             (int xMov, int zMov) = (0, 0);
             if (Input.GetKey(touches.GetKey(TypeTouche.Avancer))) // avancer
@@ -202,7 +253,7 @@ namespace Script.EntityPlayer
                 
                 LastChangementEtat = Time.time;
             }
-            else if (etat == Etat.Assis || Time.time - LastChangementEtat < 0.25f) // Aucune animation lorsque le chassé est assis
+            else if (etat == Etat.Assis || Time.time - LastChangementEtat < 0.25f) // Aucune animation lorsque le chassé est assis et s'assois/s'accroupi
             {}
             else if (zMov == 1) // Avancer
             {

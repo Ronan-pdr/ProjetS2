@@ -44,14 +44,14 @@ namespace Script.Tools
     
         public static float Cos(float angle)
         {
-            float degre = DegreToRadian(angle);
-            return (float)Math.Cos(degre);
+            float rad = DegreToRadian(angle);
+            return (float)Math.Cos(rad);
         }
         
         public static float Sin(float angle)
         {
-            float degre = DegreToRadian(angle);
-            return (float)Math.Sin(degre);
+            float rad = DegreToRadian(angle);
+            return (float)Math.Sin(rad);
         }
     
         public static float ArcTan(float opposé, float adjacent) // l'angle obtenu sera toujours positif
@@ -78,6 +78,11 @@ namespace Script.Tools
             return e.x - 0.5f < v.x && v.x < e.x + 0.5f 
                 && e.y - 0.5f < v.y && v.y < e.y + 0.5f
                 && e.z - 0.5f < v.z && v.z < e.z + 0.5f;
+        }
+        
+        public static bool IsEncadré(float a, float b)
+        {
+            return b - 0.5f < a && a < b + 0.5f;
         }
     }    
 }

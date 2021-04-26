@@ -23,33 +23,52 @@ namespace Script.EntityPlayer
     
     public class PlayerManager : MonoBehaviourPunCallbacks
     {
-        // photon
+        // ------------ Attribut ------------
+
+        public static PlayerManager Own;
+        
         private PhotonView Pv;
-    
+        
+        // Pour savoir ce que tu étais au début
+        private TypePlayer _type;
+        
+        // ------------ Getter ------------
+
+        public TypePlayer Type => _type;
+        
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             transform.parent = MasterManager.Instance.transform;
-        
             Pv = GetComponent<PhotonView>();
+
+            if (Pv.IsMine)
+            {
+                Own = this;
+            }
         }
-        
-        private void CreateController(TypePlayer type, Transform tr) // Instanstiate our player
+
+        // ------------ Méthodes ------------
+        private void CreateController(int indexSpawn) // Instanstiate our player
         {
-            string t = "";
-            switch (type)
+            string t;
+            Transform tr;
+            switch (_type)
             {
                 case TypePlayer.Chasseur:
                     t = "Chasseur";
+                    tr = SpawnManager.Instance.GetTrChasseur(indexSpawn);
                     break;
                 case TypePlayer.Chassé:
                     t = "Chassé";
+                    tr = SpawnManager.Instance.GetTrChassé(indexSpawn);
                     break;
                 case TypePlayer.Blocard:
                     t = "Blocard";
+                    tr = SpawnManager.Instance.GetTrChassé(indexSpawn);
                     break;
                 default:
-                    Debug.Log($"Un script a tenté de créer un joueur de type {type}");
-                    break;
+                    throw new Exception("Un script a tenté de créer un joueur de type {type}");
             }
 
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", t),
@@ -76,6 +95,7 @@ namespace Script.EntityPlayer
             return (indexSpot, typePlayer);
         }
 
+        // ------------ Multijoueur ------------
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
@@ -89,26 +109,10 @@ namespace Script.EntityPlayer
                 if (value == null) // bien vérifier que le changement a été fait
                     return;
 
-                (int indexSpot, TypePlayer typePlayer) = DecodeFormatInfoJoueur((string) value);
+                (int indexSpawn, TypePlayer typePlayer) = DecodeFormatInfoJoueur((string) value);
 
-                // récupérer le transform du point en fonction du type du joueur (les chasseurs et les chassés n'ont pas les mêmes spawns)
-                Transform trPoint;
-                switch (typePlayer)
-                {
-                    case TypePlayer.Chasseur:
-                        trPoint = SpawnManager.Instance.GetTrChasseur(indexSpot);
-                        break;
-                    case TypePlayer.Chassé:
-                        trPoint = SpawnManager.Instance.GetTrChassé(indexSpot);
-                        break;
-                    case TypePlayer.Blocard:
-                        trPoint = SpawnManager.Instance.GetTrChassé(indexSpot);
-                        break;
-                    default:
-                        throw new Exception($"Le type {typePlayer} n'est pas encore géré");
-                }
-                    
-                CreateController(typePlayer, trPoint);
+                _type = typePlayer;
+                CreateController(indexSpawn);
             }
         }
     }

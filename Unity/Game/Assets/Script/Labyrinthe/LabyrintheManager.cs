@@ -8,6 +8,7 @@ namespace Script.Labyrinthe
     public class LabyrintheManager : MonoBehaviour
     {
         // ------------ Serialized Field ------------
+        
         [Header("Sortie")]
         [SerializeField] private GameObject sortie;
         
@@ -17,7 +18,7 @@ namespace Script.Labyrinthe
         private RayGaz sonde;
         private bool isSondeFinish;
         
-        // ------------ Setters ------------
+        // ------------ Setter ------------
 
         private void FinSonde()
         {
@@ -36,7 +37,7 @@ namespace Script.Labyrinthe
             sonde = RayGaz.GetSonde(sortie.transform.position, FinSonde);
         }
         
-        // ------------ Méthodes ------------
+        // ------------ Méthode ------------
         public List<Vector3> GetBestPath(Vector3 pos)
         {
             if (isSondeFinish)
