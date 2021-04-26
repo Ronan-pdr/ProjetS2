@@ -193,8 +193,9 @@ namespace Script.TeteChercheuse
             switch (type)
             {
                 case TypeRecherche.Path:
-                    Debug.Log("Il existe aucun chemin pour y accéder");
+                    Debug.Log($"Il existe aucun chemin pour y accéder ({destination.x}, {destination.y}, {destination.z})");
                     RecepGetPath(new List<Vector3>());
+                    TestRayGaz.CreateMarqueur(destination);
                     Destroy(gameObject);
                     break;
                 case TypeRecherche.Sonde:

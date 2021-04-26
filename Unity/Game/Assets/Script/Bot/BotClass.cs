@@ -42,6 +42,9 @@ namespace Script.Bot
         protected float TranquilleVitesse = WalkSpeed;
         protected float PleineVitesse = SprintSpeed;
         
+        // quand il est bloqué
+        private (float time, Vector3 position) block;
+
         // ------------ Getters ------------
         
         // cette fonction indique si un bot est contrôlé par ton ordinateur
@@ -102,6 +105,7 @@ namespace Script.Bot
             UpdateHumanoide();
 
             SetSpeed();
+            ManageBlock();
         }
 
         protected void FixedUpdate()
@@ -115,16 +119,20 @@ namespace Script.Bot
         // ------------ Méthodes ------------
 
         // Rotation
-        protected void GestionRotation(Vector3 dest)
+        protected void GestionRotation(Vector3 dest, float periodeCalculRotation)
         {
-            // il recalcule sa rotation tous les 0.3f
-            if (Time.time - LastCalculRotation > 1f)
+            // il recalcule sa rotation tous les 0.5f
+            if (Time.time - LastCalculRotation > periodeCalculRotation)
             {
                 CalculeRotation(dest);
             }
 
-            if (SimpleMath.Abs(AmountRotation) > 0)
-                Tourner();
+            Tourner();
+        }
+        
+        protected void GestionRotation(Vector3 dest)
+        {
+            GestionRotation(dest, 0.5f);
         }
         
         protected void CalculeRotation(Vector3 dest)
@@ -135,6 +143,9 @@ namespace Script.Bot
 
         protected void Tourner()
         {
+            if (SimpleMath.Abs(AmountRotation) <= 0)
+                return;
+            
             int sensRotation;
             if (AmountRotation >= 0)
                 sensRotation = 1;
@@ -165,13 +176,13 @@ namespace Script.Bot
             if (absMoveAmount < 60)
                 return 0.9f;
             if (absMoveAmount < 90)
-                return 1f;
-            if (absMoveAmount < 120)
                 return 1.1f;
+            if (absMoveAmount < 120)
+                return 1.3f;
             if (absMoveAmount < 150)
-                return 1.2f;
+                return 1.5f;
             
-            return 1.3f;
+            return 1.7f;
         }
         
         // vitesse
@@ -272,6 +283,29 @@ namespace Script.Bot
 
             return false;
         }
+        
+        // bloquer
+        private void ManageBlock()
+        {
+            // vérifier qu'il n'est pas bloqué
+            if (SimpleMath.IsEncadré(block.position, Tr.position))
+            {
+                // s'il semble bloquer à une position
+                if (Time.time - block.time > 2 && running != Running.Arret)
+                {
+                    // et que ça fait longtemps
+                    WhenBlock();
+                }
+            }
+            else
+            {
+                // set block
+                block.time = Time.time;
+                block.position = Tr.position;
+            }
+        }
+
+        protected abstract void WhenBlock();
         
         // GamePlay
         protected override void Die()

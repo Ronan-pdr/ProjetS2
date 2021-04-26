@@ -109,55 +109,45 @@ namespace Script.Bot
         // si la valeur de retour est le "Vector.zero", alors il n'y a pas de bon spot
         public Vector3 GetGoodSpot(BotClass fuyard, Vector3 posChasseur)
         {
-            // trouvons le bot qui est le plus proche du fuyard tout en ayant une distace minimale
-            // et en même temps plus loin pour le chasseur que pour le fuyard
+            // trouvons le bot qui est le plus loin du fuyard,
+            // en étant à la même altitude que le fuyard et
+            // le Fuyard doit être plus proche que le chasseur
             Vector3 posFuyard = fuyard.transform.position;
 
-            Vector3 bestPos = Vector3.zero;
-            float minDist = 200;
+            Vector3 bestPosBot = Vector3.zero;
+            float maxDist = 3;
             foreach (BotClass bot in Bots)
             {
                 if (bot == fuyard)
+                {
+                    // il va pas fuir vers lui-même (logique hehe)
                     continue;
+                }
 
                 Vector3 posBot = bot.transform.position;
+                
+                if (!SimpleMath.IsEncadré(Calcul.Distance(posFuyard.y, posBot.y), 0.1f))
+                {
+                    // pas à la même altitude
+                    continue;
+                }
 
                 float distWithFuyard = Calcul.Distance(posFuyard, posBot);
                 float distWithChasseur = Calcul.Distance(posChasseur, posBot);
 
-                if (3 < distWithFuyard && distWithFuyard < minDist && distWithFuyard < distWithChasseur)
+                if (maxDist < distWithFuyard && distWithFuyard < distWithChasseur)
                 {
-                    minDist = distWithFuyard;
-                    bestPos = posBot;
+                    maxDist = distWithFuyard;
+                    bestPosBot = posBot;
                 }
             }
 
-            if (SimpleMath.IsEncadré(bestPos, Vector3.zero)) // aucun bon spot
+            if (SimpleMath.IsEncadré(bestPosBot, Vector3.zero)) // aucun bon spot
             {
                 return Vector3.zero;
             }
 
-            // y'a un bon spot et je vais répupérer la position
-            // du cross point le plus proche
-            CrossManager crossMan = CrossManager.Instance;
-            
-            Vector3 res = Vector3.zero;
-            minDist = 100;
-            int len = crossMan.GetNumberPoint();
-
-            for (int i = 0; i < len; i++)
-            {
-                Vector3 posPoint = crossMan.GetPosition(i);
-                float dist = Calcul.Distance(bestPos, posPoint);
-
-                if (dist < minDist)
-                {
-                    res = posPoint;
-                    minDist = dist;
-                }
-            }
-
-            return res;
+            return bestPosBot;
         }
 
         public void Die(BotClass bot)

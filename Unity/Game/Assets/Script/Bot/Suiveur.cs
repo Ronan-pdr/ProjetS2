@@ -65,15 +65,10 @@ namespace Script.Bot
                 
                 MustEscapeFollowOrWait();
                 
-                // il recalcule sa rotation tous les 0.2f secondes
-                if (Time.time - LastCalculRotation > 0.2f)
-                {
-                    CalculeRotation(destination);
-                }
+                GestionRotation(destination, 0.2f);
             }
 
-            if (SimpleMath.Abs(AmountRotation) > 0)
-                Tourner();
+            Tourner();
         }
 
         // ------------ Méthodes ------------
@@ -152,6 +147,12 @@ namespace Script.Bot
             }
 
             return res.bestDest;
+        }
+        
+        // bloqué
+        protected override void WhenBlock()
+        {
+            //AmountRotation = 180;
         }
     }
 }

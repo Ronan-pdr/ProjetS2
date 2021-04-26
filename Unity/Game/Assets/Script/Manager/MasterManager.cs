@@ -135,8 +135,18 @@ namespace Script.Manager
             
             // instancier le nombre de joueur
             nParticipant = PhotonNetwork.PlayerList.Length;
-            
-            if (scene == TypeScene.Maintenance) // maintenance des crossPoints
+
+            // instancier les listes
+            players = new List<PlayerClass>();
+            chasseurs = new List<Chasseur>();
+            chassés = new List<Chassé>();
+            spectateurs = new List<Spectateur>();
+        }
+
+        public void Start()
+        {
+            // determiner le typeScene
+            if (CrossManager.Instance.IsMaintenance) // maintenance des crossPoints
             {
                 Debug.Log("Début Maintenance des CrossPoints");
                 typeScene = new InMaintenance(nParticipant);
@@ -149,16 +159,7 @@ namespace Script.Manager
             {
                 typeScene = new InLabyrinthe(nParticipant);
             }
-
-            // instancier les listes
-            players = new List<PlayerClass>();
-            chasseurs = new List<Chasseur>();
-            chassés = new List<Chassé>();
-            spectateurs = new List<Spectateur>();
-        }
-
-        public void Start()
-        {
+            
             // récupérer les contours de la map
             RecupContour();
             
@@ -237,11 +238,8 @@ namespace Script.Manager
         private void SendInfoBot()
         {
             // les spawns
-            //int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
-            int[] indexSpawnBotRectiligne =
-            {
-                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 38, 40, 41
-            };
+            int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
+            //int[] indexSpawnBotRectiligne = ManList.CreateListRange(56, 100);
             int iRectiligne = 0;
             int[] indexSpawnReste = SpawnManager.Instance.GetSpawnBot();
             int iReste = 0;
@@ -286,6 +284,14 @@ namespace Script.Manager
 
         public void Die(PlayerClass playerClass)
         {
+            if (!PlayerManager.Own)
+            {
+                // cela veut dire qu'on est sur un joueur qui a quitté la partie,
+                // donc on ne fait rien
+                return;
+            }
+                
+            
             if (!players.Contains(playerClass))
             {
                 throw new Exception("Un script tente de supprimer un joueur de la liste qui n'y est plus");

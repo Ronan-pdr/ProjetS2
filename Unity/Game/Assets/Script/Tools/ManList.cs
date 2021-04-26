@@ -11,13 +11,23 @@ namespace Script.Tools
         // constructeurs
         
         // ex : CreateListRange(4) -> [0, 1, 2, 3]
-        public static List<int> CreateListRange(int length)
+        public static List<int> CreateListRange(int iFin)
         {
-            List<int> res = new List<int>();
-            
-            for (int i = 0; i < length; i++)
+            return new List<int>(CreateListRange(0, iFin));
+        }
+
+        public static int[] CreateListRange(int iDebut, int iFin)
+        {
+            if (iDebut > iFin)
             {
-                res.Add(i);
+                throw new Exception($"iDebut = {iDebut} et iFin = {iFin}");
+            }
+            
+            int[] res = new int[iFin - iDebut];
+            
+            for (int i = iDebut; i < iFin; i++)
+            {
+                res[i - iDebut] = i;
             }
 
             return res;

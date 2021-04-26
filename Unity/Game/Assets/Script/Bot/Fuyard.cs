@@ -35,9 +35,11 @@ namespace Script.Bot
         private float distanceFuite;*/
         
         // ------------ Constructeurs ------------
-        
+
         protected override void AwakeBot()
-        {}
+        {
+            RotationSpeed = 600;
+        }
 
         protected override void StartBot()
         {}
@@ -51,6 +53,8 @@ namespace Script.Bot
             }
             else if (etat == Etat.Attend)
             {
+                Tourner();
+                
                 foreach (PlayerClass chasseur in GetPlayerInMyVision(TypePlayer.Chasseur))
                 {
                     // ce sont forcément des chasseurs
@@ -118,10 +122,10 @@ namespace Script.Bot
                 running = Running.Course;
                 SetMoveAmount(Vector3.forward, PleineVitesse);
             
-                /*foreach (Vector3 p in planFuite)
+                foreach (Vector3 p in planFuite)
                 {
                     TestRayGaz.CreatePointPath(p);
-                }*/
+                }
             }
         }
 
@@ -173,6 +177,12 @@ namespace Script.Bot
             GestionRotation(planFuite[len - 1]);
         }
         
+        // bloqué
+        protected override void WhenBlock()
+        {
+            //AmountRotation = 180;
+        }
+
         // ------------ Event ------------
         private void OnTriggerEnter(Collider other)
         {
