@@ -47,10 +47,7 @@ namespace Script.DossierPoint
 
         private void Awake()
         {
-            if (InMaintenance)
-            {
-                Instance = this;
-            }
+            Instance = this;
             
             // si on n'est pas en maintenance, cette class ne sert à rien
         }

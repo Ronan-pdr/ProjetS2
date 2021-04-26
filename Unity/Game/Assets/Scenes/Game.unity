@@ -6140,6 +6140,7 @@ GameObject:
   - component: {fileID: 556295172}
   - component: {fileID: 556295171}
   - component: {fileID: 556295173}
+  - component: {fileID: 556295174}
   m_Layer: 0
   m_Name: CrossManager
   m_TagString: Untagged
@@ -6190,8 +6191,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c22ae8aab5654edcb012b12c60e1bdf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InMaintenance: 1
-  _sousCrossManager: {fileID: 775143552}
+  InMaintenance: 0
+  _sousCrossManager: {fileID: 1585369170}
+--- !u!114 &556295174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556295170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed28b7710fae425db18fec787cd899c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &561781885
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38404,7 +38417,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -525982530942577693, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
       propertyPath: scene
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -525982530942577693, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
       propertyPath: marqueur
