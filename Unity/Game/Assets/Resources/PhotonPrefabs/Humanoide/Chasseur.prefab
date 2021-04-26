@@ -227,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f062c1883cce0a488106e069327e550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  couvreChef: {fileID: 0}
   anim: {fileID: 7917680838160966800}
   cameraHolder: {fileID: 2045545082932553956}
   armes:

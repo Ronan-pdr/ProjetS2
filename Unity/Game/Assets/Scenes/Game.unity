@@ -6858,9 +6858,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InMaintenance: 0
   sousCrossManagers:
-  - {fileID: 775143552}
-  - {fileID: 386419239}
-  - {fileID: 1585369170}
+  - {fileID: 809558488}
 --- !u!4 &556295172
 Transform:
   m_ObjectHideFlags: 0
@@ -37214,15 +37212,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4261902594927881119, guid: 40a9d2ac9024b064fbc4bbca068ba57a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 52.38
+      value: 49.55
       objectReference: {fileID: 0}
     - target: {fileID: 4261902594927881119, guid: 40a9d2ac9024b064fbc4bbca068ba57a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.88
       objectReference: {fileID: 0}
     - target: {fileID: 4261902594927881119, guid: 40a9d2ac9024b064fbc4bbca068ba57a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -43.28
+      value: -31.15
       objectReference: {fileID: 0}
     - target: {fileID: 4261902594927881119, guid: 40a9d2ac9024b064fbc4bbca068ba57a, type: 3}
       propertyPath: m_LocalRotation.w

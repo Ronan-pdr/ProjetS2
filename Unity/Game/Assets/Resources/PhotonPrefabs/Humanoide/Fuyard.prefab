@@ -2562,6 +2562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51e362c84354b09b571232f5900176c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  couvreChef: {fileID: 3172660070881983466}
   anim: {fileID: 2909232356640108291}
 --- !u!1 &8087434200883770223
 GameObject:
@@ -3092,10 +3093,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: chapeau
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: dc1e7ea799847dc49bf003198b17294f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc1e7ea799847dc49bf003198b17294f, type: 3}
 --- !u!4 &2831740704962388304 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: dc1e7ea799847dc49bf003198b17294f, type: 3}
+  m_PrefabInstance: {fileID: 2361826119095764667}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3172660070881983466 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: dc1e7ea799847dc49bf003198b17294f, type: 3}
   m_PrefabInstance: {fileID: 2361826119095764667}
   m_PrefabAsset: {fileID: 0}

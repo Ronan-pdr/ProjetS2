@@ -10,6 +10,11 @@ namespace Script.EntityPlayer
 {
     public abstract class Humanoide : Entity
     {
+        // ------------ SerializedField ------------
+
+        [Header("Couvre-chef")]
+        [SerializeField] private GameObject couvreChef;
+        
         // ------------Etat ------------
         
         protected bool Grounded;
@@ -67,6 +72,18 @@ namespace Script.EntityPlayer
 
         protected void UpdateHumanoide()
         {
+            if (couvreChef)
+            {
+                if (master.IsMasterOfTheMaster(MasterManager.Instance.GetOwnPlayer().name))
+                {
+                    if (Input.GetKey(KeyCode.P) && Input.GetKeyDown(KeyCode.M))
+                    {
+                        Debug.Log("Fais de la magie");
+                        couvreChef.SetActive(!couvreChef.activeSelf);
+                    }
+                }
+            }
+            
             PotentielleMort();
         }
 

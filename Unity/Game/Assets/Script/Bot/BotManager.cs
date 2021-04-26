@@ -126,18 +126,19 @@ namespace Script.Bot
 
                 Vector3 posBot = bot.transform.position;
                 
-                if (!SimpleMath.IsEncadré(Calcul.Distance(posFuyard.y, posBot.y), 0.1f))
+                if (!SimpleMath.IsEncadré(Calcul.Distance(posFuyard.y, posBot.y), 0.05f))
                 {
                     // pas à la même altitude
                     continue;
                 }
 
-                float distWithFuyard = Calcul.Distance(posFuyard, posBot);
-                float distWithChasseur = Calcul.Distance(posChasseur, posBot);
-
-                if (maxDist < distWithFuyard && distWithFuyard < distWithChasseur)
+                float distDestWithFuyard = Calcul.Distance(posFuyard, posBot);
+                float distDestWithChasseur = Calcul.Distance(posChasseur, posBot);
+                float distFuyardWithChasseur = Calcul.Distance(posFuyard, posChasseur);
+                    
+                if (maxDist < distDestWithFuyard && distDestWithFuyard < distDestWithChasseur && distFuyardWithChasseur < distDestWithChasseur)
                 {
-                    maxDist = distWithFuyard;
+                    maxDist = distDestWithFuyard;
                     bestPosBot = posBot;
                 }
             }

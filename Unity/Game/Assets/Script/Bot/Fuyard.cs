@@ -38,7 +38,7 @@ namespace Script.Bot
 
         protected override void AwakeBot()
         {
-            RotationSpeed = 600;
+            RotationSpeed = 700;
         }
 
         protected override void StartBot()
@@ -122,10 +122,10 @@ namespace Script.Bot
                 running = Running.Course;
                 SetMoveAmount(Vector3.forward, PleineVitesse);
             
-                foreach (Vector3 p in planFuite)
+                /*foreach (Vector3 p in planFuite)
                 {
                     TestRayGaz.CreatePointPath(p);
-                }
+                }*/
             }
         }
 
@@ -180,7 +180,7 @@ namespace Script.Bot
         // bloqué
         protected override void WhenBlock()
         {
-            //AmountRotation = 180;
+            AmountRotation = 180;
         }
 
         // ------------ Event ------------

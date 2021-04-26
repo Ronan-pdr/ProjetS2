@@ -152,7 +152,7 @@ namespace Script.Bot
         // bloqué
         protected override void WhenBlock()
         {
-            //AmountRotation = 180;
+            AmountRotation = 180;
         }
     }
 }

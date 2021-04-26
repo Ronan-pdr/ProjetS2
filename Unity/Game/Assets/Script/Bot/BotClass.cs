@@ -192,10 +192,16 @@ namespace Script.Bot
             {
                 MoveAmount = Vector3.zero;
             }
-            else if (AmountRotation > 80)
+            else if (AmountRotation > 120)
             {
                 // ralenti pour le virage
-                SetMoveAmount(Vector3.forward, 1);
+                SetMoveAmount(Vector3.forward, 0.5f);
+                ActiverAnimation("Avant");
+            }
+            else if (AmountRotation > 60)
+            {
+                // ralenti pour le virage
+                SetMoveAmount(Vector3.forward, 1f);
                 ActiverAnimation("Avant");
             }
             else if (running == Running.Marche)
@@ -295,14 +301,19 @@ namespace Script.Bot
                 {
                     // et que ça fait longtemps
                     WhenBlock();
+                    SetBlock();
                 }
             }
             else
             {
-                // set block
-                block.time = Time.time;
-                block.position = Tr.position;
+                SetBlock();
             }
+        }
+
+        private void SetBlock()
+        {
+            block.time = Time.time;
+            block.position = Tr.position;
         }
 
         protected abstract void WhenBlock();
