@@ -136,7 +136,7 @@ namespace Script.Manager
             // instancier le nombre de joueur
             nParticipant = PhotonNetwork.PlayerList.Length;
             
-            if (scene == TypeScene.Maintenance || CrossManager.Instance.IsMaintenance()) // maintenance des crossPoints
+            if (scene == TypeScene.Maintenance || CrossMaintenance.Instance.IsMaintenance) // maintenance des crossPoints
             {
                 Debug.Log("Début Maintenance des CrossPoints");
                 typeScene = new InMaintenance(nParticipant);

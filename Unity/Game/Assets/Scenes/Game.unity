@@ -731,7 +731,7 @@ GameObject:
   - component: {fileID: 57705303}
   - component: {fileID: 57705304}
   m_Layer: 0
-  m_Name: Batiment Principal-RDC
+  m_Name: 5.2 Batiment Principal-RDC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1677,7 +1677,7 @@ GameObject:
   - component: {fileID: 212700270}
   - component: {fileID: 212700271}
   m_Layer: 0
-  m_Name: Batiment Principal-Sous sol
+  m_Name: 5.1 Batiment Principal-Sous sol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3877,7 +3877,7 @@ GameObject:
   - component: {fileID: 386419238}
   - component: {fileID: 386419239}
   m_Layer: 0
-  m_Name: Cours
+  m_Name: 2 Cours
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6139,6 +6139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 556295172}
   - component: {fileID: 556295171}
+  - component: {fileID: 556295173}
   m_Layer: 0
   m_Name: CrossManager
   m_TagString: Untagged
@@ -6158,8 +6159,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a561654562a3494f88103700ee112c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InMaintenance: 0
-  _sousCrossManager: {fileID: 809558488}
 --- !u!4 &556295172
 Transform:
   m_ObjectHideFlags: 0
@@ -6179,6 +6178,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &556295173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556295170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c22ae8aab5654edcb012b12c60e1bdf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InMaintenance: 1
+  _sousCrossManager: {fileID: 775143552}
 --- !u!1001 &561781885
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6326,7 +6339,7 @@ GameObject:
   - component: {fileID: 567366081}
   - component: {fileID: 567366082}
   m_Layer: 0
-  m_Name: Batiment Principal-1er etage
+  m_Name: 5.3 Batiment Principal-1er etage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8196,7 +8209,7 @@ GameObject:
   - component: {fileID: 775143551}
   - component: {fileID: 775143552}
   m_Layer: 0
-  m_Name: BioTech-1er etage
+  m_Name: 4.2 BioTech-1er etage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8561,7 +8574,7 @@ GameObject:
   - component: {fileID: 809558489}
   - component: {fileID: 809558488}
   m_Layer: 0
-  m_Name: BouffeSpot
+  m_Name: 1 BouffeSpot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8629,7 +8642,7 @@ GameObject:
   - component: {fileID: 810042405}
   - component: {fileID: 810042406}
   m_Layer: 0
-  m_Name: "Batiment Principal-2\xE8me etage"
+  m_Name: "5.4 Batiment Principal-2\xE8me etage"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21820,7 +21833,7 @@ GameObject:
   - component: {fileID: 931925086}
   - component: {fileID: 931925087}
   m_Layer: 0
-  m_Name: "Batiment Principal-3\xE8me etage"
+  m_Name: "5.5 Batiment Principal-3\xE8me etage"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23488,7 +23501,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1060042640}
   m_Layer: 0
-  m_Name: BioTech
+  m_Name: 4 BioTech
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28329,7 +28342,7 @@ GameObject:
   - component: {fileID: 1585369169}
   - component: {fileID: 1585369170}
   m_Layer: 0
-  m_Name: BabyFoot
+  m_Name: 3 BabyFoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32935,7 +32948,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1948243428}
   m_Layer: 0
-  m_Name: BatimentVillJuif
+  m_Name: 5 BatimentVillJuif
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33246,7 +33259,7 @@ GameObject:
   - component: {fileID: 1993241968}
   - component: {fileID: 1993241969}
   m_Layer: 0
-  m_Name: BioTech-RDC
+  m_Name: 4.1 BioTech-RDC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35327,7 +35340,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -525982530942577693, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
       propertyPath: scene
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -525982530942577693, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
       propertyPath: marqueur
