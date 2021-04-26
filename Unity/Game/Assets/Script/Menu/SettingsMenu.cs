@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Audio;
 
 public class SettingsMenu : MonoBehaviour
 {
     Resolution[] resolutions;
     public TMP_Dropdown resolutionDropdown;
     int currentResolutionIndex = 0;
+    public AudioManager audioManager;
+
     void Start()
     {
         resolutions = Screen.resolutions;
 
         resolutionDropdown.ClearOptions();
-
+        
         List<string> options = new List<string>();
         for (int i = 0; i < resolutions.Length; i++)
         {
@@ -25,7 +28,6 @@ public class SettingsMenu : MonoBehaviour
                 currentResolutionIndex = i;
             }
         }
-        
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
@@ -43,5 +45,10 @@ public class SettingsMenu : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
+
+    public void SetVolume(float volume)
+    {
+        audioManager.audioSource.volume = volume;
     }
 }
