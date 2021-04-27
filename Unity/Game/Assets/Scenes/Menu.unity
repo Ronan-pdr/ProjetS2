@@ -1482,7 +1482,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2444814145404438995, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -404
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 2444814145811399758, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_Name
@@ -1490,7 +1490,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2444814145811399758, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2444814145811399759, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_Pivot.x
@@ -1595,6 +1595,14 @@ PrefabInstance:
     - target: {fileID: 2444814145825075738, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: CommandsScript, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2444814145914045101, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2444814145914045101, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3543173484058907385, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3862,7 +3870,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &724819589
 MonoBehaviour:
   m_ObjectHideFlags: 0

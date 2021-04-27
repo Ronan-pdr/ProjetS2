@@ -74,9 +74,10 @@ namespace Script.Menu
             {
                 Destroy(child.gameObject);
             }
+            ChangeName(players[players.Length -1]);
             for (int i = 0; i < players.Length; i++)
             {
-                ChangeName(players[i]);
+                
                 Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
             }
 
@@ -182,9 +183,11 @@ namespace Script.Menu
             string nickName = newPlayer.NickName;
             Player[] players = PhotonNetwork.PlayerListOthers;
             int count = 0;
-            foreach (Player player in players)
+            for (int i = 0; i < players.Length;i++)
             {
-                if (player.NickName == newPlayer.NickName)
+                if (players[i].Equals(newPlayer))
+                    continue;
+                if (players[i].NickName == newPlayer.NickName)
                 {
                     count += 1;
                     newPlayer.NickName = nickName + count;
