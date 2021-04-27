@@ -69,7 +69,7 @@ namespace Script.Bot
             {
                 if (GetPlayerInMyVision(TypePlayer.Chasseur).Count == 0)
                 {
-                    ActiverAnimation("Lever PASS");
+                    //ActiverAnimation("Lever PASS");
                     etat = Etat.Attend;
                     running = Running.Arret;
                 }
@@ -97,7 +97,7 @@ namespace Script.Bot
             {
                 // n'a pas de destination
                 etat = Etat.Poule;
-                ActiverAnimation("Assis");
+                //ActiverAnimation("Assis");
             }
             else // attend son plan de fuite
             {
@@ -112,7 +112,7 @@ namespace Script.Bot
             {
                 // n'a pas de destination, n'a vraiment pas de plan...
                 etat = Etat.Poule;
-                ActiverAnimation("Assis");
+                //ActiverAnimation("Assis");
             } 
             else
             {
@@ -167,7 +167,7 @@ namespace Script.Bot
                     etat = Etat.Attend;
                     running = Running.Arret;
                     Vus.Clear();
-                    AnimationStop();
+                    //AnimationStop();
                     return; // ...et ne fait rien d'autre
                 }
                 

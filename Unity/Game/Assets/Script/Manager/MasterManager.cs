@@ -96,7 +96,7 @@ namespace Script.Manager
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
-        public bool IsMasterOfTheMaster(string n) => n == "Peepoodoo";
+        public bool IsMasterOfTheMaster(string n) => n == "Peepoodoooo";
 
         // ------------ Setters ------------
         public void SetOwnPlayer(PlayerClass value)

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Script.Animation.Personnages.Hunted;
 using Script.Bot;
 using Script.InterfaceInGame;
 using Script.Manager;
@@ -17,6 +18,8 @@ namespace Script.EntityPlayer
         {
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutChassé(this);
+            
+            Anim = GetComponent<HuntedStateAnim>();
         }
 
         protected override void StartPlayer()
@@ -27,8 +30,6 @@ namespace Script.EntityPlayer
         // ------------ Update ------------
 
         protected override void UpdatePlayer()
-        {
-            AnimationTernier();
-        }
+        {}
     }
 }

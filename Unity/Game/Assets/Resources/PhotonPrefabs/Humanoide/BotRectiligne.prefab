@@ -2524,7 +2524,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   couvreChef: {fileID: 5509512097429350878}
-  anim: {fileID: 2909232356640108291}
 --- !u!114 &3982942136922913934
 MonoBehaviour:
   m_ObjectHideFlags: 0

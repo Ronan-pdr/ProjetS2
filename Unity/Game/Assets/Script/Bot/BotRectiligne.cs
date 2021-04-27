@@ -55,7 +55,7 @@ namespace Script.Bot
                 if (IsArrivé(PointDestination.transform.position, 0.3f)) // arrivé
                 {
                     FindNewDestination();
-                    AnimationStop();
+                    //AnimationStop();
                 }
             }
         }

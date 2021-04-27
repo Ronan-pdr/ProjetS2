@@ -88,7 +88,12 @@ namespace Script.Tools
         
         public static bool IsEncadré(float a, float b)
         {
-            return b - 0.5f < a && a < b + 0.5f;
+            return IsEncadré(a, b, 0.5f);
+        }
+        
+        public static bool IsEncadré(float a, float b, float ecart)
+        {
+            return b - ecart < a && a < b + ecart;
         }
     }    
 }

@@ -73,9 +73,19 @@ namespace Script.EntityPlayer
         }
     
         // ------------ Getters ------------
-        public KeyCode GetKey(TypeTouche typeTouche)
+        public bool GetKey(TypeTouche typeTouche)
         {
-            return dict[typeTouche].Key;
+            return Input.GetKey(dict[typeTouche].Key);
+        }
+        
+        public bool GetKeyDown(TypeTouche typeTouche)
+        {
+            return Input.GetKeyDown(dict[typeTouche].Key);
+        }
+        
+        public bool GetKeyUp(TypeTouche typeTouche)
+        {
+            return Input.GetKeyUp(dict[typeTouche].Key);
         }
 
         public string GetStrSauvegarde(TypeTouche typeTouche)

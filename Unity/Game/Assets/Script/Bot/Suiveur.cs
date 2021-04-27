@@ -105,7 +105,6 @@ namespace Script.Bot
                 running = Running.Arret;
                 CalculeRotation(Vu.position);
                 MoveAmount = Vector3.zero;
-                AnimationStop();
             }
             else
             {

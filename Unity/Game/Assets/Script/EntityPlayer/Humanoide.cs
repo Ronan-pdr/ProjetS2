@@ -1,6 +1,8 @@
 ﻿using System;
 using Photon.Pun;
 using Photon.Realtime;
+using Script.Animation;
+using Script.Animation.Personnages.Hunted;
 using Script.Bot;
 using Script.Manager;
 using UnityEngine;
@@ -17,9 +19,10 @@ namespace Script.EntityPlayer
         
         // ------------Etat ------------
         
-        protected bool Grounded;
+        private bool _grounded;
 
         // Avancer
+        protected const float SquatSpeed = 2f;
         protected const float WalkSpeed = 3f;
         protected const float SprintSpeed = 5f;
 
@@ -39,17 +42,32 @@ namespace Script.EntityPlayer
         
         // Collision
         protected HumanCapsule capsule;
+        
+        // animation
+        protected HumanAnim Anim;
     
         // ------------ Getters ------------
         public int GetCurrentHealth() => CurrentHealth;
         public int GetMaxHealth() => MaxHealth;
         public PhotonView GetPv() => Pv;
         public Player GetPlayer() => Pv.Owner;
+
+        protected bool Grounded => _grounded;
         
         // ------------ Setters ------------
-        public void SetGroundedState(bool value)
+        public void SetGrounded(bool value)
         {
-            Grounded = value;
+            if (value)
+            {
+                // il vient de retoucher le sol
+                Anim.StopPrevious();
+            }
+            else
+            {
+                Anim.Set(HuntedStateAnim.Type.Jump);
+            }
+            
+            _grounded = value;
         }
 
         // ------------ Constructeurs ------------
@@ -105,10 +123,10 @@ namespace Script.EntityPlayer
 
         public void Jump()
         {
-            if (Time.time - lastJump > periodeJump && Grounded)
+            if (Time.time - lastJump > periodeJump && _grounded)
             {
                 Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
-                Grounded = false;
+                SetGrounded(false);
                 lastJump = Time.time;
             }
         }
@@ -140,22 +158,6 @@ namespace Script.EntityPlayer
         }
 
         protected abstract void Die();
-
-        // ------------ Animation ------------
-        
-        [Header("Animation")]
-        [SerializeField] protected Animator anim;
-
-        protected void AnimationStop()
-        {
-            anim.enabled = false;
-        }
-        
-        protected void ActiverAnimation(string strAnimation)
-        {
-            anim.enabled = true;
-            anim.Play(strAnimation);
-        }
         
         // ------------ Surchargeurs ------------
 

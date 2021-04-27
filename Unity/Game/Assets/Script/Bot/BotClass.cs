@@ -196,25 +196,25 @@ namespace Script.Bot
             {
                 // ralenti pour le virage
                 SetMoveAmount(Vector3.forward, 0.5f);
-                ActiverAnimation("Avant");
+                //ActiverAnimation("Avant");
             }
             else if (AmountRotation > 60)
             {
                 // ralenti pour le virage
                 SetMoveAmount(Vector3.forward, 1f);
-                ActiverAnimation("Avant");
+                //ActiverAnimation("Avant");
             }
             else if (running == Running.Marche)
             {
                 // marche
                 SetMoveAmount(Vector3.forward, TranquilleVitesse);
-                ActiverAnimation("Avant");
+                //ActiverAnimation("Avant");
             }
             else if (running == Running.Course)
             {
                 // court
                 SetMoveAmount(Vector3.forward, PleineVitesse);
-                ActiverAnimation("Course");
+                //ActiverAnimation("Course");
             }
         }
 

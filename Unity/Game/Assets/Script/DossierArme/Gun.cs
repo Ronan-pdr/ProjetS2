@@ -1,12 +1,16 @@
+using Script.Animation;
 using UnityEngine;
 using Script.TeteChercheuse;
 
 namespace Script.DossierArme
 {
     public class Gun : Arme
-    { 
+    {
+        // ------------ Méthode ------------
         public override void UtiliserArme()
         {
+            anim.Set(HumanAnim.Type.Shoot);
+
             float rotCam = cameraHolder.eulerAngles.x;
             float rotChasseur = controller.transform.eulerAngles.y;
 

@@ -1,4 +1,6 @@
-﻿using Photon.Pun;
+﻿using System;
+using Photon.Pun;
+using Script.Animation;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.DossierArme;
@@ -31,12 +33,18 @@ namespace Script.EntityPlayer
         protected override void StartPlayer()
         {
             MaxHealth = 100;
+            etat = Etat.Debout;
             EquipItem(0);
         }
         
         // ------------ Upadte ------------
         protected override void UpdatePlayer()
         {
+            if (etat == Etat.Assis)
+            {
+                throw new Exception("Un chasseur ne peut-être assis");
+            }
+            
             ManipulerArme();
         }
     
@@ -66,13 +74,16 @@ namespace Script.EntityPlayer
 
             //tirer
             if (Input.GetMouseButton(0))
-            { 
+            {
                 armes[armeIndex].Use();
             }
         }
         
         public void EquipItem(int index) // index supposé valide
         {
+            if (etat == Etat.Accroupi)
+                return; // il ne peut pas changer d'arme losqu'il est accoupi
+            
             // Le cas où on essaye de prendre l'arme qu'on a déjà
             if (index == previousArmeIndex)
                 return;
@@ -80,14 +91,20 @@ namespace Script.EntityPlayer
             // C'est le cas où on avait déjà une arme, il faut la désactiver
             if (previousArmeIndex != -1)
             {
-                armes[previousArmeIndex].armeObject.SetActive(false);
+                armes[previousArmeIndex].gameObject.SetActive(false);
             }
 
             previousArmeIndex = armeIndex;
             
             armeIndex = index;
-            armes[armeIndex].armeObject.SetActive(true);
+            armes[armeIndex].gameObject.SetActive(true);
+            
+            // changer les animations
+            //HumanAnim precAnim = Anim;
+            Anim = armes[armeIndex].Anim;
+            //Anim.Set(precAnim);
 
+            // MULTIJOUEUR
             if (Pv.IsMine)
             {
                 Hashtable hash = new Hashtable();

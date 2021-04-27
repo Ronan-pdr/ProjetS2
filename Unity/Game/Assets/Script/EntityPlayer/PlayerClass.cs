@@ -1,6 +1,8 @@
 using System;
 using Photon.Pun;
 using Photon.Realtime;
+using Script.Animation;
+using Script.Animation.Personnages.Hunted;
 using Script.Bot;
 using Script.InterfaceInGame;
 using Script.Manager;
@@ -37,7 +39,7 @@ namespace Script.EntityPlayer
 
         //Rassembler les infos
         protected Transform masterManager;
-        
+
         // ------------ Constructeurs ------------
         
         protected abstract void AwakePlayer();
@@ -81,7 +83,7 @@ namespace Script.EntityPlayer
         {
             if (!Pv.IsMine || master.IsGameEnded())
                 return;
-            
+
             if (IsPause())
             {
                 MoveAmount = Vector3.zero;
@@ -93,12 +95,13 @@ namespace Script.EntityPlayer
             Look();
             Move();
             
-            if (Input.GetKey(touches.GetKey(TypeTouche.Jump)) && etat == Etat.Debout)
+            if (touches.GetKey(TypeTouche.Jump) && etat == Etat.Debout)
             {
                 Jump();
             }
 
             UpdateHumanoide();
+            AnimationPlayer();
         }
 
         private void FixedUpdate()
@@ -116,25 +119,28 @@ namespace Script.EntityPlayer
                 return;
         
             int zMov = 0;
-            if (Input.GetKey(touches.GetKey(TypeTouche.Avancer)))
+            if (touches.GetKey(TypeTouche.Avancer))
                 zMov++;
-            if (Input.GetKey(touches.GetKey(TypeTouche.Reculer)))
+            if (touches.GetKey(TypeTouche.Reculer))
                 zMov--;
             int xMov = 0;
-            if (Input.GetKey(touches.GetKey(TypeTouche.Droite)))
+            if (touches.GetKey(TypeTouche.Droite))
                 xMov++;
-            if (Input.GetKey(touches.GetKey(TypeTouche.Gauche)))
+            if (touches.GetKey(TypeTouche.Gauche))
                 xMov--;
 
-            float speed = WalkSpeed;
-            if (zMov == 1 && xMov == 0 && Input.GetKey(touches.GetKey(TypeTouche.Sprint))) // il faut qu'il avance tout droit pour sprinter
+            float speed;
+            if (etat == Etat.Accroupi) // avance en étant accroupi
+            {
+                speed = SquatSpeed;
+            }
+            else if (zMov == 1 && xMov == 0 && touches.GetKey(TypeTouche.Sprint)) // il faut qu'il avance tout droit pour sprinter
             {
                 speed = SprintSpeed;
             }
-            
-            if (xMov != 0 || zMov != 0) // en gros, s'il se déplace
+            else // avance normalement
             {
-                etat = Etat.Debout; // il ne reste pas accroupi lorqu'il se déplace pas tout droit
+                speed = WalkSpeed;
             }
 
             Vector3 moveDir = new Vector3(xMov, 0, zMov);
@@ -175,7 +181,7 @@ namespace Script.EntityPlayer
         protected override void Die()
         {
             enabled = false;
-            anim.enabled = false;
+            Anim.StopPrevious();
 
             // On ne détruit pas le corps des autres joueurs
             if (Pv.IsMine)
@@ -211,46 +217,50 @@ namespace Script.EntityPlayer
         }
         
         // ------------ Animation ------------
-        protected void AnimationTernier()
+        protected void AnimationPlayer()
         {
             (int xMov, int zMov) = (0, 0);
-            if (Input.GetKey(touches.GetKey(TypeTouche.Avancer))) // avancer
+            if (touches.GetKey(TypeTouche.Avancer)) // avancer
                 zMov += 1;
-            if (Input.GetKey(touches.GetKey(TypeTouche.Reculer))) // reculer
+            if (touches.GetKey(TypeTouche.Reculer)) // reculer
                 zMov -= 1;
-            if (Input.GetKey(touches.GetKey(TypeTouche.Droite))) // droite
+            if (touches.GetKey(TypeTouche.Droite)) // droite
                 xMov += 1;
-            if (Input.GetKey(touches.GetKey(TypeTouche.Gauche))) // gauche
+            if (touches.GetKey(TypeTouche.Gauche)) // gauche
                 xMov -= 1;
 
 
-            if (Input.GetKey(touches.GetKey(TypeTouche.Assoir)) && etat != Etat.Accroupi && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être accroupi
+            if (!Grounded) // Jump
+            {
+                // S'il n'est pas au sol, il ne fait aucune animation
+                // l'animation du jump est activé dans 'SetGroud' (Humanoide)
+            }
+            else if (!(this is Chasseur) && touches.GetKey(TypeTouche.Assoir) && etat != Etat.Accroupi && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être accroupi
             {
                 if (etat == Etat.Debout) // S'assoir puisqu'il est debout
                 {
                     MoveAmount = Vector3.zero;
-                    ActiverAnimation("Assis");
+                    Anim.Set(HumanAnim.Type.Sit);
                     etat = Etat.Assis;
                 }
                 else // Se lever depuis assis
                 {
-                    ActiverAnimation("Lever PASS");
+                    Anim.Set(HumanAnim.Type.Sit, false);
                     etat = Etat.Debout;
                 }
 
                 LastChangementEtat = Time.time;
             }
-            else if (Input.GetKey(touches.GetKey(TypeTouche.Accroupi)) && etat != Etat.Assis && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être assis
+            else if (touches.GetKey(TypeTouche.Accroupi) && etat != Etat.Assis && Time.time - LastChangementEtat > 0.5f) // il ne doit pas être assis
             {
                 if (etat == Etat.Debout) // s'accroupir puisqu'il est debout
                 {
-                    MoveAmount = Vector3.zero;
-                    ActiverAnimation("Accroupir");
+                    Anim.Set(HumanAnim.Type.Squat);
                     etat = Etat.Accroupi;
                 }
                 else // se lever depuis accroupi
                 {
-                    ActiverAnimation("Lever PAcc");
+                    Anim.Set(HumanAnim.Type.Squat, false);
                     etat = Etat.Debout;
                 }
                 
@@ -258,40 +268,51 @@ namespace Script.EntityPlayer
             }
             else if (etat == Etat.Assis || Time.time - LastChangementEtat < 0.25f) // Aucune animation lorsque le chassé est assis et s'assois/s'accroupi
             {}
+            else if (etat == Etat.Accroupi)
+            {
+                if (zMov == -1)// reculer
+                {
+                    Anim.Set(HumanAnim.Type.Backward);
+                }
+                if (zMov == 1 || xMov != 0) // avancer
+                {
+                    Anim.Set(HumanAnim.Type.Forward);
+                }
+            }
+            else if (zMov == 1 && xMov == 1) // diagonale droite
+            {
+                Anim.Set(HumanAnim.Type.DiagR);
+            }
+            else if (zMov == 1 && xMov == -1) // diagonale gauche
+            {
+                Anim.Set(HumanAnim.Type.DiagL);
+            }
             else if (zMov == 1) // Avancer
             {
-                if (etat == Etat.Accroupi) // avancer en étant accroupi
+                if (xMov == 0 && touches.GetKey(TypeTouche.Sprint)) // Sprinter
                 {
-                    ActiverAnimation("Marche acc");
-                }
-                else if (xMov == 0 && Input.GetKey(touches.GetKey(TypeTouche.Sprint))) // Sprinter
-                {
-                    ActiverAnimation("Course");
+                    Anim.Set(HumanAnim.Type.Run);
                 }
                 else // Avancer normalement
                 {
-                    ActiverAnimation("Avant");
+                    Anim.Set(HumanAnim.Type.Forward);
                 }
             }
             else if (zMov == -1) // Reculer
             {
-                ActiverAnimation("Arriere");
+                Anim.Set(HumanAnim.Type.Backward);
             }
             else if (xMov == 1) // Droite
             {
-                ActiverAnimation("Droite");
+                Anim.Set(HumanAnim.Type.Right);
             }
             else if (xMov == -1) // Gauche
             {
-                ActiverAnimation("Gauche");
-            }
-            else if (Input.GetKey(touches.GetKey(TypeTouche.Jump))) // Jump
-            {
-                ActiverAnimation("Jump");
+                Anim.Set(HumanAnim.Type.Left);
             }
             else
             {
-                AnimationStop();
+                Anim.StopPrevious();
             }
         }
     }
