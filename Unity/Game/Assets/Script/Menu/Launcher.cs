@@ -74,12 +74,12 @@ namespace Script.Menu
             {
                 Destroy(child.gameObject);
             }
+            ChangeName(players[players.Length -1]);
             for (int i = 0; i < players.Length; i++)
             {
-                ChangeName(players[i]);
                 Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
             }
-
+            
             startGameButton.SetActive(PhotonNetwork.IsMasterClient);
         }
         //Est appelé lorsque le créateur sort de la room, le but de son contenu est d'aficher le bouton 'start' au nouveau master
@@ -180,14 +180,17 @@ namespace Script.Menu
         private void ChangeName(Player newPlayer)
         {
             string nickName = newPlayer.NickName;
-            Player[] players = PhotonNetwork.PlayerListOthers;
+            Player[] players = PhotonNetwork.PlayerList;
             int count = 0;
-            foreach (Player player in players)
+            for (int i = 0; i < players.Length; i++)
             {
-                if (player.NickName == newPlayer.NickName)
+                if (players[i].Equals(newPlayer))
+                    continue;
+                if (players[i].NickName == newPlayer.NickName)
                 {
                     count += 1;
-                    newPlayer.NickName = nickName + count;
+                    string newNickName = nickName + count;
+                    newPlayer.NickName = newNickName;
                 }
             }
         }
