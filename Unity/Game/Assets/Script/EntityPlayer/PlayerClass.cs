@@ -128,8 +128,11 @@ namespace Script.EntityPlayer
 
             float speed = WalkSpeed;
             if (zMov == 1 && xMov == 0 && Input.GetKey(touches.GetKey(TypeTouche.Sprint))) // il faut qu'il avance tout droit pour sprinter
+            {
                 speed = SprintSpeed;
-            else if (xMov != 0 || zMov != 0) // en gros, s'il se déplace
+            }
+            
+            if (xMov != 0 || zMov != 0) // en gros, s'il se déplace
             {
                 etat = Etat.Debout; // il ne reste pas accroupi lorqu'il se déplace pas tout droit
             }
