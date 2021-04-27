@@ -25,7 +25,6 @@ public class AkStateAnim : MonoBehaviour
         isRFHash = Animator.StringToHash("isRF");
         isAimingHash = Animator.StringToHash("isAiming");
         isShootingHash = Animator.StringToHash("isShooting");
-        asMunitionHash = Animator.StringToHash("asMunition");
     }
 
     // Update is called once per frame
@@ -46,7 +45,6 @@ public class AkStateAnim : MonoBehaviour
         bool isRF = animator.GetBool(isRFHash);
         bool isAiming = animator.GetBool(isAimingHash);
         bool isShooting = animator.GetBool(isShootingHash);
-        bool asMunition = animator.GetBool(asMunitionHash);
 
         // --------------- Key detection -------------------
         //One Press Needed                                   
@@ -64,13 +62,6 @@ public class AkStateAnim : MonoBehaviour
         bool Shoot = Input.GetMouseButton(0);
         bool Aim = Input.GetMouseButton(1);
 
-        // -- Tmp
-        if (Input.GetKeyDown("r"))
-            animator.SetBool(asMunitionHash,true);
-        if (Input.GetKeyDown("o"))
-            animator.SetBool(asMunitionHash,false);
-
-        
         // -----------  State Action -----------
         if (squatPress)
             animator.SetBool(isSquattingHash,!isSquatting);
@@ -105,7 +96,7 @@ public class AkStateAnim : MonoBehaviour
         animator.SetBool(isRFHash, !(!walkPress || !rightPress));
 
         // - Shooting
-        animator.SetBool(isShootingHash, asMunition && Shoot);
+        animator.SetBool(isShootingHash, Shoot);
         animator.SetBool(isAimingHash, Aim);
     }
 }

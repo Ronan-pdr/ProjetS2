@@ -21,8 +21,8 @@ public class ClefStateAnim : MonoBehaviour
         isJumpingHash = Animator.StringToHash("isJumping");
         isSWLHash = Animator.StringToHash("isSideWalkingL");
         isSWRHash = Animator.StringToHash("isSideWalkingR");
-        isLFHash = Animator.StringToHash("isLF");
-        isRFHash = Animator.StringToHash("isRF");
+        isLFHash = Animator.StringToHash("isLF"); //Diago
+        isRFHash = Animator.StringToHash("isRF"); //Diago
         HitHash = Animator.StringToHash("Hit");
     }
 
@@ -64,9 +64,12 @@ public class ClefStateAnim : MonoBehaviour
         if (squatPress)
             animator.SetBool(isSquattingHash,!isSquatting);
         
+        if (jumpPress)
+            animator.SetBool(isJumpingHash, true);
+
         //To change when merging !
         if (isJumping && jumpEnded)
-            animator.SetBool(isJumpingHash ,false);
+            animator.SetBool(isJumpingHash, false);
         
         // ----------- Action -----------   
         // - Walking
@@ -95,5 +98,6 @@ public class ClefStateAnim : MonoBehaviour
 
         // - Shooting
         animator.SetBool(HitHash, Attack);
+
     }
 }
