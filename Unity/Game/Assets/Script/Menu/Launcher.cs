@@ -76,6 +76,7 @@ namespace Script.Menu
             }
             for (int i = 0; i < players.Length; i++)
             {
+                ChangeName(players[i]);
                 Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
             }
 
@@ -144,6 +145,7 @@ namespace Script.Menu
         //Est appelé automatiquement losque qu'un joueur rentre dans la room
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
+            ChangeName(newPlayer);
             Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
         }
 
@@ -173,6 +175,21 @@ namespace Script.Menu
         public void QuitGame()
         {
             Application.Quit();
+        }
+
+        private void ChangeName(Player newPlayer)
+        {
+            string nickName = newPlayer.NickName;
+            Player[] players = PhotonNetwork.PlayerListOthers;
+            int count = 0;
+            foreach (Player player in players)
+            {
+                if (player.NickName == newPlayer.NickName)
+                {
+                    count += 1;
+                    newPlayer.NickName = nickName + count;
+                }
+            }
         }
     }
 }
