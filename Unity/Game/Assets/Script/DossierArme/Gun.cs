@@ -9,7 +9,6 @@ namespace Script.DossierArme
         // ------------ Méthode ------------
         public override void UtiliserArme()
         {
-            Debug.Log("Tente de tirer");
             anim.Set(HumanAnim.Type.Shoot);
 
             float rotCam = cameraHolder.eulerAngles.x;

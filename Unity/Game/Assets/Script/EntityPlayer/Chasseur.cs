@@ -21,9 +21,6 @@ namespace Script.EntityPlayer
 
         private int armeIndex;
         private int previousArmeIndex = -1;
-        
-        // pour le tir
-        private bool _isAimming;
     
         // ------------ Constructeurs ------------
         
@@ -38,7 +35,6 @@ namespace Script.EntityPlayer
             MaxHealth = 100;
             etat = Etat.Debout;
             EquipItem(0);
-            _isAimming = false;
         }
         
         // ------------ Upadte ------------
@@ -76,31 +72,10 @@ namespace Script.EntityPlayer
                 EquipItem(SimpleMath.Mod(previousArmeIndex - 1, armes.Length));
             }
 
-            
+            //tirer
             if (Input.GetMouseButton(0))
             {
                 armes[armeIndex].Use();
-            }
-            
-            if (armes[armeIndex] is Gun)
-            {
-                // viser
-                if (Input.GetMouseButtonDown(1))
-                {
-                    _isAimming = true;
-                    Anim.Set(HumanAnim.Type.Aiming);
-                }
-                else if (Input.GetMouseButtonUp(1))
-                {
-                    _isAimming = false;
-                    Anim.Set(HumanAnim.Type.Aiming, false);
-                }
-                
-                // tirer
-                if (Input.GetMouseButtonUp(0))
-                {
-                    Anim.Set(HumanAnim.Type.Shoot, false); // il arrête de tirer
-                }
             }
         }
         

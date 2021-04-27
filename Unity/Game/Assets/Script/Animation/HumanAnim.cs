@@ -131,8 +131,7 @@ namespace Script.Animation
         {
             return type == Type.Squat ||
                    type == Type.Sit ||
-                   type == Type.Shoot ||
-                   type == Type.Aiming;
+                   type == Type.Shoot;
         }
 
         private bool IsTrigger(Type type, out float time)
