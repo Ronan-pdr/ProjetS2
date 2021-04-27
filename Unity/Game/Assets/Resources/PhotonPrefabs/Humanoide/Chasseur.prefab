@@ -761,6 +761,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Heart
       objectReference: {fileID: 0}
+    - target: {fileID: 6131587962876262452, guid: b067622634d8b624c906a66f75b705d7, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8032382567115065114, guid: b067622634d8b624c906a66f75b705d7, type: 3}
       propertyPath: m_RootOrder
       value: 3

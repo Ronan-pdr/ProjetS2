@@ -763,9 +763,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4087766718951420619}
     m_Modifications:
+    - target: {fileID: 1559558241250968488, guid: b067622634d8b624c906a66f75b705d7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.048
+      objectReference: {fileID: 0}
     - target: {fileID: 3800106986113953532, guid: b067622634d8b624c906a66f75b705d7, type: 3}
       propertyPath: m_Name
       value: Heart
+      objectReference: {fileID: 0}
+    - target: {fileID: 6131587962876262452, guid: b067622634d8b624c906a66f75b705d7, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8032382567115065114, guid: b067622634d8b624c906a66f75b705d7, type: 3}
       propertyPath: m_RootOrder

@@ -7,7 +7,6 @@ namespace Script.DossierArme
     {
         public override void UtiliserArme()
         {
-            Debug.Log("Clef molette dans ta bouche");
             Anim.Set(HumanAnim.Type.Hit);
         }
     }
