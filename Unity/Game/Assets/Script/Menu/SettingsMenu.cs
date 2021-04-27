@@ -11,6 +11,7 @@ public class SettingsMenu : MonoBehaviour
     public TMP_Dropdown resolutionDropdown;
     int currentResolutionIndex = 0;
     public AudioManager audioManager;
+    [SerializeField] private Slider volumeSlider;
 
     void Start()
     {
@@ -31,6 +32,11 @@ public class SettingsMenu : MonoBehaviour
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
+    }
+
+    void Awake()
+    {
+        volumeSlider.maxValue = audioManager.audioSource.volume;
     }
     public void SetQuality(int qualityIndex)
     {
