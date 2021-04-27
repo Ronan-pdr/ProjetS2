@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Audio;
 
 public class SettingsMenu : MonoBehaviour
 {
     Resolution[] resolutions;
     public TMP_Dropdown resolutionDropdown;
     int currentResolutionIndex = 0;
+    public AudioManager audioManager;
+    [SerializeField] private Slider volumeSlider;
     void Start()
     {
         resolutions = Screen.resolutions;
@@ -30,6 +33,11 @@ public class SettingsMenu : MonoBehaviour
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
     }
+
+    void Awake()
+    {
+        volumeSlider.maxValue = audioManager.audioSource.volume;
+    }
     public void SetQuality(int qualityIndex)
     {
         QualitySettings.SetQualityLevel(qualityIndex);
@@ -43,5 +51,10 @@ public class SettingsMenu : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
+
+    public void SetVolume(float volume)
+    {
+        audioManager.audioSource.volume = volume;
     }
 }
