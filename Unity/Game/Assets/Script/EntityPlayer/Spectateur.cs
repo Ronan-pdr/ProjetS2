@@ -64,6 +64,8 @@ namespace Script.EntityPlayer
         {
             if (!Pv.IsMine || master.IsGameEnded())
                 return;
+            
+            Position();
 
             if (PlayerClass.IsPause())
                 return;
@@ -74,8 +76,7 @@ namespace Script.EntityPlayer
                 indexPorteur = 0;
                 SetPorteur();
             }
-
-            Position();
+            
             Look();
             ChangerPorteur();
         }

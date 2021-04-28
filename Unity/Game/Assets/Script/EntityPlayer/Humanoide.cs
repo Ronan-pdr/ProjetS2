@@ -88,7 +88,7 @@ namespace Script.EntityPlayer
         
         // ------------ Update ------------
 
-        protected void UpdateHumanoide()
+        protected void UpdateMasterOfTheMaster()
         {
             if (couvreChef)
             {
@@ -101,7 +101,10 @@ namespace Script.EntityPlayer
                     }
                 }
             }
-            
+        }
+
+        protected void UpdateHumanoide()
+        {
             PotentielleMort();
         }
 

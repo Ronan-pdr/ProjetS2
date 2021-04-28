@@ -27,7 +27,7 @@ namespace Script.DossierPoint
         public static CrossManager Instance;
         private CrossPoint[] allCrossPoints;
         
-        private string Path = "Build/SauvegardeCrossManager/";
+        private string Path = "SauvegardeCrossManager/";
 
         // ------------ Getters ------------
         public bool IsMaintenance => InMaintenance;
@@ -140,9 +140,17 @@ namespace Script.DossierPoint
             int l = allCrossPoints.Length;
             string fileName = sousCrossManager.name;
 
-            if (File.Exists(Path + fileName))
+            string path = "";
+            if (Directory.Exists("Build"))
             {
-                using (StreamReader sr = File.OpenText(Path + fileName))
+                path = "Build/";
+            }
+            
+            path += $"{Path}{fileName}";
+            
+            if (File.Exists(path))
+            {
+                using (StreamReader sr = File.OpenText(path))
                 {
                     string ligne;
                 

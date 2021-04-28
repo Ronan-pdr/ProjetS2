@@ -19,7 +19,7 @@ namespace Script.EntityPlayer
 
             if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Game)
             {
-                _degatHit = 1;
+                _degatHit = 13;
             }
             else
             {

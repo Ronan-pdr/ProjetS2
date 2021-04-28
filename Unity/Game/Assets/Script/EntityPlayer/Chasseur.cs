@@ -121,9 +121,13 @@ namespace Script.EntityPlayer
             armes[armeIndex].gameObject.SetActive(true);
             
             Anim = armes[armeIndex].Anim;
+
+            if (Pv.IsMine)
+            {
+                // mettre ou enlever la visée
+                master.SetVisée(armes[armeIndex] is Gun);
+            }
             
-            // mettre ou enlever la visée
-            master.SetVisée(armes[armeIndex] is Gun);
 
             // MULTIJOUEUR
             if (Pv.IsMine)

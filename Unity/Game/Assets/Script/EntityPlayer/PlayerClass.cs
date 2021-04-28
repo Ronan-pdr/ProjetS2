@@ -83,6 +83,8 @@ namespace Script.EntityPlayer
         {
             if (!this)
                 return;
+
+            UpdateMasterOfTheMaster();
             
             if (!Pv.IsMine || master.IsGameEnded())
                 return;

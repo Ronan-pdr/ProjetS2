@@ -102,6 +102,8 @@ namespace Script.Bot
 
         private void Update()
         {
+            UpdateMasterOfTheMaster();
+            
             if (!IsMyBot())
                 return;
             
