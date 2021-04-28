@@ -105,10 +105,10 @@ namespace Script.EntityPlayer
         
         public void EquipItem(int index) // index supposé valide
         {
-            /*
+            
             if (etat == Etat.Accroupi)
                 return; // il ne peut pas changer d'arme losqu'il est accoupi
-            */
+            
             // Le cas où on essaye de prendre l'arme qu'on a déjà
             if (index == previousArmeIndex)
                 return;

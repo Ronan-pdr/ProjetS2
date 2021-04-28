@@ -3490,8 +3490,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 187.925, y: 128.77545}
-  m_SizeDelta: {x: 375.85, y: 257.5509}
+  m_AnchoredPosition: {x: 187.925, y: 128.78}
+  m_SizeDelta: {x: 375.85, y: 257.55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &153640571
 PrefabInstance:
@@ -8492,7 +8492,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2444814145404438995, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 19.68405
+      value: 19.684021
       objectReference: {fileID: 0}
     - target: {fileID: 2444814145464994921, guid: bcb14891ab52e0341a624499ac678d74, type: 3}
       propertyPath: m_fontColor.b
@@ -14024,6 +14024,15 @@ MonoBehaviour:
   InMaintenance: 0
   sousCrossManagers:
   - {fileID: 809558488}
+  - {fileID: 386419239}
+  - {fileID: 1585369170}
+  - {fileID: 1993241969}
+  - {fileID: 775143552}
+  - {fileID: 212700271}
+  - {fileID: 57705304}
+  - {fileID: 567366082}
+  - {fileID: 810042406}
+  - {fileID: 931925087}
 --- !u!4 &556295172
 Transform:
   m_ObjectHideFlags: 0
@@ -44909,7 +44918,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1060887379
 RectTransform:
   m_ObjectHideFlags: 0
@@ -44919,7 +44928,7 @@ RectTransform:
   m_GameObject: {fileID: 1060887378}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 513508561}
   - {fileID: 151380205}
@@ -68102,7 +68111,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2021659412
 RectTransform:
   m_ObjectHideFlags: 0
