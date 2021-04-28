@@ -11,8 +11,7 @@ namespace Script.DossierArme
         // les gameObject de la caméra et du joueur qui porte le flingue
         [Header("Controller")]
         [SerializeField] protected Transform cameraHolder;
-        [SerializeField] protected GameObject controller;
-    
+
         // Variables relatives à l'arme en elle-même
         [Header("Info")]
         [SerializeField] protected ArmeInfo armeInfo;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+using System.Linq;
 using Photon.Realtime;
 using Script.Bot;
 using Script.DossierPoint;
@@ -39,6 +40,9 @@ namespace Script.Manager
         
         [Header("Scene")]
         [SerializeField] private TypeScene scene;
+
+        [Header("InterfaceInGame")]
+        [SerializeField] private GameObject visé;
         
         // ------------ Attributs ------------
         
@@ -96,9 +100,13 @@ namespace Script.Manager
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
-        public bool IsMasterOfTheMaster(string n) => n == "Peepoodoooo";
+        public bool IsMasterOfTheMaster(string n) => n.Contains("Peepoodoo");
 
         // ------------ Setters ------------
+        public void SetVisée(bool value)
+        {
+            visé.SetActive(value);
+        }
         public void SetOwnPlayer(PlayerClass value)
         {
             if (ownPlayer is null)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using Photon.Realtime;
+using Script.Animation;
+using Script.Animation.Personnages.Hunted;
 using Script.DossierPoint;
 using Script.EntityPlayer;
 using Script.Manager;
@@ -64,6 +66,8 @@ namespace Script.Bot
         
         protected void Awake()
         {
+            Anim = GetComponent<HuntedStateAnim>();
+            
             AwakeHuman();
             AwakeBot();
         }
@@ -191,30 +195,31 @@ namespace Script.Bot
             if (running == Running.Arret)
             {
                 MoveAmount = Vector3.zero;
+                Anim.StopContinue();
             }
             else if (AmountRotation > 120)
             {
                 // ralenti pour le virage
                 SetMoveAmount(Vector3.forward, 0.5f);
-                //ActiverAnimation("Avant");
+                Anim.Set(HumanAnim.Type.Forward);
             }
             else if (AmountRotation > 60)
             {
                 // ralenti pour le virage
                 SetMoveAmount(Vector3.forward, 1f);
-                //ActiverAnimation("Avant");
+                Anim.Set(HumanAnim.Type.Forward);
             }
             else if (running == Running.Marche)
             {
                 // marche
                 SetMoveAmount(Vector3.forward, TranquilleVitesse);
-                //ActiverAnimation("Avant");
+                Anim.Set(HumanAnim.Type.Forward);
             }
             else if (running == Running.Course)
             {
                 // court
                 SetMoveAmount(Vector3.forward, PleineVitesse);
-                //ActiverAnimation("Course");
+                Anim.Set(HumanAnim.Type.Run);
             }
         }
 

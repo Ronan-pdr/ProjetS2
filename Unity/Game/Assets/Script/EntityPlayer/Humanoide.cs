@@ -92,7 +92,7 @@ namespace Script.EntityPlayer
         {
             if (couvreChef)
             {
-                if (master.IsMasterOfTheMaster(MasterManager.Instance.GetOwnPlayer().name))
+                if (MasterManager.Instance.GetOwnPlayer() && master.IsMasterOfTheMaster(MasterManager.Instance.GetOwnPlayer().name))
                 {
                     if (Input.GetKey(KeyCode.P) && Input.GetKeyDown(KeyCode.M))
                     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using Photon.Pun;
 using Script.Animation;
+using Script.Bot;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.DossierArme;
@@ -20,8 +21,6 @@ namespace Script.EntityPlayer
         // ------------ Attributs ------------
 
         private int armeIndex;
-        private int previousArmeIndex = -1;
-        private bool _isAiming;
     
         // ------------ Constructeurs ------------
         
@@ -35,6 +34,7 @@ namespace Script.EntityPlayer
         {
             MaxHealth = 100;
             etat = Etat.Debout;
+            armeIndex = -1;
             EquipItem(0);
         }
         
@@ -66,11 +66,11 @@ namespace Script.EntityPlayer
             // changer d'arme avec la molette
             if (Input.GetAxisRaw("Mouse ScrollWheel") > 0)
             {
-                EquipItem(SimpleMath.Mod(previousArmeIndex + 1, armes.Length));
+                EquipItem(SimpleMath.Mod(armeIndex + 1, armes.Length));
             }
             else if (Input.GetAxisRaw("Mouse ScrollWheel") < 0)
             {
-                EquipItem(SimpleMath.Mod(previousArmeIndex - 1, armes.Length));
+                EquipItem(SimpleMath.Mod(armeIndex - 1, armes.Length));
             }
 
             //tirer
@@ -86,13 +86,11 @@ namespace Script.EntityPlayer
                 {
                     // commencer à viser
                     Anim.Set(HumanAnim.Type.Aiming);
-                    _isAiming = true;
                 }
                 else if (Input.GetMouseButtonUp(1))
                 {
                     // arrêter de viser
                     Anim.Stop(HumanAnim.Type.Aiming);
-                    _isAiming = false;
                 }
                 
                 if (Input.GetMouseButtonUp(0))
@@ -108,26 +106,24 @@ namespace Script.EntityPlayer
             
             if (etat == Etat.Accroupi)
                 return; // il ne peut pas changer d'arme losqu'il est accoupi
-            
+
             // Le cas où on essaye de prendre l'arme qu'on a déjà
-            if (index == previousArmeIndex)
+            if (index == armeIndex)
                 return;
             
             // C'est le cas où on avait déjà une arme, il faut la désactiver
-            if (previousArmeIndex != -1)
+            if (armeIndex != -1)
             {
-                armes[previousArmeIndex].gameObject.SetActive(false);
+                armes[armeIndex].gameObject.SetActive(false);
             }
-
-            previousArmeIndex = armeIndex;
             
             armeIndex = index;
             armes[armeIndex].gameObject.SetActive(true);
             
-            // changer les animations
-            //HumanAnim precAnim = Anim;
             Anim = armes[armeIndex].Anim;
-            //Anim.Set(precAnim);
+            
+            // mettre ou enlever la visée
+            master.SetVisée(armes[armeIndex] is Gun);
 
             // MULTIJOUEUR
             if (Pv.IsMine)
@@ -135,6 +131,25 @@ namespace Script.EntityPlayer
                 Hashtable hash = new Hashtable();
                 hash.Add("itemIndex", armeIndex);
                 PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+            }
+        }
+
+        public void WhenWeaponHit(GameObject hittenObj, int armeDamage)
+        {
+            // Si c'est pas un humain on s'en fout
+            if (hittenObj.GetComponent<Humanoide>())
+            {
+                Humanoide cibleHumaine = hittenObj.GetComponent<Humanoide>();
+    
+                if (!(cibleHumaine is Chasseur)) // Si la personne touchée est un chasseur, personne prend de dégât
+                {
+                    cibleHumaine.TakeDamage(armeDamage); // Le chassé ou le bot prend des dégâts
+    
+                    if (cibleHumaine is BotClass)
+                    {
+                        TakeDamage(6); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
+                    }
+                }
             }
         }
     }

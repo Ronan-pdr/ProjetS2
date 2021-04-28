@@ -81,6 +81,9 @@ namespace Script.EntityPlayer
 
         private void Update()
         {
+            if (!this)
+                return;
+            
             if (!Pv.IsMine || master.IsGameEnded())
                 return;
 

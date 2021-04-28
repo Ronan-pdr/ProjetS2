@@ -21,6 +21,10 @@ namespace Script.Manager
                     n.Chasseur = 1;
                     n.Chassé = 0;
                     break;
+                case 4:
+                    n.Chasseur = 1;
+                    n.Chassé = 3;
+                    break;
                 default:
                     n.Chasseur = 1;
                     n.Chassé = NJoueur - 1;
@@ -36,9 +40,9 @@ namespace Script.Manager
             switch (NJoueur)
             {
                 case 1:
-                    n.Rectiligne = 0;
-                    n.Fuyard = 0;
-                    n.Suiveur = 0;
+                    n.Rectiligne = 10;
+                    n.Fuyard = 1;
+                    n.Suiveur = 1;
                     break;
                 case 2:
                     n.Rectiligne = 0;
@@ -49,7 +53,9 @@ namespace Script.Manager
                     n.Rectiligne = 60;
                     break;
                 case 4:
-                    n.Rectiligne = 80;
+                    n.Rectiligne = 34;
+                    n.Fuyard = 4;
+                    n.Suiveur = 2;
                     break;
                 default:
                     n.Rectiligne = 50;

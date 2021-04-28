@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Script.Animation;
 using Script.DossierPoint;
 using Script.EntityPlayer;
 using Script.Manager;
@@ -70,6 +71,7 @@ namespace Script.Bot
                 if (GetPlayerInMyVision(TypePlayer.Chasseur).Count == 0)
                 {
                     //ActiverAnimation("Lever PASS");
+                    Anim.Stop(HumanAnim.Type.Sit);
                     etat = Etat.Attend;
                     running = Running.Arret;
                 }
@@ -97,7 +99,7 @@ namespace Script.Bot
             {
                 // n'a pas de destination
                 etat = Etat.Poule;
-                //ActiverAnimation("Assis");
+                Anim.Set(HumanAnim.Type.Sit);
             }
             else // attend son plan de fuite
             {
@@ -112,7 +114,7 @@ namespace Script.Bot
             {
                 // n'a pas de destination, n'a vraiment pas de plan...
                 etat = Etat.Poule;
-                //ActiverAnimation("Assis");
+                Anim.Set(HumanAnim.Type.Sit);
             } 
             else
             {
@@ -167,7 +169,7 @@ namespace Script.Bot
                     etat = Etat.Attend;
                     running = Running.Arret;
                     Vus.Clear();
-                    //AnimationStop();
+                    Anim.StopContinue();
                     return; // ...et ne fait rien d'autre
                 }
                 

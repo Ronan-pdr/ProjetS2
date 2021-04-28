@@ -15,6 +15,8 @@ namespace Script.TeteChercheuse
         
         private ArmeInfo armeInfo;
         private PhotonView Pv;
+
+        private Chasseur _lanceur;
     
         // ------------ Constructeurs ------------
         private void Start()
@@ -26,20 +28,20 @@ namespace Script.TeteChercheuse
             // parenter
             Tr.parent = MasterManager.Instance.GetDossierBalleFusil();
             
-            MoveAmount = new Vector3(0, 0, 50);
+            MoveAmount = new Vector3(0, 0, 150);
         }
         
         
-        public static void Tirer(Vector3 coord, GameObject ownObj, Vector3 rotation, ArmeInfo armeInf)
+        public static void Tirer(Vector3 coord, Chasseur lanceur, Vector3 rotation, ArmeInfo armeInf)
         {
             BalleFusil balleFusil = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "TeteChercheuse", "Balle" + armeInf.GetName()), coord, Quaternion.identity).GetComponent<BalleFusil>();
             
-            balleFusil.VecteurCollision(ownObj, rotation, armeInf);
+            balleFusil.VecteurCollision(lanceur, rotation, armeInf);
         }
     
-        private void VecteurCollision(GameObject ownObj, Vector3 rotation, ArmeInfo armeInf)
+        private void VecteurCollision(Chasseur lanceur, Vector3 rotation, ArmeInfo armeInf)
         {
-            Lanceur = ownObj;
+            _lanceur = lanceur;
             armeInfo = armeInf;
             
             transform.Rotate(rotation);
@@ -53,16 +55,14 @@ namespace Script.TeteChercheuse
                 return;
             
             // Si le tireur n'existe plus, la balle se détruit
-            if (!Lanceur)
+            if (!_lanceur)
             {
                 PhotonNetwork.Destroy(gameObject);
                 return;
             }
-                
             
-    
             // si max distance -> il s'arrête
-            if (Calcul.Distance(Lanceur.transform.position, Tr.position) > armeInfo.GetPortéeAttaque())
+            if (Calcul.Distance(_lanceur.transform.position, Tr.position) > armeInfo.GetPortéeAttaque())
             {
                 enabled = false;
                 PhotonNetwork.Destroy(gameObject);
@@ -100,7 +100,8 @@ namespace Script.TeteChercheuse
 
         private void OnCollisionAux(Collider other)
         {
-            if (!Lanceur)
+            // si le lanceur est détruit sa balle ne fait plus de dégat
+            if (!_lanceur)
                 return;
             
             // Seul le créateur de la balle gère les collisions
@@ -108,27 +109,11 @@ namespace Script.TeteChercheuse
                 return;
             
             // Le cas où c'est avec notre propre personnage ou que c'est avec une autre tête chercheuse
-            if (other.gameObject == Lanceur || other.gameObject.GetComponent<TeteChercheuse>())
+            if (other.gameObject == _lanceur.gameObject || other.gameObject.GetComponent<TeteChercheuse>())
                 return;
 
-            GameObject hittenObj = other.gameObject;
-            
-            // Si c'est pas un humain on s'en fout
-            if (hittenObj.GetComponent<Humanoide>())
-            {
-                Humanoide cibleHumaine = hittenObj.GetComponent<Humanoide>();
-    
-                if (!(cibleHumaine is Chasseur)) // Si la personne touchée est un chasseur, personne prend de dégât
-                {
-                    cibleHumaine.TakeDamage(armeInfo.GetDamage()); // Le chassé ou le bot prend des dégâts
-    
-                    if (cibleHumaine is BotClass)
-                    {
-                        Lanceur.GetComponent<Chasseur>().TakeDamage(20); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
-                    }
-                }
-            }
-    
+            _lanceur.WhenWeaponHit(other.gameObject, armeInfo.GetDamage());
+
             PhotonNetwork.Destroy(gameObject);
         }
     }
