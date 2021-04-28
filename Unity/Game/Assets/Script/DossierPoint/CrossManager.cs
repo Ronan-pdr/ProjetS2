@@ -27,7 +27,7 @@ namespace Script.DossierPoint
         public static CrossManager Instance;
         private CrossPoint[] allCrossPoints;
         
-        private string Path = "SauvegardeCrossManager/";
+        private string Path = "Build/SauvegardeCrossManager/";
 
         // ------------ Getters ------------
         public bool IsMaintenance => InMaintenance;
