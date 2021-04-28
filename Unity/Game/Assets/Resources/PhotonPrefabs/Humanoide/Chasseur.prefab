@@ -396,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddcd8b134062474eba18ff7161418c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!95 &4327779371331241545
+--- !u!95 &7158423160630903851
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -405,7 +405,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6829423070368451609}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 78aa08cb87e5a374d82622f39f7d24c0, type: 3}
   m_Controller: {fileID: 9100000, guid: b520eef9e55bbb346bd666ca1a62b89a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -496,7 +496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7aa751d9e725514281ccabdb828bb1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 4327779371331241545}
+  animator: {fileID: 7158423160630903851}
 --- !u!95 &2806977238906982426
 Animator:
   serializedVersion: 3
@@ -506,7 +506,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8539075006725354844}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 355a2bb03175fb04fb4ee639c34438ac, type: 3}
   m_Controller: {fileID: 9100000, guid: 8c20a08610da6524986249ac21c09480, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -868,6 +868,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4264358102213381687}
     m_Modifications:
+    - target: {fileID: 1559558241250968488, guid: b067622634d8b624c906a66f75b705d7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.043
+      objectReference: {fileID: 0}
     - target: {fileID: 3800106986113953532, guid: b067622634d8b624c906a66f75b705d7, type: 3}
       propertyPath: m_Name
       value: Heart

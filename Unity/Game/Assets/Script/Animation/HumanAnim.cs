@@ -31,24 +31,22 @@ namespace Script.Animation
             Shoot
         }
 
-        private Dictionary<Type, int> _dict;
-        private Type precAnim;
+        protected Dictionary<Type, int> Dict;
+        private Type[] animContinue;
         
         // pour les triggers
         private (float time, Type anim) trigger;
-
-        // ------------ Getter ------------
-
-        protected abstract Dictionary<Type, int> GetDict();
         
         // ------------ Setter ------------
         
-        public void Set(Type newAnim, bool etat = true)
+        protected abstract void AddAnim();
+        
+        public void Set(Type newAnim)
         {
             // potentiel erreur
             CheckError(newAnim);
 
-            StopPrevious();
+            StopContinue();
 
             if (IsState(newAnim)) // state
             {
@@ -64,10 +62,10 @@ namespace Script.Animation
             }
             else // continue
             {
-                precAnim = newAnim;
+                // elle sont stocké dans une liste
             }
 
-            animator.SetBool(_dict[newAnim], etat);
+            animator.SetBool(Dict[newAnim], true);
         }
 
         public void Set(HumanAnim humanAnim)
@@ -75,11 +73,11 @@ namespace Script.Animation
             if (humanAnim is null)
                 return;
 
-            foreach (KeyValuePair<Type, int> e in humanAnim._dict)
+            foreach (KeyValuePair<Type, int> e in humanAnim.Dict)
             {
-                if (_dict.ContainsKey(e.Key) && animator.GetBool(e.Value))
+                if (Dict.ContainsKey(e.Key) && animator.GetBool(e.Value))
                 {
-                    animator.SetBool(_dict[e.Key], true);
+                    animator.SetBool(Dict[e.Key], true);
 
                     Debug.Log($"Le met en mode '{e.Key}'");
                 }
@@ -90,8 +88,29 @@ namespace Script.Animation
 
         private void Awake()
         {
-            precAnim = Type.Idle;
-            _dict = GetDict();
+            Dict = new Dictionary<Type, int>();
+            
+            // deplacement (anim continue)
+            animContinue = new[]
+            {
+                Type.Forward, Type.Backward, Type.Right, Type.Left,
+                Type.DiagR, Type.DiagL, Type.Run
+            };
+
+            Dict.Add(Type.Forward, Animator.StringToHash("isWalking"));
+            Dict.Add(Type.Backward, Animator.StringToHash("isWalkingBack"));
+            Dict.Add(Type.Right, Animator.StringToHash("isSideWalkingR"));
+            Dict.Add(Type.Left, Animator.StringToHash("isSideWalkingL"));
+            Dict.Add(Type.DiagR, Animator.StringToHash("isRF"));
+            Dict.Add(Type.DiagL, Animator.StringToHash("isLF"));
+            Dict.Add(Type.Run, Animator.StringToHash("isRunning"));
+            
+            // one touch
+            Dict.Add(Type.Squat, Animator.StringToHash("isSquatting"));
+            Dict.Add(Type.Jump, Animator.StringToHash("isJumping"));
+            
+            // ajouter des anims spécifique
+            AddAnim();
         }
         
         // ------------Update ------------
@@ -115,15 +134,16 @@ namespace Script.Animation
             
             if (animToStop != Type.Idle)
             {
-                animator.SetBool(_dict[animToStop], false);
+                animator.SetBool(Dict[animToStop], false);
             }
-
-            precAnim = Type.Idle;
         }
 
-        public void StopPrevious()
+        public void StopContinue()
         {
-            Stop(precAnim);
+            foreach (Type anim in animContinue)
+            {
+                Stop(anim);
+            }
         }
 
         // private
@@ -131,6 +151,7 @@ namespace Script.Animation
         {
             return type == Type.Squat ||
                    type == Type.Sit ||
+                   type == Type.Aiming ||
                    type == Type.Shoot;
         }
 
@@ -149,7 +170,7 @@ namespace Script.Animation
 
         private void CheckError(Type type)
         {
-            if (type != Type.Idle && !_dict.ContainsKey(type))
+            if (type != Type.Idle && !Dict.ContainsKey(type))
             {
                 throw new Exception($"La class '{this}' ne contient pas l'animation {type}");
             }

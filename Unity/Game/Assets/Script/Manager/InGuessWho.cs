@@ -41,7 +41,7 @@ namespace Script.Manager
                     n.Suiveur = 0;
                     break;
                 case 2:
-                    n.Rectiligne = 60;
+                    n.Rectiligne = 0;
                     n.Fuyard = 0;
                     n.Suiveur = 0;
                     break;

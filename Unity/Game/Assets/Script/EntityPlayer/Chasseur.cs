@@ -21,6 +21,7 @@ namespace Script.EntityPlayer
 
         private int armeIndex;
         private int previousArmeIndex = -1;
+        private bool _isAiming;
     
         // ------------ Constructeurs ------------
         
@@ -76,6 +77,29 @@ namespace Script.EntityPlayer
             if (Input.GetMouseButton(0))
             {
                 armes[armeIndex].Use();
+            }
+
+            if (armes[armeIndex] is Gun)
+            {
+                // viser
+                if (Input.GetMouseButtonDown(1))
+                {
+                    // commencer à viser
+                    Anim.Set(HumanAnim.Type.Aiming);
+                    _isAiming = true;
+                }
+                else if (Input.GetMouseButtonUp(1))
+                {
+                    // arrêter de viser
+                    Anim.Stop(HumanAnim.Type.Aiming);
+                    _isAiming = false;
+                }
+                
+                if (Input.GetMouseButtonUp(0))
+                {
+                    // arrêter de tirer
+                    Anim.Stop(HumanAnim.Type.Shoot);
+                }
             }
         }
         

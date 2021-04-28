@@ -181,7 +181,7 @@ namespace Script.EntityPlayer
         protected override void Die()
         {
             enabled = false;
-            Anim.StopPrevious();
+            Anim.StopContinue();
 
             // On ne détruit pas le corps des autres joueurs
             if (Pv.IsMine)
@@ -245,7 +245,7 @@ namespace Script.EntityPlayer
                 }
                 else // Se lever depuis assis
                 {
-                    Anim.Set(HumanAnim.Type.Sit, false);
+                    Anim.Stop(HumanAnim.Type.Sit);
                     etat = Etat.Debout;
                 }
 
@@ -260,7 +260,7 @@ namespace Script.EntityPlayer
                 }
                 else // se lever depuis accroupi
                 {
-                    Anim.Set(HumanAnim.Type.Squat, false);
+                    Anim.Stop(HumanAnim.Type.Squat);
                     etat = Etat.Debout;
                 }
                 
@@ -312,7 +312,7 @@ namespace Script.EntityPlayer
             }
             else
             {
-                Anim.StopPrevious();
+                Anim.StopContinue();
             }
         }
     }

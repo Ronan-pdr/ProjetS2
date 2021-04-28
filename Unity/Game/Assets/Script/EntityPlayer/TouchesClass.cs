@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Script.InterfaceInGame;
 using UnityEngine;
@@ -30,8 +31,18 @@ namespace Script.EntityPlayer
             // ------------ Constructeur ------------
             public Touche(string strSauvegarde, string defaultValue)
             {
-                Key = (KeyCode) System.Enum.Parse(typeof(KeyCode), 
-                    PlayerPrefs.GetString(strSauvegarde, defaultValue));
+                /*Key = (KeyCode) System.Enum.Parse(typeof(KeyCode), 
+                    PlayerPrefs.GetString(strSauvegarde, defaultValue));*/
+
+                if (Enum.TryParse(PlayerPrefs.GetString(strSauvegarde, defaultValue), out KeyCode key))
+                {
+                    Key = key;
+                }
+                else
+                {
+                    //Debug.Log($"PlayerPrefs.GetString(strSauvegarde, defaultValue) renvoie {PlayerPrefs.GetString(strSauvegarde, defaultValue)}");
+                    Key = (KeyCode)Enum.Parse(typeof(KeyCode), defaultValue);
+                }
 
                 StrSauvegarde = strSauvegarde;
             }

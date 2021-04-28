@@ -163,13 +163,13 @@ namespace Script.TeteChercheuse
                 float maxDist = bond * SimpleMath.Sqrt(2.1f);
                 
                 // devant - droite
-                NewPosition(node, new Vector3(1, 0, 1), maxDist);
+                //NewPosition(node, new Vector3(1, 0, 1), maxDist);
                 // devant - gauche
-                NewPosition(node, new Vector3(-1, 0, 1), maxDist);
+                //NewPosition(node, new Vector3(-1, 0, 1), maxDist);
                 // derrière - droite
-                NewPosition(node, new Vector3(1, 0, -1), maxDist);
+                //NewPosition(node, new Vector3(1, 0, -1), maxDist);
                 // derrière - gauche
-                NewPosition(node, new Vector3(-1, 0, -1), maxDist);
+                //NewPosition(node, new Vector3(-1, 0, -1), maxDist);
             }
 
             if (file.IsEmpty())

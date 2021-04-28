@@ -60,11 +60,11 @@ namespace Script.EntityPlayer
             if (value)
             {
                 // il vient de retoucher le sol
-                Anim.StopPrevious();
+                Anim.Stop(HumanAnim.Type.Jump);
             }
             else
             {
-                Anim.Set(HuntedStateAnim.Type.Jump);
+                Anim.Set(HumanAnim.Type.Jump);
             }
             
             _grounded = value;
