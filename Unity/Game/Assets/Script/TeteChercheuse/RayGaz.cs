@@ -160,7 +160,7 @@ namespace Script.TeteChercheuse
                 // gauche
                 NewPosition(node, Vector3.left, bond);
 
-                float maxDist = bond * SimpleMath.Sqrt(2.1f);
+                //float maxDist = bond * SimpleMath.Sqrt(2.1f);
                 
                 // devant - droite
                 //NewPosition(node, new Vector3(1, 0, 1), maxDist);
