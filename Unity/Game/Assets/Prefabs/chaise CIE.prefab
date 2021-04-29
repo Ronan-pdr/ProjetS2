@@ -121,10 +121,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 882129737928793925, guid: 343056c052aae17448ce9494a17d6948, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d2b8c8969723253449a01c63a8a80d14, type: 2}
     - target: {fileID: 919132149155446097, guid: 343056c052aae17448ce9494a17d6948, type: 3}
       propertyPath: m_Name
       value: chaise CIE
       objectReference: {fileID: 0}
+    - target: {fileID: 5608352900581489776, guid: 343056c052aae17448ce9494a17d6948, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8158a2693d1d5c4439c93e4927aed55d, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 343056c052aae17448ce9494a17d6948, type: 3}
 --- !u!1 &287889605530874751 stripped
