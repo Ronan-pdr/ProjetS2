@@ -248,8 +248,13 @@ namespace Script.Manager
         private void SendInfoBot()
         {
             // les spawns
-            int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
+            //int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
             //int[] indexSpawnBotRectiligne = ManList.CreateListRange(56, 100);
+            int[] indexSpawnBotRectiligne =
+            {
+                7, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 35, 36, 43, 49, 50, 56, 57, 58, 59, 60, 80, 81, 82, 83, 84, 107
+            };
+            
             int iRectiligne = 0;
             int[] indexSpawnReste = SpawnManager.Instance.GetSpawnBot();
             int iReste = 0;
