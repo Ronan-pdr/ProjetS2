@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using Script.EntityPlayer;
@@ -24,6 +25,7 @@ namespace Script.Menu
         [SerializeField] TMP_InputField nameInputField;
         [SerializeField] private Button createRoomButton;
         [SerializeField] private Button findRoomButton;
+        [SerializeField] private AudioManager audioManager;
 
         private const string PlayerPrefsNameKey = "PlayerName";
 
@@ -38,6 +40,7 @@ namespace Script.Menu
             Debug.Log("Connecting to Master");
             PhotonNetwork.ConnectUsingSettings();
             SetUpInputField();
+            audioManager.audioSource.volume = PlayerPrefs.GetFloat("volumeMenu", 30f*0.15f/100f);
         }
     
         public override void OnConnectedToMaster()
