@@ -2,7 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 using Script.Menu;
+using Script.EntityPlayer;
+using PlayerManager = Script.EntityPlayer.PlayerManager;
 
 namespace Script.InterfaceInGame
 {
@@ -57,6 +60,7 @@ namespace Script.InterfaceInGame
 
         public void StartQuit()
         {
+            PlayerManager.Own.BeginToQuit();
             StartCoroutine(Quit());
         }
     }

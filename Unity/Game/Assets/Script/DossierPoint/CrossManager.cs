@@ -27,11 +27,11 @@ namespace Script.DossierPoint
         public static CrossManager Instance;
         private CrossPoint[] allCrossPoints;
         
-        private string Path = "SauvegardeCrossManager/";
+        private string DossierRangement = "SauvegardeCrossManager/";
 
         // ------------ Getters ------------
         public bool IsMaintenance => InMaintenance;
-        public string GetPath() => Path;
+        public string GetDossier() => DossierRangement;
         public int GetNumberPoint() => allCrossPoints.Length;
         
         public CrossPoint GetPoint(int index) => allCrossPoints[index];
@@ -146,7 +146,7 @@ namespace Script.DossierPoint
                 path = "Build/";
             }
             
-            path += $"{Path}{fileName}";
+            path += DossierRangement + fileName;
             
             if (File.Exists(path))
             {

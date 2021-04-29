@@ -28,6 +28,8 @@ namespace Script.EntityPlayer
         public static PlayerManager Own;
         
         private PhotonView Pv;
+
+        private bool _isQuitting;
         
         // Pour savoir ce que tu étais au début
         private TypePlayer _type;
@@ -35,6 +37,12 @@ namespace Script.EntityPlayer
         // ------------ Getter ------------
 
         public TypePlayer Type => _type;
+
+        public bool IsQuitting => _isQuitting;
+        
+        // ------------ Setter ------------
+
+        public void BeginToQuit() => _isQuitting = true;
         
         // ------------ Constructeurs ------------
         private void Awake()

@@ -198,7 +198,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 2364029697598005840}
   - {fileID: 3274172333285337992}
-  - {fileID: 0}
+  - {fileID: 7841057658350056948}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -657,6 +657,7 @@ MonoBehaviour:
   armeInfo: {fileID: 11400000, guid: d41a0c0af4072194e822d6d31aef2d4e, type: 2}
   anim: {fileID: 8815251999219325599}
   porteur: {fileID: 6184834418380931923}
+  cam: {fileID: 4555956787228504273}
 --- !u!114 &7841057658350056948
 MonoBehaviour:
   m_ObjectHideFlags: 0

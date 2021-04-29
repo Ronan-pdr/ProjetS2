@@ -70,7 +70,6 @@ namespace Script.Bot
             {
                 if (GetPlayerInMyVision(TypePlayer.Chasseur).Count == 0)
                 {
-                    //ActiverAnimation("Lever PASS");
                     Anim.Stop(HumanAnim.Type.Sit);
                     etat = Etat.Attend;
                     running = Running.Arret;
@@ -178,14 +177,16 @@ namespace Script.Bot
             
             GestionRotation(planFuite[len - 1]);
         }
+
+        // ------------ Event ------------
         
         // bloqué
         protected override void WhenBlock()
         {
             AmountRotation = 180;
+            etat = Etat.Attend;
+            running = Running.Arret;
         }
-
-        // ------------ Event ------------
         private void OnTriggerEnter(Collider other)
         {
             OnCollisionAux(other);

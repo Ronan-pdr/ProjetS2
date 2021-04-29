@@ -11,6 +11,7 @@ namespace Script.DossierArme
         
         [Header("Porteur")]
         [SerializeField] protected Chasseur porteur;
+        [SerializeField] protected Transform cam;
         
         // ------------ Méthode ------------
         public override void UtiliserArme()
@@ -22,7 +23,7 @@ namespace Script.DossierArme
 
             Vector3 rotation = new Vector3(rotCam, rotChasseur, 0);
         
-            BalleFusil.Tirer(cameraHolder.gameObject.transform.position,
+            BalleFusil.Tirer(cameraHolder.position, cam,
                 porteur, rotation, armeInfo);
         }
     }

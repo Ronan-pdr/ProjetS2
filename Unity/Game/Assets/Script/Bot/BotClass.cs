@@ -5,7 +5,6 @@ using UnityEngine;
 using Photon.Realtime;
 using Script.Animation;
 using Script.Animation.Personnages.Hunted;
-using Script.DossierPoint;
 using Script.EntityPlayer;
 using Script.Manager;
 using Script.Tools;
@@ -34,8 +33,8 @@ namespace Script.Bot
         protected float AmountRotation;
         
         // variables relatives à la caméra artificiel des bots
-        private static float AngleCamera = 80; // le degré pour la vision périphérique
-        private static Vector3 PositionCamera = new Vector3(0, 1.4f, 0.3f); // correspond à la distance séparant le "cameraHolder" de la "camera" de type "Camera"
+        private static float AngleCamera = 75; // le degré pour la vision périphérique
+        private static Vector3 PositionCamera = new Vector3(0, 0, 0);
 
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
@@ -273,9 +272,9 @@ namespace Script.Bot
             return playersInVision;
         }
 
-        private bool IsInMyVision(PlayerClass player)
+        protected bool IsInMyVision(PlayerClass player)
         {
-            Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
+            Vector3 positionCamera = Tr.position;
             Vector3 posPlayer = player.transform.position;
             
             float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
@@ -283,13 +282,13 @@ namespace Script.Bot
 
             if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
             {
-                Ray ray = new Ray(positionCamera, Calcul.Diff(posPlayer, positionCamera));
-
-                if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
+                if (Physics.Linecast(positionCamera, posPlayer, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
                 {
-                    if (hit.collider.GetComponent<PlayerClass>() == player) // si l'obstacle est le joueur alors le bot "VOIT" le joueur
+                    if (hit.collider.GetComponent<PlayerClass>())
                     {
-                        return true;
+                        // si l'obstacle est le joueur alors le bot "VOIT" le joueur
+                        
+                        return hit.collider.GetComponent<PlayerClass>() == player;
                     }
                 }
             }
@@ -297,14 +296,33 @@ namespace Script.Bot
             return false;
         }
         
-        // bloquer
+        // GamePlay
+        protected override void Die()
+        {
+            enabled = false;
+            BotManager.Die(this);
+            
+            // détruire l'objet
+            PhotonNetwork.Destroy(gameObject);
+        }
+        
+        // ------------ Event ------------
+        
+        // bloqué
         private void ManageBlock()
         {
+            if (running == Running.Arret)
+            {
+                // s'il est arrêté il ne peut-être "bloqué"
+                block.time = Time.time;
+                return;
+            }
+
             // vérifier qu'il n'est pas bloqué
-            if (SimpleMath.IsEncadré(block.position, Tr.position))
+            if (SimpleMath.IsEncadré(block.position, Tr.position, 0.2f))
             {
                 // s'il semble bloquer à une position
-                if (Time.time - block.time > 2 && running != Running.Arret)
+                if (Time.time - block.time > 2.5f)
                 {
                     // et que ça fait longtemps
                     WhenBlock();
@@ -324,16 +342,6 @@ namespace Script.Bot
         }
 
         protected abstract void WhenBlock();
-        
-        // GamePlay
-        protected override void Die()
-        {
-            enabled = false;
-            BotManager.Die(this);
-            
-            // détruire l'objet
-            PhotonNetwork.Destroy(gameObject);
-        }
 
         // ------------ Mulitijoueur ------------
         

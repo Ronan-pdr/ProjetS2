@@ -107,7 +107,7 @@ namespace Script.DossierPoint
         // ------------ Parsing ------------
         private void Ouput()
         {
-            string path = _crossManager.GetPath();
+            string path = "Build/" + _crossManager.GetDossier();
             
             // Créer le dossier s'il n'existe pas
             if (!Directory.Exists(path))

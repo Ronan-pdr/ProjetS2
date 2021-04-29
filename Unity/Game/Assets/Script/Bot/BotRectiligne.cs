@@ -59,12 +59,6 @@ namespace Script.Bot
                 }
             }
         }
-        
-        // Bloqué
-        protected override void WhenBlock()
-        {
-            PointDestination = previousPoint;
-        }
 
         // ------------ Méthodes ------------
         public void FindNewDestination()
@@ -88,6 +82,14 @@ namespace Script.Bot
                 etat = Etat.Attend;
                 running = Running.Arret;
             }
+        }
+        
+        // ------------ Event ------------
+        
+        // Bloqué
+        protected override void WhenBlock()
+        {
+            PointDestination = previousPoint;
         }
     }
 }

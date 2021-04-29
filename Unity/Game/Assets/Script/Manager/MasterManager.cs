@@ -294,7 +294,7 @@ namespace Script.Manager
 
         public void Die(PlayerClass playerClass)
         {
-            if (!PlayerManager.Own)
+            if (!PlayerManager.Own || PlayerManager.Own.IsQuitting)
             {
                 // cela veut dire qu'on est sur un joueur qui a quitté la partie,
                 // donc on ne fait rien

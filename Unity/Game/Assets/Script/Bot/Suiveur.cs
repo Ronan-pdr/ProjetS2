@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Photon.Realtime;
 using Script.EntityPlayer;
 using Script.Manager;
 using Script.Tools;
@@ -11,9 +12,11 @@ namespace Script.Bot
         // ------------ Etat ------------
         private enum Etat
         {
-            Attend,
-            Poursuite,
-            Fuite
+            Statique,
+            Follow,
+            Escape,
+            Searching,
+            Looking
         }
 
         private Etat etat;
@@ -23,13 +26,42 @@ namespace Script.Bot
         private (Chasseur chasseur, Vector3 position) Vu;
 
         // temps
-        private float timeLastRegard;
-        private float timeLastFindDest;
+        private float timeManage;
 
         private static float rayonPerimetre = 25;
         
         // destination
-        private Vector3 destination;
+        private Vector3 _whereToLookAt;
+        
+        // ------------ Setter ------------
+
+        private void SetEscape()
+        {
+            running = Running.Course;
+            _whereToLookAt = FindEscapePosition(Vu.position);
+            etat = Etat.Escape;
+        }
+
+        private void SetStatique()
+        {
+            running = Running.Arret;
+            _whereToLookAt = Vu.position;
+            etat = Etat.Statique;
+        }
+
+        private void SetSearching()
+        {
+            running = Running.Marche;
+            _whereToLookAt = Vu.position;
+            etat = Etat.Searching;
+        }
+
+        private void SetFollow()
+        {
+            running = Running.Marche;
+            _whereToLookAt = Vu.position;
+            etat = Etat.Follow;
+        }
 
 
         // ------------ Constructeurs ------------
@@ -39,102 +71,102 @@ namespace Script.Bot
 
         protected override void StartBot()
         {
-            etat = Etat.Attend;
+            running = Running.Arret;
+            etat = Etat.Looking;
         }
     
         // ------------ Update ------------
         protected override void UpdateBot()
         {
-            if (etat == Etat.Attend)
+            Tourner();
+            GestionRotation(_whereToLookAt, 0.3f);
+            
+            if (Time.time - timeManage < 0.5f)
             {
-                if (Time.time - timeLastRegard > 0.3f)
-                {
-                    SearchChasseurWithVision();
-                }
+                // il update son comportement sous tous les certains temps
+                return;
+            }
+
+            timeManage = Time.time;
+
+            if (Vu.chasseur is null)
+            {
+                // il n'a encore vu personne
+                etat = Etat.Looking;
+                SearchChasseurWithVision();
+            }
+            else if (IsInMyVision(Vu.chasseur))
+            {
+                // un chasseur est dan sma vision
+                UpdateWhenChasseurInMyVision();
             }
             else
             {
-                if (etat == Etat.Poursuite)
+                // a perdu de vue le chasseur
+                if (etat == Etat.Escape)
                 {
-                    Follow();
+                    // s'il fuit c'est normal
                 }
-                else if (etat == Etat.Fuite)
+                else
                 {
-                    Escape();
+                    // il faut tenter de le retrouver
+                    SetSearching();
                 }
-                
-                MustEscapeFollowOrWait();
-                
-                GestionRotation(destination, 0.2f);
             }
+            
+            Debug.Log($"etat = {etat}");
+        }
 
-            Tourner();
+        private void UpdateWhenChasseurInMyVision()
+        {
+            // ...donc j'update sa position
+            Vu.position = Vu.chasseur.transform.position;
+            
+            float dist = Calcul.Distance(Tr.position, Vu.position, Calcul.Coord.Y);
+                    
+            if (SimpleMath.IsEncadré(dist, rayonPerimetre, 1f))
+            {
+                // est pile à la bonne position
+                SetStatique();
+            }
+            else if (dist < rayonPerimetre)
+            {
+                // trop proche
+                SetEscape();
+            }
+            else
+            {
+                // est trop loin
+                SetFollow();
+            }
+            
+            CalculeRotation(_whereToLookAt);
         }
 
         // ------------ Méthodes ------------
         private void SearchChasseurWithVision()
         {
             List<PlayerClass> vus = GetPlayerInMyVision(TypePlayer.Chasseur);
-            timeLastRegard = Time.time;
-            
+
             if (vus.Count > 0)
             {
                 // Il a désormais un chasseur dans sa vision
                 PlayerClass player = vus[0];
-                Vu = ((Chasseur) player, player.transform.position);
-
-                MustEscapeFollowOrWait();
+                
+                Vu.chasseur = (Chasseur) player;
+                Vu.position = player.transform.position;
+                UpdateWhenChasseurInMyVision();
             }
-        }
-
-        private void MustEscapeFollowOrWait()
-        {
-            float dist = Calcul.Distance(Tr.position, Vu.position, Calcul.Coord.Y);
-            
-            if (dist < rayonPerimetre)
-            {
-                // trop proche
-                etat = Etat.Fuite;
-                running = Running.Course;
-                destination = FindEscapePosition(Vu.position);
-            }
-            else if (SimpleMath.IsEncadré(dist, rayonPerimetre))
-            {
-                // pile à la bonne distance
-                etat = Etat.Attend;
-                running = Running.Arret;
-                CalculeRotation(Vu.position);
-                MoveAmount = Vector3.zero;
-            }
-            else
-            {
-                // trop loin
-                etat = Etat.Poursuite;
-                running = Running.Marche;
-                destination = Vu.position;
-            }
-        }
-
-        private void Follow()
-        {
-            
-        }
-        
-        private void Escape()
-        {
-            
         }
 
         // Prend la position la plus proche du bot parmi toutes
         // celles au périmètre (le cercle) du "Vu"
         private Vector3 FindEscapePosition(Vector3 centre)
         {
-            timeLastFindDest = Time.time;
-
             (Vector3 bestDest, float minDist) res = (Vector3.zero, rayonPerimetre*2.1f);
             for (int degre = 0; degre < 360; degre += 10)
             {
-                Vector3 pos = centre + rayonPerimetre * 1.1f * Calcul.Direction(degre);
+                Vector3 pos = centre + rayonPerimetre * 1f * Calcul.Direction(degre);
                 float dist = Calcul.Distance(Tr.position, pos);
 
                 if (dist < res.minDist && capsule.CanIPass(Tr.position,
@@ -148,10 +180,13 @@ namespace Script.Bot
             return res.bestDest;
         }
         
+        // ------------ Event ------------
+        
         // bloqué
         protected override void WhenBlock()
         {
             AmountRotation = 180;
+            running = Running.Arret;
         }
     }
 }

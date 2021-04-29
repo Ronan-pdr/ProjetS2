@@ -32,19 +32,35 @@ namespace Script.TeteChercheuse
         }
         
         
-        public static void Tirer(Vector3 coord, Chasseur lanceur, Vector3 rotation, ArmeInfo armeInf)
+        public static void Tirer(Vector3 coordAnim, Transform cam, Chasseur lanceur, Vector3 rotation, ArmeInfo armeInf)
         {
-            BalleFusil balleFusil = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "TeteChercheuse", "Balle" + armeInf.GetName()), coord, Quaternion.identity).GetComponent<BalleFusil>();
+            BalleFusil balleFusil = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "TeteChercheuse", "Balle" + armeInf.GetName()),
+                coordAnim, Quaternion.identity).GetComponent<BalleFusil>();
             
-            balleFusil.VecteurCollision(lanceur, rotation, armeInf);
+            balleFusil.VecteurCollision(cam, lanceur, rotation, armeInf);
         }
     
-        private void VecteurCollision(Chasseur lanceur, Vector3 rotation, ArmeInfo armeInf)
+        private void VecteurCollision(Transform cam, Chasseur lanceur, Vector3 rotation, ArmeInfo armeInf)
         {
             _lanceur = lanceur;
             armeInfo = armeInf;
             
             transform.Rotate(rotation);
+            
+            // le ray cast pour être sur que ça touche bien
+            Ray ray = new Ray(cam.position, cam.TransformDirection(Vector3.forward));
+
+            // est-je touché quelque chose ?
+            if (Physics.Raycast(ray, out RaycastHit hit, armeInf.GetPortéeAttaque()))
+            {
+                Debug.Log($"J'ai touché {hit.collider.name}");
+                
+                // est-ce un humain ?
+                if (hit.collider.GetComponent<Humanoide>()) // si l'obstacle est le joueur alors le bot "VOIT" le joueur
+                {
+                    lanceur.WhenWeaponHit(hit.collider.gameObject, armeInf.GetDamage());
+                }
+            }
         }
     
         // ------------ Update ------------
@@ -111,8 +127,8 @@ namespace Script.TeteChercheuse
             // Le cas où c'est avec notre propre personnage ou que c'est avec une autre tête chercheuse
             if (other.gameObject == _lanceur.gameObject || other.gameObject.GetComponent<TeteChercheuse>())
                 return;
-
-            _lanceur.WhenWeaponHit(other.gameObject, armeInfo.GetDamage());
+            
+            //_lanceur.WhenWeaponHit(other.gameObject, armeInfo.GetDamage());
 
             PhotonNetwork.Destroy(gameObject);
         }
