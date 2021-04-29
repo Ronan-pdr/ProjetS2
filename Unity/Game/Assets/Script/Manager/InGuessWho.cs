@@ -42,10 +42,10 @@ namespace Script.Manager
                 case 1:
                     n.Rectiligne = 20;
                     n.Fuyard = 1;
-                    n.Suiveur = 1;
+                    n.Suiveur = 0;
                     break;
                 case 2:
-                    n.Rectiligne = 20;
+                    n.Rectiligne = 21;
                     n.Fuyard = 1;
                     n.Suiveur = 0;
                     break;

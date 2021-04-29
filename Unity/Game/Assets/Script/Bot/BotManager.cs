@@ -106,10 +106,15 @@ namespace Script.Bot
             }
         }
 
+        [Header("Spécial soutenance")]
+        [SerializeField] private GameObject destSoutenance;
+
         // si la valeur de retour est le "Vector.zero", alors il n'y a pas de bon spot
         public Vector3 GetGoodSpot(BotClass fuyard, Vector3 posChasseur)
         {
-            // trouvons le bot qui est le plus loin du fuyard,
+            return destSoutenance.transform.position;
+
+            /*// trouvons le bot qui est le plus loin du fuyard,
             // en étant à la même altitude que le fuyard et
             // le Fuyard doit être plus proche que le chasseur
             Vector3 posFuyard = fuyard.transform.position;
@@ -148,7 +153,7 @@ namespace Script.Bot
                 return Vector3.zero;
             }
 
-            return bestPosBot;
+            return bestPosBot;*/
         }
 
         public void Die(BotClass bot)
