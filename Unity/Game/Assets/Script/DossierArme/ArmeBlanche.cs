@@ -22,8 +22,6 @@ namespace Script.DossierArme
         // ------------ Méthode ------------
         public override void UtiliserArme()
         {
-            Debug.Log("Clef molette dans ta bouche");
-
             _trigger.HitBegin();
             Anim.Set(HumanAnim.Type.Hit);
         }

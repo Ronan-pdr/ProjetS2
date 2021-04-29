@@ -11,7 +11,7 @@ namespace Script.EntityPlayer
         // ------------ Attributs ------------
         
         // Celui que l'on va suivre
-        protected Transform Porteur;
+        private Transform _porteur;
         private int indexPorteur;
         
         //Photon
@@ -28,7 +28,7 @@ namespace Script.EntityPlayer
         // ------------ Setter ------------
         public void SetPorteur()
         {
-            Porteur = master.GetPlayer(indexPorteur).transform;
+            _porteur = master.GetPlayer(indexPorteur).transform;
             Position();
         }
         
@@ -50,7 +50,7 @@ namespace Script.EntityPlayer
         {
             if (Pv.IsMine)
             {
-                Tr.rotation = Porteur.rotation;
+                Tr.rotation = _porteur.rotation;
             }
             else
             {
@@ -65,18 +65,18 @@ namespace Script.EntityPlayer
             if (!Pv.IsMine || master.IsGameEnded())
                 return;
             
-            Position();
-
-            if (PlayerClass.IsPause())
-                return;
-
             // le cas ou l'ancier porteur est mort ou à quitter la partie
-            if (!Porteur)
+            if (!_porteur)
             {
                 indexPorteur = 0;
                 SetPorteur();
             }
             
+            Position();
+
+            if (PlayerClass.IsPause())
+                return;
+
             Look();
             ChangerPorteur();
         }
@@ -85,7 +85,7 @@ namespace Script.EntityPlayer
         
         private void Position()
         {
-            Tr.position = Porteur.position + Vector3.up * hauteur;
+            Tr.position = _porteur.position + Vector3.up * hauteur;
         }
 
         private void Look()
