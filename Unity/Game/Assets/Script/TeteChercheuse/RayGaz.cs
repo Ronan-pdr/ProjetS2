@@ -160,16 +160,16 @@ namespace Script.TeteChercheuse
                 // gauche
                 NewPosition(node, Vector3.left, bond);
 
-                float maxDist = bond * SimpleMath.Sqrt(2.1f);
+                //float maxDist = bond * SimpleMath.Sqrt(2.1f);
                 
                 // devant - droite
-                NewPosition(node, new Vector3(1, 0, 1), maxDist);
+                //NewPosition(node, new Vector3(1, 0, 1), maxDist);
                 // devant - gauche
-                NewPosition(node, new Vector3(-1, 0, 1), maxDist);
+                //NewPosition(node, new Vector3(-1, 0, 1), maxDist);
                 // derrière - droite
-                NewPosition(node, new Vector3(1, 0, -1), maxDist);
+                //NewPosition(node, new Vector3(1, 0, -1), maxDist);
                 // derrière - gauche
-                NewPosition(node, new Vector3(-1, 0, -1), maxDist);
+                //NewPosition(node, new Vector3(-1, 0, -1), maxDist);
             }
 
             if (file.IsEmpty())
@@ -193,8 +193,9 @@ namespace Script.TeteChercheuse
             switch (type)
             {
                 case TypeRecherche.Path:
-                    Debug.Log("Il existe aucun chemin pour y accéder");
+                    //Debug.Log($"Il existe aucun chemin pour y accéder ({destination.x}, {destination.y}, {destination.z})");
                     RecepGetPath(new List<Vector3>());
+                    TestRayGaz.CreateMarqueur(destination);
                     Destroy(gameObject);
                     break;
                 case TypeRecherche.Sonde:

@@ -20,15 +20,21 @@ namespace Script.Bot
 
         private CrossPoint PointDestination;
         
+        // pour quand il est bloqué
+        private CrossPoint previousPoint;
+
         // ------------ Setter ------------
         public void SetCrossPoint(CrossPoint value)
         {
             PointDestination = value;
+            FindNewDestination();
         }
 
         // ------------ Constructeurs ------------
         protected override void AwakeBot()
-        {}
+        {
+            RotationSpeed = 600;
+        }
 
         protected override void StartBot()
         {}
@@ -39,8 +45,6 @@ namespace Script.Bot
             if (etat == Etat.Attend) // s'il est en train d'attendre,...
             {
                 MoveAmount = Vector3.zero; // ...il ne se déplace pas...
-                FindNewDestination(); // ...tente de trouve une nouvelle destination...
-
                 return; // ...et ne fait rien d'autre
             }
             
@@ -48,10 +52,10 @@ namespace Script.Bot
 
             if (etat == Etat.EnChemin)
             {
-                if (IsArrivé(PointDestination.transform.position)) // arrivé
+                if (IsArrivé(PointDestination.transform.position, 0.3f)) // arrivé
                 {
                     FindNewDestination();
-                    AnimationStop();
+                    //AnimationStop();
                 }
             }
         }
@@ -63,6 +67,10 @@ namespace Script.Bot
 
             if (nNeighboor > 0)
             {
+                // sauvegarde de sa précédente destination
+                previousPoint = PointDestination;
+                
+                // il repart
                 PointDestination = PointDestination.GetNeighboor(Random.Range(0, nNeighboor));
                 CalculeRotation(PointDestination.transform.position);
                 etat = Etat.EnChemin;
@@ -77,28 +85,11 @@ namespace Script.Bot
         }
         
         // ------------ Event ------------
-        private void OnCollisionEnter(Collision other)
+        
+        // Bloqué
+        protected override void WhenBlock()
         {
-            OnCollisionAux(other);
-        }
-
-        private void OnCollisionExit(Collision other)
-        {
-            OnCollisionAux(other);
-        }
-
-        private void OnCollisionAux(Collision other)
-        {
-            if (!IsMyBot()) // Ton ordi contrôle seulement tes bots
-                return;
-            
-            if (other.gameObject == gameObject) // si c'est son propre corps qu'il a percuté
-                return;
-
-            if (etat == Etat.EnChemin) // recalcule seulement quand il avance
-            {
-                CalculeRotation(PointDestination.transform.position);
-            }
+            PointDestination = previousPoint;
         }
     }
 }

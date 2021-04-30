@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using Photon.Realtime;
-using Script.DossierPoint;
+using Script.Animation;
+using Script.Animation.Personnages.Hunted;
 using Script.EntityPlayer;
 using Script.Manager;
 using Script.Tools;
@@ -32,8 +33,8 @@ namespace Script.Bot
         protected float AmountRotation;
         
         // variables relatives à la caméra artificiel des bots
-        private static float AngleCamera = 80; // le degré pour la vision périphérique
-        private static Vector3 PositionCamera = new Vector3(0, 1.4f, 0.3f); // correspond à la distance séparant le "cameraHolder" de la "camera" de type "Camera"
+        private static float AngleCamera = 75; // le degré pour la vision périphérique
+        private static Vector3 PositionCamera = new Vector3(0, 0, 0);
 
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
@@ -42,6 +43,9 @@ namespace Script.Bot
         protected float TranquilleVitesse = WalkSpeed;
         protected float PleineVitesse = SprintSpeed;
         
+        // quand il est bloqué
+        private (float time, Vector3 position) block;
+
         // ------------ Getters ------------
         
         // cette fonction indique si un bot est contrôlé par ton ordinateur
@@ -61,6 +65,8 @@ namespace Script.Bot
         
         protected void Awake()
         {
+            Anim = GetComponent<HuntedStateAnim>();
+            
             AwakeHuman();
             AwakeBot();
         }
@@ -95,18 +101,16 @@ namespace Script.Bot
 
         private void Update()
         {
-            if (master.IsGameEnded())
-                return;
-
+            UpdateMasterOfTheMaster();
+            
             if (!IsMyBot())
                 return;
-            
-            PotentielleMort();
             
             UpdateBot();
             UpdateHumanoide();
 
             SetSpeed();
+            ManageBlock();
         }
 
         protected void FixedUpdate()
@@ -120,16 +124,20 @@ namespace Script.Bot
         // ------------ Méthodes ------------
 
         // Rotation
-        protected void GestionRotation(Vector3 dest)
+        protected void GestionRotation(Vector3 dest, float periodeCalculRotation)
         {
-            // il recalcule sa rotation tous les 0.3f
-            if (Time.time - LastCalculRotation > 1f)
+            // il recalcule sa rotation tous les 0.5f
+            if (Time.time - LastCalculRotation > periodeCalculRotation)
             {
                 CalculeRotation(dest);
             }
 
-            if (SimpleMath.Abs(AmountRotation) > 0)
-                Tourner();
+            Tourner();
+        }
+        
+        protected void GestionRotation(Vector3 dest)
+        {
+            GestionRotation(dest, 0.5f);
         }
         
         protected void CalculeRotation(Vector3 dest)
@@ -140,6 +148,9 @@ namespace Script.Bot
 
         protected void Tourner()
         {
+            if (SimpleMath.Abs(AmountRotation) <= 0)
+                return;
+            
             int sensRotation;
             if (AmountRotation >= 0)
                 sensRotation = 1;
@@ -170,13 +181,13 @@ namespace Script.Bot
             if (absMoveAmount < 60)
                 return 0.9f;
             if (absMoveAmount < 90)
-                return 1f;
-            if (absMoveAmount < 120)
                 return 1.1f;
+            if (absMoveAmount < 120)
+                return 1.3f;
             if (absMoveAmount < 150)
-                return 1.2f;
+                return 1.5f;
             
-            return 1.3f;
+            return 1.7f;
         }
         
         // vitesse
@@ -185,29 +196,36 @@ namespace Script.Bot
             if (running == Running.Arret)
             {
                 MoveAmount = Vector3.zero;
+                Anim.StopContinue();
             }
-            else if (AmountRotation > 80)
+            else if (AmountRotation > 120)
             {
                 // ralenti pour le virage
-                SetMoveAmount(Vector3.forward, 1);
-                ActiverAnimation("Avant");
+                SetMoveAmount(Vector3.forward, 0.5f);
+                Anim.Set(HumanAnim.Type.Forward);
+            }
+            else if (AmountRotation > 60)
+            {
+                // ralenti pour le virage
+                SetMoveAmount(Vector3.forward, 1f);
+                Anim.Set(HumanAnim.Type.Forward);
             }
             else if (running == Running.Marche)
             {
                 // marche
                 SetMoveAmount(Vector3.forward, TranquilleVitesse);
-                ActiverAnimation("Avant");
+                Anim.Set(HumanAnim.Type.Forward);
             }
             else if (running == Running.Course)
             {
                 // court
                 SetMoveAmount(Vector3.forward, PleineVitesse);
-                ActiverAnimation("Course");
+                Anim.Set(HumanAnim.Type.Run);
             }
         }
 
         // Destination
-        protected bool IsArrivé(Vector3 dest) => IsArrivé(dest, 0.5f);
+        protected bool IsArrivé(Vector3 dest) => IsArrivé(dest, 0.4f);
 
         protected bool IsArrivé(Vector3 dest, float ecart)
         {
@@ -254,9 +272,9 @@ namespace Script.Bot
             return playersInVision;
         }
 
-        private bool IsInMyVision(PlayerClass player)
+        protected bool IsInMyVision(PlayerClass player)
         {
-            Vector3 positionCamera = Tr.position + Tr.TransformDirection(PositionCamera);
+            Vector3 positionCamera = Tr.position;
             Vector3 posPlayer = player.transform.position;
             
             float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
@@ -264,13 +282,13 @@ namespace Script.Bot
 
             if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
             {
-                Ray ray = new Ray(positionCamera, Calcul.Diff(posPlayer, positionCamera));
-
-                if (Physics.Raycast(ray, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
+                if (Physics.Linecast(positionCamera, posPlayer, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
                 {
-                    if (hit.collider.GetComponent<PlayerClass>() == player) // si l'obstacle est le joueur alors le bot "VOIT" le joueur
+                    if (hit.collider.GetComponent<PlayerClass>())
                     {
-                        return true;
+                        // si l'obstacle est le joueur alors le bot "VOIT" le joueur
+                        
+                        return hit.collider.GetComponent<PlayerClass>() == player;
                     }
                 }
             }
@@ -287,6 +305,43 @@ namespace Script.Bot
             // détruire l'objet
             PhotonNetwork.Destroy(gameObject);
         }
+        
+        // ------------ Event ------------
+        
+        // bloqué
+        private void ManageBlock()
+        {
+            if (running == Running.Arret)
+            {
+                // s'il est arrêté il ne peut-être "bloqué"
+                block.time = Time.time;
+                return;
+            }
+
+            // vérifier qu'il n'est pas bloqué
+            if (SimpleMath.IsEncadré(block.position, Tr.position, 0.2f))
+            {
+                // s'il semble bloquer à une position
+                if (Time.time - block.time > 2.5f)
+                {
+                    // et que ça fait longtemps
+                    WhenBlock();
+                    SetBlock();
+                }
+            }
+            else
+            {
+                SetBlock();
+            }
+        }
+
+        private void SetBlock()
+        {
+            block.time = Time.time;
+            block.position = Tr.position;
+        }
+
+        protected abstract void WhenBlock();
 
         // ------------ Mulitijoueur ------------
         

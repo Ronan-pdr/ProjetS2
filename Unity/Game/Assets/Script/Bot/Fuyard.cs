@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Script.Animation;
 using Script.DossierPoint;
 using Script.EntityPlayer;
 using Script.Manager;
@@ -35,9 +36,11 @@ namespace Script.Bot
         private float distanceFuite;*/
         
         // ------------ Constructeurs ------------
-        
+
         protected override void AwakeBot()
-        {}
+        {
+            RotationSpeed = 700;
+        }
 
         protected override void StartBot()
         {}
@@ -51,6 +54,8 @@ namespace Script.Bot
             }
             else if (etat == Etat.Attend)
             {
+                Tourner();
+                
                 foreach (PlayerClass chasseur in GetPlayerInMyVision(TypePlayer.Chasseur))
                 {
                     // ce sont forcément des chasseurs
@@ -65,7 +70,7 @@ namespace Script.Bot
             {
                 if (GetPlayerInMyVision(TypePlayer.Chasseur).Count == 0)
                 {
-                    ActiverAnimation("Lever PASS");
+                    Anim.Stop(HumanAnim.Type.Sit);
                     etat = Etat.Attend;
                     running = Running.Arret;
                 }
@@ -93,7 +98,7 @@ namespace Script.Bot
             {
                 // n'a pas de destination
                 etat = Etat.Poule;
-                ActiverAnimation("Assis");
+                Anim.Set(HumanAnim.Type.Sit);
             }
             else // attend son plan de fuite
             {
@@ -108,7 +113,7 @@ namespace Script.Bot
             {
                 // n'a pas de destination, n'a vraiment pas de plan...
                 etat = Etat.Poule;
-                ActiverAnimation("Assis");
+                Anim.Set(HumanAnim.Type.Sit);
             } 
             else
             {
@@ -152,7 +157,7 @@ namespace Script.Bot
             int len = planFuite.Count;
 
             // s'il a finit une étape de son plan
-            if (IsArrivé(planFuite[len - 1], 0.8f))
+            if (IsArrivé(planFuite[len - 1], 0.5f))
             {
                 planFuite.RemoveAt(len - 1);
                 len -= 1;
@@ -163,7 +168,7 @@ namespace Script.Bot
                     etat = Etat.Attend;
                     running = Running.Arret;
                     Vus.Clear();
-                    AnimationStop();
+                    Anim.StopContinue();
                     return; // ...et ne fait rien d'autre
                 }
                 
@@ -172,8 +177,16 @@ namespace Script.Bot
             
             GestionRotation(planFuite[len - 1]);
         }
-        
+
         // ------------ Event ------------
+        
+        // bloqué
+        protected override void WhenBlock()
+        {
+            AmountRotation = 180;
+            etat = Etat.Attend;
+            running = Running.Arret;
+        }
         private void OnTriggerEnter(Collider other)
         {
             OnCollisionAux(other);

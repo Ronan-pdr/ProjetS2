@@ -1,37 +1,47 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Script.Tools
 {
     public class MyFile<T>
     {
-        // attribut
-        private Node<T> _tete;
-        private Node<T> _queue;
+        // ------------ Attributs ------------
+        private Node _tete;
+        private Node _queue;
         
-        // constructeur
+        // ------------ Constructeurs ------------
         public MyFile()
         {
             _tete = null;
             _queue = null;
         }
+
+        public MyFile(T[] arr)
+        {
+            foreach (T e in arr)
+            {
+                Enfiler(e);
+            }
+        }
         
-        // méthodes
+        // ------------ Getter ------------
         public bool IsEmpty() => _tete is null;
 
+        // ------------ Méthodes ------------
         public void Enfiler(T key)
         {
-            Node<T> node = new Node<T>(key);
+            Node node = new Node(key);
             
             if (_tete is null)
             {
                 _tete = node;
-                _queue = node;
             }
             else
             {
                 _queue.After = node;
-                _queue = node;
             }
+            
+            _queue = node;
         }
 
         public T Defiler()
@@ -42,7 +52,6 @@ namespace Script.Tools
             }
 
             T res = _tete.Key;
-
             _tete = _tete.After;
 
             if (_tete is null)
@@ -52,20 +61,25 @@ namespace Script.Tools
 
             return res;
         }
-        
-        private class Node<TN>
-        {
-            private Node<TN> _after;
-            private TN _key;
 
-            // getters et setters
-            public TN Key
+        public T Premier() => _tete.Key;
+        
+        // ------------------------ Class annexe ------------------------
+        
+        private class Node
+        {
+            // ------------ Attributs ------------
+            private Node _after;
+            private T _key;
+
+            // ------------ Getters et Setter ------------
+            public T Key
             {
                 get => _key;
             }
-            public Node<TN> After
+
+            public Node After
             {
-                // attribut
                 get => _after;
                 set
                 {
@@ -79,8 +93,8 @@ namespace Script.Tools
                 }
             }
 
-            // constructeur
-            public Node(TN key)
+            // ------------ Constructeur ------------
+            public Node(T key)
             {
                 _key = key;
                 _after = null;

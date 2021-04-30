@@ -14,7 +14,7 @@ namespace Script.InterfaceInGame
         // ------------ Serialize Field ------------
 
         [Header("Restart")]
-        [SerializeField] private GameObject restartGameButton;
+        [SerializeField] private GameObject reStartGameButton;
 
         [Header("Ecran D'affichage")]
         [SerializeField] private GameObject ecranWin;
@@ -37,9 +37,7 @@ namespace Script.InterfaceInGame
 
         private void Start()
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        
+            // Eécran win ou écran lose
             if (PlayerManager.Own.Type == _winner)
             {
                 ecranWin.SetActive(true);
@@ -49,7 +47,12 @@ namespace Script.InterfaceInGame
                 ecranLose.SetActive(true);
             }
             
-            restartGameButton.SetActive(PhotonNetwork.IsMasterClient);
+            // Le masterClient a le pouvoir de restart
+            reStartGameButton.SetActive(PhotonNetwork.IsMasterClient);
+            
+            // Gérer la souris
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
         
         // ------------ Méthodes ------------
@@ -83,7 +86,7 @@ namespace Script.InterfaceInGame
         
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
-            restartGameButton.SetActive(PhotonNetwork.IsMasterClient);
+            reStartGameButton.SetActive(PhotonNetwork.IsMasterClient);
         }
     }
 }

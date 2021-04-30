@@ -1,20 +1,34 @@
+using System;
+using Script.Animation;
 using UnityEngine;
 
 namespace Script.DossierArme
 {
     public abstract class Arme : MonoBehaviour
     {
+        // ------------ Serialize Field ------------
+        
         // les gameObject de la caméra et du joueur qui porte le flingue
+        [Header("Controller")]
         [SerializeField] protected Transform cameraHolder;
-        [SerializeField] protected GameObject controller;
-    
+
         // Variables relatives à l'arme en elle-même
+        [Header("Info")]
         [SerializeField] protected ArmeInfo armeInfo;
-        public GameObject armeObject;
+        
+        [Header("Animation")]
+        [SerializeField] protected HumanAnim anim;
     
-        // fréquence de tir
+        // ------------ Attributs ------------
+        
+        // pour la fréquence de tir
         private float lastUse = -1;
 
+
+        // ------------ Getter ------------
+        public HumanAnim Anim => anim;
+
+        // ------------ Méthodes ------------
 
         public void Use()
         {
