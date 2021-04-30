@@ -8,14 +8,14 @@ namespace Script.EntityPlayer
     {
         // ------------ Attributs ------------
         
-        private Humanoide _human;
+        private Humanoide _mySelf;
         private float _timeLastHit;
         private int _degatHit;
 
         // ------------ Constructeur ------------
         private void Start()
         {
-            _human = GetComponentInParent<Humanoide>();
+            _mySelf = GetComponentInParent<Humanoide>();
 
             if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Game)
             {
@@ -40,15 +40,21 @@ namespace Script.EntityPlayer
 
         private void Hit(Collider other)
         {
-            // Si c'est ton propre corps c'est pas grave
-            if (other.GetComponent<Humanoide>() == _human)
+            // Si c'est pas à toi, tu ne fais
+            if (!_mySelf.GetPv().IsMine)
+                return;
+            
+            // Si c'est une Entity, on s'en fout
+            if (other.GetComponent<Entity>())
                 return;
 
             // On n'enlève des points de vie seulement tous les certains temps
             if (Time.time - _timeLastHit < 1)
                 return;
 
-            _human.TakeDamage(_degatHit);
+            Debug.Log($"Le coeur de {_mySelf} est rentré en collision avec {other.name}");
+
+            _mySelf.TakeDamage(_degatHit);
             _timeLastHit = Time.time;
         }
     }

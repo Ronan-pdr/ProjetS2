@@ -19,24 +19,25 @@ namespace Script.Bot
         private Etat etat = Etat.Attend;
 
         private CrossPoint PointDestination;
-
-        private (float time, Vector3 position) block;
-        private CrossPoint previousPoint;
         
+        // pour quand il est bloqué
+        private CrossPoint previousPoint;
+
         // ------------ Setter ------------
         public void SetCrossPoint(CrossPoint value)
         {
             PointDestination = value;
+            FindNewDestination();
         }
 
         // ------------ Constructeurs ------------
         protected override void AwakeBot()
-        {}
+        {
+            RotationSpeed = 600;
+        }
 
         protected override void StartBot()
-        {
-            FindNewDestination();
-        }
+        {}
 
         // ------------ Update ------------
         protected override void UpdateBot()
@@ -51,13 +52,11 @@ namespace Script.Bot
 
             if (etat == Etat.EnChemin)
             {
-                if (IsArrivé(PointDestination.transform.position)) // arrivé
+                if (IsArrivé(PointDestination.transform.position, 0.3f)) // arrivé
                 {
                     FindNewDestination();
-                    AnimationStop();
+                    //AnimationStop();
                 }
-
-                ManageBlock();
             }
         }
 
@@ -84,26 +83,13 @@ namespace Script.Bot
                 running = Running.Arret;
             }
         }
-
-        private void ManageBlock()
+        
+        // ------------ Event ------------
+        
+        // Bloqué
+        protected override void WhenBlock()
         {
-            // vérifier qu'il n'est pas bloqué
-            if (SimpleMath.IsEncadré(block.position, Tr.position))
-            {
-                // s'il semble bloquer à une position
-                if (Time.time - block.time > 2)
-                {
-                    // et que ça fait longtemps
-                    PointDestination = previousPoint;
-                    // il reva à sa précédente position
-                }
-            }
-            else
-            {
-                // set block
-                block.time = Time.time;
-                block.position = Tr.position;
-            }
+            PointDestination = previousPoint;
         }
     }
 }

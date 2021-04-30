@@ -46,9 +46,10 @@ namespace Script.DossierPoint
         {
             _crossManager = CrossManager.Instance;
 
-            if (CrossMaintenance.Instance.IsMaintenance)
+            if (!CrossManager.Instance.IsMaintenance)
             {
-                _crossMaintenance = CrossMaintenance.Instance;
+                // On veut pas les voir
+                Invisible();
             }
         }
         
@@ -74,7 +75,7 @@ namespace Script.DossierPoint
 
         private void Error()
         {
-            if (!_crossMaintenance.IsMaintenance)
+            if (!CrossManager.Instance.IsMaintenance)
             {
                 throw new Exception("Impossible que cette fonction soit appelé si on n'est pas en maintenance");
             }
@@ -92,7 +93,7 @@ namespace Script.DossierPoint
             // est-ce un voisin valide
             if (!(neighboor is null))
             {
-                // N'était il pas déjà dedans (#Serialize Field) ?
+                // N'était il pas déjà dedans ?
                 if (neighboors.Contains(neighboor))
                 {
                     throw new Exception($"Ca devrait être impossible (Lanceur -> {name}, Dest -> {neighboor})");
@@ -113,13 +114,13 @@ namespace Script.DossierPoint
             }
         }
 
-        public void SearchNeighboors(int indexFile)
+        public void SearchNeighboors(CrossMaintenance crossMaintenance, int indexFile)
         {
             _indexFile = indexFile;
+            _crossMaintenance = crossMaintenance;
             
-            if (!_crossMaintenance)
+            if (!_crossManager)
             {
-                _crossMaintenance = CrossMaintenance.Instance;
                 _crossManager = CrossManager.Instance;
             }
             
@@ -139,12 +140,16 @@ namespace Script.DossierPoint
 
         private void NextResearch()
         {
+            Error();
+            
             GameObject destination = _potentialNeighboors.Defiler().gameObject;
             BodyRectilgne.InstancierStatic(gameObject, destination);
         }
         
         private MyFile<CrossPoint> GetPotentialNeigboors()
         {
+            Error();
+            
             MyFile<CrossPoint> potentialNeighboors = new MyFile<CrossPoint>();
             Vector3 ownCoord = transform.position;
             float distanceMax = 22;
@@ -170,19 +175,27 @@ namespace Script.DossierPoint
                     //Debug.Log(potentialNeighboors[i].name);
                     continue;
                 }
+
+                float diffAlt = Calcul.Distance(ownCoord.y, pos.y);
                     
                 // trop de d'altitude pour la potentiel distance de montée
-                if (Calcul.Distance(ownCoord, pos, Calcul.Coord.Y)*0.8f <= Calcul.Distance(ownCoord.y, pos.y))
+                if (Calcul.Distance(ownCoord, pos, Calcul.Coord.Y)*0.7f <= diffAlt)
                 {
                     //Debug.Log(potentialNeighboors[i].name);
                     continue; 
+                }
+                
+                // plus de deux étages de différences...
+                if (diffAlt > 9)
+                {
+                    continue;
                 }
                 
                 potentialNeighboors.Enfiler(crossPoint);
                 n++;
             }
             
-            Debug.Log($"{name} va envoyé {n} bodyChercheur(s)");
+            //Debug.Log($"{name} va envoyé {n} bodyChercheur(s)");
 
             return potentialNeighboors;
         }

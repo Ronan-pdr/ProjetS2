@@ -10,15 +10,9 @@ namespace Script.DossierPoint
 {
     public class CrossMaintenance : MonoBehaviour
     {
-        // ------------ SerializeField ------------
-
-        [Header("Maintenance")]
-        [SerializeField] private bool InMaintenance;
-        [SerializeField] private SousCrossManager _sousCrossManager;
-        
         // ------------ Attributs ------------
 
-        public static CrossMaintenance Instance;
+        //public static CrossMaintenance Instance;
 
         // servira pour l'output
         private string[] contentOutput;
@@ -31,43 +25,33 @@ namespace Script.DossierPoint
 
         // Instance
         private CrossManager _crossManager;
-        
-        // ------------ Getters ------------
-        
-        public bool IsMaintenance => InMaintenance;
-        
+        private SousCrossManager _sousCrossManager;
+
         // ------------ Setters ------------
 
         public void OneNewNeighboorFind()
         {
             nNewNeighboor += 1;
         }
+
+        public void SetSousCrossManager(SousCrossManager value)
+        {
+            _sousCrossManager = value;
+        }
         
         // ------------ Constructeurs ------------
 
-        private void Awake()
-        {
-            Instance = this;
-            
-            // si on n'est pas en maintenance, cette class ne sert à rien
-        }
-
         private void Start()
         {
-            if (InMaintenance)
-            {
-                _crossManager = CrossManager.Instance;
-                BeginMaintenance();
-            }
-            
-            // si on n'est pas en maintenance, cette class ne sert à rien
+            _crossManager = CrossManager.Instance;
+            BeginMaintenance();
         }
 
         // ------------ Méthodes ------------
         
         private void BeginMaintenance()
         {
-            _crossManager.LoadNeigboors();
+            _crossManager.LoadNeigboors(_sousCrossManager);
 
             _nResultAttendu = _sousCrossManager.NCrossPoint;
 
@@ -78,7 +62,7 @@ namespace Script.DossierPoint
 
             for (int i = 0; i < _nResultAttendu; i++)
             {
-                _sousCrossManager.CrossPoints[i].SearchNeighboors(i);
+                _sousCrossManager.CrossPoints[i].SearchNeighboors(this, i);
             }
 
             contentOutput = new string[_nResultAttendu];
@@ -123,7 +107,7 @@ namespace Script.DossierPoint
         // ------------ Parsing ------------
         private void Ouput()
         {
-            string path = _crossManager.GetPath();
+            string path = "Build/" + _crossManager.GetDossier();
             
             // Créer le dossier s'il n'existe pas
             if (!Directory.Exists(path))

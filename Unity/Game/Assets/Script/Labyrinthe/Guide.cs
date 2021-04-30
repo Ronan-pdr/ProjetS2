@@ -103,5 +103,11 @@ namespace Script.Labyrinthe
             
             GestionRotation(path[0]);
         }
+        
+        // bloqué
+        protected override void WhenBlock()
+        {
+            
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using Script.EntityPlayer;
@@ -24,6 +25,7 @@ namespace Script.Menu
         [SerializeField] TMP_InputField nameInputField;
         [SerializeField] private Button createRoomButton;
         [SerializeField] private Button findRoomButton;
+        [SerializeField] private AudioManager audioManager;
 
         private const string PlayerPrefsNameKey = "PlayerName";
 
@@ -38,6 +40,7 @@ namespace Script.Menu
             Debug.Log("Connecting to Master");
             PhotonNetwork.ConnectUsingSettings();
             SetUpInputField();
+            audioManager.audioSource.volume = PlayerPrefs.GetFloat("volumeMenu", 30f*0.15f/100f);
         }
     
         public override void OnConnectedToMaster()
@@ -77,9 +80,10 @@ namespace Script.Menu
             ChangeName(players[players.Length -1]);
             for (int i = 0; i < players.Length; i++)
             {
+                
                 Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
             }
-            
+
             startGameButton.SetActive(PhotonNetwork.IsMasterClient);
         }
         //Est appelé lorsque le créateur sort de la room, le but de son contenu est d'aficher le bouton 'start' au nouveau master
@@ -180,17 +184,16 @@ namespace Script.Menu
         private void ChangeName(Player newPlayer)
         {
             string nickName = newPlayer.NickName;
-            Player[] players = PhotonNetwork.PlayerList;
+            Player[] players = PhotonNetwork.PlayerListOthers;
             int count = 0;
-            for (int i = 0; i < players.Length; i++)
+            for (int i = 0; i < players.Length;i++)
             {
                 if (players[i].Equals(newPlayer))
                     continue;
                 if (players[i].NickName == newPlayer.NickName)
                 {
                     count += 1;
-                    string newNickName = nickName + count;
-                    newPlayer.NickName = newNickName;
+                    newPlayer.NickName = nickName + count;
                 }
             }
         }

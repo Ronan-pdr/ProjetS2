@@ -72,17 +72,28 @@ namespace Script.Tools
         {
             return (float) (angle * 2 * PI / 360);
         }
+        
+        // isEncadré
+        public static bool IsEncadré(Vector3 v, Vector3 e, float ecart)
+        {
+            return e.x - ecart < v.x && v.x < e.x + ecart &&
+                   e.y - ecart < v.y && v.y < e.y + ecart &&
+                   e.z - ecart < v.z && v.z < e.z + ecart;
+        }
 
         public static bool IsEncadré(Vector3 v, Vector3 e)
         {
-            return e.x - 0.5f < v.x && v.x < e.x + 0.5f 
-                && e.y - 0.5f < v.y && v.y < e.y + 0.5f
-                && e.z - 0.5f < v.z && v.z < e.z + 0.5f;
+            return IsEncadré(v, e, 0.5f);
         }
         
         public static bool IsEncadré(float a, float b)
         {
-            return b - 0.5f < a && a < b + 0.5f;
+            return IsEncadré(a, b, 0.5f);
+        }
+        
+        public static bool IsEncadré(float a, float b, float ecart)
+        {
+            return b - ecart < a && a < b + ecart;
         }
     }    
 }
