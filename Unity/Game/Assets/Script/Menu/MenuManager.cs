@@ -1,52 +1,75 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Photon.Realtime;
 using UnityEngine;
 
-public class MenuManager : MonoBehaviour
+namespace Script.Menu
 {
-    public static MenuManager Instance;
+    public class MenuManager : MonoBehaviour
+    {
+        public static MenuManager Instance;
     
-    [SerializeField] private Menu[] menus;
+        [SerializeField] private Menu[] menus;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
-
-    public void OpenMenu(string menuName)
-    {
-        int l = menus.Length;
-        for (int i = 0; i < l; i++)
+        private void Awake()
         {
-            if (menus[i].menuName == menuName)
+            Instance = this;
+        }
+
+        public void OpenMenu(string menuName)
+        {
+            int l = menus.Length;
+            for (int i = 0; i < l; i++)
             {
-                menus[i].Open();
-            }
-            else if (menus[i].open)
-            {
-                CloseMenu(menus[i]);
+                if (menus[i].menuName == menuName)
+                {
+                    menus[i].Open();
+                }
+                else if (menus[i].open)
+                {
+                    CloseMenu(menus[i]);
+                }
             }
         }
-    }
 
-    public void OpenMenu(Menu menu)
-    {
-        int l = menus.Length;
-        for (int i = 0; i < l; i++)
+        public void OpenMenu(Menu menu)
         {
-            if (menus[i].open)
+            int l = menus.Length;
+            for (int i = 0; i < l; i++)
             {
-                CloseMenu(menus[i]);
+                if (menus[i].open)
+                {
+                    CloseMenu(menus[i]);
+                }
             }
-        }
         
-        menu.Open();
-    }
+            menu.Open();
+        }
+
+        public void ForceOpenMenu(string menuName)
+        {
+            GetMenu(menuName).Open();
+        }
     
-    public void CloseMenu(Menu menu)
-    {
-        menu.Close();
+        public void CloseMenu(Menu menu)
+        {
+            menu.Close();
+        }
+
+        public void CloseMenu(string menuName)
+        {
+            GetMenu(menuName).Close();
+        }
+
+        private Menu GetMenu(string menuName)
+        {
+            int i;
+            int l = menus.Length;
+            for (i = 0; i < l && menus[i].menuName != menuName; i++)
+            {}
+
+            if (i == l)
+                throw new Exception($"Le menu {menuName} n'existe pas");
+
+            return menus[i];
+        }
     }
 }

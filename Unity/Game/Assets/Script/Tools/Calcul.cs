@@ -100,6 +100,16 @@ namespace Script.Tools
             return angle;
         }
 
+        public static Vector3 Direction(float degre)
+        {
+            Vector3 res = Vector3.zero;
+
+            res.z = SimpleMath.Sin(degre);
+            res.x = SimpleMath.Cos(degre);
+
+            return res;
+        }
+
         // Calcul l'angle le plus faible pour qu'un objet à la position 'depart'
         // puisse s'orienter face à 'destination'. A noter que ce sera un angle cohérent seulement sur 'coord'.
         // 'rotationInitiale' DOIT être en degré et correspond à la rotation sur 'coord' de l'objet aux

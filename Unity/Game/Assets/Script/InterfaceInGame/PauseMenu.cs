@@ -2,46 +2,35 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
+using Script.Menu;
+using Script.EntityPlayer;
+using PlayerManager = Script.EntityPlayer.PlayerManager;
 
 namespace Script.InterfaceInGame
 {
     public class PauseMenu : MonoBehaviour
     {
+        // ------------ Attributs ------------
+        
         public static PauseMenu Instance;
         
         // Etat
         private bool isPaused;
         private bool disconnecting;
         
-        // Getter
+        // ------------ Getters ------------
         public bool GetIsPaused() => isPaused;
+        public bool Getdisconnecting() => disconnecting;
         
+        // ------------ Constructeur ------------
         public void Awake()
         {
-            Instance = this;
-            
             isPaused = false;
             disconnecting = false;
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            if (disconnecting)
-                return;
-            
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                if (isPaused)
-                {
-                    Resume();
-                }
-                else
-                {
-                    Pause();
-                }
-            }
-        }
+        // ------------ Méthodes ------------
 
         public void Resume()
         {
@@ -49,7 +38,7 @@ namespace Script.InterfaceInGame
             isPaused = false;
         }
 
-        void Pause()
+        public void Pause()
         {
             MenuManager.Instance.OpenMenu("pause");
             isPaused = true;
@@ -60,15 +49,18 @@ namespace Script.InterfaceInGame
             disconnecting = true;
             PhotonNetwork.Disconnect();
             Destroy(RoomManager.Instance.gameObject);
+            
             while(PhotonNetwork.IsConnected)
             {
                 yield return null;
             }
+            
             SceneManager.LoadScene(0);
         }
 
         public void StartQuit()
         {
+            PlayerManager.Own.BeginToQuit();
             StartCoroutine(Quit());
         }
     }

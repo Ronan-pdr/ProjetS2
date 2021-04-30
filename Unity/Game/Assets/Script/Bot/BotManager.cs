@@ -3,25 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+using ExitGames.Client.Photon;
 using Photon.Realtime;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Manager;
 using Script.Tools;
 
 namespace Script.Bot
 {
-    public class BotManager : MonoBehaviour
+    // ------------ Type ------------
+    public enum TypeBot
+    {
+        Rectiligne,
+        Fuyard,
+        Guide,
+        Suiveur
+    }
+    
+    public class BotManager : MonoBehaviourPunCallbacks
     {
         // Chaque joueur va contrôler un certain nombre de bots,
         // les leurs seront stockés dans le dossier 'BotManager' sur Unity
         // et ceux controlés pas les autres dans 'DossierOtherBot'
+        
+        // ------------ Attributs ------------
+        
+        // c'est possible puisqu'il y en a qu'un par joueur
+        public static BotManager Instance; 
     
-    
-        public static BotManager Instance; //c'est possible puisqu'il y en a qu'un par joueur
-    
-        // stocké tous les bots
+        // stocker tous les bots
         private List<BotClass> Bots;
+        
+        // cette liste va servir à donner les noms à chaque bot
+        private int[] nBotNamed;
+        
+        // ------------ Getter ------------
+        public string GetNameBot(BotClass bot, Player player)
+        {
+            int i = ManList<Player>.GetIndex(PhotonNetwork.PlayerList, player);
+            
+            nBotNamed[i] += 1;
+            return $"{player.NickName}{bot.GetTypeEntity()}{nBotNamed[i]}";
+        }
 
+        // ------------ Constructeurs ------------
         private void Awake()
         {
             Instance = this;
@@ -29,101 +55,175 @@ namespace Script.Bot
 
         void Start()
         {
-            // pas de création de bot s'il y a maintenance
-            if (MasterManager.Instance.IsInMaintenance())
-                return;
-            
             Bots = new List<BotClass>();
+            nBotNamed = new int[PhotonNetwork.PlayerList.Length];
+        }
 
-            int nBot = 7;
-            string type;
-            int indexPlayer;
-            Player[] players = PhotonNetwork.PlayerList;
-            for (indexPlayer = players.Length - 1; indexPlayer >= 0 && !players[indexPlayer].Equals(PhotonNetwork.LocalPlayer); indexPlayer--)
-            {} // trouver l'index du player du bot
+        // ------------ Méthodes ------------
+        private void CreateBot(TypeBot t, int indexSpawn)
+        {
+            (Transform tr, string type) = GetTrAndString(t, indexSpawn);
 
-            for (int i = 0; i < nBot; i++) // Instancier, ranger (dans la liste) et positionner sur la map tous les bots
-            {
-                if (i <= 25)
-                    type = "Fuyard";
-                else
-                    type = "BotRectiligne";
-                
-                BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
-                    Vector3.zero, Quaternion.identity).GetComponent<BotClass>();
-                
-                CrossPoint crossPoint = CrossManager.Instance.GetPoint(i + indexPlayer * nBot); // récupérer son cross point
-                bot.transform.position = crossPoint.transform.position; // le placer sur la map
-                bot.SetBot(crossPoint);
-                bot.SetOwnBotManager(this); // lui indiquer quel est son père (dans la hiérarchie de Unity)
+            BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
+                tr.position, tr.rotation).GetComponent<BotClass>();
             
-                Bots.Add(bot); // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)
+            if (bot is BotRectiligne)
+            {
+                ((BotRectiligne)bot).SetCrossPoint(CrossManager.Instance.GetPoint(indexSpawn));
+            }
+
+            bot.SetOwnBotManager(this); // lui indiquer quel est son père (dans la hiérarchie de Unity)
+          
+            // les enregistrer dans une liste (cette liste contiendra seulement les bots que l'ordinateur contrôle)
+            Bots.Add(bot);
+        }
+
+        private (Transform, string) GetTrAndString(TypeBot t, int indexSpawn)
+        {
+            Transform tr;
+            if (t == TypeBot.Rectiligne)
+            {
+                string type = "BotRectiligne";
+                tr = CrossManager.Instance.GetPoint(indexSpawn).transform;
+                
+                // pas de rotation initiale avec les crossPoints
+                tr.transform.rotation = Quaternion.identity;
+
+                return (tr, type);
+            }
+            
+            tr = SpawnManager.Instance.GetTrBot(indexSpawn);
+            switch (t)
+            {
+                case TypeBot.Fuyard:
+                    return (tr, "Fuyard");
+                case TypeBot.Guide:
+                    return (tr, "Guide");
+                case TypeBot.Suiveur:
+                    return (tr, "Suiveur");
+                default:
+                    throw new Exception($"Le cas du {t} n'a pas encore été géré");
             }
         }
+
+        [Header("Spécial soutenance")]
+        [SerializeField] private GameObject destSoutenance;
 
         // si la valeur de retour est le "Vector.zero", alors il n'y a pas de bon spot
         public Vector3 GetGoodSpot(BotClass fuyard, Vector3 posChasseur)
         {
-            // trouvons le bot qui est le plus proche du fuyard tout en ayant une distace minimale
-            // et en même temps plus loin pour le chasseur que pour le fuyard
+            return destSoutenance.transform.position;
+
+            /*// trouvons le bot qui est le plus loin du fuyard,
+            // en étant à la même altitude que le fuyard et
+            // le Fuyard doit être plus proche que le chasseur
             Vector3 posFuyard = fuyard.transform.position;
 
-            Vector3 bestPos = Vector3.zero;
-            float minDist = 200;
+            Vector3 bestPosBot = Vector3.zero;
+            float maxDist = 3;
             foreach (BotClass bot in Bots)
             {
                 if (bot == fuyard)
+                {
+                    // il va pas fuir vers lui-même (logique hehe)
                     continue;
+                }
 
                 Vector3 posBot = bot.transform.position;
-
-                float distWithFuyard = Calcul.Distance(posFuyard, posBot);
-                float distWithChasseur = Calcul.Distance(posChasseur, posBot);
-
-                if (3 < distWithFuyard && distWithFuyard < minDist && distWithFuyard < distWithChasseur)
+                
+                if (!SimpleMath.IsEncadré(Calcul.Distance(posFuyard.y, posBot.y), 0.05f))
                 {
-                    minDist = distWithFuyard;
-                    bestPos = posBot;
+                    // pas à la même altitude
+                    continue;
+                }
+
+                float distDestWithFuyard = Calcul.Distance(posFuyard, posBot);
+                float distDestWithChasseur = Calcul.Distance(posChasseur, posBot);
+                float distFuyardWithChasseur = Calcul.Distance(posFuyard, posChasseur);
+                    
+                if (maxDist < distDestWithFuyard && distDestWithFuyard < distDestWithChasseur && distFuyardWithChasseur < distDestWithChasseur)
+                {
+                    maxDist = distDestWithFuyard;
+                    bestPosBot = posBot;
                 }
             }
-            
-            Debug.Log($"best = {bestPos}");
 
-            if (SimpleMath.IsEncadré(bestPos, Vector3.zero)) // aucun bon spot
+            if (SimpleMath.IsEncadré(bestPosBot, Vector3.zero)) // aucun bon spot
             {
                 return Vector3.zero;
             }
 
-            // y'a un bon spot et je vais répupérer la position
-            // du cross point le plus proche
-            CrossManager crossMan = CrossManager.Instance;
-            
-            Vector3 res = Vector3.zero;
-            minDist = 100;
-            int len = crossMan.GetNumberPoint();
-
-            for (int i = 0; i < len; i++)
-            {
-                Vector3 posPoint = crossMan.GetPosition(i);
-                float dist = Calcul.Distance(bestPos, posPoint);
-
-                if (dist < minDist)
-                {
-                    res = posPoint;
-                    minDist = dist;
-                }
-            }
-            
-            Debug.Log($"dest in botmanager = {res}");
-
-            return res;
+            return bestPosBot;*/
         }
 
-        public void Die(GameObject bot)
+        public void Die(BotClass bot)
         {
-            Bots.Remove(bot.GetComponent<BotClass>()); // le supprimer de la liste
+            // seul le créateur détruit son bot
+            if (bot.IsMyBot())
+            {
+                // le supprimer de la liste
+                Bots.Remove(bot);
+            }
+        }
         
-            PhotonNetwork.Destroy(bot.gameObject); // détruire l'objet
+        // ------------ Multijoueur ------------
+        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        {
+            // Si c'est pas toi la target, tu ne créés pas les bots
+            if (!PhotonNetwork.LocalPlayer.Equals(targetPlayer))
+                return;
+            
+            // bien vérifier que le changement a été fait
+            if (!changedProps.TryGetValue("InfoCréationBots", out object value))
+                return;
+
+            foreach ((int indexSpot, TypeBot typeBot) in DecodeFormatInfoBot((string) value))
+            {
+                CreateBot(typeBot, indexSpot);
+            }
+        }
+        
+        // Exemple -> "1 2;3 2;15 0"
+        public static string EncodeFormatInfoBot((int indexSpot, TypeBot type)[] arr)
+        {
+            int l = arr.Length;
+            if (l == 0)
+                return "";
+            
+            string res = Aux(arr[0].indexSpot, arr[0].type);
+            
+            for (int i = 1; i < l; i++)
+            {
+                (int indexSpot, TypeBot type) = arr[i];
+                res += ";" + Aux(indexSpot, type);
+            }
+
+            return res;
+
+            string Aux(int indexSpot, TypeBot type) => $"{indexSpot} {(int)type}";
+        }
+
+        private static (int indexSpot, TypeBot typeBot)[] DecodeFormatInfoBot(string s)
+        {
+            string[] listInfos = s.Split(';');
+            int l = listInfos.Length;
+            
+            (int, TypeBot)[] res = new (int, TypeBot)[l];
+
+            for (int i = 0; i < l; i++)
+            {
+                string[] infos = listInfos[i].Split(' ');
+                
+                // type du bot
+                TypeBot typeBot = (TypeBot) int.Parse(infos[1]);
+                    
+                // index du point que l'on retrouve dans le SpawnManager
+                int indexSpot = int.Parse(infos[0]);
+
+                res[i] = (indexSpot, typeBot);
+            }
+            
+            return res;
         }
     }
 }

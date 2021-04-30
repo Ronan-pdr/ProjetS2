@@ -1,15 +1,29 @@
 using Script.EntityPlayer;
+using Script.Manager;
 using UnityEngine;
 
 namespace Script.DossierPoint
 {
     public class Point : MonoBehaviour
     {
-        [SerializeField] private GameObject graphics;
+        // ------------ Serialized Field ------------
+        
+        [Header("Graphics")]
+        [SerializeField] private GameObject[] graphics;
     
-        private void Awake()
+        // ------------ Constructeur ------------
+        private void Start()
         {
-            graphics.SetActive(false);
+            Invisible();
+        }
+        
+        // ------------ Méthodes ------------
+        protected void Invisible()
+        {
+            foreach (GameObject e in graphics)
+            {
+                e.SetActive(false);
+            }
         }
     }
 }

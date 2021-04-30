@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Script.Bot;
+using Script.Labyrinthe;
+using Script.Manager;
 using Script.TeteChercheuse;
 
 namespace Script.EntityPlayer
 {
     public class Entity : MonoBehaviourPunCallbacks
     {
+        // ------------ Attributs ------------
+        
         protected Transform Tr;
         protected Rigidbody Rb;
 
@@ -20,13 +24,19 @@ namespace Script.EntityPlayer
         // masterManager
         protected MasterManager master;
         
-        // Getter
+        // ------------ Getter ------------
         public string GetTypeEntity()
         {
             string type;
             
-            if (this is BotClass)
-                type = "Bot";
+            if (this is BotRectiligne)
+                type = "Rectiligne";
+            else if (this is Fuyard)
+                type = "Fuyard";
+            else if (this is Suiveur)
+                type = "Suiveur";
+            else if (this is Guide)
+                type = "Guide";
             else if (this is Chasseur)
                 type = "Chasseur";
             else if (this is Chassé)
@@ -41,14 +51,10 @@ namespace Script.EntityPlayer
             return type;
         }
 
-        private void Start()
-        {
-            master = MasterManager.Instance;
-        }
-
-        //Setter
+        // ------------ Setters ------------
         protected void SetRbTr()
         {
+            master = MasterManager.Instance;
             Rb = GetComponent<Rigidbody>();
             Tr = GetComponent<Transform>();
         }
@@ -59,14 +65,16 @@ namespace Script.EntityPlayer
                 moveDir * speed,
                 ref smoothMoveVelocity, smouthTime);
         }
+        
+        // ------------ Méthodes ------------
     
         protected void MoveEntity()
         {
-            
             //Déplace le corps du human grâce à moveAmount précédemment calculé
             Rb.MovePosition(Rb.position + Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime);
         }
 
+        // ------------ Surchargeurs ------------
         public override string ToString()
         {
             string type = GetTypeEntity();
