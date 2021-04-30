@@ -9,15 +9,21 @@ namespace Script.DossierPoint
         // ------------ Serialized Field ------------
         
         [Header("Graphics")]
-        [SerializeField] private GameObject graphics;
+        [SerializeField] private GameObject[] graphics;
     
         // ------------ Constructeur ------------
         private void Start()
         {
-            if (this is CrossPoint && MasterManager.Instance.IsInMaintenance())
-                return;
-            
-            graphics.SetActive(false);
+            Invisible();
+        }
+        
+        // ------------ Méthodes ------------
+        protected void Invisible()
+        {
+            foreach (GameObject e in graphics)
+            {
+                e.SetActive(false);
+            }
         }
     }
 }

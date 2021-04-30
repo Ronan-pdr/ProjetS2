@@ -38,9 +38,9 @@ namespace Script.TeteChercheuse
 
             Tr.Rotate(new Vector3(0, rotation, 0));
 
-            // je fais ça pour qu'ils se décalent un peu
+            /*// je fais ça pour qu'ils se décalent un peu
             MoveAmount = new Vector3(0, 0, 30*(3-SimpleMath.Mod((int)rotation/6, 2)));
-            Tr.position += Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime;
+            Tr.position += Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime;*/
             
             // instancier le dico
             dictTimeCollision = new Dictionary<GameObject, float>();
@@ -59,6 +59,25 @@ namespace Script.TeteChercheuse
 
                 FinDeCourse(null);
                 return;
+            }
+
+            if (Tr.position.y < -10) // s'il est tombé
+            {
+                Vector3 pos = Tr.position;
+                Debug.Log($"WARNING : Un body Chercher est tombé aux coordonnées ({pos.x}, {pos.y}, {pos.z})");
+
+                FinDeCourse(null);
+                return;
+            }
+            
+            // est-il bloqué
+            foreach (KeyValuePair<GameObject, float> e in dictTimeCollision)
+            {
+                if (Time.time - e.Value > 2)
+                {
+                    // ça fait trop longtemps qu'il butte sur un obstacle
+                    FinDeCourse(null);
+                }
             }
 
             if (dist < EcartDistance) // est-il arrivé à destination
@@ -108,7 +127,7 @@ namespace Script.TeteChercheuse
         
         private void OnCollisionExit(Collision other)
         {
-            // reset
+            // il n'est plus bloqué par 'other'
             if (dictTimeCollision.ContainsKey(other.gameObject))
             {
                 dictTimeCollision.Remove(other.gameObject);
@@ -121,15 +140,6 @@ namespace Script.TeteChercheuse
             {
                 ownCapsuleCollider.isTrigger = true;
                 return;
-            }
-
-            foreach (KeyValuePair<GameObject, float> e in dictTimeCollision)
-            {
-                if (Time.time - e.Value > 3)
-                {
-                    // ça fait trop longtemps qu'il butte sur un obstacle
-                    FinDeCourse(null);
-                }
             }
 
             if (IsACollisionUpper(other, ownCapsuleCollider.radius * 1f)) 

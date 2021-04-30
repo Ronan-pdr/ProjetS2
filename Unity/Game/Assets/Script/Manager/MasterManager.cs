@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+using System.Linq;
 using Photon.Realtime;
 using Script.Bot;
 using Script.DossierPoint;
@@ -39,6 +40,9 @@ namespace Script.Manager
         
         [Header("Scene")]
         [SerializeField] private TypeScene scene;
+
+        [Header("InterfaceInGame")]
+        [SerializeField] private GameObject visé;
         
         // ------------ Attributs ------------
         
@@ -96,7 +100,13 @@ namespace Script.Manager
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
+        public bool IsMasterOfTheMaster(string n) => n.Contains("Peepoodoo");
+
         // ------------ Setters ------------
+        public void SetVisée(bool value)
+        {
+            visé.SetActive(value);
+        }
         public void SetOwnPlayer(PlayerClass value)
         {
             if (ownPlayer is null)
@@ -135,8 +145,18 @@ namespace Script.Manager
             
             // instancier le nombre de joueur
             nParticipant = PhotonNetwork.PlayerList.Length;
-            
-            if (scene == TypeScene.Maintenance || CrossManager.Instance.IsMaintenance()) // maintenance des crossPoints
+
+            // instancier les listes
+            players = new List<PlayerClass>();
+            chasseurs = new List<Chasseur>();
+            chassés = new List<Chassé>();
+            spectateurs = new List<Spectateur>();
+        }
+
+        public void Start()
+        {
+            // determiner le typeScene
+            if (CrossManager.Instance.IsMaintenance) // maintenance des crossPoints
             {
                 Debug.Log("Début Maintenance des CrossPoints");
                 typeScene = new InMaintenance(nParticipant);
@@ -149,16 +169,7 @@ namespace Script.Manager
             {
                 typeScene = new InLabyrinthe(nParticipant);
             }
-
-            // instancier les listes
-            players = new List<PlayerClass>();
-            chasseurs = new List<Chasseur>();
-            chassés = new List<Chassé>();
-            spectateurs = new List<Spectateur>();
-        }
-
-        public void Start()
-        {
+            
             // récupérer les contours de la map
             RecupContour();
             
@@ -238,10 +249,12 @@ namespace Script.Manager
         {
             // les spawns
             //int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
+            //int[] indexSpawnBotRectiligne = ManList.CreateListRange(56, 100);
             int[] indexSpawnBotRectiligne =
             {
-                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 38, 40, 41
+                7, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 35, 36, 43, 49, 50, 56, 57, 58, 59, 60, 80, 81, 82, 83, 84, 107
             };
+            
             int iRectiligne = 0;
             int[] indexSpawnReste = SpawnManager.Instance.GetSpawnBot();
             int iReste = 0;
@@ -286,6 +299,14 @@ namespace Script.Manager
 
         public void Die(PlayerClass playerClass)
         {
+            if (!PlayerManager.Own || PlayerManager.Own.IsQuitting)
+            {
+                // cela veut dire qu'on est sur un joueur qui a quitté la partie,
+                // donc on ne fait rien
+                return;
+            }
+                
+            
             if (!players.Contains(playerClass))
             {
                 throw new Exception("Un script tente de supprimer un joueur de la liste qui n'y est plus");

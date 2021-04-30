@@ -37,8 +37,6 @@ namespace Script.Labyrinthe
             {
                 RetirerCaillou();
             }
-            
-            AnimationTernier();
         }
 
         // ------------ Méthodes ------------

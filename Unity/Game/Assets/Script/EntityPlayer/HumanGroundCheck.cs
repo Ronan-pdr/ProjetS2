@@ -39,7 +39,7 @@ namespace Script.EntityPlayer
             if (other.gameObject == human.gameObject) // Le cas où c'est avec notre propre personnage
                 return;
         
-            human.SetGroundedState(res);
+            human.SetGrounded(res);
         }
     }
 }
