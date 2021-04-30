@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+#généralmatthieu{
+    color:whitesmoke;
+    background-image: url('../../Images/moon-415501_1920.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-top: 100px;
+    height: 700px;
+    overflow: auto;
+    padding-right: 40%;
+    padding-top: 5%;
+}
+
+#CQLPNAmatthieu h2{
+    padding-top: 15%;
+    color:red;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 42px;
+}
+
+#CQLPNAmatthieu{
+    text-align: center;
+    padding-left: 20%;
+    padding-right: 20%;
+}
+
+#CQLPNAmatthieu p{
+    font-size: 20px;
+}
