@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 #généralarthur{
-    background-image: url('../Images/photo_arthur_background.jpg');
+    background-image: url('../../Images/photo_arthur_background.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     margin-top: 100px;
