@@ -66,6 +66,7 @@ namespace Script.Menu
             MenuManager.Instance.OpenMenu("loading");
             SavePlayerName();
         }
+        
         //Est appelé automatiquement après 'Join Room'
         public override void OnJoinedRoom()
         {
@@ -100,14 +101,7 @@ namespace Script.Menu
     
         public void StartGame()
         {
-            if (PhotonNetwork.MasterClient.NickName == "Labyrinthe")
-            {
-                PhotonNetwork.LoadLevel(2);
-            }
-            else
-            {
-                PhotonNetwork.LoadLevel(1);
-            }
+            PhotonNetwork.LoadLevel(PhotonNetwork.MasterClient.NickName == "Labyrinthe" ? 2 : 1);
         }
     
         //Est appelé par un boutton
@@ -116,7 +110,7 @@ namespace Script.Menu
             PhotonNetwork.LeaveRoom();
             MenuManager.Instance.OpenMenu("loading");
         }
-    
+
         //Est appelé par un boutton
         public void JoinRoom(RoomInfo info)
         {
@@ -128,7 +122,7 @@ namespace Script.Menu
         //Est appelé automatiquement après 'Leave Room'
         public override void OnLeftRoom()
         {
-            MenuManager.Instance.OpenMenu("title");
+            MenuManager.Instance.OpenMenu("play");
         }
 
         //Est appelé automatiquement dés que y'a un changement dans la liste des rooms
@@ -146,6 +140,7 @@ namespace Script.Menu
                 Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
             }
         }
+        
         //Est appelé automatiquement losque qu'un joueur rentre dans la room
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
