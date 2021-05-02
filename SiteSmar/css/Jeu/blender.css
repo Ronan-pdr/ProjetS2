@@ -1,0 +1,16 @@
+#têteblender{
+    display: flex;
+    justify-content: space-around;
+    overflow: auto;
+    
+}
+
+.flex{
+    display: flex; 
+    justify-content: center;
+}
+
+.flex div{
+    width: 100px;
+    border: solid 1px white;
+}

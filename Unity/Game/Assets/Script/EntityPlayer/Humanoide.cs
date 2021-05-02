@@ -17,7 +17,7 @@ namespace Script.EntityPlayer
         [Header("Couvre-chef")]
         [SerializeField] private GameObject couvreChef;
         
-        // ------------Etat ------------
+        // ------------Attributs------------
         
         private bool _grounded;
 

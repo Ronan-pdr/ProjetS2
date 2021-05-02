@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace Script.Menu
 {
@@ -8,7 +10,36 @@ namespace Script.Menu
         public static MenuManager Instance;
     
         [SerializeField] private Menu[] menus;
+        [SerializeField] private GameObject background;
+        [SerializeField] private AudioSource audioSource;
+        
+        //--------------Pour le crédit------------
+        public void jouerlavideo(VideoPlayer input)
+        {
+            input.Play();
+            background.GetComponent<Image>().enabled = false;
+        }
 
+        public void arreterlesonmenu()
+        {
+            audioSource.Pause();
+            AudioManager.instance.isPause = true;
+        }
+
+        public void arreterlavideo(VideoPlayer input)
+        {
+            input.Stop();
+            background.GetComponent<Image>().enabled = true;
+            audioSource.Play();
+        }
+
+        public void reprendrelesonmenu()
+        {
+            audioSource.UnPause();
+            AudioManager.instance.isPause = false;
+        }
+        
+        //----------------------------------------
         private void Awake()
         {
             Instance = this;
