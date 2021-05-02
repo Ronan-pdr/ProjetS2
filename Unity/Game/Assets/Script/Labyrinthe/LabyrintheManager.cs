@@ -34,7 +34,7 @@ namespace Script.Labyrinthe
         private void Start()
         {
             // Sonder la zone une bonne fois pour toute
-            sonde = RayGaz.GetSonde(sortie.transform.position, FinSonde);
+            //sonde = RayGaz.GetSonde(sortie.transform.position, FinSonde);
         }
         
         // ------------ Méthode ------------

@@ -198,13 +198,13 @@ namespace Script.Bot
                 MoveAmount = Vector3.zero;
                 Anim.StopContinue();
             }
-            else if (AmountRotation > 120)
+            else if (AmountRotation > 100)
             {
                 // ralenti pour le virage
-                SetMoveAmount(Vector3.forward, 0.5f);
-                Anim.Set(HumanAnim.Type.Forward);
+                SetMoveAmount(Vector3.forward, 0);
+                Anim.StopContinue();
             }
-            else if (AmountRotation > 60)
+            else if (AmountRotation > 40)
             {
                 // ralenti pour le virage
                 SetMoveAmount(Vector3.forward, 1f);

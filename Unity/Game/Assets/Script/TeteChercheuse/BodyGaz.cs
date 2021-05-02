@@ -130,8 +130,8 @@ namespace Script.TeteChercheuse
 
             if (!obstacle) // est ce que la position actuelle est valide et on y est jamais allé
             {
-                GameObject g = Instantiate(MasterManager.Instance.marqueur, Tr.position, Quaternion.identity);
-                g.transform.parent = MasterManager.Instance.GetDossierBodyChercheur();
+                //GameObject g = Instantiate(MasterManager.Instance.marqueur, Tr.position, Quaternion.identity);
+                //g.transform.parent = MasterManager.Instance.GetDossierBodyChercheur();
                 
                 Vector3 p = Tr.position;
                 
