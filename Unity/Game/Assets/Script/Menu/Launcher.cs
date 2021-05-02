@@ -26,6 +26,7 @@ namespace Script.Menu
         [SerializeField] private Button createRoomButton;
         [SerializeField] private Button findRoomButton;
         [SerializeField] private AudioManager audioManager;
+        private string _beginRoom; 
 
         private const string PlayerPrefsNameKey = "PlayerName";
 
@@ -34,6 +35,7 @@ namespace Script.Menu
             new TouchesClass();
             Instance = this;
         }
+        
         //Se connecte au serveur que l'on retrouve dans Assets/Photon/Photon/UnityNetworking/Ressources/PhotonSer...
         void Start()
         {
@@ -41,6 +43,7 @@ namespace Script.Menu
             PhotonNetwork.ConnectUsingSettings();
             SetUpInputField();
             audioManager.audioSource.volume = PlayerPrefs.GetFloat("volumeMenu", 30f*0.15f/100f);
+            _beginRoom = "title";
         }
     
         public override void OnConnectedToMaster()
@@ -52,7 +55,7 @@ namespace Script.Menu
 
         public override void OnJoinedLobby()
         {
-            MenuManager.Instance.OpenMenu("title");
+            MenuManager.Instance.OpenMenu(_beginRoom);
             Debug.Log("Joined Lobby");
             SavePlayerName();
         }
@@ -109,6 +112,7 @@ namespace Script.Menu
         {
             PhotonNetwork.LeaveRoom();
             MenuManager.Instance.OpenMenu("loading");
+            _beginRoom = "play";
         }
 
         //Est appelé par un boutton
@@ -122,7 +126,7 @@ namespace Script.Menu
         //Est appelé automatiquement après 'Leave Room'
         public override void OnLeftRoom()
         {
-            MenuManager.Instance.OpenMenu("play");
+            /*MenuManager.Instance.OpenMenu("play");*/
         }
 
         //Est appelé automatiquement dés que y'a un changement dans la liste des rooms
