@@ -1,0 +1,18 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+.namearticle {
+    font-family: 'Bebas Neue', cursive;
+    color: blue;
+    font-size: 42px;
+}
+
+#articlepathfinding{
+    text-align: left;
+    margin-left: 25%;
+    margin-right: 25%;
+}
+
+.centrerarticleIA{
+    text-align: center;
+}
