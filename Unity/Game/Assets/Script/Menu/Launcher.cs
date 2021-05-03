@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -126,7 +127,7 @@ namespace Script.Menu
         //Est appelé automatiquement après 'Leave Room'
         public override void OnLeftRoom()
         {
-            /*MenuManager.Instance.OpenMenu("play");*/
+            MenuManager.Instance.OpenMenu("play");
         }
 
         //Est appelé automatiquement dés que y'a un changement dans la liste des rooms
