@@ -8,6 +8,7 @@ using Photon.Realtime;
 using Script.Bot;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Graph;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.InterfaceInGame;
 using Script.Labyrinthe;
@@ -26,6 +27,7 @@ namespace Script.Manager
         [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
         [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
+        [SerializeField] private Line originalLine;
         public GameObject marqueurBrown;
         public GameObject marqueurRed;
         public GameObject marqueurYellow;
@@ -89,6 +91,7 @@ namespace Script.Manager
         public BodyRectilgne GetOriginalBodyRectilgne() => originalBodyRectilgne;
         public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
         public RayGaz GetOriginalRayGaz() => originalRayGaz;
+        public Line GetOriginalLine() => originalLine;
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
         public Transform GetDossierRayGaz() => dossierRayGaz;

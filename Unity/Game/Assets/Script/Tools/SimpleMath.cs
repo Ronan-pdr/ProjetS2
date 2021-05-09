@@ -57,7 +57,10 @@ namespace Script.Tools
         public static float ArcTan(float opposé, float adjacent) // l'angle obtenu sera toujours positif
         {
             if (adjacent == 0)
-                throw new DivideByZeroException("On ne peut pas diviser par 0 (ArcTan)");
+            {
+                return opposé >= 0 ? 90 : -90;
+            }
+                
                 
             float r = (float) Atan(opposé / adjacent); //r est l'angle en radian
             return RadianToDegre(r);

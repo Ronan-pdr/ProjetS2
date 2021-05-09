@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Script.EntityPlayer;
+using Script.Graph;
 using Script.TeteChercheuse;
 using Script.Tools;
 using UnityEngine;
@@ -33,6 +34,8 @@ namespace Script.DossierPoint
         // ------------ Setter ------------
         public void AddNeighboor(CrossPoint value)
         {
+            Line.Create(transform.position, value.transform.position);
+            
             neighboors.Add(value);
         }
         
