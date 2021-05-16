@@ -37,6 +37,8 @@ namespace Script.EntityPlayer
                 type = "Suiveur";
             else if (this is Guide)
                 type = "Guide";
+            else if (this is Hirondelle)
+                type = "Hirondelle";
             else if (this is Chasseur)
                 type = "Chasseur";
             else if (this is Chassé)

@@ -25,6 +25,7 @@ namespace Script.Manager
         
         [Header("Prefab")]
         [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
+        [SerializeField] private Hirondelle originalHirondelle; // prefab des bodyRectiligne
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
         [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
         [SerializeField] private Line originalLine;
@@ -43,6 +44,9 @@ namespace Script.Manager
         
         [Header("Scene")]
         [SerializeField] private TypeScene scene;
+        
+        [Header("Contour")]
+        [SerializeField] private bool IsBordNeeded;
 
         [Header("InterfaceInGame")]
         [SerializeField] private GameObject visé;
@@ -71,7 +75,8 @@ namespace Script.Manager
         {
             Game,
             Labyrinthe,
-            Maintenance
+            Maintenance,
+            CageOiseaux
         }
 
         private ManagerGame typeScene;
@@ -89,6 +94,7 @@ namespace Script.Manager
         public Chasseur GetChasseur(int index) => chasseurs[index];
         public Chassé GetChassé(int index) => chassés[index];
         public BodyRectilgne GetOriginalBodyRectilgne() => originalBodyRectilgne;
+        public Hirondelle GetOriginalHirondelle() => originalHirondelle;
         public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
         public RayGaz GetOriginalRayGaz() => originalRayGaz;
         public Line GetOriginalLine() => originalLine;
@@ -99,8 +105,8 @@ namespace Script.Manager
         public (float, float, float, float) GetContour() => contour;
         public HumanCapsule GetHumanCapsule() => new HumanCapsule(capsuleBot);
         public TypeScene GetTypeScene() => scene;
-        public ManagerGame GetManagerGame() => typeScene;
         public bool IsGameEnded() => _endedGame;
+        public bool IsMultijoueur => typeScene.IsMultijoueur;
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
@@ -156,14 +162,14 @@ namespace Script.Manager
             chassés = new List<Chassé>();
             spectateurs = new List<Spectateur>();
             
-            // récupérer les contours de la map
-            RecupContour();
-        }
-
-        public void Start()
-        {
+            if (IsBordNeeded)
+            {
+                // récupérer les contours de la map
+                RecupContour();
+            }
+            
             // determiner le typeScene
-            if (CrossManager.Instance.IsMaintenance) // maintenance des crossPoints
+            if (CrossManager.Instance && CrossManager.Instance.IsMaintenance) // maintenance des crossPoints
             {
                 Debug.Log("Début Maintenance des CrossPoints");
                 typeScene = new InMaintenance(nParticipant);
@@ -172,16 +178,38 @@ namespace Script.Manager
             {
                 typeScene = new InGuessWho(nParticipant);
             }
-            else // labyrinthe
+            else if (scene == TypeScene.Labyrinthe)// labyrinthe
             {
                 typeScene = new InLabyrinthe(nParticipant);
             }
+            else if (scene == TypeScene.CageOiseaux)
+            {
+                typeScene = new InCageOiseaux(nParticipant);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
 
-            if (!PhotonNetwork.IsMasterClient)
-                return;
-
-            SendInfoPlayer();
-            SendInfoBot();
+        public void Start()
+        {
+            if (typeScene.IsMultijoueur)
+            {
+                if (!PhotonNetwork.IsMasterClient)
+                    return;
+                
+                SendInfoPlayer();
+                SendInfoBot();
+            }
+            else
+            {
+                int i = 0;
+                foreach (TypeBot typeBot in typeScene.GetTypeBot())
+                {
+                    BotManager.Instance.CreateBot(typeBot, i++);
+                }
+            }
         }
 
         // ------------ Méthodes ------------

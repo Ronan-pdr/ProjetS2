@@ -18,7 +18,8 @@ namespace Script.Bot
         Rectiligne,
         Fuyard,
         Guide,
-        Suiveur
+        Suiveur,
+        Hirondelle
     }
     
     public class BotManager : MonoBehaviourPunCallbacks
@@ -37,14 +38,22 @@ namespace Script.Bot
         
         // cette liste va servir à donner les noms à chaque bot
         private int[] nBotNamed;
+
+        private MasterManager _masterManager;
         
         // ------------ Getter ------------
         public string GetNameBot(BotClass bot, Player player)
         {
-            int i = ManList<Player>.GetIndex(PhotonNetwork.PlayerList, player);
+            if (_masterManager.IsMultijoueur)
+            {
+                int i = ManList<Player>.GetIndex(PhotonNetwork.PlayerList, player);
             
-            nBotNamed[i] += 1;
-            return $"{player.NickName}{bot.GetTypeEntity()}{nBotNamed[i]}";
+                nBotNamed[i] += 1;
+                return $"{player.NickName}{bot.GetTypeEntity()}{nBotNamed[i]}";
+            }
+
+            nBotNamed[0] += 1;
+            return $"{bot.GetTypeEntity()}{nBotNamed[0]}";
         }
 
         // ------------ Constructeurs ------------
@@ -56,16 +65,34 @@ namespace Script.Bot
         void Start()
         {
             Bots = new List<BotClass>();
-            nBotNamed = new int[PhotonNetwork.PlayerList.Length];
+            _masterManager = MasterManager.Instance;
+
+            if (_masterManager.IsMultijoueur)
+            {
+                nBotNamed = new int[PhotonNetwork.PlayerList.Length];
+            }
+            else
+            {
+                nBotNamed = new int[1];
+            }
         }
 
         // ------------ Méthodes ------------
-        private void CreateBot(TypeBot t, int indexSpawn)
+        public void CreateBot(TypeBot t, int indexSpawn)
         {
             (Transform tr, string type) = GetTrAndString(t, indexSpawn);
 
-            BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
-                tr.position, tr.rotation).GetComponent<BotClass>();
+            BotClass bot;
+            if (_masterManager.IsMultijoueur)
+            {
+                bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
+                    tr.position, tr.rotation).GetComponent<BotClass>();
+            }
+            else
+            {
+                bot = Instantiate(_masterManager.GetOriginalHirondelle(), tr.position, tr.rotation);
+            }
+            
             
             if (bot is BotRectiligne)
             {
@@ -101,6 +128,8 @@ namespace Script.Bot
                     return (tr, "Guide");
                 case TypeBot.Suiveur:
                     return (tr, "Suiveur");
+                case TypeBot.Hirondelle:
+                    return (tr, "Hirondelle");
                 default:
                     throw new Exception($"Le cas du {t} n'a pas encore été géré");
             }

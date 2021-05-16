@@ -10,19 +10,19 @@ namespace Script.Labyrinthe
         // ------------ Serialized Field ------------
         
         [Header("Sortie")]
-        [SerializeField] private GameObject sortie;
+        [SerializeField] private Transform sortie;
         
         // ------------ Attributs ------------
         
         public static LabyrintheManager Instance;
-        private RayGaz sonde;
-        private bool isSondeFinish;
+        private RayGaz _sonde;
+        private bool _isSondeFinish;
         
         // ------------ Setter ------------
 
         private void FinSonde()
         {
-            isSondeFinish = true;
+            _isSondeFinish = true;
         }
 
         // ------------ Constructeurs ------------
@@ -34,15 +34,15 @@ namespace Script.Labyrinthe
         private void Start()
         {
             // Sonder la zone une bonne fois pour toute
-            //sonde = RayGaz.GetSonde(sortie.transform.position, FinSonde);
+            _sonde = RayGaz.GetSonde(sortie.position, FinSonde);
         }
         
         // ------------ Méthode ------------
         public List<Vector3> GetBestPath(Vector3 pos)
         {
-            if (isSondeFinish)
+            if (_isSondeFinish)
             {
-                return sonde.GetBestPath(pos);
+                return _sonde.GetBestPath(pos);
             }
 
             return new List<Vector3>();

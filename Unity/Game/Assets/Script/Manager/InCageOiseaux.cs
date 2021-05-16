@@ -1,33 +1,32 @@
-﻿using System;
+﻿using Script.DossierPoint;
 
 namespace Script.Manager
 {
-    public class InMaintenance : ManagerGame
+    public class InCageOiseaux : ManagerGame
     {
         // ------------ Constructeur ------------
-        public InMaintenance(int nJoueur)
+        
+        public InCageOiseaux(int nJoueur)
         {
             NJoueur = nJoueur;
-            IsMultijoueur = true;
+            IsMultijoueur = false;
         }
         
         // ------------ Méthodes ------------
         protected override NtypeJoueur GetNJoueur()
         {
-            if (NJoueur > 1)
-            {
-                throw new Exception($"Il ne peut y avoir plus d'un joueur, il y en a {NJoueur}");
-            }
-            
             NtypeJoueur n = new NtypeJoueur();
-            n.None = 1;
+            n.None = NJoueur;
 
             return n;
         }
-
+        
         protected override NtypeBot GetNBot()
         {
-            return new NtypeBot();
+            NtypeBot n = new NtypeBot();
+            n.Hirondelle = SpawnManager.Instance.GetNbSpawnBot();
+            
+            return n;
         }
     }
 }

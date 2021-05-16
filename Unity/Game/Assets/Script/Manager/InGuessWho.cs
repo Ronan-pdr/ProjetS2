@@ -9,6 +9,7 @@ namespace Script.Manager
         public InGuessWho(int nJoueur)
         {
             NJoueur = nJoueur;
+            IsMultijoueur = true;
         }
         
         // ------------ Méthodes ------------
