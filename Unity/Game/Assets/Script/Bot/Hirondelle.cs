@@ -1,16 +1,22 @@
 using System;
+using System.Collections.Generic;
 using Script.EntityPlayer;
 using Script.Test;
 using Script.Tools;
 using UnityEngine;
+using UnityEngine.WSA;
 
 namespace Script.Bot
 {
     public class Hirondelle : BotClass
     {
+        // ------------ SerializeField ------------
+
+        [Header("Entourage")]
+        [SerializeField] private Entourage obstacles;
+        [SerializeField] private Entourage voisins;
+        
         // ------------ Attributs ------------
-    
-        private const int Vision = 3;
 
         private float _nextRegard;
 
@@ -21,44 +27,7 @@ namespace Script.Bot
         private void SetSynchro(bool value)
         {
             _synchro = value;
-        }
-
-        public void Eloigner(Vector3 pos)
-        {
-            Vector3 diff = Calcul.Diff(pos, Tr.position);
-
-            Aligner(Calcul.BetterArctan(diff.x, diff.z) + 180);
-        }
-
-        public void Aligner(float value, float ecartement = 1f)
-        {
-            float rotY = Mod(value, 360);
-            float y = Mod(Tr.eulerAngles.y, 360);
-            int coef;
-
-            float diff = SimpleMath.Abs(rotY - y);
-
-            if (diff < 10)
-            {
-                coef = 0;
-            }
-            else if (rotY > y)
-            {
-                coef = rotY - y < 180 ? 1 : -1;
-            }
-            else
-            {
-                coef = y - rotY < 180 ? -1 : 1;
-            }
-
-            AmountRotation += coef * ecartement;
-        }
-        
-        public void Rapprocher(Vector3 pos)
-        {
-            Vector3 diff = Calcul.Diff(pos, Tr.position);
-
-            Aligner(Calcul.BetterArctan(diff.x, diff.z));
+            voisins.gameObject.SetActive(value);
         }
 
         private int Mod(float a, int b) => SimpleMath.Mod((int) a, b);
@@ -66,17 +35,25 @@ namespace Script.Bot
         // ------------ Constructeur ------------
         protected override void AwakeBot()
         {
-            RotationSpeed = 100;
+            RotationSpeed = 500;
             running = Running.Marche;
-            TranquilleVitesse = 1;
+            TranquilleVitesse = 2;
             
             SetSynchro(true);
+            
+            // l'entourage
+            
+            obstacles.Set(o => o.CompareTag("Respawn"));
+            voisins.Set(g => g.GetComponent<Hirondelle>());
         }
 
         protected override void StartBot()
         {
             AmountRotation = UnityEngine.Random.Range(-180, 180);
-            Syncronisation.Instance.AddHirondelle(this);
+            //Syncronisation.Instance.AddHirondelle(this);
+
+            InvokeRepeating(nameof(GererObstacles), 1, 0.4f);
+            InvokeRepeating(nameof(EcartUpdate), 1, 0.1f);
         }
     
         // ------------ Update ------------
@@ -85,112 +62,203 @@ namespace Script.Bot
         {
             Tourner();
 
-            GererObstacle();
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                _synchro = !_synchro;
 
+                if (_synchro)
+                {
+                    Debug.Log("Synchro");
+                }
+                else
+                {
+                    Debug.Log("Desynchro");
+                }
+            }
+        }
+        
+        private void EcartUpdate()
+        {
             if (_synchro)
             {
-                
+                Synchronisation();
             }
             else
             {
                 // tourner légerement
-                AmountRotation += UnityEngine.Random.Range(-5f, 5f);
+                AmountRotation += UnityEngine.Random.Range(-10f, 10f);
             }
         }
     
         // ------------ Méthodes ------------
 
-        private void GererObstacle()
+        private void GererObstacles()
         {
             if (Time.time < _nextRegard)
-            {
                 return;
-            }
 
-            _nextRegard = Time.time + 0.5f;
+            _nextRegard = Time.time + 0.4f;
+            
+            List<Vector3> cage = obstacles.GetList();
+            int l = cage.Count;
 
-            Ray ray = new Ray(Tr.position + 0.5f * Vector3.up, Tr.TransformDirection(Vector3.forward));
-
-            // obstacle droit devant
-            if (Obstacle(ray, out RaycastHit h, Vision))
+            if (l == 1)
             {
-                //TestRayGaz.CreateMarqueur(h.point, TestRayGaz.Couleur.Red);
-                
-                AmountRotation = WhenObstacleInFront(ray);
+                SingleObstacle(cage[0]);
+            }
+            else if (l > 2)
+            {
+                AmountRotation += Autour(180);
+            }
+        }
+
+        private void TwoObstacle(Vector3 obstacle1, Vector3 obstacle2)
+        {
+            float angle1 = GetAngle(obstacle1);
+            float angle2 = GetAngle(obstacle2);
+
+            int moy = (int) ((angle1 + angle2) / 2);
+
+            if (SimpleMath.Abs(angle1 - angle2) >= 180)
+            {
+                Debug.Log("vers la moyenne");
+                // aller vers la moyenne
+                AmountRotation += Autour(moy);
             }
             else
             {
-                ray.direction = Tr.TransformDirection(Vector3.right);
-                if (Obstacle(ray, Vision / 2))
+                
+                // aller à l'inverse de la moyenne
+                float angle = Calcul.GiveAmoutRotation(moy + 180, Tr.eulerAngles.y);
+                Debug.Log($"l'inverse de la moyenne, angle = '{angle}'");
+                AmountRotation += angle;
+            }
+        }
+
+        private void SingleObstacle(Vector3 obstacle)
+        {
+            float angle = GetAngle(obstacle);
+            
+            if (SimpleMath.Abs(angle) > 110)
+            {
+                // on s'ent fout des obstacles dans ton dos ou presque
+                return;
+            }
+            
+            if (angle > 50)
+            {
+                AmountRotation -= PetitVirage();
+            }
+            else if (angle >= 0)
+            {
+                AmountRotation -= GrosVirage();
+            }
+            else if (angle > -50)
+            {
+                AmountRotation += GrosVirage();
+            }
+            else
+            {
+                AmountRotation += PetitVirage();
+            }
+        }
+
+        private float GetAngle(Vector3 pos)
+        {
+            return Calcul.Angle(Tr.eulerAngles.y, Tr.position, pos, Calcul.Coord.Y);
+        }
+        
+        // ------------ Synchronisation ------------
+
+        private void Synchronisation()
+        {
+            foreach (KeyValuePair<GameObject, Vector3> e in voisins.GetDict())
+            {
+                float dist = Calcul.Distance(Tr.position, e.Value);
+                
+                if (dist < 1.5)
                 {
-                    // obstacle à droite
-                    AmountRotation = -30;
+                    // trop proche
+                    Eloigner(e.Value);
+                }
+                else if (dist < 2)
+                {
+                    // parfait
+                    Aligner(e.Key.GetComponent<Hirondelle>());
                 }
                 else
                 {
-                    ray.direction = Tr.TransformDirection(Vector3.left);
-                    
-                    if (Obstacle(ray, Vision / 2))
-                    {
-                        // obstacle à droite
-                        AmountRotation = 30;
-                    }
+                    // trop loin
+                    Rapprocher(e.Value);
                 }
             }
         }
 
-        private int WhenObstacleInFront(Ray ray)
+        private void Eloigner(Vector3 pos)
         {
-            ray.direction = Tr.TransformDirection(new Vector3(1, 0, 0));
+            float angle = GetAngle(pos);
+            float abs = SimpleMath.Abs(angle);
             
-            if (!Obstacle(ray, out RaycastHit hit1, Vision * 2))
+            if (10 <= abs && abs <= 170)
             {
-                Debug.Log(1);
-                // Pas d'obstacle à droite --> bar à tribord toute
-                return Virage();
+                // s'éloigner
+                AmountRotation += 4 * (angle > 0 ? -1 : 1);
             }
-            
-            ray.direction = Tr.TransformDirection(new Vector3(-1, 0, 0));
+        }
 
-            if (!Obstacle(ray, out RaycastHit hit2, Vision * 2))
-            {
-                Debug.Log(2);
-                // Pas d'obstacle à gauche --> bar à vabord toute
-                return -Virage();
-            }
+        private void Aligner(Hirondelle hirondelle)
+        {
+            float angle = hirondelle.Tr.eulerAngles.y - Tr.eulerAngles.y;
+            float abs = SimpleMath.Abs(angle);
 
-            if (hit1.distance > hit2.distance)
+            if (5 <= abs && abs <= 180)
             {
-                Debug.Log(3);
-                // Plus de place à droite --> bar à tribord toute
-                return Virage();
+                // s'aligner
+                AmountRotation += 2 * (angle > 0 ? 1 : -1);
             }
-            
-            Debug.Log(4);
-            // Plus de place à gauche --> bar à vabord toute
-            return -Virage();
         }
         
-        private bool Obstacle(Ray r, out RaycastHit hit, int max)
+        private void Rapprocher(Vector3 pos)
         {
-            return Physics.Raycast(r, out hit, max) && !hit.collider.GetComponent<Entity>();
+            float angle = GetAngle(pos);
+            float abs = SimpleMath.Abs(angle);
+            
+            if (5 <= abs && abs <= 180)
+            {
+                // s'éloigner
+                AmountRotation += 3 * (angle > 0 ? 1 : -1);
+            }
         }
         
-        private bool Obstacle(Ray r, int max)
+        // ------------ Random ------------
+
+        private int PetitVirage()
         {
-            return Obstacle(r, out RaycastHit h, max);
+            return Virage(50, 90);
+        }
+        
+        private int GrosVirage()
+        {
+            return Virage(100, 140);
         }
 
-        private int Virage()
+        private int Virage(int begin, int end)
         {
-            return UnityEngine.Random.Range(70, 110);
+            return UnityEngine.Random.Range(begin, end);
         }
 
-    
+        private int Autour(int angle)
+        {
+            return Virage(angle - 20, angle + 20);
+        }
+
+
         // ------------ Event ------------
+        
         protected override void WhenBlock()
         {
-            Debug.Log("On est bloqué chef !");
+            AmountRotation += Autour(180);
+            Debug.Log("Je suis bloqué chef");
         }
     }
 }
