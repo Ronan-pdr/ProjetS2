@@ -81,9 +81,9 @@ namespace Script.EntityPlayer
         {
             string type = GetTypeEntity();
             
-            if (this is Humanoide)
+            if (this is PlayerClass)
             {
-                return $"{type}[{name}]";
+                return $"{type}{{{name}}}]";
             }
 
             return $"{type}";

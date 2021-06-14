@@ -24,9 +24,11 @@ namespace Script.Bot
 
         private Etat etat = Etat.Attend;
         
+        // ------------ Attributs ------------
+        
         // cette liste va contenir la position des chasseurs lorsque le bot les a "vu"
         // si le bot n'en a pas vu, la liste est vide
-        private List<(Chasseur chasseur, Vector3 position)> Vus = new List<(Chasseur chasseur, Vector3 position)>();
+        private Dictionary<Chasseur, Vector3> Vus = new Dictionary<Chasseur, Vector3>();
 
         // fuite
         private List<Vector3> planFuite;
@@ -34,6 +36,14 @@ namespace Script.Bot
         /*private float tempsMaxFuite = 3f;
         private float tempsRestantFuite;
         private float distanceFuite;*/
+        
+        // ------------ Setter ------------
+
+        private void SetEtatPoule()
+        {
+            etat = Etat.Poule;
+            Anim.Set(HumanAnim.Type.Sit);
+        }
         
         // ------------ Constructeurs ------------
 
@@ -80,25 +90,17 @@ namespace Script.Bot
         // ------------ Méthodes ------------
         private void NewVu(Chasseur vu) // en gros, changement de direction
         {
-            int i;
-            int len = Vus.Count;
-            for (i = 0; i < len && Vus[i].chasseur != vu; i++)
-            {}
-
-            if (i < len) // le chasseur vu était déjà dans les 'Vus'
-                Vus[i] = (vu, vu.transform.position); // update de sa position
-            else
-                Vus.Add((vu, vu.transform.position)); // on le rajoute
+            // on le rajoute ou update de sa position
+            Vus[vu] = vu.transform.position;
             
             // cherche un plan bien rodé vers une destination stratégique
             Vector3 dest;
-            dest = BotManager.Instance.GetGoodSpot(this, Vus[0].position);
+            dest = BotManager.Instance.GetGoodSpot(this, Vus[vu]);
 
             if (SimpleMath.IsEncadré(dest, Vector3.zero)) // aucun bon spot
             {
                 // n'a pas de destination
-                etat = Etat.Poule;
-                Anim.Set(HumanAnim.Type.Sit);
+                SetEtatPoule();
             }
             else // attend son plan de fuite
             {
@@ -107,13 +109,12 @@ namespace Script.Bot
             }
         }
 
-        public void RecepRayGaz(List<Vector3> path)
+        private void RecepRayGaz(List<Vector3> path)
         {
             if (path.Count == 0)
             {
                 // n'a pas de destination, n'a vraiment pas de plan...
-                etat = Etat.Poule;
-                Anim.Set(HumanAnim.Type.Sit);
+                SetEtatPoule();
             } 
             else
             {
@@ -121,7 +122,6 @@ namespace Script.Bot
                 planFuite = path;
                 etat = Etat.Fuite;
                 running = Running.Course;
-                SetMoveAmount(Vector3.forward, PleineVitesse);
             
                 /*foreach (Vector3 p in planFuite)
                 {
@@ -129,28 +129,6 @@ namespace Script.Bot
                 }*/
             }
         }
-
-        /*private void OldFuite()
-        {
-            // pour l'instant je vais juste gérer le cas où y'a qu'un chasseur
-            var position = Tr.position;
-            float angleY = Calcul.Angle(0, position, Vus[0].position, Calcul.Coord.Y);
-            
-            angleY += 180 * (angleY > 0 ? -1 : 1); // il va rotater pour aller le plus loin possible des chasseur
-
-            // teste ses directions pour déterminer s'il n'y a pas d'obstacle
-            int ecartAngle = 0; // prendra les valeurs successives 0 ; 1 ; -1 ; 2 ; -2 ; 3 ; -3...
-            
-            for (int j = 0; !RayGaz.CanIPass(capsule, Tr.position, Calcul.FromAngleToDirection(angleY + ecartAngle), distanceFuite) && ecartAngle < 130; j++)
-            {
-                ecartAngle += j * 5 * (j % 2 == 1 ? 1 : -1);
-            }
-
-            AmountRotation = Calcul.GiveAmoutRotation(angleY + ecartAngle, Tr.eulerAngles.y);
-            
-            tempsRestantFuite = tempsMaxFuite; // il regonfle son temps de fuite son temps de fuite
-            etat = Etat.Fuite;
-        }*/
 
         private void Fuir()
         {
@@ -187,6 +165,8 @@ namespace Script.Bot
             etat = Etat.Attend;
             running = Running.Arret;
         }
+        
+        // collision
         private void OnTriggerEnter(Collider other)
         {
             OnCollisionAux(other);

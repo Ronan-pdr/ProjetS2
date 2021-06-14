@@ -12,9 +12,18 @@ namespace Script.Bot
     {
         // ------------ SerializeField ------------
 
-        [Header("Entourage")]
+        [Header("Obstacle")]
         [SerializeField] private Entourage obstacles;
-        [SerializeField] private Entourage voisins;
+        
+        [Header("Voisins Droit")]
+        [SerializeField] private Entourage voisinsNearRight;
+        [SerializeField] private Entourage voisinsPerfectRight;
+        [SerializeField] private Entourage voisinsFarRight;
+        
+        [Header("Voisins Gauche")]
+        [SerializeField] private Entourage voisinsNearLeft;
+        [SerializeField] private Entourage voisinsPerfectLeft;
+        [SerializeField] private Entourage voisinsFarLeft;
         
         // ------------ Attributs ------------
 
@@ -27,7 +36,14 @@ namespace Script.Bot
         private void SetSynchro(bool value)
         {
             _synchro = value;
-            voisins.gameObject.SetActive(value);
+            
+            voisinsNearRight.gameObject.SetActive(value);
+            voisinsPerfectRight.gameObject.SetActive(value);
+            voisinsFarRight.gameObject.SetActive(value);
+            
+            voisinsNearLeft.gameObject.SetActive(value);
+            voisinsPerfectLeft.gameObject.SetActive(value);
+            voisinsFarLeft.gameObject.SetActive(value);
         }
 
         private int Mod(float a, int b) => SimpleMath.Mod((int) a, b);
@@ -44,7 +60,16 @@ namespace Script.Bot
             // l'entourage
             
             obstacles.Set(o => o.CompareTag("Respawn"));
-            voisins.Set(g => g.GetComponent<Hirondelle>());
+
+            Func<GameObject, bool> f = g => g.GetComponent<Hirondelle>();
+            
+            voisinsNearRight.Set(f);
+            voisinsPerfectRight.Set(f);
+            voisinsFarRight.Set(f);
+            
+            voisinsNearLeft.Set(f);
+            voisinsPerfectLeft.Set(f);
+            voisinsFarLeft.Set(f);
         }
 
         protected override void StartBot()
@@ -53,7 +78,7 @@ namespace Script.Bot
             //Syncronisation.Instance.AddHirondelle(this);
 
             InvokeRepeating(nameof(GererObstacles), 1, 0.4f);
-            InvokeRepeating(nameof(EcartUpdate), 1, 0.1f);
+            InvokeRepeating(nameof(EcartUpdate), 1, 0.05f);
         }
     
         // ------------ Update ------------
@@ -64,7 +89,7 @@ namespace Script.Bot
 
             if (Input.GetKeyDown(KeyCode.P))
             {
-                _synchro = !_synchro;
+                SetSynchro(!_synchro);
 
                 if (_synchro)
                 {
@@ -81,7 +106,7 @@ namespace Script.Bot
         {
             if (_synchro)
             {
-                Synchronisation();
+                //Synchronisation();
             }
             else
             {
@@ -106,9 +131,14 @@ namespace Script.Bot
             {
                 SingleObstacle(cage[0]);
             }
-            else if (l > 2)
+            else if (l == 2)
             {
-                AmountRotation += Autour(180);
+                SingleObstacle(cage[0]);
+                SingleObstacle(cage[1]);
+            }
+            else if (l != 0)
+            {
+                AmountRotation += Autour(160);
             }
         }
 
@@ -139,7 +169,7 @@ namespace Script.Bot
         {
             float angle = GetAngle(obstacle);
             
-            if (SimpleMath.Abs(angle) > 110)
+            if (SimpleMath.Abs(angle) > 90)
             {
                 // on s'ent fout des obstacles dans ton dos ou presque
                 return;
@@ -172,26 +202,17 @@ namespace Script.Bot
 
         private void Synchronisation()
         {
-            foreach (KeyValuePair<GameObject, Vector3> e in voisins.GetDict())
-            {
-                float dist = Calcul.Distance(Tr.position, e.Value);
-                
-                if (dist < 1.5)
-                {
-                    // trop proche
-                    Eloigner(e.Value);
-                }
-                else if (dist < 2)
-                {
-                    // parfait
-                    Aligner(e.Key.GetComponent<Hirondelle>());
-                }
-                else
-                {
-                    // trop loin
-                    Rapprocher(e.Value);
-                }
-            }
+            // s'éloigner de la droite
+            AmountRotation -= 3 * voisinsNearRight.GetNb();
+
+            // se rapprocher de la droite
+            AmountRotation += 3 * voisinsFarRight.GetNb();
+            
+            // s'éloigner de la gauche
+            AmountRotation += 3 * voisinsNearLeft.GetNb();
+
+            // se rapprocher de la gauche
+            AmountRotation -= 3 * voisinsFarLeft.GetNb();
         }
 
         private void Eloigner(Vector3 pos)
@@ -247,9 +268,9 @@ namespace Script.Bot
             return UnityEngine.Random.Range(begin, end);
         }
 
-        private int Autour(int angle)
+        private int Autour(int angle, int ecart = 20)
         {
-            return Virage(angle - 20, angle + 20);
+            return Virage(angle - ecart, angle + ecart);
         }
 
 
@@ -257,7 +278,7 @@ namespace Script.Bot
         
         protected override void WhenBlock()
         {
-            AmountRotation += Autour(180);
+            AmountRotation += Autour(160);
             Debug.Log("Je suis bloqué chef");
         }
     }

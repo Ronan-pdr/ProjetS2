@@ -28,6 +28,8 @@ namespace Script.Bot
         }
 
         public Dictionary<GameObject, Vector3> GetDict() => _dict;
+
+        public int GetNb() => _dict.Count;
         
         // ------------ Setter ------------
 

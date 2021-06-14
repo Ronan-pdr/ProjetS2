@@ -11,6 +11,70 @@ namespace Script.DossierPoint
 {
     public class CrossPoint : Point
     {
+        private class Node
+        {
+            // ------------ Attibuts ------------
+
+            private float _bestDist;
+            private Node _previous;
+            private Vector3 _pos;
+            
+            // ------------ Getter ------------
+            public float BestDist => _bestDist;
+            public Node Previous => _previous;
+            public Vector3 Pos => _pos;
+            
+            // ------------ Setter ------------
+
+            public void BetterDist(float dist)
+            {
+                if (dist > _bestDist)
+                {
+                    throw new Exception();
+                }
+
+                _bestDist = dist;
+            }
+
+            public bool NewPath(Node node)
+            {
+                float dist = node._bestDist + Calcul.Distance(_pos, node._pos);
+                
+                if (dist < _bestDist)
+                {
+                    _bestDist = dist;
+                    _previous = node;
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            // ------------ Constructeur ------------
+
+            public Node(Vector3 pos)
+            {
+                // l'origine d'un graph
+                
+                _bestDist = 0;
+                _previous = null;
+                _pos = pos;
+            }
+            
+            public Node(float dist, Node previous, Vector3 pos)
+            {
+                if (dist < 0)
+                {
+                    throw new Exception("Une distance entre deux ne peut être négatifs");
+                }
+                
+                _previous = previous;
+                _pos = pos;
+                
+                _bestDist = dist + Calcul.Distance(_pos, previous._pos);
+            }
+        }
+        
         // ------------ SerializeField ------------
         
         [Header("Ajustement")]
@@ -26,6 +90,9 @@ namespace Script.DossierPoint
         private MyFile<CrossPoint> _potentialNeighboors;
         private int _indexFile;
         
+        // pour le path finding
+        private Dictionary<string, Node> _Nodes;
+
         // ------------ Getters ------------
         public CrossPoint GetNeighboor(int index) => neighboors[index];
         public int GetNbNeighboor() => neighboors.Count;
@@ -74,19 +141,109 @@ namespace Script.DossierPoint
             throw new Exception($"Le nom '{namePoint}' n'est pas homologé (index = {s})");
         }
         
+        // ------------ PathFinding ------------
+
+        public void Origin(string key)
+        {
+            if (_Nodes.ContainsKey(key))
+            {
+                throw new Exception("Impossible que l'origine d'un graph soit déjà parcouru durant cette recherche puiqu'elle est censée commencer");
+            }
+            
+            _Nodes.Add(key, new Node(transform.position));
+        }
+
+        public void SearchPath(GraphPathFinding graph)
+        {
+            string key = graph.Key;
+            
+            if (!_Nodes.ContainsKey(key))
+            {
+                throw new Exception();
+            }
+
+            float dist = _Nodes[key].BestDist;
+            
+            foreach (CrossPoint crossPoint in neighboors)
+            {
+                crossPoint.Parcourir(graph, dist);
+            }
+        }
+
+        private void Parcourir(GraphPathFinding graph, float dist)
+        {
+            string key = graph.Key;
+            
+            if (_Nodes.ContainsKey(key))
+            {
+                // ce cross point a déjà été parcouru par cette recherche
+                if (_Nodes[key].NewPath(_Nodes[key]))
+                {
+                    // le nouveau chemin trouvé est plus court --> ajustement
+                    Ajustement(key);
+                }
+            }
+            else
+            {
+                // ce cross point n'a jamais été parcouru par cette recherche
+                _Nodes.Add(key, new Node(dist, _Nodes[key], transform.position));
+                if (this != graph.Destination)
+                {
+                    // si c'est la destination, inutile de relancer la recherche sur celui-ci
+                    graph.AddCrossPoint(this);
+                }
+            }
+        }
+
+        private void Ajustement(string key)
+        {
+            foreach (CrossPoint crossPoint in neighboors)
+            {
+                if (crossPoint._Nodes.ContainsKey(key))
+                {
+                    // ce point a déjà été parcouru
+                    
+                    if (crossPoint._Nodes[key].Previous == _Nodes[key])
+                    {
+                        // ce point avait pour chemin ce cross point --> il faut update
+
+                        crossPoint._Nodes[key].BetterDist(_Nodes[key].BestDist + Calcul.Distance(transform.position, crossPoint.transform.position));
+                        crossPoint.Ajustement(key);
+                    }
+                }
+            }
+        }
+
+        public List<Vector3> EndResearchPath(string key)
+        {
+            List<Vector3> path = new List<Vector3>();
+            
+            // c'est la position de la destination
+            Node node;
+            path.Add(transform.position);
+
+            while (_Nodes[key].Previous != null)
+            {
+                node = _Nodes[key].Previous;
+                path.Add(node.Pos);
+            }
+
+            return path;
+        }
+
         // ------------ Maintenance ------------
 
-        private void Error()
+        private void Error(string nameFunc)
         {
             if (!CrossManager.Instance.IsMaintenance)
             {
-                throw new Exception("Impossible que cette fonction soit appelé si on n'est pas en maintenance");
+                throw new Exception($"Impossible que la fonction '{nameFunc}' soit appelé s'il n'y a pas en maintenance");
             }
         }
         
         public void EndResearchBody(CrossPoint neighboor) // est appelé dans la class 'BodyChercheur', dans la fonction 'Update'
         {
-            Error();
+            Error("EndResearchBody");
             
             if (_potentialNeighboors is null) // tout reçu
             {
@@ -127,7 +284,7 @@ namespace Script.DossierPoint
                 _crossManager = CrossManager.Instance;
             }
             
-            Error();
+            Error("SearchNeighboors");
 
             _potentialNeighboors = GetPotentialNeigboors();
 
@@ -143,7 +300,7 @@ namespace Script.DossierPoint
 
         private void NextResearch()
         {
-            Error();
+            Error("NextResearch");
             
             GameObject destination = _potentialNeighboors.Defiler().gameObject;
             BodyRectilgne.InstancierStatic(gameObject, destination);
@@ -151,7 +308,7 @@ namespace Script.DossierPoint
         
         private MyFile<CrossPoint> GetPotentialNeigboors()
         {
-            Error();
+            Error("GetPotentialNeigboors");
             
             MyFile<CrossPoint> potentialNeighboors = new MyFile<CrossPoint>();
             Vector3 ownCoord = transform.position;

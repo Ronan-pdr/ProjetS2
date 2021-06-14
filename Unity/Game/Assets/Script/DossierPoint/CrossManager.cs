@@ -69,7 +69,7 @@ namespace Script.DossierPoint
 
                 if (printForError > 0)
                 {
-                    Debug.Log($"{1}ème prochain = {crossPoint.name}");
+                    Debug.Log($"{printForError}ème prochain = {crossPoint.name}");
                     printForError--;
                 }
 

@@ -34,7 +34,6 @@ namespace Script.Bot
         
         // variables relatives à la caméra artificiel des bots
         private static float AngleCamera = 75; // le degré pour la vision périphérique
-        private static Vector3 PositionCamera = new Vector3(0, 0, 0);
 
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
@@ -83,7 +82,7 @@ namespace Script.Bot
             name = BotManager.Instance.GetNameBot(this, Pv.Owner);
 
             // le parenter
-            if (BotManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
+            if (BotManager is null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
             {
                 // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs
                 Tr.parent = MasterManager.Instance.GetDossierOtherBot();
