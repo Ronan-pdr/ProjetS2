@@ -12660,6 +12660,14 @@ PrefabInstance:
       propertyPath: volumeSlider
       value: 
       objectReference: {fileID: 521742184}
+    - target: {fileID: 7868893354195645356, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
+      propertyPath: fullScreenToggle
+      value: 
+      objectReference: {fileID: 521742185}
+    - target: {fileID: 7868893354195645356, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
+      propertyPath: graphicsDropdown
+      value: 
+      objectReference: {fileID: 521742186}
     - target: {fileID: 7868893354195645358, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -13238,6 +13246,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &521742185 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868893355177256342, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
+  m_PrefabInstance: {fileID: 521742178}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &521742186 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868893355673386952, guid: c36389b38e312e14e9b8aa601406aea8, type: 3}
+  m_PrefabInstance: {fileID: 521742178}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &523105559
@@ -44179,6 +44209,7 @@ MonoBehaviour:
   - {fileID: 344880519}
   - {fileID: 1060887381}
   - {fileID: 1134490277}
+  background: {fileID: 0}
 --- !u!114 &1014139046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45033,7 +45064,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1060887379
 RectTransform:
   m_ObjectHideFlags: 0
