@@ -133,7 +133,34 @@ namespace Script.DossierPoint
         
         // ------------ Méthodes ------------
 
-        
+        public CrossPoint GetNearestPoint(Vector3 pos)
+        {
+            int l = allCrossPoints.Length;
+
+            CrossPoint point = allCrossPoints[0];
+            (CrossPoint point, float dist) best = (point, Calcul.Distance(pos, point.transform.position));
+
+            for (int i = 1; i < l; i++)
+            {
+                point = allCrossPoints[i];
+                float dist = Calcul.Distance(pos, point.transform.position);
+
+                if (dist < best.dist)
+                {
+                    best = (point, dist);
+                }
+            }
+
+            return best.point;
+        }
+
+        public void ResetPathFinding(string key)
+        {
+            foreach (CrossPoint point in allCrossPoints)
+            {
+                point.ResetPathFinding(key);
+            }
+        }
 
         // ------------ Parsing ------------
 

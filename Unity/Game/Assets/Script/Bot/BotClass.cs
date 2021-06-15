@@ -283,7 +283,7 @@ namespace Script.Bot
             {
                 if (Physics.Linecast(positionCamera, posPlayer, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
                 {
-                    if (hit.collider.GetComponent<PlayerClass>())
+                    if (hit.collider.GetComponent<PlayerClass>() && hit.distance < 30)
                     {
                         // si l'obstacle est le joueur alors le bot "VOIT" le joueur
                         

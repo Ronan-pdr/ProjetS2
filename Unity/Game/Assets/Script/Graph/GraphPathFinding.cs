@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Script.DossierPoint;
 using Script.Manager;
 using Script.Test;
@@ -47,7 +48,7 @@ namespace Script.Graph
                 Vector3.zero, Quaternion.identity).GetComponent<GraphPathFinding>();
             
             graph.Constructeur(start, destination, key, renvoi);
-            graph.InvokeRepeating(nameof(Research), 0, 0.1f);
+            graph.InvokeRepeating(nameof(Research), 0, 0.05f);
         }
         
         // ------------ Public Method(s) ------------
@@ -61,10 +62,15 @@ namespace Script.Graph
 
         private void Research()
         {
-            for (int i = 0; i < 10 && !_file.IsEmpty(); i++)
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            while (!_file.IsEmpty() && stopwatch.ElapsedMilliseconds < 20)
             {
                 _file.Defiler().SearchPath(this);
             }
+            
+            stopwatch.Stop();
 
             if (_file.IsEmpty())
             {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Script.EntityPlayer;
 using Script.Graph;
+using Script.Manager;
 using Script.TeteChercheuse;
 using Script.Tools;
 using UnityEngine;
@@ -53,7 +54,7 @@ namespace Script.DossierPoint
                 
                 return false;
             }
-            
+
             // ------------ Constructeur ------------
 
             public Node(Vector3 pos)
@@ -116,6 +117,11 @@ namespace Script.DossierPoint
             }
             
             neighboors.Add(value);
+        }
+        
+        public void ResetPathFinding(string key)
+        {
+            _Nodes.Remove(key);
         }
         
         // ------------ Constructeur ------------
@@ -245,12 +251,24 @@ namespace Script.DossierPoint
             }
             
             path.Add(transform.position);
+            HumanCapsule capsule = MasterManager.Instance.GetHumanCapsule();
 
             while (node.Previous != null)
             {
-                node = node.Previous;
+                Node nextNode = node.Previous;
+                
+                for (int i = 0; i >= 0 && nextNode.Previous != null && capsule.CanIPass(node.Pos,
+                    Calcul.Diff(nextNode.Previous.Pos, node.Pos),
+                    Calcul.Distance(nextNode.Previous.Pos, node.Pos)); i++)
+                {
+                    nextNode = nextNode.Previous;
+                }
+
+                node = nextNode;
                 path.Add(node.Pos);
             }
+            
+            _crossManager.ResetPathFinding(key);
 
             return path;
         }
