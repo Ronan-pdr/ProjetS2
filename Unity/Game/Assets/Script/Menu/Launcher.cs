@@ -80,7 +80,6 @@ namespace Script.Menu
             ChangeName(players[players.Length -1]);
             for (int i = 0; i < players.Length; i++)
             {
-                
                 Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
             }
 
