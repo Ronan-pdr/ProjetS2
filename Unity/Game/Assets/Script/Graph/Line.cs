@@ -11,14 +11,14 @@ namespace Script.Graph
         // ------------ SerializeField ------------
         
         //[SerializeField] private Transform graphics;
-        [SerializeField] private Material material;
+        [SerializeField] private Renderer render;
         
         // ------------ Setter ------------
 
         public void SetColor(float couleur)
         {
             float val = couleur / 260;
-            material.color = new Color(val, 0, 0);
+            render.material.color = new Color(val, val, val);
         }
         
         // ------------ Static Constructeur ------------

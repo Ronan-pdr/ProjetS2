@@ -31,9 +31,9 @@ namespace Script.Graph
             _key = key;
             
             _file = new MyFile<CrossPoint>();
-            _file.Enfiler(start);
-            
             start.Origin(key);
+            _file.Enfiler(start);
+
             _start = start.transform.position;
             _destination = destination;
             _renvoi = renvoi;
@@ -43,10 +43,11 @@ namespace Script.Graph
 
         public static void GetPath(CrossPoint start, CrossPoint destination, string key, Action<List<Vector3>> renvoi)
         {
-            GraphPathFinding graph = Instantiate(MasterManager.Instance, Vector3.zero, Quaternion.identity).GetComponent<GraphPathFinding>();
+            GraphPathFinding graph = Instantiate(MasterManager.Instance.GetOriginalGraphPathFinding(),
+                Vector3.zero, Quaternion.identity).GetComponent<GraphPathFinding>();
             
             graph.Constructeur(start, destination, key, renvoi);
-            graph.InvokeRepeating(nameof(Research), 0, 0.3f);
+            graph.InvokeRepeating(nameof(Research), 0, 0.1f);
         }
         
         // ------------ Public Method(s) ------------
@@ -81,6 +82,8 @@ namespace Script.Graph
                     TestRayGaz.CreateMarqueur(path[path.Count - 1], TestRayGaz.Couleur.Red);
                     throw new Exception();
                 }
+                
+                Destroy(gameObject);
             }
         }
     }

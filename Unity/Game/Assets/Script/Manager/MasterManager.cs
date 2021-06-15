@@ -28,7 +28,7 @@ namespace Script.Manager
         [SerializeField] private Hirondelle originalHirondelle; // prefab des bodyRectiligne
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
         [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
-        [SerializeField] private RayGaz originalGraphPathFinding; // prefab des RayGaz
+        [SerializeField] private GraphPathFinding originalGraphPathFinding; // prefab des RayGaz
         [SerializeField] private Line originalLine;
         public GameObject marqueurBrown;
         public GameObject marqueurRed;
@@ -99,7 +99,7 @@ namespace Script.Manager
         public Hirondelle GetOriginalHirondelle() => originalHirondelle;
         public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
         public RayGaz GetOriginalRayGaz() => originalRayGaz;
-        public RayGaz GetOriginalGraphPathFinding() => originalGraphPathFinding;
+        public GraphPathFinding GetOriginalGraphPathFinding() => originalGraphPathFinding;
         public Line GetOriginalLine() => originalLine;
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
         public Transform GetDossierBalleFusil() => dossierBalleFusil;

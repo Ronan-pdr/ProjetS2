@@ -20,6 +20,7 @@ namespace Script.DossierPoint
 
         [Header("Maintenance")]
         [SerializeField] private bool inMaintenance;
+        [SerializeField] private bool printAllGraph;
         [SerializeField] private SousCrossManager[] sousCrossManagers;
         
         // ------------ Attributs ------------
@@ -31,6 +32,7 @@ namespace Script.DossierPoint
 
         // ------------ Getters ------------
         public bool IsMaintenance => inMaintenance;
+        public bool MustPrintGraph => printAllGraph;
         public string GetDossier() => DossierRangement;
         public int GetNumberPoint() => allCrossPoints.Length;
         

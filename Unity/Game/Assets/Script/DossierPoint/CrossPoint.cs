@@ -39,14 +39,13 @@ namespace Script.DossierPoint
 
             public bool NewPath(Node node)
             {
-                
                 float dist = node._bestDist + Calcul.Distance(_pos, node._pos);
                 
                 if (dist < _bestDist)
                 {
                     _bestDist = dist;
                     _previous = node;
-                    _bridge.SetColor(dist);
+                    _bridge.SetColor(DistToCouleur(_bestDist));
                     return true;
                 }
                 
@@ -65,24 +64,19 @@ namespace Script.DossierPoint
                 _pos = pos;
             }
             
-            public Node(float dist, Node previous, Vector3 pos)
+            public Node(Node previous, Vector3 pos)
             {
-                if (dist < 0)
-                {
-                    throw new Exception("Une distance entre deux ne peut être négatifs");
-                }
-                
                 _previous = previous;
                 _pos = pos;
                 
-                _bestDist = dist + Calcul.Distance(_pos, previous._pos);
+                _bestDist = previous._bestDist + Calcul.Distance(_pos, previous._pos);
 
                 if (!(_previous is null))
                 {
                     Vector3 pos1 = _pos;
                     Vector3 pos2 = _previous._pos;
             
-                    _bridge = Line.Create(pos1, pos2, _bestDist);
+                    _bridge = Line.Create(pos1, pos2, DistToCouleur(_bestDist));
                 }
             }
             
@@ -90,7 +84,7 @@ namespace Script.DossierPoint
 
             private float DistToCouleur(float dist)
             {
-                return dist * 30;
+                return dist;
             }
         }
         
@@ -120,7 +114,10 @@ namespace Script.DossierPoint
         // ------------ Setter ------------
         public void AddNeighboor(CrossPoint value)
         {
-            //Line.Create(transform.position, value.transform.position);
+            if (CrossManager.Instance.MustPrintGraph)
+            {
+                Line.Create(transform.position, value.transform.position);
+            }
             
             neighboors.Add(value);
         }
@@ -129,6 +126,7 @@ namespace Script.DossierPoint
         private void Awake()
         {
             neighboors = new List<CrossPoint>();
+            _Nodes = new Dictionary<string, Node>();
         }
 
         private void Start()
@@ -140,6 +138,8 @@ namespace Script.DossierPoint
                 // On veut pas les voir
                 Invisible();
             }
+            
+            gameObject.SetActive(true);
         }
         
         // ------------ Méthodes ------------
@@ -178,25 +178,25 @@ namespace Script.DossierPoint
             
             if (!_Nodes.ContainsKey(key))
             {
-                throw new Exception();
+                throw new Exception("Le node doit déjà être créé pour faitre les recherches sur ces voisins");
             }
 
-            float dist = _Nodes[key].BestDist;
+            Node node = _Nodes[key];
             
             foreach (CrossPoint crossPoint in neighboors)
             {
-                crossPoint.Parcourir(graph, dist);
+                crossPoint.Parcourir(graph, node);
             }
         }
 
-        private void Parcourir(GraphPathFinding graph, float dist)
+        private void Parcourir(GraphPathFinding graph, Node previous)
         {
             string key = graph.Key;
             
             if (_Nodes.ContainsKey(key))
             {
                 // ce cross point a déjà été parcouru par cette recherche
-                if (_Nodes[key].NewPath(_Nodes[key]))
+                if (_Nodes[key].NewPath())
                 {
                     // le nouveau chemin trouvé est plus court --> ajustement
                     Ajustement(key);
@@ -205,7 +205,7 @@ namespace Script.DossierPoint
             else
             {
                 // ce cross point n'a jamais été parcouru par cette recherche
-                _Nodes.Add(key, new Node(dist, _Nodes[key], transform.position));
+                _Nodes.Add(key, new Node(previous, transform.position));
                 if (this != graph.Destination)
                 {
                     // si c'est la destination, inutile de relancer la recherche sur celui-ci
@@ -236,14 +236,21 @@ namespace Script.DossierPoint
         public List<Vector3> EndResearchPath(string key)
         {
             List<Vector3> path = new List<Vector3>();
-            
+
             // c'est la position de la destination
-            Node node;
+            Node node = _Nodes[key];
+            if (node is null)
+            {
+                // recherche négative
+                Debug.Log("recherche négative");
+                return null;
+            }
+            
             path.Add(transform.position);
 
-            while (_Nodes[key].Previous != null)
+            while (node.Previous != null)
             {
-                node = _Nodes[key].Previous;
+                node = node.Previous;
                 path.Add(node.Pos);
             }
 
