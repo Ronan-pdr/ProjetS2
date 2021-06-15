@@ -17,8 +17,22 @@ namespace Script.Graph
 
         public void SetColor(float couleur)
         {
-            float val = couleur / 260;
-            render.material.color = new Color(val, val, val);
+            float val = 255;
+            float[] rgb = new float[3];
+
+            /*int i;
+            for (i = 0; i < 3 && couleur > val; i++)
+            {
+                couleur -= val;
+            }*/
+
+            int i = (int)couleur / (int)val;
+            if (i < 3)
+            {
+                rgb[i] = couleur % val / val;
+            }
+
+            render.material.color = new Color(rgb[0], rgb[1], rgb[2]);
         }
         
         // ------------ Static Constructeur ------------
@@ -38,23 +52,36 @@ namespace Script.Graph
         {
             SetRbTr();
 
-            Vector3 diff = Calcul.Diff(point2, point1);
-
-            float rotX = -Calcul.BetterArctan(diff.y, Calcul.Distance(point1, point2, Calcul.Coord.Y));
-            float rotY = Calcul.Angle(0, point1, point2, Calcul.Coord.Y);
-            Tr.Rotate(0, rotY, 0);
-            Tr.Rotate(rotX, 0, 0);
-
-            float sizeZ = Calcul.Distance(point1, point2);
-            
-            Tr.localScale = new Vector3(1, 1, sizeZ);
-            Tr.position += Tr.TransformDirection(Vector3.forward) * sizeZ / 2;
+            SetNode(point1, point2);
             
             // ranger dans la hiérarchie
             transform.parent = master.GetDossierGraph();
             
             // materiel
             SetColor(couleur);
+        }
+        
+        // ------------ Public Method ------------
+
+        public void SetNode(Vector3 point1, Vector3 point2)
+        {
+            // position
+            Tr.position = point1;
+            
+            // rotation
+            Vector3 diff = Calcul.Diff(point2, point1);
+
+            float rotX = -Calcul.BetterArctan(diff.y, Calcul.Distance(point1, point2, Calcul.Coord.Y));
+            float rotY = Calcul.Angle(0, point1, point2, Calcul.Coord.Y);
+            
+            Tr.rotation = Quaternion.identity;
+            Tr.Rotate(rotX, rotY, 0);
+
+            float sizeZ = Calcul.Distance(point1, point2);
+            
+            Tr.localScale = new Vector3(1, 1, sizeZ);
+            
+            //Tr.position += Tr.TransformDirection(Vector3.forward) * sizeZ / 2;
         }
     }
 }

@@ -35,6 +35,7 @@ namespace Script.DossierPoint
                 }
 
                 _bestDist = dist;
+                _bridge.SetColor(DistToCouleur(_bestDist));
             }
 
             public bool NewPath(Node node)
@@ -45,6 +46,7 @@ namespace Script.DossierPoint
                 {
                     _bestDist = dist;
                     _previous = node;
+                    _bridge.SetNode(_pos, _previous._pos);
                     _bridge.SetColor(DistToCouleur(_bestDist));
                     return true;
                 }
@@ -70,21 +72,15 @@ namespace Script.DossierPoint
                 _pos = pos;
                 
                 _bestDist = previous._bestDist + Calcul.Distance(_pos, previous._pos);
-
-                if (!(_previous is null))
-                {
-                    Vector3 pos1 = _pos;
-                    Vector3 pos2 = _previous._pos;
-            
-                    _bridge = Line.Create(pos1, pos2, DistToCouleur(_bestDist));
-                }
+                
+                _bridge = Line.Create(_pos, previous._pos, DistToCouleur(_bestDist));
             }
             
             // ------------ Method(s) ------------
 
             private float DistToCouleur(float dist)
             {
-                return dist;
+                return dist * 4;
             }
         }
         
@@ -196,7 +192,7 @@ namespace Script.DossierPoint
             if (_Nodes.ContainsKey(key))
             {
                 // ce cross point a déjà été parcouru par cette recherche
-                if (_Nodes[key].NewPath())
+                if (_Nodes[key].NewPath(previous))
                 {
                     // le nouveau chemin trouvé est plus court --> ajustement
                     Ajustement(key);
@@ -216,17 +212,19 @@ namespace Script.DossierPoint
 
         private void Ajustement(string key)
         {
+            Node node = _Nodes[key];
+            
             foreach (CrossPoint crossPoint in neighboors)
             {
                 if (crossPoint._Nodes.ContainsKey(key))
                 {
                     // ce point a déjà été parcouru
                     
-                    if (crossPoint._Nodes[key].Previous == _Nodes[key])
+                    if (crossPoint._Nodes[key].Previous == node)
                     {
                         // ce point avait pour chemin ce cross point --> il faut update
 
-                        crossPoint._Nodes[key].BetterDist(_Nodes[key].BestDist + Calcul.Distance(transform.position, crossPoint.transform.position));
+                        crossPoint._Nodes[key].BetterDist(node.BestDist + Calcul.Distance(transform.position, crossPoint.transform.position));
                         crossPoint.Ajustement(key);
                     }
                 }
