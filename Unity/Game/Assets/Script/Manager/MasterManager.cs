@@ -39,6 +39,7 @@ namespace Script.Manager
         [SerializeField] private Transform dossierBalleFusil; // ranger les 'BalleFusil'
         [SerializeField] private Transform dossierRayGaz; // ranger les marqueurs des 'RayGaz'
         [SerializeField] private Transform dossierOtherBot; // le dossier où les bots que ton ordinateur ne contrôle pas seront rangés
+        [SerializeField] private Transform dossierGraph; 
         
         [Header("Bot")]
         [SerializeField] private CapsuleCollider capsuleBot;
@@ -104,6 +105,7 @@ namespace Script.Manager
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
         public Transform GetDossierRayGaz() => dossierRayGaz;
         public Transform GetDossierOtherBot() => dossierOtherBot;
+        public Transform GetDossierGraph() => dossierGraph;
         public (float, float, float, float) GetContour() => contour;
         public HumanCapsule GetHumanCapsule() => new HumanCapsule(capsuleBot);
         public TypeScene GetTypeScene() => scene;

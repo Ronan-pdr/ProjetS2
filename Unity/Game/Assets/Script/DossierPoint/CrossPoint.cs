@@ -17,6 +17,7 @@ namespace Script.DossierPoint
 
             private float _bestDist;
             private Node _previous;
+            private Line _bridge;
             private Vector3 _pos;
             
             // ------------ Getter ------------
@@ -38,12 +39,14 @@ namespace Script.DossierPoint
 
             public bool NewPath(Node node)
             {
+                
                 float dist = node._bestDist + Calcul.Distance(_pos, node._pos);
                 
                 if (dist < _bestDist)
                 {
                     _bestDist = dist;
                     _previous = node;
+                    _bridge.SetColor(dist);
                     return true;
                 }
                 
@@ -58,6 +61,7 @@ namespace Script.DossierPoint
                 
                 _bestDist = 0;
                 _previous = null;
+                _bridge = null;
                 _pos = pos;
             }
             
@@ -72,6 +76,21 @@ namespace Script.DossierPoint
                 _pos = pos;
                 
                 _bestDist = dist + Calcul.Distance(_pos, previous._pos);
+
+                if (!(_previous is null))
+                {
+                    Vector3 pos1 = _pos;
+                    Vector3 pos2 = _previous._pos;
+            
+                    _bridge = Line.Create(pos1, pos2, _bestDist);
+                }
+            }
+            
+            // ------------ Method(s) ------------
+
+            private float DistToCouleur(float dist)
+            {
+                return dist * 30;
             }
         }
         
@@ -101,7 +120,7 @@ namespace Script.DossierPoint
         // ------------ Setter ------------
         public void AddNeighboor(CrossPoint value)
         {
-            Line.Create(transform.position, value.transform.position);
+            //Line.Create(transform.position, value.transform.position);
             
             neighboors.Add(value);
         }
@@ -338,7 +357,7 @@ namespace Script.DossierPoint
 
                 float diffAlt = Calcul.Distance(ownCoord.y, pos.y);
                     
-                // trop de d'altitude pour la potentiel distance de montée
+                // trop d'altitude pour la potentiel distance de montée
                 if (Calcul.Distance(ownCoord, pos, Calcul.Coord.Y)*0.7f <= diffAlt)
                 {
                     //Debug.Log(potentialNeighboors[i].name);

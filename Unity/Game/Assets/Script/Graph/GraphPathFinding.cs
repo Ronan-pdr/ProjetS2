@@ -6,7 +6,7 @@ using Script.Test;
 using Script.Tools;
 using UnityEngine;
 
-namespace Script.TeteChercheuse
+namespace Script.Graph
 {
     public class GraphPathFinding : MonoBehaviour
     {

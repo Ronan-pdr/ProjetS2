@@ -19,7 +19,7 @@ namespace Script.DossierPoint
         // ------------ SerializeField ------------
 
         [Header("Maintenance")]
-        [SerializeField] private bool InMaintenance;
+        [SerializeField] private bool inMaintenance;
         [SerializeField] private SousCrossManager[] sousCrossManagers;
         
         // ------------ Attributs ------------
@@ -30,7 +30,7 @@ namespace Script.DossierPoint
         private string DossierRangement = "SauvegardeCrossManager/";
 
         // ------------ Getters ------------
-        public bool IsMaintenance => InMaintenance;
+        public bool IsMaintenance => inMaintenance;
         public string GetDossier() => DossierRangement;
         public int GetNumberPoint() => allCrossPoints.Length;
         

@@ -11,17 +11,30 @@ namespace Script.Graph
         // ------------ SerializeField ------------
         
         //[SerializeField] private Transform graphics;
+        [SerializeField] private Material material;
         
-        // ------------ Constructeur ------------
+        // ------------ Setter ------------
 
-        public static void Create(Vector3 point1, Vector3 point2)
+        public void SetColor(float couleur)
+        {
+            float val = couleur / 260;
+            material.color = new Color(val, 0, 0);
+        }
+        
+        // ------------ Static Constructeur ------------
+
+        public static Line Create(Vector3 point1, Vector3 point2, float couleur = 0)
         {
             Line line = Instantiate(MasterManager.Instance.GetOriginalLine(), point1, Quaternion.identity);
             
-            line.Const(point1, point2);
-        }
+            line.Constructeur(point1, point2, couleur);
 
-        private void Const(Vector3 point1, Vector3 point2)
+            return line;
+        }
+        
+        // ------------ Private Constructeur ------------
+
+        private void Constructeur(Vector3 point1, Vector3 point2, float couleur)
         {
             SetRbTr();
 
@@ -36,6 +49,12 @@ namespace Script.Graph
             
             Tr.localScale = new Vector3(1, 1, sizeZ);
             Tr.position += Tr.TransformDirection(Vector3.forward) * sizeZ / 2;
+            
+            // ranger dans la hiérarchie
+            transform.parent = master.GetDossierGraph();
+            
+            // materiel
+            SetColor(couleur);
         }
     }
 }

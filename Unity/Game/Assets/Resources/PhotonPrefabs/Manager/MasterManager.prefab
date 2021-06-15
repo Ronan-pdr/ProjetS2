@@ -43,10 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5d6700a739f4b9580380d1142fc7ab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originalBodyRectilgne: {fileID: 7475188350239458209, guid: 2048a9e2cf0bee04c8d9eb36c2785e7f, type: 3}
+  originalBodyRectilgne: {fileID: 681963426934995128, guid: 7bcf8ae7ba805ad47bd105da610d2962, type: 3}
   originalHirondelle: {fileID: 0}
   originalBodyGaz: {fileID: 8424364165130499839, guid: 866c659c271f014479473fc1e543201e, type: 3}
   originalRayGaz: {fileID: 5939710653004678706, guid: 05224721a27744443ad888b4b3e1ef77, type: 3}
+  originalGraphPathFinding: {fileID: 0}
   originalLine: {fileID: 2304334314243126800, guid: d718ed9a86095de4eac06dd3f7b0c924, type: 3}
   marqueurBrown: {fileID: 7884830175790736266, guid: e3992ca6a6d79fd43bfd880c98f5079d, type: 3}
   marqueurRed: {fileID: 7995435178782687692, guid: 7c1ea162e5c324a42a22e95624bc4d38, type: 3}
