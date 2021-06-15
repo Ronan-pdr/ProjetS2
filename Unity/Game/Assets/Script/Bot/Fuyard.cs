@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Script.Animation;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Graph;
 using Script.Manager;
 using Script.Test;
 using Script.TeteChercheuse;
@@ -14,7 +15,7 @@ namespace Script.Bot
     public class Fuyard : BotClass
     {
         // ------------ Etat ------------
-        protected enum Etat
+        private enum Etat
         {
             Attend,
             FuiteSansPlan,
@@ -24,9 +25,7 @@ namespace Script.Bot
 
         private Etat etat = Etat.Attend;
         
-        // cette liste va contenir la position des chasseurs lorsque le bot les a "vu"
-        // si le bot n'en a pas vu, la liste est vide
-        private List<(Chasseur chasseur, Vector3 position)> Vus = new List<(Chasseur chasseur, Vector3 position)>();
+        // ------------ Attributs ------------
 
         // fuite
         private List<Vector3> planFuite;
@@ -34,6 +33,14 @@ namespace Script.Bot
         /*private float tempsMaxFuite = 3f;
         private float tempsRestantFuite;
         private float distanceFuite;*/
+        
+        // ------------ Setter ------------
+
+        private void SetEtatPoule()
+        {
+            etat = Etat.Poule;
+            Anim.Set(HumanAnim.Type.Sit);
+        }
         
         // ------------ Constructeurs ------------
 
@@ -43,9 +50,11 @@ namespace Script.Bot
         }
 
         protected override void StartBot()
-        {}
+        {
+            BotManager.AddFuyard(this);
+        }
 
-        // ------------ Upadate ------------
+        // ------------ Update ------------
         protected override void UpdateBot()
         {
             if (etat == Etat.Fuite)
@@ -59,7 +68,7 @@ namespace Script.Bot
                 foreach (PlayerClass chasseur in GetPlayerInMyVision(TypePlayer.Chasseur))
                 {
                     // ce sont forcément des chasseurs
-                    NewVu((Chasseur)chasseur);
+                    NewVu(chasseur.transform.position);
                 }
             }
             else if (etat == Etat.FuiteSansPlan)
@@ -78,42 +87,37 @@ namespace Script.Bot
         }
 
         // ------------ Méthodes ------------
-        private void NewVu(Chasseur vu) // en gros, changement de direction
+        
+        private void NewVu(Vector3 posChasseur)
         {
-            int i;
-            int len = Vus.Count;
-            for (i = 0; i < len && Vus[i].chasseur != vu; i++)
-            {}
-
-            if (i < len) // le chasseur vu était déjà dans les 'Vus'
-                Vus[i] = (vu, vu.transform.position); // update de sa position
-            else
-                Vus.Add((vu, vu.transform.position)); // on le rajoute
-            
             // cherche un plan bien rodé vers une destination stratégique
-            Vector3 dest;
-            dest = BotManager.Instance.GetGoodSpot(this, Vus[0].position);
+            CrossPoint dest = BotManager.Instance.GetEscapeSpot(this, posChasseur);
 
-            if (SimpleMath.IsEncadré(dest, Vector3.zero)) // aucun bon spot
+            if (dest is null ||
+                Calcul.Distance(dest.transform.position, Tr.transform.position) < 5)
             {
-                // n'a pas de destination
-                etat = Etat.Poule;
-                Anim.Set(HumanAnim.Type.Sit);
+                // aucun bon spot
+                SetEtatPoule();
             }
             else // attend son plan de fuite
             {
-                RayGaz.GetPath(Tr.position, dest, RecepRayGaz);
+                Vector3 pos = Tr.position;
+                
+                CrossPoint start = CrossManager.Instance.GetNearestPoint(pos);
+                
+                GraphPathFinding.GetPath(start, dest, name, RecepPathEscape);
                 etat = Etat.FuiteSansPlan;
             }
         }
 
-        public void RecepRayGaz(List<Vector3> path)
+        private void RecepPathEscape(List<Vector3> path)
         {
-            if (path.Count == 0)
+            int l = path.Count;
+            
+            if (l == 0)
             {
                 // n'a pas de destination, n'a vraiment pas de plan...
-                etat = Etat.Poule;
-                Anim.Set(HumanAnim.Type.Sit);
+                SetEtatPoule();
             } 
             else
             {
@@ -121,36 +125,22 @@ namespace Script.Bot
                 planFuite = path;
                 etat = Etat.Fuite;
                 running = Running.Course;
-                SetMoveAmount(Vector3.forward, PleineVitesse);
-            
-                /*foreach (Vector3 p in planFuite)
+
+                Vector3 pos = Tr.position;
+
+                for (int i = l - 1; i >= 0 && capsule.CanIPass(pos,
+                    Calcul.Diff(planFuite[i-1], pos),
+                    Calcul.Distance(planFuite[i-1], pos)); i--)
                 {
-                    TestRayGaz.CreatePointPath(p);
-                }*/
+                    planFuite.RemoveAt(i);
+                }
+                
+                foreach (Vector3 p in planFuite)
+                {
+                    TestRayGaz.CreateMarqueur(p, TestRayGaz.Couleur.Brown);
+                }
             }
         }
-
-        /*private void OldFuite()
-        {
-            // pour l'instant je vais juste gérer le cas où y'a qu'un chasseur
-            var position = Tr.position;
-            float angleY = Calcul.Angle(0, position, Vus[0].position, Calcul.Coord.Y);
-            
-            angleY += 180 * (angleY > 0 ? -1 : 1); // il va rotater pour aller le plus loin possible des chasseur
-
-            // teste ses directions pour déterminer s'il n'y a pas d'obstacle
-            int ecartAngle = 0; // prendra les valeurs successives 0 ; 1 ; -1 ; 2 ; -2 ; 3 ; -3...
-            
-            for (int j = 0; !RayGaz.CanIPass(capsule, Tr.position, Calcul.FromAngleToDirection(angleY + ecartAngle), distanceFuite) && ecartAngle < 130; j++)
-            {
-                ecartAngle += j * 5 * (j % 2 == 1 ? 1 : -1);
-            }
-
-            AmountRotation = Calcul.GiveAmoutRotation(angleY + ecartAngle, Tr.eulerAngles.y);
-            
-            tempsRestantFuite = tempsMaxFuite; // il regonfle son temps de fuite son temps de fuite
-            etat = Etat.Fuite;
-        }*/
 
         private void Fuir()
         {
@@ -164,10 +154,10 @@ namespace Script.Bot
                 
                 if (len == 0) // il finit sa cavale,...
                 {
-                    MoveAmount = Vector3.zero; // ...il s'arrête...
+                    MoveAmount = Vector3.zero; // ...il s'arrête,...
                     etat = Etat.Attend;
                     running = Running.Arret;
-                    Vus.Clear();
+                    AmountRotation = 180; // ...se retourne...
                     Anim.StopContinue();
                     return; // ...et ne fait rien d'autre
                 }
@@ -187,6 +177,8 @@ namespace Script.Bot
             etat = Etat.Attend;
             running = Running.Arret;
         }
+        
+        // collision
         private void OnTriggerEnter(Collider other)
         {
             OnCollisionAux(other);

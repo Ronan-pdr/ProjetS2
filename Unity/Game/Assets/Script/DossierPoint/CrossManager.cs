@@ -19,7 +19,8 @@ namespace Script.DossierPoint
         // ------------ SerializeField ------------
 
         [Header("Maintenance")]
-        [SerializeField] private bool InMaintenance;
+        [SerializeField] private bool inMaintenance;
+        [SerializeField] private bool printAllGraph;
         [SerializeField] private SousCrossManager[] sousCrossManagers;
         
         // ------------ Attributs ------------
@@ -30,7 +31,8 @@ namespace Script.DossierPoint
         private string DossierRangement = "SauvegardeCrossManager/";
 
         // ------------ Getters ------------
-        public bool IsMaintenance => InMaintenance;
+        public bool IsMaintenance => inMaintenance;
+        public bool MustPrintGraph => printAllGraph;
         public string GetDossier() => DossierRangement;
         public int GetNumberPoint() => allCrossPoints.Length;
         
@@ -69,7 +71,7 @@ namespace Script.DossierPoint
 
                 if (printForError > 0)
                 {
-                    Debug.Log($"{1}ème prochain = {crossPoint.name}");
+                    Debug.Log($"{printForError}ème prochain = {crossPoint.name}");
                     printForError--;
                 }
 
@@ -131,7 +133,34 @@ namespace Script.DossierPoint
         
         // ------------ Méthodes ------------
 
-        
+        public CrossPoint GetNearestPoint(Vector3 pos)
+        {
+            int l = allCrossPoints.Length;
+
+            CrossPoint point = allCrossPoints[0];
+            (CrossPoint point, float dist) best = (point, Calcul.Distance(pos, point.transform.position));
+
+            for (int i = 1; i < l; i++)
+            {
+                point = allCrossPoints[i];
+                float dist = Calcul.Distance(pos, point.transform.position);
+
+                if (dist < best.dist)
+                {
+                    best = (point, dist);
+                }
+            }
+
+            return best.point;
+        }
+
+        public void ResetPathFinding(string key)
+        {
+            foreach (CrossPoint point in allCrossPoints)
+            {
+                point.ResetPathFinding(key);
+            }
+        }
 
         // ------------ Parsing ------------
 

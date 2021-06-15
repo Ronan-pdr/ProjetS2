@@ -62,7 +62,9 @@ namespace Script.EntityPlayer
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);
         }
+        
         protected abstract void StartPlayer();
+        
         private void Start()
         {
             StartPlayer();

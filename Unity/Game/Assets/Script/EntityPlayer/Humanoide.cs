@@ -171,14 +171,7 @@ namespace Script.EntityPlayer
                 return false;
             }
             
-            try
-            {
-                return hum1.name == hum2.name;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
+            return hum1.name == hum2.name;
         }
         public static bool operator !=(Humanoide hum1, Humanoide hum2)
         {

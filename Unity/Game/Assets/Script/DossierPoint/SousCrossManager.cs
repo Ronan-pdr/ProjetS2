@@ -2,7 +2,7 @@
 
 namespace Script.DossierPoint
 {
-    // C'est class sert juste à ranger convenablement les cross Points
+    // Cette class sert juste à ranger convenablement les cross Points
     public class SousCrossManager : MonoBehaviour
     {
         // ------------ Attributs ------------

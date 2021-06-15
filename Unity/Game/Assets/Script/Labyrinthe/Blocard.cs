@@ -43,7 +43,7 @@ namespace Script.Labyrinthe
 
         private void PoserCaillou()
         {
-            caillous.Add(TestRayGaz.CreateMarqueur(Tr.position));
+            caillous.Add(TestRayGaz.CreateMarqueur(Tr.position, TestRayGaz.Couleur.Brown));
             nCaillou += 1;
                 
             if (nCaillou == nCaillouMax)

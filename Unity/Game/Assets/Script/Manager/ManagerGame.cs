@@ -26,6 +26,8 @@ namespace Script.Manager
                     (TypePlayer.None, None),
                 };
             }
+
+            public int Sum() => Chasseur + Chassé + Blocard + None;
         }
         
         protected struct NtypeBot
@@ -34,6 +36,7 @@ namespace Script.Manager
             public int Fuyard;
             public int Guide;
             public int Suiveur;
+            public int Hirondelle;
             
             public (TypeBot, int)[] GetList()
             {
@@ -42,14 +45,18 @@ namespace Script.Manager
                     (TypeBot.Rectiligne, Rectiligne),
                     (TypeBot.Fuyard, Fuyard),
                     (TypeBot.Guide, Guide),
-                    (TypeBot.Suiveur, Suiveur)
+                    (TypeBot.Suiveur, Suiveur),
+                    (TypeBot.Hirondelle, Hirondelle)
                 };
             }
+            
+            public int Sum() => Rectiligne + Fuyard + Guide + Suiveur + Hirondelle;
         }
         
         // ------------ Attribut ------------
         
         protected int NJoueur;
+        public bool IsMultijoueur { get; protected set;}
 
         // ------------ Getters ------------
         protected abstract NtypeJoueur GetNJoueur();
@@ -75,7 +82,7 @@ namespace Script.Manager
                 }
                 
                 // le total doît toujours être égal au nombre de joueur (logique hehe)
-                if (n.Chasseur + n.Chassé + n.None + n.Blocard != NJoueur)
+                if (n.Sum() != NJoueur)
                 {
                     throw new Exception($"{n.Chasseur} + {n.Chassé} + {n.None} + {n.Blocard} != {NJoueur}");
                 }
@@ -102,13 +109,14 @@ namespace Script.Manager
             CasErreur();
 
             // attribution des types (pour l'instant c'est pas random)
-            TypeBot[] listTrié = GetListTrié(n.GetList(), n.Fuyard + n.Rectiligne + n.Guide + n.Suiveur);
+            TypeBot[] listTrié = GetListTrié(n.GetList(), n.Sum());
 
             return listTrié;
 
             void CasErreur()
             {
-                if (n.Rectiligne > CrossManager.Instance.GetNumberPoint())
+                CrossManager cm = CrossManager.Instance;
+                if (cm && n.Rectiligne > cm.GetNumberPoint())
                     throw new Exception($"Y'a seulement {CrossManager.Instance.GetNumberPoint()}" +
                                         $"crossPint pour {n.Suiveur} botRectiligne");
 

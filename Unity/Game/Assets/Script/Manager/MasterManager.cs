@@ -8,6 +8,7 @@ using Photon.Realtime;
 using Script.Bot;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Graph;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.InterfaceInGame;
 using Script.Labyrinthe;
@@ -24,22 +25,30 @@ namespace Script.Manager
         
         [Header("Prefab")]
         [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
+        [SerializeField] private Hirondelle originalHirondelle; // prefab des bodyRectiligne
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
         [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
-        public GameObject marqueur;
-        public GameObject PointPath;
+        [SerializeField] private GraphPathFinding originalGraphPathFinding; // prefab des RayGaz
+        [SerializeField] private Line originalLine;
+        public GameObject marqueurBrown;
+        public GameObject marqueurRed;
+        public GameObject marqueurYellow;
 
         [Header("Dossier")]
         [SerializeField] private Transform dossierBodyChercheur; // ranger les 'BodyChercheur'
         [SerializeField] private Transform dossierBalleFusil; // ranger les 'BalleFusil'
         [SerializeField] private Transform dossierRayGaz; // ranger les marqueurs des 'RayGaz'
         [SerializeField] private Transform dossierOtherBot; // le dossier où les bots que ton ordinateur ne contrôle pas seront rangés
+        [SerializeField] private Transform dossierGraph; 
         
         [Header("Bot")]
         [SerializeField] private CapsuleCollider capsuleBot;
         
         [Header("Scene")]
         [SerializeField] private TypeScene scene;
+        
+        [Header("Contour")]
+        [SerializeField] private bool IsBordNeeded;
 
         [Header("InterfaceInGame")]
         [SerializeField] private GameObject visé;
@@ -68,7 +77,8 @@ namespace Script.Manager
         {
             Game,
             Labyrinthe,
-            Maintenance
+            Maintenance,
+            CageOiseaux
         }
 
         private ManagerGame typeScene;
@@ -86,17 +96,21 @@ namespace Script.Manager
         public Chasseur GetChasseur(int index) => chasseurs[index];
         public Chassé GetChassé(int index) => chassés[index];
         public BodyRectilgne GetOriginalBodyRectilgne() => originalBodyRectilgne;
+        public Hirondelle GetOriginalHirondelle() => originalHirondelle;
         public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
         public RayGaz GetOriginalRayGaz() => originalRayGaz;
+        public GraphPathFinding GetOriginalGraphPathFinding() => originalGraphPathFinding;
+        public Line GetOriginalLine() => originalLine;
         public Transform GetDossierBodyChercheur() => dossierBodyChercheur;
         public Transform GetDossierBalleFusil() => dossierBalleFusil;
         public Transform GetDossierRayGaz() => dossierRayGaz;
         public Transform GetDossierOtherBot() => dossierOtherBot;
+        public Transform GetDossierGraph() => dossierGraph;
         public (float, float, float, float) GetContour() => contour;
         public HumanCapsule GetHumanCapsule() => new HumanCapsule(capsuleBot);
         public TypeScene GetTypeScene() => scene;
-        public ManagerGame GetManagerGame() => typeScene;
         public bool IsGameEnded() => _endedGame;
+        public bool IsMultijoueur => typeScene.IsMultijoueur;
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
@@ -151,12 +165,15 @@ namespace Script.Manager
             chasseurs = new List<Chasseur>();
             chassés = new List<Chassé>();
             spectateurs = new List<Spectateur>();
-        }
-
-        public void Start()
-        {
+            
+            if (IsBordNeeded)
+            {
+                // récupérer les contours de la map
+                RecupContour();
+            }
+            
             // determiner le typeScene
-            if (CrossManager.Instance.IsMaintenance) // maintenance des crossPoints
+            if (CrossManager.Instance && CrossManager.Instance.IsMaintenance) // maintenance des crossPoints
             {
                 Debug.Log("Début Maintenance des CrossPoints");
                 typeScene = new InMaintenance(nParticipant);
@@ -165,19 +182,38 @@ namespace Script.Manager
             {
                 typeScene = new InGuessWho(nParticipant);
             }
-            else // labyrinthe
+            else if (scene == TypeScene.Labyrinthe)// labyrinthe
             {
                 typeScene = new InLabyrinthe(nParticipant);
             }
-            
-            // récupérer les contours de la map
-            RecupContour();
-            
-            if (!PhotonNetwork.IsMasterClient)
-                return;
+            else if (scene == TypeScene.CageOiseaux)
+            {
+                typeScene = new InCageOiseaux(nParticipant);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
 
-            SendInfoPlayer();
-            SendInfoBot();
+        public void Start()
+        {
+            if (typeScene.IsMultijoueur)
+            {
+                if (!PhotonNetwork.IsMasterClient)
+                    return;
+                
+                SendInfoPlayer();
+                SendInfoBot();
+            }
+            else
+            {
+                int i = 0;
+                foreach (TypeBot typeBot in typeScene.GetTypeBot())
+                {
+                    BotManager.Instance.CreateBot(typeBot, i++);
+                }
+            }
         }
 
         // ------------ Méthodes ------------
@@ -248,12 +284,7 @@ namespace Script.Manager
         private void SendInfoBot()
         {
             // les spawns
-            //int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
-            //int[] indexSpawnBotRectiligne = ManList.CreateListRange(56, 100);
-            int[] indexSpawnBotRectiligne =
-            {
-                7, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 35, 36, 43, 49, 50, 56, 57, 58, 59, 60, 80, 81, 82, 83, 84, 107
-            };
+            int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
             
             int iRectiligne = 0;
             int[] indexSpawnReste = SpawnManager.Instance.GetSpawnBot();

@@ -47,7 +47,7 @@ namespace Script.Animation
             CheckError(newAnim);
 
             StopContinue();
-
+            
             if (IsState(newAnim)) // state
             {
                 // rien de plus

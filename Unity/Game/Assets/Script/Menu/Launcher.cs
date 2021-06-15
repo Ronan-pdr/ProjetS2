@@ -77,20 +77,23 @@ namespace Script.Menu
             MenuManager.Instance.OpenMenu("room");
             roomNameText.text = PhotonNetwork.CurrentRoom.Name;
             Player[] players = PhotonNetwork.PlayerList;
+            
             //Détruit tous les joueurs précédements enregistré dans la room
             foreach (Transform child in playerListContent)
             {
                 Destroy(child.gameObject);
             }
-            ChangeName(players[players.Length -1]);
-            for (int i = 0; i < players.Length; i++)
+            
+            ChangeName(players[players.Length-1]);
+
+            foreach (Player player in players)
             {
-                
-                Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+                Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(player);
             }
 
             startGameButton.SetActive(PhotonNetwork.IsMasterClient);
         }
+        
         //Est appelé lorsque le créateur sort de la room, le but de son contenu est d'aficher le bouton 'start' au nouveau master
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
@@ -137,12 +140,14 @@ namespace Script.Menu
             {
                 Destroy(trans.gameObject);
             }
-            for (int i = 0; i < roomList.Count;i++)
+
+            foreach (RoomInfo room in roomList)
             {
                 //Unity ne supprime pas une room vide ou pleine ou caché, elle met juste l'attribut RemovedF... = true
-                if (roomList[i].RemovedFromList)
+                if (room.RemovedFromList)
                     continue;
-                Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
+                
+                Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(room);
             }
         }
         

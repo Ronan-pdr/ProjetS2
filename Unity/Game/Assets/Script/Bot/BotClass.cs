@@ -34,7 +34,6 @@ namespace Script.Bot
         
         // variables relatives à la caméra artificiel des bots
         private static float AngleCamera = 75; // le degré pour la vision périphérique
-        private static Vector3 PositionCamera = new Vector3(0, 0, 0);
 
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
@@ -83,7 +82,7 @@ namespace Script.Bot
             name = BotManager.Instance.GetNameBot(this, Pv.Owner);
 
             // le parenter
-            if (BotManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
+            if (BotManager is null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
             {
                 // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs
                 Tr.parent = MasterManager.Instance.GetDossierOtherBot();
@@ -198,13 +197,13 @@ namespace Script.Bot
                 MoveAmount = Vector3.zero;
                 Anim.StopContinue();
             }
-            else if (AmountRotation > 120)
+            else if (AmountRotation > 100)
             {
                 // ralenti pour le virage
-                SetMoveAmount(Vector3.forward, 0.5f);
-                Anim.Set(HumanAnim.Type.Forward);
+                SetMoveAmount(Vector3.forward, 0);
+                Anim.StopContinue();
             }
-            else if (AmountRotation > 60)
+            else if (AmountRotation > 40)
             {
                 // ralenti pour le virage
                 SetMoveAmount(Vector3.forward, 1f);
@@ -284,7 +283,7 @@ namespace Script.Bot
             {
                 if (Physics.Linecast(positionCamera, posPlayer, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
                 {
-                    if (hit.collider.GetComponent<PlayerClass>())
+                    if (hit.collider.GetComponent<PlayerClass>() && hit.distance < 30)
                     {
                         // si l'obstacle est le joueur alors le bot "VOIT" le joueur
                         
