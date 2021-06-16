@@ -27,7 +27,7 @@ namespace Script.EntityPlayer
         // ------------ Getter ------------
         public string GetTypeEntity()
         {
-            string type;
+            /*string type;
             
             if (this is BotRectiligne)
                 type = "Rectiligne";
@@ -48,9 +48,9 @@ namespace Script.EntityPlayer
             else if (this is BalleFusil)
                 type = "BallFusil";
             else
-                type = "Unrepetoried";
+                type = "Unrepetoried";*/
 
-            return type;
+            return GetType().FullName;
         }
 
         // ------------ Setters ------------
@@ -83,7 +83,7 @@ namespace Script.EntityPlayer
             
             if (this is PlayerClass)
             {
-                return $"{type}{{{name}}}]";
+                return $"{type}{{{name}}}";
             }
 
             return $"{type}";

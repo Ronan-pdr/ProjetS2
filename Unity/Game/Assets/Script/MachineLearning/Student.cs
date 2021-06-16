@@ -12,6 +12,8 @@ namespace Script.MachineLearning
         protected NeuralNetwork Neurones;
         protected Entrainement Entrainement;
         
+        protected const float MaxDistJump = 3;
+        
         // ------------ Getter ------------
         
         public NeuralNetwork NeuralNetwork => Neurones;
@@ -31,51 +33,71 @@ namespace Script.MachineLearning
         }
         
         // ------------ Constructeur ------------
-        
+
+        protected abstract void AwakeStudent();
+
         protected override void AwakeBot()
         {
             Neurones = new NeuralNetwork(GetLayerDimension());
+            AwakeStudent();
         }
         
         protected override void StartBot()
         {
-            if (!(Entrainement is EntrainementSaut))
-            {
-                throw new Exception();
-            }
-            
             SetToTest();
             InvokeRepeating(nameof(UseBrain), 0.1f, 0.1f);
             //Invoke(nameof(PotentielJump), 0.5f);
         }
         
-        // ------------ Public Methods ------------
-        
-        public void SetToTest()
-        {
-            Anim.Stop(HumanAnim.Type.Sit);
-            running = Running.Marche;
-        }
+        // ------------ Update ------------
+
+        protected override void UpdateBot()
+        {}
         
         // ------------ Abstact Methods ------------
-
-        protected abstract void UseBrain();
+        
         protected abstract void ErrorEntrainement();
         protected abstract int[] GetLayerDimension();
+        protected abstract void UseBrain();
+
+        public abstract void SetToTest();
+        
+        
+        // ------------ Brain ------------
+
+        protected void ErrorInput(double[] input)
+        {
+            // vérifier qu'il n'a pas de problème avec les valeurs de l'input
+            int l = input.Length;
+            for (int i = 0; i < l; i++)
+            {
+                if (input[i] < -0.1 || input[i] > 1.1)
+                {
+                    Debug.Log($"input[{i}] = {input[i]}");
+                }
+            }
+        }
+
+        protected double[] GetResult(NeuralNetwork neuralNetwork, double[] input)
+        {
+            // feed et enclencher les neurones
+            neuralNetwork.Feed(input);
+            neuralNetwork.FrontProp();
+            
+            // retourner le résultat
+            return neuralNetwork.GetResult();
+        }
+
+        protected double[] InputJump(double minDist, double height)
+        {
+            return new [] {minDist / MaxDistJump, height / capsule.Height, GetSpeed() / SprintSpeed};
+        }
         
         // ------------ Event ------------
 
         protected override void WhenBlock()
         {
             Entrainement.EndTest();
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.CompareTag("Cage"))
-            {
-                running = Running.Course;
-            }
         }
 
         private void OnCollisionEnter(Collision other)
@@ -88,13 +110,15 @@ namespace Script.MachineLearning
             OnCollision(other);
         }
 
+        protected abstract void OnHighCollision(Collision other);
+
         private void OnCollision(Collision other)
         {
             foreach (ContactPoint contact in other.contacts)
             {
                 if (contact.point.y - Tr.position.y > capsule.Rayon)
                 {
-                    Entrainement.EndTest();
+                    OnHighCollision(other);
                     return;
                 }
             }

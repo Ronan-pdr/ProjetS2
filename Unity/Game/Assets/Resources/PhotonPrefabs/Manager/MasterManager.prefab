@@ -46,6 +46,7 @@ MonoBehaviour:
   originalBodyRectilgne: {fileID: 681963426934995128, guid: 7bcf8ae7ba805ad47bd105da610d2962, type: 3}
   originalHirondelle: {fileID: 4674858542141970376, guid: d2590c6a1bd4eff47a151e166f2db8a6, type: 3}
   originalSauteur: {fileID: 752753128678136743, guid: 9262fa7e7a8c94d47a3ac9858b06eaa2, type: 3}
+  originalDetecteur: {fileID: 8594925851147014710, guid: 820b2853d66d08d4caa3367d170c2099, type: 3}
   originalBodyGaz: {fileID: 8424364165130499839, guid: 866c659c271f014479473fc1e543201e, type: 3}
   originalRayGaz: {fileID: 5939710653004678706, guid: 05224721a27744443ad888b4b3e1ef77, type: 3}
   originalGraphPathFinding: {fileID: 2776933183299841945, guid: 9dccbe25ee3728b46b4d026295fbb8be, type: 3}

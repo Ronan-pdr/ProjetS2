@@ -10,15 +10,12 @@ namespace Script.MachineLearning
 {
     public class Sauteur : Student
     {
-        // ------------ Attributs ------------
-        
-        private const float MaxDist = 3;
+        // ------------ Setter ------------
+        public override void SetToTest()
+        {
+            running = Running.Marche;
+        }
 
-        // ------------ Update ------------
-
-        protected override void UpdateBot()
-        {}
-        
         // ------------ Methods ------------
 
         protected override void ErrorEntrainement()
@@ -28,6 +25,11 @@ namespace Script.MachineLearning
                 throw new Exception();
             }
         }
+        
+        // ------------ Constructeur ------------
+        
+        protected override void AwakeStudent()
+        {}
 
         // ------------ Brain ------------
 
@@ -48,36 +50,39 @@ namespace Script.MachineLearning
         {
             if (!Grounded)
                 return;
-
-            Vector3 pos = Tr.position;
-
-            (float minDist, float height) = GetDistHeightFirstObstacle(pos, MaxDist);
-
-            double[] input =
-            {
-                minDist / MaxDist, height / capsule.Height, WalkSpeed / SprintSpeed
-            };
-
-            for (int i = 0; i < 3; i++)
-            {
-                if (input[i] < -0.1 || input[i] > 1.1)
-                {
-                    Debug.Log($"input[{i}] = {input[i]}");
-                }
-            }
-
-            // feed et enclencher les neurones
-            Neurones.Feed(input);
-            Neurones.FrontProp();
             
-            // récupérer le résultat
-            double[] values = Neurones.GetResult();
+            // recupérer les infos par rapport aux obstacles
+            (double minDist, double height) = GetDistHeightFirstObstacle(Tr.position, MaxDistJump);
+            
+            // input correspondant à cette tâche
+            double[] input = InputJump(minDist, height);
+            
+            ErrorInput(input);
 
-            if (values[0] > 0.5f)
+            // output du neurones
+            double[] output = GetResult(Neurones, input);
+            
+            // reaction
+            if (output[0] > 0.5f)
             {
                 Jump();
                 Entrainement.Malus();
             }
+        }
+        
+        // ------------ Event ------------
+        
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("SetRun"))
+            {
+                running = Running.Course;
+            }
+        }
+
+        protected override void OnHighCollision(Collision _)
+        {
+            Entrainement.EndTest();
         }
     }
 }

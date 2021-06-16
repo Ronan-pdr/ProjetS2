@@ -16,7 +16,7 @@ namespace Script.MachineLearning
         protected Student Student;
         protected int Score;
         protected ClassementDarwin Classement;
-        
+
         // ------------ Getter ------------
 
         public Student Bot => Student;
@@ -49,6 +49,8 @@ namespace Script.MachineLearning
         protected abstract Student GetPrefab();
         
         protected abstract void ResetIndicator();
+
+        public abstract string GetNameDirectory();
         
         // ------------ Private Methods ------------
         

@@ -1,27 +1,20 @@
-﻿using System;
-using System.Diagnostics;
-using Script.DossierPoint;
-using Script.Manager;
-using Script.Tools;
-using UnityEngine;
+﻿using Script.Tools;
 
 namespace Script.MachineLearning
 {
-    public class EntrainementSaut : Entrainement
+    public class EntrainementDetection : Entrainement
     {
         // ------------ Attributs ------------
-
-        private int _nSaut;
         
-        private const int CoefScore = 10;
+        public const string NameDirectory = "SauvegardeNeuroneDetection";
 
-        public const string NameDirectory = "SauvegardeNeuroneSaut";
+        private const int CoefScore = 10;
         
         // ------------ Getter ------------
         public override string GetNameDirectory() => NameDirectory;
-
-        // ------------ Public Methods ------------
         
+        // ------------ Public Methods ------------
+
         public override void EndTest()
         {
             // récupérer le score
@@ -29,12 +22,6 @@ namespace Script.MachineLearning
             // bonus
             float dist = Calcul.Distance(Student.transform.position, begin.position);
             Score += (int)(dist * CoefScore);
-            
-            if (dist > 5)
-            {
-                // malus
-                Score -= _nSaut * CoefScore;
-            }
             
             // le donner au classement
             Student.SetNeurone(Classement.EndEpreuve(Student.NeuralNetwork, Score));
@@ -45,16 +32,14 @@ namespace Script.MachineLearning
 
         public override void Malus()
         {
-            _nSaut += 1;
+            throw new System.NotImplementedException();
         }
-
+        
         // ------------ Protected Methods ------------
 
-        protected override Student GetPrefab() => Master.GetOriginalSauteur();
+        protected override Student GetPrefab() => Master.GetOriginalDetecteur();
 
         protected override void ResetIndicator()
-        {
-            _nSaut = 0;
-        }
+        {}
     }
 }

@@ -19,23 +19,24 @@ namespace Script.MachineLearning
         
         // ------------ Attributs ------------
 
-        private EntrainementSaut[] _zoneEntrainement;
+        private Entrainement[] _zoneEntrainement;
         private int _nZone;
         
         private (NeuralNetwork Neurones, int score)[] _classement;
 
         private Random _rnd;
 
-        private const string NameDirectory = "SauvegardeNeuroneSaut";
+        private string _nameDirectory;
 
         // ------------ Constructeur ------------
 
         private void Awake()
         {
-            _zoneEntrainement = GetComponentsInChildren<EntrainementSaut>();
+            _zoneEntrainement = GetComponentsInChildren<Entrainement>();
+            _nameDirectory = _zoneEntrainement[0].GetNameDirectory();
             _nZone = _zoneEntrainement.Length;
             
-            foreach (EntrainementSaut zone in _zoneEntrainement)
+            foreach (Entrainement zone in _zoneEntrainement)
             {
                 zone.SetClassement(this);
             }
@@ -51,7 +52,7 @@ namespace Script.MachineLearning
             
             if (mustRecoverSave)
             {
-                string path = $"Build/{NameDirectory}/"; 
+                string path = $"Build/{_nameDirectory}/";
                 
                 for (; i < _nZone && File.Exists(path + i); i++)
                 {
@@ -89,7 +90,7 @@ namespace Script.MachineLearning
             {
                 Debug.Log("Sauvegarde !!!!!!");
                 
-                string path = $"Build/{NameDirectory}";
+                string path = $"Build/{_nameDirectory}";
                 
                 if (!Directory.Exists(path))
                 {

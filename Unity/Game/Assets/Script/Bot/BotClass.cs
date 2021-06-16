@@ -6,6 +6,7 @@ using Photon.Realtime;
 using Script.Animation;
 using Script.Animation.Personnages.Hunted;
 using Script.EntityPlayer;
+using Script.Graph;
 using Script.Manager;
 using Script.Tools;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -44,6 +45,9 @@ namespace Script.Bot
         
         // quand il est bloqué
         private (float time, Vector3 position) block;
+        
+        // direction
+        private Vector3 _direction;
 
         // ------------ Getters ------------
         
@@ -53,10 +57,33 @@ namespace Script.Bot
             return BotManager != null || !master.IsMultijoueur;
         }
 
+        protected float GetSpeed()
+        {
+            switch (running)
+            {
+                case Running.Arret:
+                    return 0;
+                case Running.Marche:
+                    return WalkSpeed;
+                default:
+                    return SprintSpeed;
+            }
+        }
+
         // ------------ Setter ------------
         public void SetOwnBotManager(BotManager value)
         {
             BotManager = value;
+        }
+
+        public void SetDirection(Vector3 value)
+        {
+            if (value.y != 0)
+            {
+                throw new Exception();
+            }
+
+            _direction = value;
         }
 
         // ------------ Constructeurs ------------
@@ -68,6 +95,8 @@ namespace Script.Bot
             
             AwakeHuman();
             AwakeBot();
+            
+            SetDirection(Vector3.forward);
         }
 
         protected abstract void StartBot();
@@ -203,25 +232,25 @@ namespace Script.Bot
             else if (AmountRotation > 100)
             {
                 // ralenti pour le virage
-                SetMoveAmount(Vector3.forward, 0);
+                SetMoveAmount(_direction, 0);
                 Anim.StopContinue();
             }
             else if (AmountRotation > 40)
             {
                 // ralenti pour le virage
-                SetMoveAmount(Vector3.forward, 1f);
+                SetMoveAmount(_direction, 1f);
                 Anim.Set(HumanAnim.Type.Forward);
             }
             else if (running == Running.Marche)
             {
                 // marche
-                SetMoveAmount(Vector3.forward, TranquilleVitesse);
+                SetMoveAmount(_direction, TranquilleVitesse);
                 Anim.Set(HumanAnim.Type.Forward);
             }
             else if (running == Running.Course)
             {
                 // court
-                SetMoveAmount(Vector3.forward, PleineVitesse);
+                SetMoveAmount(_direction, PleineVitesse);
                 Anim.Set(HumanAnim.Type.Run);
             }
         }
@@ -299,7 +328,7 @@ namespace Script.Bot
         }
         
         // detection
-        protected (float dist, float height) GetDistHeightFirstObstacle(Vector3 pos, float distMax)
+        protected (double dist, double height) GetDistHeightFirstObstacle(Vector3 pos, float distMax)
         {
             float decoupage = 10;
             float minDist = distMax;
@@ -309,7 +338,7 @@ namespace Script.Bot
             Ray ray = new Ray(pos + Vector3.forward * 0.1f, Vector3.forward);
             
             // trouver la hauteur et la distance du premier obstacle
-            for (int i = 1; i < decoupage; i++)
+            for (int i = 2; i < decoupage; i++)
             {
                 ray.origin += Vector3.up * ecart;
 
