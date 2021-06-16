@@ -24,6 +24,8 @@ namespace Script.Manager
         {
             NtypeBot n = new NtypeBot();
             n.Guide = SpawnManager.Instance.GetNbSpawnBot();
+            // zero bot
+            n.Guide = 0;
             
             return n;
         }
