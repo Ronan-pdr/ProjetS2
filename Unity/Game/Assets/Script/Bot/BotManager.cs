@@ -130,7 +130,6 @@ namespace Script.Bot
             }
             
             tr = SpawnManager.Instance.GetTrBot(indexSpawn);
-            return (tr, nameof(t));
             
             switch (t)
             {

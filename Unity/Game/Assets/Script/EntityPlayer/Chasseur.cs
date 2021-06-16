@@ -39,6 +39,7 @@ namespace Script.EntityPlayer
         }
         
         // ------------ Upadte ------------
+        
         protected override void UpdatePlayer()
         {
             if (etat == Etat.Assis)
@@ -103,7 +104,6 @@ namespace Script.EntityPlayer
         
         public void EquipItem(int index) // index supposé valide
         {
-            
             if (etat == Etat.Accroupi)
                 return; // il ne peut pas changer d'arme losqu'il est accoupi
 
@@ -126,12 +126,8 @@ namespace Script.EntityPlayer
             {
                 // mettre ou enlever la visée
                 master.SetVisée(armes[armeIndex] is Gun);
-            }
-            
-
-            // MULTIJOUEUR
-            if (Pv.IsMine)
-            {
+                
+                // MULTIJOUEUR
                 Hashtable hash = new Hashtable();
                 hash.Add("itemIndex", armeIndex);
                 PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
