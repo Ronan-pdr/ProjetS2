@@ -19,7 +19,8 @@ namespace Script.Bot
         Fuyard,
         Guide,
         Suiveur,
-        Hirondelle
+        Hirondelle,
+        Autonome
     }
     
     public class BotManager : MonoBehaviourPunCallbacks
@@ -140,6 +141,8 @@ namespace Script.Bot
                     return (tr, "Suiveur");
                 case TypeBot.Hirondelle:
                     return (tr, "Hirondelle");
+                case TypeBot.Autonome:
+                    return (tr, "Autonome");
                 default:
                     throw new Exception($"Le cas du {t} n'a pas encore été géré");
             }

@@ -12,6 +12,7 @@ using Script.Graph;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.InterfaceInGame;
 using Script.Labyrinthe;
+using Script.MachineLearning;
 using Script.Menu;
 using Script.TeteChercheuse;
 using Script.Tools;
@@ -26,6 +27,7 @@ namespace Script.Manager
         [Header("Prefab")]
         [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
         [SerializeField] private Hirondelle originalHirondelle; // prefab des bodyRectiligne
+        [SerializeField] private Autonome originalAutonome; // prefab des bodyRectiligne
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
         [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
         [SerializeField] private GraphPathFinding originalGraphPathFinding; // prefab des RayGaz
@@ -78,7 +80,8 @@ namespace Script.Manager
             Game,
             Labyrinthe,
             Maintenance,
-            CageOiseaux
+            CageOiseaux,
+            EntrainementSaut
         }
 
         private ManagerGame typeScene;
@@ -97,6 +100,7 @@ namespace Script.Manager
         public Chassé GetChassé(int index) => chassés[index];
         public BodyRectilgne GetOriginalBodyRectilgne() => originalBodyRectilgne;
         public Hirondelle GetOriginalHirondelle() => originalHirondelle;
+        public Autonome GetOriginalAutonome() => originalAutonome;
         public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
         public RayGaz GetOriginalRayGaz() => originalRayGaz;
         public GraphPathFinding GetOriginalGraphPathFinding() => originalGraphPathFinding;
@@ -189,6 +193,10 @@ namespace Script.Manager
             else if (scene == TypeScene.CageOiseaux)
             {
                 typeScene = new InCageOiseaux(nParticipant);
+            }
+            else if (scene == TypeScene.EntrainementSaut)
+            {
+                typeScene = new InEntrainementSaut(nParticipant);
             }
             else
             {

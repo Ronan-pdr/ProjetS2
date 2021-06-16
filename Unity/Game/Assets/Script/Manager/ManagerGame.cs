@@ -37,6 +37,7 @@ namespace Script.Manager
             public int Guide;
             public int Suiveur;
             public int Hirondelle;
+            public int Autonome;
             
             public (TypeBot, int)[] GetList()
             {
@@ -46,11 +47,12 @@ namespace Script.Manager
                     (TypeBot.Fuyard, Fuyard),
                     (TypeBot.Guide, Guide),
                     (TypeBot.Suiveur, Suiveur),
-                    (TypeBot.Hirondelle, Hirondelle)
+                    (TypeBot.Hirondelle, Hirondelle),
+                    (TypeBot.Autonome, Autonome)
                 };
             }
             
-            public int Sum() => Rectiligne + Fuyard + Guide + Suiveur + Hirondelle;
+            public int Sum() => Rectiligne + Fuyard + Guide + Suiveur + Hirondelle + Autonome;
         }
         
         // ------------ Attribut ------------
@@ -118,9 +120,10 @@ namespace Script.Manager
                 CrossManager cm = CrossManager.Instance;
                 if (cm && n.Rectiligne > cm.GetNumberPoint())
                     throw new Exception($"Y'a seulement {CrossManager.Instance.GetNumberPoint()}" +
-                                        $"crossPint pour {n.Suiveur} botRectiligne");
+                                        $"crossPoint pour {n.Rectiligne} botRectiligne");
 
-                if (n.Fuyard + n.Guide + n.Suiveur > SpawnManager.Instance.GetNbSpawnBot())
+                if (!(SpawnManager.Instance is null) &&
+                    n.Fuyard + n.Guide + n.Suiveur + n.Hirondelle + n.Autonome > SpawnManager.Instance.GetNbSpawnBot())
                     throw new Exception("Pas assez de spawn bot");
             }
         }

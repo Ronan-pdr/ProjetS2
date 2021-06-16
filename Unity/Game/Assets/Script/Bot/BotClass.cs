@@ -50,7 +50,7 @@ namespace Script.Bot
         // cette fonction indique si un bot est contrôlé par ton ordinateur
         public bool IsMyBot()
         {
-            return BotManager != null;
+            return BotManager != null || !master.IsMultijoueur;
         }
 
         // ------------ Setter ------------
@@ -79,7 +79,10 @@ namespace Script.Bot
             StartBot();
             
             // son nom (qui sera unique)
-            name = BotManager.Instance.GetNameBot(this, Pv.Owner);
+            if (BotManager.Instance)
+            {
+                name = BotManager.Instance.GetNameBot(this, Pv.Owner);
+            }
 
             // le parenter
             if (BotManager is null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
