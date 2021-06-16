@@ -27,7 +27,7 @@ namespace Script.Manager
         [Header("Prefab")]
         [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
         [SerializeField] private Hirondelle originalHirondelle; // prefab des bodyRectiligne
-        [SerializeField] private Autonome originalAutonome; // prefab des bodyRectiligne
+        [SerializeField] private Sauteur originalSauteur; // prefab des bodyRectiligne
         [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
         [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
         [SerializeField] private GraphPathFinding originalGraphPathFinding; // prefab des RayGaz
@@ -100,7 +100,7 @@ namespace Script.Manager
         public Chassé GetChassé(int index) => chassés[index];
         public BodyRectilgne GetOriginalBodyRectilgne() => originalBodyRectilgne;
         public Hirondelle GetOriginalHirondelle() => originalHirondelle;
-        public Autonome GetOriginalAutonome() => originalAutonome;
+        public Sauteur GetOriginalSauteur() => originalSauteur;
         public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
         public RayGaz GetOriginalRayGaz() => originalRayGaz;
         public GraphPathFinding GetOriginalGraphPathFinding() => originalGraphPathFinding;

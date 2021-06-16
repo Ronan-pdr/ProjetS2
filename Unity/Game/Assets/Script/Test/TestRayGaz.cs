@@ -53,7 +53,7 @@ namespace Script.Test
             }
         }
 
-        public static GameObject CreateMarqueur(Vector3 position, Couleur couleur)
+        public static GameObject CreateMarqueur(Vector3 position, Couleur couleur, float scale = 1)
         {
             GameObject prefab;
             switch (couleur)
@@ -73,6 +73,7 @@ namespace Script.Test
             
             GameObject g = Instantiate(prefab, position, Quaternion.identity);
             g.transform.parent = MasterManager.Instance.GetDossierRayGaz();
+            g.transform.localScale = new Vector3(scale, scale, scale);
 
             return g;
         }

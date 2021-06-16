@@ -1,17 +1,21 @@
 ﻿using System;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using Random = System.Random;
 
 namespace Script.MachineLearning
 {
-    public class ClassementSaut : MonoBehaviour
+    public class ClassementDarwin : MonoBehaviour
     {
         // ------------ Attributs ------------
 
         [Header("Canvas")]
         [SerializeField] private GameObject menuTab;
         [SerializeField] private TextMeshProUGUI[] zonesTexte;
+
+        [Header("Sauvegarde")]
+        [SerializeField] private bool mustRecoverSave;
         
         // ------------ Attributs ------------
 
@@ -21,6 +25,8 @@ namespace Script.MachineLearning
         private (NeuralNetwork Neurones, int score)[] _classement;
 
         private Random _rnd;
+
+        private const string NameDirectory = "SauvegardeNeuroneSaut";
 
         // ------------ Constructeur ------------
 
@@ -41,11 +47,24 @@ namespace Script.MachineLearning
         {
             _classement = new (NeuralNetwork Neurones, int score)[_nZone];
 
-            for (int i = 0; i < _nZone; i++)
+            int i = 0;
+            
+            if (mustRecoverSave)
             {
-                _classement[i].Neurones = _zoneEntrainement[i].Bot.Neurones;
+                string path = $"Build/{NameDirectory}/"; 
+                
+                for (; i < _nZone && File.Exists(path + i); i++)
+                {
+                    _classement[i].Neurones = NeuralNetwork.Restore(path + i);
+                    _zoneEntrainement[i].Bot.SetNeurone(_classement[i].Neurones);
+                }
             }
             
+            for (; i < _nZone; i++)
+            { 
+                _classement[i].Neurones = _zoneEntrainement[i].Bot.Neurones;
+            }
+
             menuTab.SetActive(false);
         }
         
@@ -53,6 +72,7 @@ namespace Script.MachineLearning
 
         private void Update()
         {
+            // le menu tab
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 // afficher le classement
@@ -63,11 +83,29 @@ namespace Script.MachineLearning
             {
                 menuTab.SetActive(false);
             }
+            
+            // la sauvegarde
+            if (Input.GetKey(KeyCode.P) && Input.GetKeyDown(KeyCode.M))
+            {
+                Debug.Log("Sauvegarde !!!!!!");
+                
+                string path = $"Build/{NameDirectory}";
+                
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                
+                for (int i = 0; i < _nZone; i++)
+                {
+                    _classement[i].Neurones.Save($"{path}/{i}");
+                }
+            }
         }
         
         // ------------ Public Methods ------------
 
-        public NeuralNetwork EndRace(NeuralNetwork neurones, int score)
+        public NeuralNetwork EndEpreuve(NeuralNetwork neurones, int score)
         {
             int i = _nZone - 1;
             

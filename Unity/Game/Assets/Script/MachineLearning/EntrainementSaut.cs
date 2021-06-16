@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Script.DossierPoint;
 using Script.Manager;
+using Script.Tools;
 using UnityEngine;
 
 namespace Script.MachineLearning
@@ -16,61 +17,52 @@ namespace Script.MachineLearning
         // ------------ Attributs ------------
 
         private MasterManager _master;
-        private Autonome _autonome;
-        private Stopwatch _stopwatch;
+        private Sauteur _sauteur;
         private int _score;
-        private ClassementSaut _classementSaut;
+        private ClassementDarwin _classement;
+        private int _nSaut;
         
         // ------------ Getter ------------
 
-        public Autonome Bot => _autonome;
+        public Sauteur Bot => _sauteur;
         
         // ------------ Setter ------------
 
-        public void SetClassement(ClassementSaut value)
+        public void SetClassement(ClassementDarwin value)
         {
-            _classementSaut = value;
+            _classement = value;
         }
         
         // ------------ Constructeur ------------
-
-        private void Awake()
-        {}
 
         private void Start()
         {
             _master = MasterManager.Instance;
             
-            _autonome = Instantiate(_master.GetOriginalAutonome(), Vector3.zero, point.transform.rotation);
-            _stopwatch = new Stopwatch();
+            _sauteur = Instantiate(_master.GetOriginalSauteur(), Vector3.zero, point.transform.rotation);
 
-            _autonome.SetEntrainemetSaut(this);
+            _sauteur.SetEntrainementSaut(this);
             StartEntrainement();
         }
 
-        // ------------ Methods ------------
-
-        private void StartEntrainement()
-        {
-            // téléportation
-            _autonome.transform.position = point.transform.position;
-            
-            // reset score
-            _score = 0;
-            
-            // début du chrono
-            _stopwatch.Reset();
-            _stopwatch.Start();
-        }
-
+        // ------------ Public Methods ------------
+        
         public void ResetBot()
         {
             // récupérer le score
-            _stopwatch.Stop();
-            _score += (int)_stopwatch.ElapsedMilliseconds;
+            
+            // bonus
+            float dist = Calcul.Distance(_sauteur.transform.position, point.transform.position);
+            _score += (int)(dist * CoefScore);
+            
+            if (dist > 5)
+            {
+                // malus
+                _score -= _nSaut * CoefScore;
+            }
             
             // le donner au classement
-            _autonome.SetNeurone(_classementSaut.EndRace(_autonome.Neurones, _score));
+            _sauteur.SetNeurone(_classement.EndEpreuve(_sauteur.Neurones, _score));
 
             // recommencer
             StartEntrainement();
@@ -78,7 +70,24 @@ namespace Script.MachineLearning
 
         public void Malus()
         {
-            _score -= 1000;
+            _nSaut += 1;
         }
+        
+        // ------------ Private Methods ------------
+
+        private void StartEntrainement()
+        {
+            // téléportation
+            _sauteur.transform.position = point.transform.position;
+            
+            // reset score et indicateurs
+            _score = 0;
+            _nSaut = 0;
+            
+            // set le bot
+            _sauteur.SetToRace();
+        }
+
+        private int CoefScore => 10;
     }
 }
