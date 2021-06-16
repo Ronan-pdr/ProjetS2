@@ -101,11 +101,11 @@ namespace Script.Menu
         {
             if (PhotonNetwork.MasterClient.NickName == "Labyrinthe")
             {
-                PhotonNetwork.LoadLevel(2);
+                PhotonNetwork.LoadLevel(3);
             }
             else
             {
-                PhotonNetwork.LoadLevel(1);
+                PhotonNetwork.LoadLevel(2);
             }
         }
     
