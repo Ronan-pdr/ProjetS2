@@ -18,25 +18,33 @@ namespace Script.MachineLearning
         private MasterManager _master;
         private Autonome _autonome;
         private Stopwatch _stopwatch;
-        private float _score;
+        private int _score;
+        private ClassementSaut _classementSaut;
         
         // ------------ Getter ------------
 
         public Autonome Bot => _autonome;
         
+        // ------------ Setter ------------
+
+        public void SetClassement(ClassementSaut value)
+        {
+            _classementSaut = value;
+        }
+        
         // ------------ Constructeur ------------
 
         private void Awake()
-        {
-            _autonome = Instantiate(MasterManager.Instance.GetOriginalAutonome(), Vector3.zero, point.transform.rotation);
-            _stopwatch = new Stopwatch();
-
-            _autonome.SetEntrainemetSaut(this);
-        }
+        {}
 
         private void Start()
         {
             _master = MasterManager.Instance;
+            
+            _autonome = Instantiate(_master.GetOriginalAutonome(), Vector3.zero, point.transform.rotation);
+            _stopwatch = new Stopwatch();
+
+            _autonome.SetEntrainemetSaut(this);
             StartEntrainement();
         }
 
@@ -47,7 +55,11 @@ namespace Script.MachineLearning
             // téléportation
             _autonome.transform.position = point.transform.position;
             
+            // reset score
+            _score = 0;
+            
             // début du chrono
+            _stopwatch.Reset();
             _stopwatch.Start();
         }
 
@@ -55,12 +67,13 @@ namespace Script.MachineLearning
         {
             // récupérer le score
             _stopwatch.Stop();
-            _score += _stopwatch.ElapsedMilliseconds * 1000;
+            _score += (int)_stopwatch.ElapsedMilliseconds;
             
-            // 
+            // le donner au classement
+            _autonome.SetNeurone(_classementSaut.EndRace(_autonome.Neurones, _score));
 
             // recommencer
-            
+            StartEntrainement();
         }
 
         public void Malus()

@@ -30,6 +30,11 @@ namespace Script.MachineLearning
             _entrainementSaut = value;
         }
 
+        public void SetNeurone(NeuralNetwork value)
+        {
+            _neurones = value;
+        }
+
         // ------------ Constructeur ------------
 
         protected override void AwakeBot()
@@ -50,7 +55,6 @@ namespace Script.MachineLearning
         protected override void StartBot()
         {
             running = Running.Marche;
-            transform.parent = _entrainementSaut.gameObject.transform;
             InvokeRepeating(nameof(Jumping), 0.1f, 0.1f);
         }
         
@@ -107,9 +111,16 @@ namespace Script.MachineLearning
         protected override void WhenBlock()
         {}
 
-        private void OnCollisionEnter()
+        private void OnCollisionEnter(Collision other)
         {
-            _entrainementSaut.ResetBot();
+            foreach (ContactPoint contact in other.contacts)
+            {
+                if (contact.point.y - Tr.position.y > capsule.Rayon)
+                {
+                    _entrainementSaut.ResetBot();
+                    return;
+                }
+            }
         }
     }
 }

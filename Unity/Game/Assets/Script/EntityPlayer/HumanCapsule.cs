@@ -12,6 +12,7 @@ namespace Script.EntityPlayer
         // ------------ Getter ------------
 
         public float Height => _hauteur;
+        public float Rayon => _rayon;
         
         // ------------ Constructeur ------------
         public HumanCapsule(CapsuleCollider cap)
