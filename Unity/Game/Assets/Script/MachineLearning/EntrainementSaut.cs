@@ -7,86 +7,50 @@ using UnityEngine;
 
 namespace Script.MachineLearning
 {
-    public class EntrainementSaut : MonoBehaviour
+    public class EntrainementSaut : Entrainement
     {
-        // ------------ SerializeField ------------
-
-        [Header("Spawn")]
-        [SerializeField] private SpawnPoint point;
-
         // ------------ Attributs ------------
 
-        private MasterManager _master;
-        private Sauteur _sauteur;
-        private int _score;
-        private ClassementDarwin _classement;
         private int _nSaut;
-        
-        // ------------ Getter ------------
-
-        public Sauteur Bot => _sauteur;
-        
-        // ------------ Setter ------------
-
-        public void SetClassement(ClassementDarwin value)
-        {
-            _classement = value;
-        }
-        
-        // ------------ Constructeur ------------
-
-        private void Start()
-        {
-            _master = MasterManager.Instance;
-            
-            _sauteur = Instantiate(_master.GetOriginalSauteur(), Vector3.zero, point.transform.rotation);
-
-            _sauteur.SetEntrainementSaut(this);
-            StartEntrainement();
-        }
 
         // ------------ Public Methods ------------
         
-        public void ResetBot()
+        public override void EndTest()
         {
             // récupérer le score
             
             // bonus
-            float dist = Calcul.Distance(_sauteur.transform.position, point.transform.position);
-            _score += (int)(dist * CoefScore);
+            float dist = Calcul.Distance(Student.transform.position, begin.position);
+            Score += (int)(dist * CoefScore);
             
             if (dist > 5)
             {
                 // malus
-                _score -= _nSaut * CoefScore;
+                Score -= _nSaut * CoefScore;
             }
             
             // le donner au classement
-            _sauteur.SetNeurone(_classement.EndEpreuve(_sauteur.Neurones, _score));
+            Student.SetNeurone(Classement.EndEpreuve(Student.NeuralNetwork, Score));
 
             // recommencer
             StartEntrainement();
         }
 
-        public void Malus()
+        public override void Malus()
         {
             _nSaut += 1;
         }
         
-        // ------------ Private Methods ------------
+        // ------------ Protected Methods ------------
 
-        private void StartEntrainement()
+        protected override Student GetPrefab() => Master.GetOriginalSauteur();
+
+        protected override void ResetIndicator()
         {
-            // téléportation
-            _sauteur.transform.position = point.transform.position;
-            
-            // reset score et indicateurs
-            _score = 0;
             _nSaut = 0;
-            
-            // set le bot
-            _sauteur.SetToRace();
         }
+
+        // ------------ Private Methods ------------
 
         private int CoefScore => 10;
     }

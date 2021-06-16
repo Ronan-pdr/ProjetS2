@@ -62,7 +62,7 @@ namespace Script.MachineLearning
             
             for (; i < _nZone; i++)
             { 
-                _classement[i].Neurones = _zoneEntrainement[i].Bot.Neurones;
+                _classement[i].Neurones = _zoneEntrainement[i].Bot.NeuralNetwork;
             }
 
             menuTab.SetActive(false);

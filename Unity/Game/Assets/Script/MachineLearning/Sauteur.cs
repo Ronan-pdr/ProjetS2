@@ -8,86 +8,50 @@ using Random = System.Random;
 
 namespace Script.MachineLearning
 {
-    public class Sauteur : BotClass
+    public class Sauteur : Student
     {
         // ------------ Attributs ------------
-
-        private NeuralNetwork _neurones;
+        
         private const float MaxDist = 3;
-        private const float Decoupage = 10;
-        
-        // pour l'entrainement aux sauts
-        private EntrainementSaut _entrainementSaut;
-        
-        // ------------ Getter ------------
 
-        public NeuralNetwork Neurones => _neurones;
-        
-        // ------------ Setter ------------
+        // ------------ Update ------------
 
-        public void SetEntrainementSaut(EntrainementSaut value)
+        protected override void UpdateBot()
+        {}
+        
+        // ------------ Methods ------------
+
+        protected override void ErrorEntrainement()
         {
-            _entrainementSaut = value;
+            if (!(Entrainement is EntrainementSaut))
+            {
+                throw new Exception();
+            }
         }
 
-        public void SetNeurone(NeuralNetwork value)
-        {
-            _neurones = value;
-        }
+        // ------------ Brain ------------
 
-        // ------------ Constructeur ------------
-
-        protected override void AwakeBot()
+        protected override int[] GetLayerDimension()
         {
             // 3 entrées :
             // - la distance entre le bot et l'obstacle
             // - la hauteur du premier obstacle
             // - la vitesse du bot
             
-            // 2 sorties :
-            // - should jump (possible de passer)
+            // 1 sortie :
+            // - should jump
             
-            int[] neurones = {3, 1};
-            _neurones = new NeuralNetwork(neurones);
+            return new []{3, 1};
         }
 
-        protected override void StartBot()
-        {
-            SetToRace();
-            InvokeRepeating(nameof(PotentielJump), 0.1f, 0.1f);
-            //Invoke(nameof(PotentielJump), 0.5f);
-        }
-        
-        // ------------ Update ------------
-
-        protected override void UpdateBot()
-        {}
-
-        private void PotentielJump()
+        protected override void UseBrain()
         {
             if (!Grounded)
                 return;
 
             Vector3 pos = Tr.position;
-            
-            float minDist = MaxDist;
-            float height = 0;
-            float ecart = capsule.Height / Decoupage;
-            
-            Ray ray = new Ray(pos + Vector3.forward * 0.1f, Vector3.forward);
-            
-            // trouver la hauteur et la distance du premier obstacle
-            for (int i = 1; i < Decoupage; i++)
-            {
-                ray.origin += Vector3.up * ecart;
 
-                if (Physics.Raycast(ray, out RaycastHit hit, minDist))
-                {
-                    //Line.Create(ray.origin, hit.point, 250);
-                    minDist = hit.distance;
-                    height = ray.origin.y - pos.y;
-                }
-            }
+            (float minDist, float height) = GetDistHeightFirstObstacle(pos, MaxDist);
 
             double[] input =
             {
@@ -103,61 +67,16 @@ namespace Script.MachineLearning
             }
 
             // feed et enclencher les neurones
-            _neurones.Feed(input);
-            _neurones.FrontProp();
+            Neurones.Feed(input);
+            Neurones.FrontProp();
             
             // récupérer le résultat
-            double[] values = _neurones.GetResult();
+            double[] values = Neurones.GetResult();
 
             if (values[0] > 0.5f)
             {
                 Jump();
-                _entrainementSaut.Malus();
-            }
-        }
-        
-        // ------------ Public Methods ------------
-        
-        public void SetToRace()
-        {
-            Anim.Stop(HumanAnim.Type.Sit);
-            running = Running.Marche;
-        }
-
-        // ------------ Event ------------
-
-        protected override void WhenBlock()
-        {
-            _entrainementSaut.ResetBot();
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.CompareTag("Cage"))
-            {
-                running = Running.Course;
-            }
-        }
-
-        private void OnCollisionEnter(Collision other)
-        {
-            OnCollision(other);
-        }
-
-        private void OnCollisionStay(Collision other)
-        {
-            OnCollision(other);
-        }
-
-        private void OnCollision(Collision other)
-        {
-            foreach (ContactPoint contact in other.contacts)
-            {
-                if (contact.point.y - Tr.position.y > capsule.Rayon)
-                {
-                    _entrainementSaut.ResetBot();
-                    return;
-                }
+                Entrainement.Malus();
             }
         }
     }
