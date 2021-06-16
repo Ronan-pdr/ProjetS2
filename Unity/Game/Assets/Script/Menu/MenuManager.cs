@@ -11,7 +11,6 @@ namespace Script.Menu
     
         [SerializeField] private Menu[] menus;
         [SerializeField] private GameObject background;
-        [SerializeField] private AudioSource audioSource;
         
         //--------------Pour le crédit------------
         public void jouerlavideo(VideoPlayer input)
@@ -20,23 +19,10 @@ namespace Script.Menu
             background.GetComponent<Image>().enabled = false;
         }
 
-        public void arreterlesonmenu()
-        {
-            audioSource.Pause();
-            AudioManager.instance.isPause = true;
-        }
-
         public void arreterlavideo(VideoPlayer input)
         {
             input.Stop();
             background.GetComponent<Image>().enabled = true;
-            audioSource.Play();
-        }
-
-        public void reprendrelesonmenu()
-        {
-            audioSource.UnPause();
-            AudioManager.instance.isPause = false;
         }
         
         //----------------------------------------

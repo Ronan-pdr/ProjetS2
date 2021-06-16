@@ -239,17 +239,17 @@ namespace Script.DossierPoint
 
         public List<Vector3> EndResearchPath(string key)
         {
-            List<Vector3> path = new List<Vector3>();
-
-            // c'est la position de la destination
-            Node node = _Nodes[key];
-            if (node is null)
+            if (!_Nodes.ContainsKey(key))
             {
                 // recherche négative
                 Debug.Log("recherche négative");
                 return null;
             }
             
+            Node node = _Nodes[key];
+            List<Vector3> path = new List<Vector3>();
+            
+            // c'est la position de la destination
             path.Add(transform.position);
             HumanCapsule capsule = MasterManager.Instance.GetHumanCapsule();
 
