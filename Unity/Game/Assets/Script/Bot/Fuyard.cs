@@ -118,17 +118,23 @@ namespace Script.Bot
             {
                 // n'a pas de destination, n'a vraiment pas de plan...
                 SetEtatPoule();
-            } 
+            }
             else
             {
+                Vector3 pos = Tr.position;
+                
+                if (l == 1 && Calcul.Distance(pos, path[0]) < 5)
+                {
+                    SetEtatPoule();
+                    return;
+                }
+                
                 // part en cavale
                 planFuite = path;
                 etat = Etat.Fuite;
                 running = Running.Course;
 
-                Vector3 pos = Tr.position;
-
-                for (int i = l - 1; i >= 0 && capsule.CanIPass(pos,
+                for (int i = l - 1; i >= 1 && capsule.CanIPass(pos,
                     Calcul.Diff(planFuite[i-1], pos),
                     Calcul.Distance(planFuite[i-1], pos)); i--)
                 {
