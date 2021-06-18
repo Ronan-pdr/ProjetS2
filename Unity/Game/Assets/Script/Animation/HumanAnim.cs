@@ -8,10 +8,6 @@ namespace Script.Animation
 {
     public abstract class HumanAnim : MonoBehaviour
     {
-        // ------------ SerializeField ------------
-    
-        [SerializeField] private Animator animator;
-    
         // ------------ Attributs ------------
         public enum Type
         {
@@ -37,7 +33,14 @@ namespace Script.Animation
         // pour les triggers
         private (float time, Type anim) _trigger;
         
+        private Animator _animator;
+        
         // ------------ Setter ------------
+
+        public void SetAnimator(Animator value)
+        {
+            _animator = value;
+        }
         
         protected abstract void AddAnim();
         
@@ -65,7 +68,7 @@ namespace Script.Animation
                 // elle sont stocké dans une liste
             }
 
-            animator.SetBool(Dict[newAnim], true);
+            _animator.SetBool(Dict[newAnim], true);
         }
 
         public void Set(HumanAnim humanAnim)
@@ -75,9 +78,9 @@ namespace Script.Animation
 
             foreach (KeyValuePair<Type, int> e in humanAnim.Dict)
             {
-                if (Dict.ContainsKey(e.Key) && animator.GetBool(e.Value))
+                if (Dict.ContainsKey(e.Key) && _animator.GetBool(e.Value))
                 {
-                    animator.SetBool(Dict[e.Key], true);
+                    _animator.SetBool(Dict[e.Key], true);
 
                     Debug.Log($"Le met en mode '{e.Key}'");
                 }
@@ -134,7 +137,7 @@ namespace Script.Animation
             
             if (animToStop != Type.Idle)
             {
-                animator.SetBool(Dict[animToStop], false);
+                _animator.SetBool(Dict[animToStop], false);
             }
         }
 

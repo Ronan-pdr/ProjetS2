@@ -64,8 +64,7 @@ namespace Script.EntityPlayer
         protected void SetMoveAmount(Vector3 moveDir, float speed) // moveDir doit être de la forme (1, 0, 0), (0, 0, -1), (1, 0, 1)... mais pas de 1 sur y (pour les humains du moins)
         {
             MoveAmount = Vector3.SmoothDamp(MoveAmount,
-                moveDir * speed,
-                ref smoothMoveVelocity, smouthTime);
+                moveDir * speed, ref smoothMoveVelocity, smouthTime);
         }
         
         // ------------ Méthodes ------------
@@ -74,6 +73,7 @@ namespace Script.EntityPlayer
         {
             //Déplace le corps du human grâce à moveAmount précédemment calculé
             Rb.MovePosition(Rb.position + Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime);
+            //Rb.AddForce(Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime * 200);
         }
 
         // ------------ Surchargeurs ------------

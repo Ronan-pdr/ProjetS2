@@ -102,7 +102,7 @@ namespace Script.EntityPlayer
             }
         }
         
-        public void EquipItem(int index) // index supposé valide
+        private void EquipItem(int index) // index supposé valide
         {
             if (etat == Etat.Accroupi)
                 return; // il ne peut pas changer d'arme losqu'il est accoupi
@@ -117,16 +117,20 @@ namespace Script.EntityPlayer
                 armes[armeIndex].gameObject.SetActive(false);
             }
             
+            // afficher la nouvelle arme
             armeIndex = index;
             armes[armeIndex].gameObject.SetActive(true);
             
+            // prendre la bonne animation
             Anim = armes[armeIndex].Anim;
 
+            // cette fonction est aussi appelé par 'PropertiesUpdate' donc il faut
+            // bien vérifier que c'est ton point de vue pour ces actions
             if (Pv.IsMine)
             {
                 // mettre ou enlever la visée
                 master.SetVisée(armes[armeIndex] is Gun);
-                
+                                
                 // MULTIJOUEUR
                 Hashtable hash = new Hashtable();
                 hash.Add("itemIndex", armeIndex);
@@ -149,6 +153,20 @@ namespace Script.EntityPlayer
                     {
                         TakeDamage(6); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
                     }
+                }
+            }
+        }
+        
+        // ------------ Multijoueur ------------
+
+        protected override void PropertiesUpdate(Hashtable changedProps)
+        {
+            // arme du chasseur -> EquipItem (Chasseur)
+            if (!Pv.IsMine) // ça ne doit pas être ton point de vie puisque tu l'as déjà fait
+            {
+                if (changedProps.TryGetValue("itemIndex", out object indexArme))
+                {
+                    EquipItem((int)indexArme);
                 }
             }
         }

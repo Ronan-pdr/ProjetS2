@@ -15,6 +15,11 @@ namespace Script.Bot
 {
     public abstract class BotClass : Humanoide
     {
+        // ------------ SerializeField ------------
+
+        [Header("Les différents design")]
+        [SerializeField] private GameObject[] designs;
+        
         // ------------ Enum ------------
         protected enum Running
         {
@@ -48,6 +53,9 @@ namespace Script.Bot
         
         // direction
         private Vector3 _direction;
+        
+        // design
+        private DesignHumanoide _design;
 
         // ------------ Getters ------------
         
@@ -70,13 +78,15 @@ namespace Script.Bot
             }
         }
 
+        public int IndexDesign => _design.Index;
+
         // ------------ Setter ------------
         public void SetOwnBotManager(BotManager value)
         {
             BotManager = value;
         }
 
-        public void SetDirection(Vector3 value)
+        protected void SetDirection(Vector3 value)
         {
             if (value.y != 0)
             {
@@ -92,6 +102,7 @@ namespace Script.Bot
         protected void Awake()
         {
             Anim = GetComponent<HuntedStateAnim>();
+            _design = new DesignHumanoide(Anim, designs);
             
             AwakeHuman();
             AwakeBot();

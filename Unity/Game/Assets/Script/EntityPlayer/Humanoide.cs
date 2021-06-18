@@ -109,7 +109,7 @@ namespace Script.EntityPlayer
         }
 
         // ------------ Méthodes ------------
-        protected void PotentielleMort()
+        private void PotentielleMort()
         {
             // Mourir de chute
             if (transform.position.y < -10f)
@@ -124,7 +124,7 @@ namespace Script.EntityPlayer
             }
         }
 
-        public void Jump()
+        protected void Jump()
         {
             if (Time.time - lastJump > periodeJump && _grounded)
             {

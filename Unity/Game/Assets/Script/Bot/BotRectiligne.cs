@@ -1,32 +1,29 @@
-using System.Collections.Generic;
-using Script.Tools;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Script.DossierPoint;
-using Script.TeteChercheuse;
 
 namespace Script.Bot
 {
     public class BotRectiligne : BotClass
     {
         // ------------ Etat ------------
-        public enum Etat
+        private enum Etat
         {
             EnChemin,
             Attend // il attend seulement lorsqu'il est sur un point qui possède 0 voisin
         }
         
-        private Etat etat = Etat.Attend;
+        private Etat _etat = Etat.Attend;
 
-        private CrossPoint PointDestination;
+        private CrossPoint _pointDestination;
         
         // pour quand il est bloqué
-        private CrossPoint previousPoint;
+        private CrossPoint _previousPoint;
 
         // ------------ Setter ------------
         public void SetCrossPoint(CrossPoint value)
         {
-            PointDestination = value;
+            _pointDestination = value;
             FindNewDestination();
         }
 
@@ -37,22 +34,22 @@ namespace Script.Bot
         }
 
         protected override void StartBot()
-        {}
+        {
+            _etat = Etat.Attend;
+            running = Running.Arret;
+        }
 
         // ------------ Update ------------
         protected override void UpdateBot()
         {
-            if (etat == Etat.Attend) // s'il est en train d'attendre,...
-            {
-                MoveAmount = Vector3.zero; // ...il ne se déplace pas...
-                return; // ...et ne fait rien d'autre
-            }
-            
-            GestionRotation(PointDestination.transform.position);
+            if (_etat == Etat.Attend) // s'il est en train d'attendre,...
+                return; // ...il ne fait rien
 
-            if (etat == Etat.EnChemin)
+            GestionRotation(_pointDestination.transform.position);
+
+            if (_etat == Etat.EnChemin)
             {
-                if (IsArrivé(PointDestination.transform.position, 0.3f)) // arrivé
+                if (IsArrivé(_pointDestination.transform.position, 0.3f)) // arrivé
                 {
                     FindNewDestination();
                     //AnimationStop();
@@ -61,25 +58,25 @@ namespace Script.Bot
         }
 
         // ------------ Méthodes ------------
-        public void FindNewDestination()
+        private void FindNewDestination()
         {
-            int nNeighboor = PointDestination.GetNbNeighboor();
+            int nNeighboor = _pointDestination.GetNbNeighboor();
 
             if (nNeighboor > 0)
             {
                 // sauvegarde de sa précédente destination
-                previousPoint = PointDestination;
+                _previousPoint = _pointDestination;
                 
                 // il repart
-                PointDestination = PointDestination.GetNeighboor(Random.Range(0, nNeighboor));
-                CalculeRotation(PointDestination.transform.position);
-                etat = Etat.EnChemin;
+                _pointDestination = _pointDestination.GetNeighboor(Random.Range(0, nNeighboor));
+                CalculeRotation(_pointDestination.transform.position);
+                _etat = Etat.EnChemin;
                 running = Running.Marche;
                 SetMoveAmount(Vector3.forward, TranquilleVitesse);
             }
             else
             {
-                etat = Etat.Attend;
+                _etat = Etat.Attend;
                 running = Running.Arret;
             }
         }
@@ -89,7 +86,7 @@ namespace Script.Bot
         // Bloqué
         protected override void WhenBlock()
         {
-            PointDestination = previousPoint;
+            _pointDestination = _previousPoint;
         }
     }
 }

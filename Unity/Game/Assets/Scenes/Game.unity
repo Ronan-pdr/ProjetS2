@@ -14206,11 +14206,7 @@ MonoBehaviour:
   inMaintenance: 0
   printAllGraph: 0
   sousCrossManagers:
-  - {fileID: 809558488}
   - {fileID: 386419239}
-  - {fileID: 1585369170}
-  - {fileID: 1993241969}
-  - {fileID: 775143552}
 --- !u!4 &556295172
 Transform:
   m_ObjectHideFlags: 0
@@ -50199,7 +50195,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1223805516
 RectTransform:
   m_ObjectHideFlags: 0

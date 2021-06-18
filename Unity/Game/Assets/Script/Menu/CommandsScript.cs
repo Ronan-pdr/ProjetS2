@@ -18,8 +18,10 @@ public class CommandsScript : MonoBehaviour
     [SerializeField] private TMP_Text Sprint;
     [SerializeField] private TMP_Text Crouch;
     [SerializeField] private TMP_Text Sit;
+    [SerializeField] private TMP_Text design;
 
     // ------------ Attributs ------------
+    
     private Event keyEvent;
     private KeyCode newKey;
     private bool waitingForKey;
@@ -43,6 +45,7 @@ public class CommandsScript : MonoBehaviour
         dict.Add(TypeTouche.Jump, Jump);
         dict.Add(TypeTouche.Accroupi, Crouch);
         dict.Add(TypeTouche.Assoir, Sit);
+        dict.Add(TypeTouche.ChangerDesign, design);
 
         // afficher les string des KeyCode
         foreach (KeyValuePair<TypeTouche, TMP_Text> e in dict)
