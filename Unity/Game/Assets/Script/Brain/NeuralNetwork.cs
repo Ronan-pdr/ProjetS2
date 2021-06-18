@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Script.MachineLearning
+namespace Script.Brain
 {
     public class NeuralNetwork
     {
@@ -73,7 +73,7 @@ namespace Script.MachineLearning
             
             if (input.Length != l)
             {
-                throw new Exception();
+                throw new Exception($"lenght = {input.Length} ; l = {l}");
             }
 
             for (int i = 0; i < l; i++)
@@ -121,16 +121,6 @@ namespace Script.MachineLearning
             {
                 layer.Mutate();
             }
-        }
-
-        /// <summary>
-        /// Tell the bird if it should jump
-        /// </summary>
-        /// <returns></returns>
-        public bool ShouldJump()
-        {
-            return true;
-            //return Layers[^1].Neurones[0].Value > 0.5;
         }
 
         /// <summary>

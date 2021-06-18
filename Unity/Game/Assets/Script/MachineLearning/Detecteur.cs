@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Script.Animation;
+using Script.Brain;
 using Script.Tools;
 using UnityEngine;
 
@@ -10,10 +11,15 @@ namespace Script.MachineLearning
     {
         // ------------ Attributs ------------
 
-        private NeuralNetwork _knowToJump;
+        // brains
+        private BrainJump _brainJump;
+        private BrainWall _brainWall;
+        
+        // etat
         private bool _sitting;
+        
+        // traverser mur
         private MyFile<Collider> _fileWall;
-
         private bool _isWaitingResult;
 
         // ------------ Setter ------------
@@ -43,20 +49,24 @@ namespace Script.MachineLearning
             
             _sitting = false;
         }
-        
+
+        protected override BrainClass GetBrain(int numero)
+        {
+            _brainWall = new BrainWall(numero);
+            return _brainWall;
+        }
+
+        protected override BrainClass GetBrain()
+        {
+            _brainWall = new BrainWall();
+            return _brainWall;
+        }
+
         // ------------ Constructeur ------------
 
         protected override void AwakeStudent()
         {
-            string path = $"Build/{EntrainementSaut.NameDirectory}/0";
-            if (File.Exists(path))
-            {
-                _knowToJump = NeuralNetwork.Restore(path);
-            }
-            else
-            {
-                throw new Exception($"Path = '{path}'");
-            }
+            _brainJump = new BrainJump(0);
             
             _fileWall = new MyFile<Collider>();
             _isWaitingResult = false;
@@ -73,17 +83,6 @@ namespace Script.MachineLearning
         }
         
         // ------------ Brain ------------
-
-        protected override int[] GetLayerDimension()
-        {
-            // 1 entrée :
-            // - la hauteur du premier obstacle
-            
-            // 1 sortie :
-            // - est-ce un obstacle infranchissable ?
-
-            return new[] {1, 1};
-        }
         
         protected override void UseBrain()
         {
@@ -91,26 +90,16 @@ namespace Script.MachineLearning
                 return;
             
             // recupérer les infos par rapport aux obstacles
-            (double dist, double height) = GetDistHeightFirstObstacle(Tr.position, MaxDistJump);
-            
-            double[] outputJump = GetResult(_knowToJump, InputJump(dist, height));
+            (double dist, double height) = BrainClass.GetStaticDistHeightFirstObstacle(Tr, MaxDistJump, capsule);
 
-            if (outputJump[0] > 0.5f)
+            if (_brainJump.JumpNeeded(dist, height, GetSpeed(), SprintSpeed))
             {
                 // il FAUT sauter (on part du principe que notre cerveau a raison)
                 Jump();
                 _isWaitingResult = true;
                 Invoke(nameof(Result), 1f);
-                
-                // input correspondant à cette tâche
-                double[] input = {height};
-            
-                ErrorInput(input);
 
-                // output des neurones
-                double[] outputDetec = GetResult(Neurones, input);
-
-                if (outputDetec[0] > 0.8f)
+                if (_brainWall.IsThereWall(height))
                 {
                     // pense que l'on peut pas passer
                     SetSit();
@@ -163,6 +152,8 @@ namespace Script.MachineLearning
             if (_sitting)
             {
                 // bien anticipé --> continue l'épreuve
+                
+                // il faut traverser le mur
                 other.collider.isTrigger = true;
                 _fileWall.Enfiler(other.collider);
                 Invoke(nameof(Rematerialiser), 0.5f);

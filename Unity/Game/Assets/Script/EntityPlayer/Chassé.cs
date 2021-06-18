@@ -69,8 +69,6 @@ namespace Script.EntityPlayer
 
             if (Physics.Raycast(ray, out RaycastHit hit, 30))
             {
-                Line.Create(ray.origin, hit.point);
-                
                 if (hit.collider.GetComponent<Chassé>())
                 {
                     int index = hit.collider.GetComponent<Chassé>()._design.Index;

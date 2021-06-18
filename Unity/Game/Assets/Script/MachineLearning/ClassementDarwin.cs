@@ -3,12 +3,13 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using Random = System.Random;
+using Script.Brain;
 
 namespace Script.MachineLearning
 {
     public class ClassementDarwin : MonoBehaviour
     {
-        // ------------ Attributs ------------
+        // ------------ SerializeField ------------
 
         [Header("Canvas")]
         [SerializeField] private GameObject menuTab;
@@ -22,7 +23,7 @@ namespace Script.MachineLearning
         private Entrainement[] _zoneEntrainement;
         private int _nZone;
         
-        private (NeuralNetwork Neurones, int score)[] _classement;
+        private (BrainClass brain, int score)[] _classement;
 
         private Random _rnd;
 
@@ -46,24 +47,21 @@ namespace Script.MachineLearning
 
         private void Start()
         {
-            _classement = new (NeuralNetwork Neurones, int score)[_nZone];
-
-            int i = 0;
+            _classement = new (BrainClass, int)[_nZone];
             
             if (mustRecoverSave)
             {
-                string path = $"Build/{_nameDirectory}/";
-                
-                for (; i < _nZone && File.Exists(path + i); i++)
+                for (int i = 0; i < _nZone; i++)
                 {
-                    _classement[i].Neurones = NeuralNetwork.Restore(path + i);
-                    _zoneEntrainement[i].Bot.SetNeurone(_classement[i].Neurones);
+                    _classement[i].brain = _zoneEntrainement[i].Bot.SetBrain(i);
                 }
             }
-            
-            for (; i < _nZone; i++)
-            { 
-                _classement[i].Neurones = _zoneEntrainement[i].Bot.NeuralNetwork;
+            else
+            {
+                for (int i = 0; i < _nZone; i++)
+                {
+                    _classement[i].brain = _zoneEntrainement[i].Bot.SetBrain();
+                }
             }
 
             menuTab.SetActive(false);
@@ -99,14 +97,14 @@ namespace Script.MachineLearning
                 
                 for (int i = 0; i < _nZone; i++)
                 {
-                    _classement[i].Neurones.Save($"{path}/{i}");
+                    _classement[i].brain.Save(i);
                 }
             }
         }
         
         // ------------ Public Methods ------------
 
-        public NeuralNetwork EndEpreuve(NeuralNetwork neurones, int score)
+        public void EndEpreuve(BrainClass brain, int score)
         {
             int i = _nZone - 1;
             
@@ -120,8 +118,8 @@ namespace Script.MachineLearning
                     _classement[i] = _classement[i - 1];
                 }
 
-                // insérer le nouveau réseau neurones
-                _classement[i] = (neurones, score);
+                // insérer le nouveau cerveau dans le tableau
+                _classement[i] = (brain, score);
                 
                 UpdateAffichageClassement();
             }
@@ -133,22 +131,10 @@ namespace Script.MachineLearning
                 sum += _classement[i].score;
             }
 
-            NeuralNetwork neuralNetwork = SelectNeuralNetwork(sum);
+            BrainClass brain1 = SelectNeuralNetwork(sum);
+            BrainClass brain2 = SelectNeuralNetwork(sum);
 
-            switch (_rnd.Next(3))
-            {
-                case 0:
-                    // le prendre tel quel
-                    return new NeuralNetwork(neuralNetwork, false);
-                case 1:
-                    // le muter
-                    return new NeuralNetwork(neuralNetwork, true);
-                default:
-                    // enfanter
-                    NeuralNetwork newNeurones = new NeuralNetwork(neuralNetwork, false);
-                    newNeurones.Crossover(SelectNeuralNetwork(sum));
-                    return newNeurones;
-            }
+            brain.UpdateNeurones(brain1, brain2);
         }
         
         // ------------ Private Methods ------------
@@ -169,11 +155,11 @@ namespace Script.MachineLearning
             }
         }
         
-        private NeuralNetwork SelectNeuralNetwork(double fitnessSum)
+        private BrainClass SelectNeuralNetwork(double fitnessSum)
         {
             if (fitnessSum == 0)
             {
-                return _classement[0].Neurones;
+                return _classement[0].brain;
             }
             
             int r = _rnd.Next((int)fitnessSum);
@@ -185,7 +171,7 @@ namespace Script.MachineLearning
                 
                 if (r < s)
                 {
-                    return _classement[i].Neurones;
+                    return _classement[i].brain;
                 }
             }
 

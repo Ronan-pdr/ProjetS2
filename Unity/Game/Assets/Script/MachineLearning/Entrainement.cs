@@ -1,4 +1,5 @@
-﻿using Script.Manager;
+﻿using Script.Brain;
+using Script.Manager;
 using UnityEngine;
 
 namespace Script.MachineLearning
@@ -40,21 +41,35 @@ namespace Script.MachineLearning
             StartEntrainement();
         }
         
+        // ------------ Public Methods ------------
+
+        public void EndTest()
+        {
+            GetScore();
+            
+            // donner le cerveau au classement avec son score
+            // et récupérer un nouveau cerveau
+            Classement.EndEpreuve(Student.Brain, Score);
+
+            // recommencer
+            StartEntrainement();
+        }
+        
         // ------------ Abstract Methods ------------
 
-        public abstract void EndTest();
-
         public abstract void Malus();
+        
+        public abstract string GetNameDirectory();
 
         protected abstract Student GetPrefab();
         
         protected abstract void ResetIndicator();
-
-        public abstract string GetNameDirectory();
         
+        protected abstract void GetScore();
+
         // ------------ Private Methods ------------
         
-        protected void StartEntrainement()
+        private void StartEntrainement()
         {
             // téléportation
             Student.transform.position = begin.position;

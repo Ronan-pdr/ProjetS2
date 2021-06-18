@@ -34,10 +34,7 @@ namespace Script.Bot
         }
 
         protected override void StartBot()
-        {
-            _etat = Etat.Attend;
-            running = Running.Arret;
-        }
+        {}
 
         // ------------ Update ------------
         protected override void UpdateBot()

@@ -4,6 +4,7 @@ using Script.DossierPoint;
 using Script.Manager;
 using Script.Tools;
 using UnityEngine;
+using Script.Brain;
 
 namespace Script.MachineLearning
 {
@@ -14,33 +15,23 @@ namespace Script.MachineLearning
         private int _nSaut;
         
         private const int CoefScore = 10;
-
-        public const string NameDirectory = "SauvegardeNeuroneSaut";
         
         // ------------ Getter ------------
-        public override string GetNameDirectory() => NameDirectory;
+        public override string GetNameDirectory() => BrainJump.NameDirectory;
 
         // ------------ Public Methods ------------
         
-        public override void EndTest()
+        protected override void GetScore()
         {
-            // récupérer le score
-            
             // bonus
             float dist = Calcul.Distance(Student.transform.position, begin.position);
             Score += (int)(dist * CoefScore);
             
+            // malus
             if (dist > 5)
             {
-                // malus
                 Score -= _nSaut * CoefScore;
             }
-            
-            // le donner au classement
-            Student.SetNeurone(Classement.EndEpreuve(Student.NeuralNetwork, Score));
-
-            // recommencer
-            StartEntrainement();
         }
 
         public override void Malus()

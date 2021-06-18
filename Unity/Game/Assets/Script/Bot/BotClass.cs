@@ -337,33 +337,7 @@ namespace Script.Bot
 
             return false;
         }
-        
-        // detection
-        protected (double dist, double height) GetDistHeightFirstObstacle(Vector3 pos, float distMax)
-        {
-            float decoupage = 10;
-            float minDist = distMax;
-            float height = 0;
-            float ecart = capsule.Height / decoupage;
-            
-            Ray ray = new Ray(pos + Vector3.forward * 0.1f, Vector3.forward);
-            
-            // trouver la hauteur et la distance du premier obstacle
-            for (int i = 2; i < decoupage; i++)
-            {
-                ray.origin += Vector3.up * ecart;
 
-                if (Physics.Raycast(ray, out RaycastHit hit, minDist))
-                {
-                    //Line.Create(ray.origin, hit.point, 250);
-                    minDist = hit.distance;
-                    height = ray.origin.y - pos.y;
-                }
-            }
-
-            return (minDist, height);
-        }
-        
         // GamePlay
         protected override void Die()
         {

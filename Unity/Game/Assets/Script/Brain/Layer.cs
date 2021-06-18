@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Script.MachineLearning
+namespace Script.Brain
 {
     public class Layer
     {

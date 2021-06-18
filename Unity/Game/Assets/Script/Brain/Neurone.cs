@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Script.MachineLearning
+namespace Script.Brain
 {
     public class Neurone
     {

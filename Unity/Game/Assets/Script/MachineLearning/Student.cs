@@ -2,6 +2,7 @@
 using Script.Animation;
 using Script.Bot;
 using UnityEngine;
+using Script.Brain;
 
 namespace Script.MachineLearning
 {
@@ -9,20 +10,32 @@ namespace Script.MachineLearning
     {
         // ------------ Attributs ------------
         
-        protected NeuralNetwork Neurones;
         protected Entrainement Entrainement;
         
         protected const float MaxDistJump = 3;
+
+        protected BrainClass BrainToTrain;
         
         // ------------ Getter ------------
         
-        public NeuralNetwork NeuralNetwork => Neurones;
+        public BrainClass Brain => BrainToTrain;
+
+        protected abstract BrainClass GetBrain(int numero);
+        
+        protected abstract BrainClass GetBrain();
 
         // ------------ Setter ------------
-        
-        public void SetNeurone(NeuralNetwork value)
+
+        public BrainClass SetBrain(int numero)
         {
-            Neurones = value;
+            BrainToTrain = GetBrain(numero);
+            return BrainToTrain;
+        }
+
+        public BrainClass SetBrain()
+        {
+            BrainToTrain = GetBrain();
+            return BrainToTrain;
         }
 
         public void SetEntrainement(Entrainement value)
@@ -38,7 +51,6 @@ namespace Script.MachineLearning
 
         protected override void AwakeBot()
         {
-            Neurones = new NeuralNetwork(GetLayerDimension());
             AwakeStudent();
         }
         
@@ -57,36 +69,12 @@ namespace Script.MachineLearning
         // ------------ Abstact Methods ------------
         
         protected abstract void ErrorEntrainement();
-        protected abstract int[] GetLayerDimension();
         protected abstract void UseBrain();
 
         public abstract void SetToTest();
         
         
         // ------------ Brain ------------
-
-        protected void ErrorInput(double[] input)
-        {
-            // vérifier qu'il n'a pas de problème avec les valeurs de l'input
-            int l = input.Length;
-            for (int i = 0; i < l; i++)
-            {
-                if (input[i] < -0.1 || input[i] > 1.1)
-                {
-                    Debug.Log($"input[{i}] = {input[i]}");
-                }
-            }
-        }
-
-        protected double[] GetResult(NeuralNetwork neuralNetwork, double[] input)
-        {
-            // feed et enclencher les neurones
-            neuralNetwork.Feed(input);
-            neuralNetwork.FrontProp();
-            
-            // retourner le résultat
-            return neuralNetwork.GetResult();
-        }
 
         protected double[] InputJump(double minDist, double height)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using Script.Animation;
 using Script.Bot;
+using Script.Brain;
 using Script.Graph;
 using Script.Test;
 using UnityEngine;
@@ -10,10 +11,26 @@ namespace Script.MachineLearning
 {
     public class Sauteur : Student
     {
+        // ------------ Attributs ------------
+
+        private BrainJump _brainSaut;
+        
         // ------------ Setter ------------
         public override void SetToTest()
         {
             running = Running.Marche;
+        }
+
+        protected override BrainClass GetBrain(int numero)
+        {
+            _brainSaut = new BrainJump(numero);
+            return _brainSaut;
+        }
+        
+        protected override BrainClass GetBrain()
+        {
+            _brainSaut = new BrainJump();
+            return _brainSaut;
         }
 
         // ------------ Methods ------------
@@ -33,37 +50,12 @@ namespace Script.MachineLearning
 
         // ------------ Brain ------------
 
-        protected override int[] GetLayerDimension()
-        {
-            // 3 entrées :
-            // - la distance entre le bot et l'obstacle
-            // - la hauteur du premier obstacle
-            // - la vitesse du bot
-            
-            // 1 sortie :
-            // - should jump
-            
-            return new []{3, 1};
-        }
-
         protected override void UseBrain()
         {
             if (!Grounded)
                 return;
             
-            // recupérer les infos par rapport aux obstacles
-            (double minDist, double height) = GetDistHeightFirstObstacle(Tr.position, MaxDistJump);
-            
-            // input correspondant à cette tâche
-            double[] input = InputJump(minDist, height);
-            
-            ErrorInput(input);
-
-            // output du neurones
-            double[] output = GetResult(Neurones, input);
-            
-            // reaction
-            if (output[0] > 0.5f)
+            if (_brainSaut.JumpNeeded(Tr, GetSpeed(), SprintSpeed))
             {
                 Jump();
                 Entrainement.Malus();
