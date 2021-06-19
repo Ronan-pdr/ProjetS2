@@ -110,6 +110,8 @@ namespace Script.Brain
         protected string GetPath(int numero) => $"Build/{GetNameDirectory()}/{numero}";
 
         protected abstract string GetNameDirectory();
+
+        protected int BoolToInt(bool value) => value ? 1 : 0;
         
         // detection
         protected (double dist, double height) GetDistHeightFirstObstacle(Transform tr, double distMax)
@@ -138,6 +140,28 @@ namespace Script.Brain
                     Debug.Log($"input[{i}] = {input[i]}");
                 }
             }
+        }
+
+        protected int Max(double[] output)
+        {
+            int l = output.Length;
+
+            if (l == 0)
+            {
+                throw new ArgumentException("L'output ne peut être vide");
+            }
+            
+            (int index, double value) max = (0, output[0]);
+
+            for (int i = 1; i < l; i++)
+            {
+                if (output[i] > max.value)
+                {
+                    max = (i, output[i]);
+                }
+            }
+
+            return max.index;
         }
     }
 }

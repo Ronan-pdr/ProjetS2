@@ -1,26 +1,57 @@
 ﻿using System;
-using System.IO;
 using Script.Brain;
 using UnityEngine;
 
 namespace Script.MachineLearning
 {
-    /*public class Traqueur : Student
+    public class Traqueur : Student
     {
         // ------------ Attributs ------------
-
+        
         private EntrainementDeplacement _entrainementDeplacement;
         private Vector3 _destination;
 
-        private NeuralNetwork _knowWhenThereIsObstacle;
+        // brains
+        private BrainDeplacement _brainDeplacement;
+        private BrainJump _brainJump;
+        
+        // constante
+        private const int ValueTurn = 5;
+        
+        // ------------ Getter ------------
+        
+        protected override BrainClass GetBrainToTrain(int numero)
+        {
+            _brainDeplacement = new BrainDeplacement(numero);
+            return _brainDeplacement;
+        }
+
+        protected override BrainClass GetBrainToTrain()
+        {
+            _brainDeplacement = new BrainDeplacement();
+            return _brainDeplacement;
+        }
         
         // ------------ Setter ------------
+
         public override void SetToTest()
         {
-            running = Running.Marche;
             _destination = _entrainementDeplacement.Arrive;
         }
 
+        public void SetGoal(Vector3 value)
+        {
+            _destination = value;
+        }
+
+        // ------------ Constructeur ------------
+
+        protected override void AwakeStudent()
+        {
+            // brains
+            _brainJump = new BrainJump(0);
+        }
+        
         // ------------ Methods ------------
 
         protected override void ErrorEntrainement()
@@ -34,61 +65,47 @@ namespace Script.MachineLearning
                 throw new Exception();
             }
         }
-        
-        // ------------ Constructeur ------------
-
-        protected override void AwakeStudent()
-        {
-            string path = $"Build/{EntrainementDetection.NameDirectory}/0";
-            if (File.Exists(path))
-            {
-                _knowWhenThereIsObstacle = NeuralNetwork.Restore(path);
-            }
-            else
-            {
-                throw new Exception($"Path = '{path}'");
-            }
-        }
 
         // ------------ Brain ------------
 
-        protected override int[] GetLayerDimension()
-        {
-            // 6 entrées :
-            // - la position de la destination (en z)
-            // - la position de la destination (en x)
-            // - sa position (en z)
-            // - sa position (en x)
-            // - sa rotation (en z)
-            // - obstacle à 12h (distance)
-
-            // 2 sorties :
-            // - avancer
-            // - tourner
-            
-            return new []{6, 2};
-        }
-
         protected override void UseBrain()
         {
-            // récupérer les inputs
-            
-            (_, double height) = GetDistHeightFirstObstacle(Tr.position, MaxDistJump);
-            GetResult(_knowWhenThereIsObstacle, new []{height});
-
-            Vector3 ownPos = Tr.position;
-
-            double[] input =
+            switch (_brainDeplacement.WhatDeplacementShouldDo(Tr, _destination))
             {
-                _destination.z,
-                _destination.x,
-                ownPos.z,
-                ownPos.x,
-                Tr.eulerAngles.y,
-                
-            };
+                case BrainDeplacement.Output.Avancer:
+                    Avancer();
+                    break;
+                case BrainDeplacement.Output.TournerHoraire: 
+                    TournerHoraire();
+                    break;
+                case BrainDeplacement.Output.TournerTrigo:
+                    TournerTrigo();
+                    break;
+            }
+        }
+
+        private void Avancer()
+        {
+            running = Running.Marche;
+            
+            if (_brainJump.JumpNeeded(Tr, GetSpeed(), SprintSpeed))
+            {
+                Jump();
+            }
+        }
+
+        private void TournerHoraire()
+        {
+            running = Running.Arret;
+            AmountRotation = ValueTurn;
         }
         
+        private void TournerTrigo()
+        {
+            running = Running.Arret;
+            AmountRotation = -ValueTurn;
+        }
+
         // ------------ Event ------------
         
         private void OnTriggerEnter(Collider other)
@@ -96,13 +113,14 @@ namespace Script.MachineLearning
             if (other.CompareTag("Finish"))
             {
                 // il est arrivé
-                _entrainementDeplacement.NextField();
+                _entrainementDeplacement.NextField(true);
             }
         }
 
         protected override void OnHighCollision(Collision _)
         {
-            _entrainementDeplacement.NextField();
+            // il a merdé
+            _entrainementDeplacement.NextField(false);
         }
-    }*/
+    }
 }

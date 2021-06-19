@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
-using Script.Tools;
-using Script.Brain;
 using UnityEngine;
 
 namespace Script.MachineLearning
 {
-    /*public class EntrainementDeplacement : Entrainement
+    public class EntrainementDeplacement : Entrainement
     {
         // ------------ Attributs ------------
 
@@ -27,13 +24,19 @@ namespace Script.MachineLearning
         {
             _terrains = GetComponentsInChildren<TerrainDeplacement>();
             _indexField = 0;
+            _terrains[_indexField].BeginTraining(this);
         }
 
         // ------------ Public Methods ------------
         
         protected override void GetScore()
         {
-            // tout est déjà fait dans 'NextField'
+            // tout est déjà fait dans 'NextField' et dans 'Bonus'
+        }
+
+        public override void Bonus()
+        {
+            Score += 10;
         }
 
         public override void Malus()
@@ -41,11 +44,19 @@ namespace Script.MachineLearning
             throw new NotImplementedException();
         }
 
-        public void NextField()
+        public void NextField(bool achieve)
         {
-            // récupérer le score
-            Score += _terrains[_indexField].GetScore();
+            // récupérer le score :
+            // - s'il a réussi, moins il met de temps mieux c'est
+            // - s'il n'a pas réussi, plus il est mort vite pire c'est
+            Score += _terrains[_indexField].GetScore() * (achieve ? 1 : -1);
             
+            // bonus
+            if (achieve)
+            {
+                Bonus();
+            }
+
             // c'est peut-être la fin
             if (_indexField + 1 == _terrains.Length)
             {
@@ -54,16 +65,20 @@ namespace Script.MachineLearning
             
             // changer de terrain
             _indexField += 1;
+            _terrains[_indexField].BeginTraining(this);
 
             // téléporter au bon terrain
             _terrains[_indexField].Teleportation(Student.transform);
+            
+            // indiquer la destination à l'élève
+            ((Traqueur) Student).SetGoal(Arrive);
         }
 
         // ------------ Protected Methods ------------
 
-        protected override Student GetPrefab() => Master.GetOriginalSauteur();
+        protected override Student GetPrefab() => Master.GetOriginalTraqueur();
 
         protected override void ResetIndicator()
         {}
-    }*/
+    }
 }

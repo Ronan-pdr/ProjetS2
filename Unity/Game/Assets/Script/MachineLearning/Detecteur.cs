@@ -21,6 +21,20 @@ namespace Script.MachineLearning
         // traverser mur
         private MyFile<Collider> _fileWall;
         private bool _isWaitingResult;
+        
+        // ------------ Getter ------------
+        
+        protected override BrainClass GetBrainToTrain(int numero)
+        {
+            _brainWall = new BrainWall(numero);
+            return _brainWall;
+        }
+
+        protected override BrainClass GetBrainToTrain()
+        {
+            _brainWall = new BrainWall();
+            return _brainWall;
+        }
 
         // ------------ Setter ------------
 
@@ -48,18 +62,6 @@ namespace Script.MachineLearning
             }
             
             _sitting = false;
-        }
-
-        protected override BrainClass GetBrain(int numero)
-        {
-            _brainWall = new BrainWall(numero);
-            return _brainWall;
-        }
-
-        protected override BrainClass GetBrain()
-        {
-            _brainWall = new BrainWall();
-            return _brainWall;
         }
 
         // ------------ Constructeur ------------

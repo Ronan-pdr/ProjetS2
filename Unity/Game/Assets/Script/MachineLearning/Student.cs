@@ -20,21 +20,21 @@ namespace Script.MachineLearning
         
         public BrainClass Brain => BrainToTrain;
 
-        protected abstract BrainClass GetBrain(int numero);
+        protected abstract BrainClass GetBrainToTrain(int numero);
         
-        protected abstract BrainClass GetBrain();
+        protected abstract BrainClass GetBrainToTrain();
 
         // ------------ Setter ------------
 
         public BrainClass SetBrain(int numero)
         {
-            BrainToTrain = GetBrain(numero);
+            BrainToTrain = GetBrainToTrain(numero);
             return BrainToTrain;
         }
 
         public BrainClass SetBrain()
         {
-            BrainToTrain = GetBrain();
+            BrainToTrain = GetBrainToTrain();
             return BrainToTrain;
         }
 

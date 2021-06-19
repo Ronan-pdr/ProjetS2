@@ -24,14 +24,17 @@ namespace Script.Manager
     {
         // ------------ SerializedField ------------
         
-        [Header("Prefab")]
-        [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
-        [SerializeField] private Hirondelle originalHirondelle; // prefab des bodyRectiligne
-        [SerializeField] private Sauteur originalSauteur; // prefab des bodyRectiligne
-        [SerializeField] private Detecteur originalDetecteur; // prefab des bodyRectiligne
-        [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
-        [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
-        [SerializeField] private GraphPathFinding originalGraphPathFinding; // prefab des RayGaz
+        [Header("Prefab Bot")]
+        [SerializeField] private BodyRectilgne originalBodyRectilgne;
+        [SerializeField] private Hirondelle originalHirondelle;
+        [SerializeField] private Sauteur originalSauteur;
+        [SerializeField] private Detecteur originalDetecteur;
+        [SerializeField] private Traqueur originalTraqueur;
+        
+        [Header("Prefab Autre")]
+        [SerializeField] private BodyGaz originalBodyGaz;
+        [SerializeField] private RayGaz originalRayGaz;
+        [SerializeField] private GraphPathFinding originalGraphPathFinding;
         [SerializeField] private Line originalLine;
         public GameObject marqueurBrown;
         public GameObject marqueurRed;
@@ -103,6 +106,7 @@ namespace Script.Manager
         public Hirondelle GetOriginalHirondelle() => originalHirondelle;
         public Sauteur GetOriginalSauteur() => originalSauteur;
         public Detecteur GetOriginalDetecteur() => originalDetecteur;
+        public Traqueur GetOriginalTraqueur() => originalTraqueur;
         public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
         public RayGaz GetOriginalRayGaz() => originalRayGaz;
         public GraphPathFinding GetOriginalGraphPathFinding() => originalGraphPathFinding;

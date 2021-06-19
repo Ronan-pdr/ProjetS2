@@ -18,8 +18,8 @@ namespace Script.MachineLearning
         private const int TimeMax = 30;
         private Stopwatch _chrono;
         
-        // student
-        //private
+        // entrainement
+        private EntrainementDeplacement _entrainementDeplacement;
 
         // ------------ Getter ------------
 
@@ -27,7 +27,7 @@ namespace Script.MachineLearning
         {
             _chrono.Stop();
 
-            return (int)(_chrono.ElapsedMilliseconds / 1000) / TimeMax * 100;
+            return TimeMax - (int)(_chrono.ElapsedMilliseconds / 1000);
         }
 
         public Vector3 Arrive => arrive.position;
@@ -38,8 +38,21 @@ namespace Script.MachineLearning
         {
             _chrono = new Stopwatch();
         }
-        
+
         // ------------ Methods ------------
+        
+        public void BeginTraining(EntrainementDeplacement entrainement)
+        {
+            _entrainementDeplacement = entrainement;
+            _chrono.Restart();
+            
+            Invoke(nameof(ForceEnd), TimeMax);
+        }
+        
+        public void ForceEnd()
+        {
+            _entrainementDeplacement.NextField(false);
+        }
 
         public void Teleportation(Transform tr)
         {

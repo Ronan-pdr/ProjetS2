@@ -21,13 +21,13 @@ namespace Script.MachineLearning
             running = Running.Marche;
         }
 
-        protected override BrainClass GetBrain(int numero)
+        protected override BrainClass GetBrainToTrain(int numero)
         {
             _brainSaut = new BrainJump(numero);
             return _brainSaut;
         }
         
-        protected override BrainClass GetBrain()
+        protected override BrainClass GetBrainToTrain()
         {
             _brainSaut = new BrainJump();
             return _brainSaut;

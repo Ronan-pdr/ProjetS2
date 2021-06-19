@@ -57,6 +57,8 @@ namespace Script.MachineLearning
         
         // ------------ Abstract Methods ------------
 
+        public abstract void Bonus();
+        
         public abstract void Malus();
         
         public abstract string GetNameDirectory();

@@ -21,6 +21,11 @@ namespace Script.MachineLearning
             Score += (int)(dist * CoefScore);
         }
 
+        public override void Bonus()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void Malus()
         {
             throw new System.NotImplementedException();

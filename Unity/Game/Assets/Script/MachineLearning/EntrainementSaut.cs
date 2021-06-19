@@ -34,6 +34,11 @@ namespace Script.MachineLearning
             }
         }
 
+        public override void Bonus()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Malus()
         {
             _nSaut += 1;
