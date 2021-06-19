@@ -108,11 +108,11 @@ namespace Script.MachineLearning
         {
             int i = _nZone - 1;
             
-            if (score > _classement[i].score)
+            if (score >= _classement[i].score)
             {
                 // le réseau neurones est assez bon pour rentrer dans le classement
                 
-                for (; i > 0 && score > _classement[i - 1].score; i--)
+                for (; i > 0 && score >= _classement[i - 1].score; i--)
                 {
                     // décaler tous les neurones inférieurs
                     _classement[i] = _classement[i - 1];

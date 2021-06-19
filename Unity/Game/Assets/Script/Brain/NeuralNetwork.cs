@@ -23,6 +23,19 @@ namespace Script.Brain
 
             return values;
         }
+
+        public string[] ToStrings()
+        {
+            int l = Layers.Length;
+            string[] res = new string[l];
+
+            for (int i = 0; i < l; i++)
+            {
+                res[i] = Layers[i].ToString();
+            }
+
+            return res;
+        }
         
         // ------------ Constructeur ------------
        

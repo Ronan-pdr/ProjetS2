@@ -35,7 +35,7 @@ namespace Script.MachineLearning
 
         protected override Student GetPrefab() => Master.GetOriginalDetecteur();
 
-        protected override void ResetIndicator()
+        protected override void StartTraining()
         {}
     }
 }

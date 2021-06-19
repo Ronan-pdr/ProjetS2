@@ -23,8 +23,6 @@ namespace Script.MachineLearning
         private void Awake()
         {
             _terrains = GetComponentsInChildren<TerrainDeplacement>();
-            _indexField = 0;
-            _terrains[_indexField].BeginTraining(this);
         }
 
         // ------------ Public Methods ------------
@@ -47,9 +45,7 @@ namespace Script.MachineLearning
         public void NextField(bool achieve)
         {
             // récupérer le score :
-            // - s'il a réussi, moins il met de temps mieux c'est
-            // - s'il n'a pas réussi, plus il est mort vite pire c'est
-            Score += _terrains[_indexField].GetScore() * (achieve ? 1 : -1);
+            Score += _terrains[_indexField].TimeToScore(achieve);
             
             // bonus
             if (achieve)
@@ -61,6 +57,7 @@ namespace Script.MachineLearning
             if (_indexField + 1 == _terrains.Length)
             {
                 EndTest();
+                return;
             }
             
             // changer de terrain
@@ -78,7 +75,10 @@ namespace Script.MachineLearning
 
         protected override Student GetPrefab() => Master.GetOriginalTraqueur();
 
-        protected override void ResetIndicator()
-        {}
+        protected override void StartTraining()
+        {
+            _indexField = 0;
+            _terrains[_indexField].BeginTraining(this);
+        }
     }
 }

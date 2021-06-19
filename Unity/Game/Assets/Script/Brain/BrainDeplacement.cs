@@ -39,11 +39,9 @@ namespace Script.Brain
         
         protected override void NewNeuralNetwork()
         {
-            // 6 entrées :
-            // - la position de la destination (en z)
-            // - la position de la destination (en x)
-            // - sa position (en z)
-            // - sa position (en x)
+            // 4 entrées :
+            // - la différence de position entre la destination et sa position (en z)
+            // - la différence de position entre la destination et sa position (en x)
             // - sa rotation (en z)
             // - obstacle à 12h (booléen)
 
@@ -52,7 +50,7 @@ namespace Script.Brain
             // - tourner sens horaire
             // - tourner sens trigo
 
-            Neurones = new NeuralNetwork(new []{6, 2});
+            Neurones = new NeuralNetwork(new []{4, 3});
         }
         
         // ------------ Methods ------------
@@ -69,7 +67,13 @@ namespace Script.Brain
             Vector3 ownPos = tr.position;
             
             // former l'input
-            double[] input = {destination.z, destination.x, ownPos.z, ownPos.x, tr.rotation.z, BoolToInt(obstacle)};
+            double[] input =
+            {
+                DiffToInput(destination.z, ownPos.z),
+                DiffToInput(destination.x, ownPos.x),
+                tr.rotation.z,
+                BoolToInt(obstacle)
+            };
             
             // vérifier que toutes les valeurs sont entre -1 et 1
             ErrorInput(input);
@@ -77,8 +81,17 @@ namespace Script.Brain
             // récupérer l'output
             double[] output = GetResult(Neurones, input);
             
+            //Debug.Log($"{output[0]} ; {output[1]} ; {output[2]}");
+            
             // interpréter l'output
             return (Output)Max(output);
+        }
+
+        private double DiffToInput(float a, float b)
+        {
+            float diff = a - b;
+            
+            return diff > 0 ? 1 : diff == 0 ? 0.5d : 0;
         }
     }
 }

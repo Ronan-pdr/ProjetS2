@@ -48,7 +48,7 @@ namespace Script.MachineLearning
 
         protected override Student GetPrefab() => Master.GetOriginalSauteur();
 
-        protected override void ResetIndicator()
+        protected override void StartTraining()
         {
             _nSaut = 0;
         }

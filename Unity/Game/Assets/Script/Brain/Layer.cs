@@ -77,5 +77,21 @@ namespace Script.Brain
                 neurone.FrontProp(prevLayer);
             }
         }
+        
+        // ------------ Surchargeur ------------
+
+        public override string ToString()
+        {
+            string res = "";
+            res += Neurones[0].ToString();
+            
+            int l = Neurones.Length;
+            for (int i = 1; i < l; i++)
+            {
+                res += Environment.NewLine + Neurones[i];
+            }
+
+            return res;
+        }
     }
 }

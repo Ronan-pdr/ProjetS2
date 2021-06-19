@@ -65,7 +65,7 @@ namespace Script.MachineLearning
 
         protected abstract Student GetPrefab();
         
-        protected abstract void ResetIndicator();
+        protected abstract void StartTraining();
         
         protected abstract void GetScore();
 
@@ -78,7 +78,7 @@ namespace Script.MachineLearning
             
             // reset score et indicateurs
             Score = 0;
-            ResetIndicator();
+            StartTraining();
             
             // set le bot
             Student.SetToTest();

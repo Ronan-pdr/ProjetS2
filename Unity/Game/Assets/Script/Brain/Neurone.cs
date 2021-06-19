@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
+using Random = System.Random;
 
 namespace Script.Brain
 {
@@ -161,6 +163,7 @@ namespace Script.Brain
             }
 
             Value = Activation(Value);
+            Debug.Log(Value);
         }
 
         /// <summary>
@@ -170,7 +173,18 @@ namespace Script.Brain
         /// <returns></returns>
         private static double Activation(double x)
         {
+            //return 1 / (1 + Math.Exp(-x));
             return Math.Log(1 + Math.Exp(x));
+        }
+        
+        // ------------ Surchargeur ------------
+
+        public override string ToString()
+        {
+            int entier = (int)Value;
+            int relatif = (int)((Value - entier) * 100);
+
+            return $"{entier},{relatif}";
         }
     }
 }

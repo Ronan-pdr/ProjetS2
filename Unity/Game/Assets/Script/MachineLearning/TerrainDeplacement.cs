@@ -13,21 +13,28 @@ namespace Script.MachineLearning
         [SerializeField] private Transform arrive;
         
         // ------------ Attributs ------------
-
+        
         // indicateur
         private const int TimeMax = 30;
         private Stopwatch _chrono;
-        
+
         // entrainement
         private EntrainementDeplacement _entrainementDeplacement;
 
         // ------------ Getter ------------
 
-        public int GetScore()
+        public int TimeToScore(bool achieve)
         {
             _chrono.Stop();
 
-            return TimeMax - (int)(_chrono.ElapsedMilliseconds / 1000);
+            // - s'il a réussi, moins il met de temps mieux c'est
+            if (achieve)
+            {
+                return (TimeMax - (int) (_chrono.ElapsedMilliseconds / 1000)) * 3;
+            }
+            
+            // - s'il n'a pas réussi, plus il reste en vie mieux c'est
+            return (int)(_chrono.ElapsedMilliseconds / 1000);
         }
 
         public Vector3 Arrive => arrive.position;
@@ -45,13 +52,16 @@ namespace Script.MachineLearning
         {
             _entrainementDeplacement = entrainement;
             _chrono.Restart();
-            
-            Invoke(nameof(ForceEnd), TimeMax);
+
+            InvokeRepeating(nameof(ForceEnd), 0, 1);
         }
         
         public void ForceEnd()
         {
-            _entrainementDeplacement.NextField(false);
+            if (_chrono.IsRunning && _chrono.ElapsedMilliseconds / 1000 > TimeMax)
+            {
+                _entrainementDeplacement.NextField(false);
+            }
         }
 
         public void Teleportation(Transform tr)
