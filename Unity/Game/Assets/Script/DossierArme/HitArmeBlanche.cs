@@ -45,7 +45,7 @@ namespace Script.DossierArme
         {
             if (_isUse && SimpleMath.IsEncadré(_timeEndHit, Time.time, 0.1f))
             {
-                Debug.Log("fin d'utilisation");
+                //Debug.Log("fin d'utilisation");
                 _isUse = false;
                 _dict.Clear();
             }
@@ -56,7 +56,7 @@ namespace Script.DossierArme
         {
             if (_isUse && !_dict.ContainsKey(other.name))
             {
-                Debug.Log("TOUCHE");
+                //Debug.Log("TOUCHE");
                 porteur.WhenWeaponHit(other.gameObject, degatArme);
                 
                 _dict.Add(other.name, true);

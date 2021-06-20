@@ -53,7 +53,7 @@ namespace Script.TeteChercheuse
             // est-je touché quelque chose ?
             if (Physics.Raycast(ray, out RaycastHit hit, armeInf.GetPortéeAttaque()))
             {
-                Debug.Log($"J'ai touché {hit.collider.name}");
+                //Debug.Log($"J'ai touché {hit.collider.name}");
                 
                 // est-ce un humain ?
                 if (hit.collider.GetComponent<Humanoide>()) // si l'obstacle est le joueur alors le bot "VOIT" le joueur

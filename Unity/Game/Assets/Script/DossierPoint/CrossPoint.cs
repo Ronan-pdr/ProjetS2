@@ -101,7 +101,7 @@ namespace Script.DossierPoint
         private int _indexFile;
         
         // pour le path finding
-        private Dictionary<string, Node> _Nodes;
+        private Dictionary<string, Node> _nodes;
 
         // ------------ Getters ------------
         public CrossPoint GetNeighboor(int index) => neighboors[index];
@@ -118,17 +118,17 @@ namespace Script.DossierPoint
             
             neighboors.Add(value);
         }
-        
+
         public void ResetPathFinding(string key)
         {
-            _Nodes.Remove(key);
+            _nodes.Remove(key);
         }
         
         // ------------ Constructeur ------------
         private void Awake()
         {
             neighboors = new List<CrossPoint>();
-            _Nodes = new Dictionary<string, Node>();
+            _nodes = new Dictionary<string, Node>();
         }
 
         private void Start()
@@ -162,28 +162,41 @@ namespace Script.DossierPoint
             throw new Exception($"Le nom '{namePoint}' n'est pas homologé (index = {s})");
         }
         
+        public void RemoveNotGoodNeighboor()
+        {
+            for (int i = neighboors.Count - 1; i >= 0; i--)
+            {
+                if (!neighboors[i].gameObject.activeInHierarchy)
+                {
+                    // le cp est désactivé donc c'est un crosspoint
+                    // que l'on NE DOIT PAS utiliser de la partie
+                    neighboors.RemoveAt(i);
+                }
+            }
+        }
+        
         // ------------ PathFinding ------------
 
         public void Origin(string key)
         {
-            if (_Nodes.ContainsKey(key))
+            if (_nodes.ContainsKey(key))
             {
                 throw new Exception("Impossible que l'origine d'un graph soit déjà parcouru durant cette recherche puiqu'elle est censée commencer");
             }
             
-            _Nodes.Add(key, new Node(transform.position));
+            _nodes.Add(key, new Node(transform.position));
         }
 
         public void SearchPath(GraphPathFinding graph)
         {
             string key = graph.Key;
             
-            if (!_Nodes.ContainsKey(key))
+            if (!_nodes.ContainsKey(key))
             {
                 throw new Exception("Le node doit déjà être créé pour faitre les recherches sur ces voisins");
             }
 
-            Node node = _Nodes[key];
+            Node node = _nodes[key];
             
             foreach (CrossPoint crossPoint in neighboors)
             {
@@ -195,10 +208,10 @@ namespace Script.DossierPoint
         {
             string key = graph.Key;
             
-            if (_Nodes.ContainsKey(key))
+            if (_nodes.ContainsKey(key))
             {
                 // ce cross point a déjà été parcouru par cette recherche
-                if (_Nodes[key].NewPath(previous))
+                if (_nodes[key].NewPath(previous))
                 {
                     // le nouveau chemin trouvé est plus court --> ajustement
                     Ajustement(key);
@@ -207,7 +220,7 @@ namespace Script.DossierPoint
             else
             {
                 // ce cross point n'a jamais été parcouru par cette recherche
-                _Nodes.Add(key, new Node(previous, transform.position));
+                _nodes.Add(key, new Node(previous, transform.position));
                 if (this != graph.Destination)
                 {
                     // si c'est la destination, inutile de relancer la recherche sur celui-ci
@@ -218,19 +231,19 @@ namespace Script.DossierPoint
 
         private void Ajustement(string key)
         {
-            Node node = _Nodes[key];
+            Node node = _nodes[key];
             
             foreach (CrossPoint crossPoint in neighboors)
             {
-                if (crossPoint._Nodes.ContainsKey(key))
+                if (crossPoint._nodes.ContainsKey(key))
                 {
                     // ce point a déjà été parcouru
                     
-                    if (crossPoint._Nodes[key].Previous == node)
+                    if (crossPoint._nodes[key].Previous == node)
                     {
                         // ce point avait pour chemin ce cross point --> il faut update
 
-                        crossPoint._Nodes[key].BetterDist(node.BestDist + Calcul.Distance(transform.position, crossPoint.transform.position));
+                        crossPoint._nodes[key].BetterDist(node.BestDist + Calcul.Distance(transform.position, crossPoint.transform.position));
                         crossPoint.Ajustement(key);
                     }
                 }
@@ -239,14 +252,14 @@ namespace Script.DossierPoint
 
         public List<Vector3> EndResearchPath(string key)
         {
-            if (!_Nodes.ContainsKey(key))
+            if (!_nodes.ContainsKey(key))
             {
                 // recherche négative
                 Debug.Log("recherche négative");
                 return null;
             }
             
-            Node node = _Nodes[key];
+            Node node = _nodes[key];
             List<Vector3> path = new List<Vector3>();
             
             // c'est la position de la destination
@@ -355,14 +368,13 @@ namespace Script.DossierPoint
             MyFile<CrossPoint> potentialNeighboors = new MyFile<CrossPoint>();
             Vector3 ownCoord = transform.position;
             float distanceMax = 22;
-            int n = 0;
             
             //Debug.Log(name);
 
-            foreach (CrossPoint crossPoint in _crossManager.GetCrossPoints())
+            foreach (CrossPoint crossPoint in _crossManager.GetAllCrossPoints())
             {
                 // déjà repertorié
-                if (neighboors.Contains(crossPoint))
+                if (!crossPoint ||neighboors.Contains(crossPoint))
                 {
                     //Debug.Log($"Déja trouvé -> {potentialNeighboors[i].name}");
                     continue;
@@ -394,7 +406,6 @@ namespace Script.DossierPoint
                 }
                 
                 potentialNeighboors.Enfiler(crossPoint);
-                n++;
             }
             
             //Debug.Log($"{name} va envoyé {n} bodyChercheur(s)");

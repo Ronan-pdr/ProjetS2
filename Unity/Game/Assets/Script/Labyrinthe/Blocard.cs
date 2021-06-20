@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using Script.EntityPlayer;
 using Script.Test;
 using Script.Tools;
@@ -69,5 +70,10 @@ namespace Script.Labyrinthe
             caillous.RemoveAt(i);
             nCaillou -= 1;
         }
+        
+        // ------------ Multijoueur ------------
+
+        protected override void PropertiesUpdate(Hashtable _)
+        {}
     }
 }

@@ -31,14 +31,11 @@ namespace Script.EntityPlayer
         
         // ------------ Attributs ------------
         
-        private TouchesClass touches;
+        protected TouchesClass touches;
 
         //Look
         private float verticalLookRotation; 
         private float mouseSensitivity = 3f;
-
-        //Rassembler les infos
-        protected Transform masterManager;
 
         // ------------ Constructeurs ------------
         
@@ -49,8 +46,7 @@ namespace Script.EntityPlayer
             AwakePlayer();
         
             // parenter
-            masterManager = MasterManager.Instance.transform;
-            Tr.parent = masterManager;
+            Tr.parent = MasterManager.Instance.transform;
 
             if (Pv.IsMine)
             {
@@ -58,7 +54,9 @@ namespace Script.EntityPlayer
                 MasterManager.Instance.SetOwnPlayer(this);
             }
         
+            // le nom est le même que celui de photon
             name = Pv.Owner.NickName;
+            
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);
         }
@@ -197,34 +195,30 @@ namespace Script.EntityPlayer
             }
         }
         
-        // ------------ Photon ------------
+        // ------------ Multijoueur ------------
     
         // Communication par hash
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
                 return;
-        
-            // arme du chasseur -> EquipItem (Chasseur)
-            if (this is Chasseur && !Pv.IsMine) // ça ne doit pas être ton point de vie puisque tu l'as déjà fait
-            {
-                if (changedProps.TryGetValue("itemIndex", out object indexArme))
-                {
-                    Chasseur chasseur = (Chasseur) this;
-                    chasseur.EquipItem((int)indexArme);
-                }
-            }
-
+            
             // point de vie -> TakeDamage (Humanoide)
             // Tout le monde doit faire ce changement (trop compliqué de retrouvé celui qui l'a déjà fait)
             if (changedProps.TryGetValue("PointDeViePlayer", out object vie))
             {
                 CurrentHealth = (int)vie;
             }
+            
+            PropertiesUpdate(changedProps);
         }
+
+        // cette fonction s'occupde des propriétés propre aux enfants de cette classe (chasseur...)
+        protected abstract void PropertiesUpdate(Hashtable changedProps);
         
         // ------------ Animation ------------
-        protected void AnimationPlayer()
+        
+        private void AnimationPlayer()
         {
             (int xMov, int zMov) = (0, 0);
             if (touches.GetKey(TypeTouche.Avancer)) // avancer

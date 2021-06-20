@@ -102,8 +102,7 @@ namespace Script.Bot
             {
                 bot = Instantiate(_masterManager.GetOriginalHirondelle(), tr.position, tr.rotation);
             }
-            
-            
+
             if (bot is BotRectiligne)
             {
                 ((BotRectiligne)bot).SetCrossPoint(CrossManager.Instance.GetPoint(indexSpawn));
@@ -130,6 +129,7 @@ namespace Script.Bot
             }
             
             tr = SpawnManager.Instance.GetTrBot(indexSpawn);
+            
             switch (t)
             {
                 case TypeBot.Fuyard:

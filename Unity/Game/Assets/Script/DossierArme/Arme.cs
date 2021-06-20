@@ -15,18 +15,26 @@ namespace Script.DossierArme
         // Variables relatives à l'arme en elle-même
         [Header("Info")]
         [SerializeField] protected ArmeInfo armeInfo;
-        
-        [Header("Animation")]
-        [SerializeField] protected HumanAnim anim;
     
         // ------------ Attributs ------------
         
         // pour la fréquence de tir
         private float lastUse = -1;
+        
+        // animation
+        private HumanAnim _anim;
 
 
         // ------------ Getter ------------
-        public HumanAnim Anim => anim;
+        public HumanAnim Anim => _anim;
+
+        // ------------ Constructeur ------------
+
+        private void Awake()
+        {
+            _anim = GetComponent<HumanAnim>();
+            _anim.SetAnimator(GetComponent<Animator>());
+        }
 
         // ------------ Méthodes ------------
 

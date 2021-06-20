@@ -12,6 +12,7 @@ using Script.Graph;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Script.InterfaceInGame;
 using Script.Labyrinthe;
+using Script.MachineLearning;
 using Script.Menu;
 using Script.TeteChercheuse;
 using Script.Tools;
@@ -23,12 +24,17 @@ namespace Script.Manager
     {
         // ------------ SerializedField ------------
         
-        [Header("Prefab")]
-        [SerializeField] private BodyRectilgne originalBodyRectilgne; // prefab des bodyRectiligne
-        [SerializeField] private Hirondelle originalHirondelle; // prefab des bodyRectiligne
-        [SerializeField] private BodyGaz originalBodyGaz; // prefab des bodyGaz
-        [SerializeField] private RayGaz originalRayGaz; // prefab des RayGaz
-        [SerializeField] private GraphPathFinding originalGraphPathFinding; // prefab des RayGaz
+        [Header("Prefab Bot")]
+        [SerializeField] private BodyRectilgne originalBodyRectilgne;
+        [SerializeField] private Hirondelle originalHirondelle;
+        [SerializeField] private Sauteur originalSauteur;
+        [SerializeField] private Detecteur originalDetecteur;
+        [SerializeField] private Traqueur originalTraqueur;
+        
+        [Header("Prefab Autre")]
+        [SerializeField] private BodyGaz originalBodyGaz;
+        [SerializeField] private RayGaz originalRayGaz;
+        [SerializeField] private GraphPathFinding originalGraphPathFinding;
         [SerializeField] private Line originalLine;
         public GameObject marqueurBrown;
         public GameObject marqueurRed;
@@ -78,7 +84,8 @@ namespace Script.Manager
             Game,
             Labyrinthe,
             Maintenance,
-            CageOiseaux
+            CageOiseaux,
+            EntrainementSaut
         }
 
         private ManagerGame typeScene;
@@ -97,6 +104,9 @@ namespace Script.Manager
         public Chassé GetChassé(int index) => chassés[index];
         public BodyRectilgne GetOriginalBodyRectilgne() => originalBodyRectilgne;
         public Hirondelle GetOriginalHirondelle() => originalHirondelle;
+        public Sauteur GetOriginalSauteur() => originalSauteur;
+        public Detecteur GetOriginalDetecteur() => originalDetecteur;
+        public Traqueur GetOriginalTraqueur() => originalTraqueur;
         public BodyGaz GetOriginalBodyGaz() => originalBodyGaz;
         public RayGaz GetOriginalRayGaz() => originalRayGaz;
         public GraphPathFinding GetOriginalGraphPathFinding() => originalGraphPathFinding;
@@ -189,6 +199,10 @@ namespace Script.Manager
             else if (scene == TypeScene.CageOiseaux)
             {
                 typeScene = new InCageOiseaux(nParticipant);
+            }
+            else if (scene == TypeScene.EntrainementSaut)
+            {
+                typeScene = new InEntrainementSaut(nParticipant);
             }
             else
             {
