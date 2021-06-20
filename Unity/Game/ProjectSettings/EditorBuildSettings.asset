@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
+    path: Assets/Scenes/Waiting.unity
+    guid: eccb8ae3bc5dc0043934f27bd57787e8
+  - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 97e4182aab623b8499252d391da0a986
   - enabled: 1
