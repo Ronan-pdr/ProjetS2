@@ -117,7 +117,7 @@ namespace Script.TeteChercheuse
             // vérifiez que la position ininiale est bien comprise dans les bornes
             if (!IsValidPosition(posInitiale))
             {
-                throw new Exception("Un RayGaz ne peut-être lancé en dehors des contours");
+                throw new Exception($"Un RayGaz ne peut-être lancé en dehors des contours ({posInitiale.x}, {posInitiale.y}, {posInitiale.z})");
             }
             
             // récupérer les côtes des bots pour les ray ------------
@@ -143,13 +143,13 @@ namespace Script.TeteChercheuse
             // Impossible que la file soit empty ici
             Node node = file.Defiler();
             
-            for (int i = 0; i < 100 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
+            for (int i = 0; i < 500 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
             {
                 if (i > 0)
                     node = file.Defiler();
                 
                 // temporaire
-                //TestRayGaz.CreateMarqueur(node.Position);
+                //TestRayGaz.CreateMarqueur(node.Position + Vector3.up * 1f, TestRayGaz.Couleur.Brown);
 
                 // devant
                 NewPosition(node, Vector3.forward, bond);
@@ -179,7 +179,7 @@ namespace Script.TeteChercheuse
             else if (Arrivé(node.Position)) // bien arrivé
             {
                 time.Stop();
-                Debug.Log($"Le gaz s'est répendu en {time.ElapsedMilliseconds} milisecondes");
+                Debug.Log($"Le gaz s'est répendu en {time.ElapsedMilliseconds/60000} minute(s) et {time.ElapsedMilliseconds/1000%60} seconde(s)");
                 
                 RecepGetPath(GetBestPath(node)); // on est obligé d'être dans 'GetPath'
                 Destroy(gameObject); // c'est fini donc il se détruit
@@ -195,7 +195,6 @@ namespace Script.TeteChercheuse
                 case TypeRecherche.Path:
                     //Debug.Log($"Il existe aucun chemin pour y accéder ({destination.x}, {destination.y}, {destination.z})");
                     RecepGetPath(new List<Vector3>());
-                    TestRayGaz.CreateMarqueur(destination);
                     Destroy(gameObject);
                     break;
                 case TypeRecherche.Sonde:
@@ -283,6 +282,8 @@ namespace Script.TeteChercheuse
                 for (int i = 0; i >= 0 && nextNode.After != null && capsule.CanIPass(node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
                     Calcul.Distance(nextNode.After.Position, node.Position)); i++)
                 {
+                    //TestRayGaz.CreateMarqueur(nextNode.Position + Vector3.up * 1.1f, TestRayGaz.Couleur.Yellow);
+                    
                     nextNode = nextNode.After;
                 }
 

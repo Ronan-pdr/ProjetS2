@@ -8,10 +8,6 @@ namespace Script.Animation
 {
     public abstract class HumanAnim : MonoBehaviour
     {
-        // ------------ SerializeField ------------
-    
-        [SerializeField] private Animator animator;
-    
         // ------------ Attributs ------------
         public enum Type
         {
@@ -32,12 +28,19 @@ namespace Script.Animation
         }
 
         protected Dictionary<Type, int> Dict;
-        private Type[] animContinue;
+        private Type[] _animContinue;
         
         // pour les triggers
-        private (float time, Type anim) trigger;
+        private (float time, Type anim) _trigger;
+        
+        private Animator _animator;
         
         // ------------ Setter ------------
+
+        public void SetAnimator(Animator value)
+        {
+            _animator = value;
+        }
         
         protected abstract void AddAnim();
         
@@ -47,7 +50,7 @@ namespace Script.Animation
             CheckError(newAnim);
 
             StopContinue();
-
+            
             if (IsState(newAnim)) // state
             {
                 // rien de plus
@@ -55,17 +58,17 @@ namespace Script.Animation
             else if (IsTrigger(newAnim, out float timeAnim)) // trigger
             {
                 // enlever la précédente
-                Stop(trigger.anim);
+                Stop(_trigger.anim);
                 
-                trigger.time = Time.time + timeAnim;
-                trigger.anim = newAnim;
+                _trigger.time = Time.time + timeAnim;
+                _trigger.anim = newAnim;
             }
             else // continue
             {
                 // elle sont stocké dans une liste
             }
 
-            animator.SetBool(Dict[newAnim], true);
+            _animator.SetBool(Dict[newAnim], true);
         }
 
         public void Set(HumanAnim humanAnim)
@@ -75,9 +78,9 @@ namespace Script.Animation
 
             foreach (KeyValuePair<Type, int> e in humanAnim.Dict)
             {
-                if (Dict.ContainsKey(e.Key) && animator.GetBool(e.Value))
+                if (Dict.ContainsKey(e.Key) && _animator.GetBool(e.Value))
                 {
-                    animator.SetBool(Dict[e.Key], true);
+                    _animator.SetBool(Dict[e.Key], true);
 
                     Debug.Log($"Le met en mode '{e.Key}'");
                 }
@@ -91,7 +94,7 @@ namespace Script.Animation
             Dict = new Dictionary<Type, int>();
             
             // deplacement (anim continue)
-            animContinue = new[]
+            _animContinue = new []
             {
                 Type.Forward, Type.Backward, Type.Right, Type.Left,
                 Type.DiagR, Type.DiagL, Type.Run
@@ -118,10 +121,10 @@ namespace Script.Animation
         private void Update()
         {
             // gérer les triggers
-            if (SimpleMath.IsEncadré(Time.time, trigger.time, 0.1f))
+            if (SimpleMath.IsEncadré(Time.time, _trigger.time, 0.1f))
             {
-                Stop(trigger.anim);
-                trigger.anim = Type.Idle;
+                Stop(_trigger.anim);
+                _trigger.anim = Type.Idle;
             }
         }
 
@@ -134,13 +137,13 @@ namespace Script.Animation
             
             if (animToStop != Type.Idle)
             {
-                animator.SetBool(Dict[animToStop], false);
+                _animator.SetBool(Dict[animToStop], false);
             }
         }
 
         public void StopContinue()
         {
-            foreach (Type anim in animContinue)
+            foreach (Type anim in _animContinue)
             {
                 Stop(anim);
             }

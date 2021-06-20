@@ -15,6 +15,8 @@ namespace Script.Tools
             _tete = null;
             _queue = null;
         }
+        
+        
 
         public MyFile(T[] arr)
         {

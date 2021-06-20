@@ -109,7 +109,7 @@ namespace Script.EntityPlayer
         }
 
         // ------------ Méthodes ------------
-        protected void PotentielleMort()
+        private void PotentielleMort()
         {
             // Mourir de chute
             if (transform.position.y < -10f)
@@ -124,7 +124,7 @@ namespace Script.EntityPlayer
             }
         }
 
-        public void Jump()
+        protected void Jump()
         {
             if (Time.time - lastJump > periodeJump && _grounded)
             {
@@ -171,14 +171,7 @@ namespace Script.EntityPlayer
                 return false;
             }
             
-            try
-            {
-                return hum1.name == hum2.name;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
+            return hum1.name == hum2.name;
         }
         public static bool operator !=(Humanoide hum1, Humanoide hum2)
         {

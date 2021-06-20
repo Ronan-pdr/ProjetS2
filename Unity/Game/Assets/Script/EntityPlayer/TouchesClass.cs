@@ -16,7 +16,8 @@ namespace Script.EntityPlayer
         Sprint = 4,
         Jump = 5,
         Accroupi = 6,
-        Assoir = 7
+        Assoir = 7,
+        ChangerDesign = 8
     }
 
     public class TouchesClass
@@ -82,6 +83,7 @@ namespace Script.EntityPlayer
             dict.Add(TypeTouche.Jump, new Touche("jumpKey", "Space"));
             dict.Add(TypeTouche.Accroupi, new Touche("crouchKey", "C"));
             dict.Add(TypeTouche.Assoir, new Touche("sitKey", "X"));
+            dict.Add(TypeTouche.ChangerDesign, new Touche("DesignKey", "A"));
         }
     
         // ------------ Getters ------------

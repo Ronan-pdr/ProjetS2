@@ -8,6 +8,7 @@ namespace Script.Manager
         public InMaintenance(int nJoueur)
         {
             NJoueur = nJoueur;
+            IsMultijoueur = true;
         }
         
         // ------------ Méthodes ------------
