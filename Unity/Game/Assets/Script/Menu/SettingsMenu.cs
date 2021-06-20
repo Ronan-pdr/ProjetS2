@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Audio;
+using Script.EntityPlayer;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private Slider volumeSlider;
     [SerializeField] private TMP_Dropdown graphicsDropdown;
     [SerializeField] private Toggle fullScreenToggle;
+    [SerializeField] private Toggle wantCrosshair;
     private Resolution selectedResolution;
     
     
@@ -92,6 +94,11 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.Save();
         if (audioManager)
             audioManager.audioSource.volume = volume;
+    }
+
+    public void SetCrosshair()
+    {
+        TouchesClass.Instance.SetCrosshair(wantCrosshair.isOn);
     }
     
 }
