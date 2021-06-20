@@ -6,11 +6,7 @@ using UnityEngine;
 using Photon.Pun;
 using Script.Animation.Personnages.Hunted;
 using Script.Bot;
-using Script.Graph;
-using Script.InterfaceInGame;
 using Script.Manager;
-using Script.Test;
-using Script.Tools;
 
 namespace Script.EntityPlayer
 {
@@ -57,7 +53,7 @@ namespace Script.EntityPlayer
             // changer de design avec la molette
             if (Input.GetAxisRaw("Mouse ScrollWheel") > 0)
             {
-                ChangeDesign((_design.Index + 1) % 4);
+                ChangeDesign((_design.Index + 1) % _design.Length);
             }
         }
         

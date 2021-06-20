@@ -17,6 +17,8 @@ namespace Script.EntityPlayer
 
         public int Index => _indexDesign;
 
+        public int Length => _designs.Length;
+
         // ------------ Setter ------------
 
         public void Set(int index)

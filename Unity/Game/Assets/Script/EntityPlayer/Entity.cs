@@ -73,6 +73,8 @@ namespace Script.EntityPlayer
         {
             //Déplace le corps du human grâce à moveAmount précédemment calculé
             Rb.MovePosition(Rb.position + Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime);
+            
+            
             //Rb.AddForce(Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime * 200);
         }
 
