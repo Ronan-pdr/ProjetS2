@@ -19,40 +19,105 @@ namespace Script.DossierPoint
         // ------------ SerializeField ------------
 
         [Header("Maintenance")]
-        [SerializeField] private bool InMaintenance;
+        [SerializeField] private bool inMaintenance;
+        [SerializeField] private bool printAllGraph;
+        
+        [Header("Mainteance et jeu")]
         [SerializeField] private SousCrossManager[] sousCrossManagers;
         
         // ------------ Attributs ------------
         
         public static CrossManager Instance;
+        
         private CrossPoint[] allCrossPoints;
+        private CrossPoint[] _crossPoints;
         
         private string DossierRangement = "SauvegardeCrossManager/";
 
         // ------------ Getters ------------
-        public bool IsMaintenance => InMaintenance;
+        public bool IsMaintenance => inMaintenance;
+        public bool MustPrintGraph => printAllGraph;
         public string GetDossier() => DossierRangement;
-        public int GetNumberPoint() => allCrossPoints.Length;
+        public int GetNumberPoint() => _crossPoints.Length;
         
-        public CrossPoint GetPoint(int index) => allCrossPoints[index];
+        public CrossPoint GetPoint(int index) => _crossPoints[index];
 
-        public CrossPoint[] GetCrossPoints() => allCrossPoints;
+        public CrossPoint[] GetAllCrossPoints() => allCrossPoints;
         
-        public int[] GetSpawnBot() => ManList.RandomIndex(allCrossPoints.Length);
-
-        public Vector3 GetPosition(int index)
+        public int[] GetSpawnBot() => ManList.RandomIndex(_crossPoints.Length);
+        
+        // ------------ Constructeurs ------------
+        private void Awake()
         {
-            if (index >= allCrossPoints.Length)
+            Instance = this;
+
+            SetAllCrossPoint();
+            for (int i = 0; i < allCrossPoints.Length; i++)
             {
-                throw new Exception("index out of range");
+                if (allCrossPoints[i] is null)
+                {
+                    Debug.Log($"La liste allCrossPoints a mal été créé ou le cross point avec l'index '{i}' n'existe pas");
+                }
             }
             
-            return allCrossPoints[index].transform.position;
+            foreach (SousCrossManager e in sousCrossManagers)
+            {
+                LoadNeigboors(e);
+            }
+            
+            if (IsMaintenance)
+            {
+                foreach (SousCrossManager e in sousCrossManagers)
+                {
+                    gameObject.AddComponent<CrossMaintenance>().SetSousCrossManager(e);
+                }
+            }
+            else
+            {
+                // desactiver tous les sous cross manager
+                foreach (SousCrossManager e in GetComponentsInChildren<SousCrossManager>())
+                {
+                    e.gameObject.SetActive(false);
+                }
+
+                // activer ceux avec lesquels on veut jouer
+                foreach (SousCrossManager e in sousCrossManagers)
+                {
+                    e.gameObject.SetActive(true);
+                }
+                
+                SetCrossPoints();
+                
+                // Après le awake, On NE DOIT PAS utiliser
+                // cette liste si c'est pas une maintenance
+                sousCrossManagers = null;
+            }
         }
 
-        // ------------ Setter ------------
+        // ------------ Méthodes ------------
+
+        public CrossPoint GetNearestPoint(Vector3 pos)
+        {
+            int l = _crossPoints.Length;
+
+            CrossPoint point = _crossPoints[0];
+            (CrossPoint point, float dist) best = (point, Calcul.Distance(pos, point.transform.position));
+
+            for (int i = 1; i < l; i++)
+            {
+                point = _crossPoints[i];
+                float dist = Calcul.Distance(pos, point.transform.position);
+
+                if (dist < best.dist)
+                {
+                    best = (point, dist);
+                }
+            }
+
+            return best.point;
+        }
         
-        private void SetCrossPoint()
+        private void SetAllCrossPoint()
         {
             // Range tous les crossPoints en fonction de leur nom (il y a un numéro dedans)
             // Vérifie si aucun crossPoint n'a le même numéro qu'un autre
@@ -61,6 +126,7 @@ namespace Script.DossierPoint
             int l = crossPoints.Length;
 
             allCrossPoints = new CrossPoint[l];
+
             int printForError = 0;
 
             foreach (CrossPoint crossPoint in crossPoints)
@@ -69,7 +135,7 @@ namespace Script.DossierPoint
 
                 if (printForError > 0)
                 {
-                    Debug.Log($"{1}ème prochain = {crossPoint.name}");
+                    Debug.Log($"{printForError}ème prochain = {crossPoint.name}");
                     printForError--;
                 }
 
@@ -87,55 +153,39 @@ namespace Script.DossierPoint
                 allCrossPoints[i] = crossPoint;
             }
         }
-        
-        // ------------ Constructeurs ------------
-        private void Awake()
-        {
-            Instance = this;
-            
-            if (!IsMaintenance)
-            {
-                // On NE doit PAS utiliser cette liste si c'est pas une maintenance
-                sousCrossManagers = null;
-            }
-            
-            SetCrossPoint();
-            for (int i = 0; i < allCrossPoints.Length; i++)
-            {
-                if (allCrossPoints[i] is null)
-                {
-                    Debug.Log($"La liste allCrossPoints a mal été créé ou le cross point avec l'index '{i}' n'existe pas");
-                }
-            }
-        }
-        private void Start()
-        {
-            if (MasterManager.Instance.GetTypeScene() == MasterManager.TypeScene.Labyrinthe)
-                return;
 
-            if (IsMaintenance)
+        private void SetCrossPoints()
+        {
+            List<CrossPoint> listCrossPoint = new List<CrossPoint>();
+
+            foreach (SousCrossManager scm in sousCrossManagers)
             {
-                foreach (SousCrossManager e in sousCrossManagers)
+                foreach (CrossPoint point in scm.GetComponentsInChildren<CrossPoint>())
                 {
-                    gameObject.AddComponent<CrossMaintenance>().SetSousCrossManager(e);
+                    // le rajouter à la liste
+                    listCrossPoint.Add(point);
+                    
+                    // lui enlever ses voisins en trop
+                    point.RemoveNotGoodNeighboor();
                 }
             }
-            else
-            {
-                foreach (SousCrossManager e in GetComponentsInChildren<SousCrossManager>())
-                {
-                    LoadNeigboors(e);
-                }
-            }
+
+            _crossPoints = ManList<CrossPoint>.Copy(listCrossPoint);
         }
         
-        // ------------ Méthodes ------------
+        // ------------ Graph ------------
 
-        
+        public void ResetPathFinding(string key)
+        {
+            foreach (CrossPoint point in _crossPoints)
+            {
+                point.ResetPathFinding(key);
+            }
+        }
 
         // ------------ Parsing ------------
 
-        public void LoadNeigboors(SousCrossManager sousCrossManager)
+        private void LoadNeigboors(SousCrossManager sousCrossManager)
         {
             int l = allCrossPoints.Length;
             string fileName = sousCrossManager.name;

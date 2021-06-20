@@ -43,13 +43,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5d6700a739f4b9580380d1142fc7ab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originalBodyRectilgne: {fileID: 7475188350239458209, guid: 2048a9e2cf0bee04c8d9eb36c2785e7f, type: 3}
+  originalBodyRectilgne: {fileID: 681963426934995128, guid: 7bcf8ae7ba805ad47bd105da610d2962, type: 3}
+  originalHirondelle: {fileID: 4674858542141970376, guid: d2590c6a1bd4eff47a151e166f2db8a6, type: 3}
+  originalSauteur: {fileID: 752753128678136743, guid: 9262fa7e7a8c94d47a3ac9858b06eaa2, type: 3}
+  originalDetecteur: {fileID: 8594925851147014710, guid: 820b2853d66d08d4caa3367d170c2099, type: 3}
   originalBodyGaz: {fileID: 8424364165130499839, guid: 866c659c271f014479473fc1e543201e, type: 3}
   originalRayGaz: {fileID: 5939710653004678706, guid: 05224721a27744443ad888b4b3e1ef77, type: 3}
-  contour: []
-  marqueur: {fileID: 3585927519866693003, guid: 0e66d6dd787fcdd4bbb0ae626121f634, type: 3}
-  PointPath: {fileID: 5996575914678207512, guid: 56067a1d690c13c4ebf00b3e9b19ada7, type: 3}
-  capsuleBot: {fileID: 2764116466850601302, guid: 6159320856f812d4c97820308b638921, type: 3}
+  originalGraphPathFinding: {fileID: 2776933183299841945, guid: 9dccbe25ee3728b46b4d026295fbb8be, type: 3}
+  originalLine: {fileID: 2304334314243126800, guid: d718ed9a86095de4eac06dd3f7b0c924, type: 3}
+  marqueurBrown: {fileID: 4670889363634942262, guid: 1f50cb2dcb2be1742b3e37efa3c768e8, type: 3}
+  marqueurRed: {fileID: 4670889363634942262, guid: db79c15371b47c544962fe8804d23261, type: 3}
+  marqueurYellow: {fileID: 4670889363634942262, guid: e616b847958603d499260ecc7a8f5d49, type: 3}
   dossierBodyChercheur: {fileID: 0}
   dossierBalleFusil: {fileID: 0}
+  dossierRayGaz: {fileID: 0}
   dossierOtherBot: {fileID: 0}
+  dossierGraph: {fileID: 0}
+  capsuleBot: {fileID: 2764116466850601302, guid: d90a1376be65d054da9a309f9e90c892, type: 3}
+  scene: 0
+  IsBordNeeded: 0
+  "vis\xE9": {fileID: 0}

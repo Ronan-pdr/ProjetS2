@@ -16,7 +16,7 @@ namespace Script.DossierArme
         // ------------ Méthode ------------
         public override void UtiliserArme()
         {
-            anim.Set(HumanAnim.Type.Shoot);
+            Anim.Set(HumanAnim.Type.Shoot);
 
             float rotCam = cameraHolder.eulerAngles.x;
             float rotChasseur = porteur.transform.eulerAngles.y;

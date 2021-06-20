@@ -18,7 +18,8 @@ namespace Script.Bot
         Rectiligne,
         Fuyard,
         Guide,
-        Suiveur
+        Suiveur,
+        Hirondelle
     }
     
     public class BotManager : MonoBehaviourPunCallbacks
@@ -34,39 +35,74 @@ namespace Script.Bot
     
         // stocker tous les bots
         private List<BotClass> Bots;
+
+        private List<Fuyard> _allFuyards;
         
         // cette liste va servir à donner les noms à chaque bot
         private int[] nBotNamed;
+
+        private MasterManager _masterManager;
         
         // ------------ Getter ------------
         public string GetNameBot(BotClass bot, Player player)
         {
-            int i = ManList<Player>.GetIndex(PhotonNetwork.PlayerList, player);
+            if (_masterManager.IsMultijoueur)
+            {
+                int i = ManList<Player>.GetIndex(PhotonNetwork.PlayerList, player);
             
-            nBotNamed[i] += 1;
-            return $"{player.NickName}{bot.GetTypeEntity()}{nBotNamed[i]}";
+                nBotNamed[i] += 1;
+                return $"{player.NickName}{bot.GetTypeEntity()}{nBotNamed[i]}";
+            }
+
+            nBotNamed[0] += 1;
+            return $"{bot.GetTypeEntity()}{nBotNamed[0]}";
+        }
+        
+        // ------------ Setter ------------
+
+        public void AddFuyard(Fuyard fuyard)
+        {
+            _allFuyards.Add(fuyard);
         }
 
         // ------------ Constructeurs ------------
         private void Awake()
         {
             Instance = this;
+            Bots = new List<BotClass>();
+            _allFuyards = new List<Fuyard>();
         }
 
         void Start()
         {
-            Bots = new List<BotClass>();
-            nBotNamed = new int[PhotonNetwork.PlayerList.Length];
+            _masterManager = MasterManager.Instance;
+
+            if (_masterManager.IsMultijoueur)
+            {
+                nBotNamed = new int[PhotonNetwork.PlayerList.Length];
+            }
+            else
+            {
+                nBotNamed = new int[1];
+            }
         }
 
         // ------------ Méthodes ------------
-        private void CreateBot(TypeBot t, int indexSpawn)
+        public void CreateBot(TypeBot t, int indexSpawn)
         {
             (Transform tr, string type) = GetTrAndString(t, indexSpawn);
 
-            BotClass bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
-                tr.position, tr.rotation).GetComponent<BotClass>();
-            
+            BotClass bot;
+            if (_masterManager.IsMultijoueur)
+            {
+                bot = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", type),
+                    tr.position, tr.rotation).GetComponent<BotClass>();
+            }
+            else
+            {
+                bot = Instantiate(_masterManager.GetOriginalHirondelle(), tr.position, tr.rotation);
+            }
+
             if (bot is BotRectiligne)
             {
                 ((BotRectiligne)bot).SetCrossPoint(CrossManager.Instance.GetPoint(indexSpawn));
@@ -93,6 +129,7 @@ namespace Script.Bot
             }
             
             tr = SpawnManager.Instance.GetTrBot(indexSpawn);
+            
             switch (t)
             {
                 case TypeBot.Fuyard:
@@ -101,59 +138,50 @@ namespace Script.Bot
                     return (tr, "Guide");
                 case TypeBot.Suiveur:
                     return (tr, "Suiveur");
+                case TypeBot.Hirondelle:
+                    return (tr, "Hirondelle");
                 default:
                     throw new Exception($"Le cas du {t} n'a pas encore été géré");
             }
         }
 
-        [Header("Spécial soutenance")]
-        [SerializeField] private GameObject destSoutenance;
-
         // si la valeur de retour est le "Vector.zero", alors il n'y a pas de bon spot
-        public Vector3 GetGoodSpot(BotClass fuyard, Vector3 posChasseur)
+        public CrossPoint GetEscapeSpot(BotClass fuyard, Vector3 posChasseur)
         {
-            return destSoutenance.transform.position;
-
-            /*// trouvons le bot qui est le plus loin du fuyard,
-            // en étant à la même altitude que le fuyard et
+            // trouvons le bot qui est le plus loin du fuyard et
             // le Fuyard doit être plus proche que le chasseur
+            
             Vector3 posFuyard = fuyard.transform.position;
 
-            Vector3 bestPosBot = Vector3.zero;
+            Vector3 bestPos = Vector3.zero;
             float maxDist = 3;
-            foreach (BotClass bot in Bots)
+            foreach (Fuyard otherFuyard in _allFuyards)
             {
-                if (bot == fuyard)
+                if (otherFuyard == fuyard)
                 {
                     // il va pas fuir vers lui-même (logique hehe)
                     continue;
                 }
 
-                Vector3 posBot = bot.transform.position;
-                
-                if (!SimpleMath.IsEncadré(Calcul.Distance(posFuyard.y, posBot.y), 0.05f))
-                {
-                    // pas à la même altitude
-                    continue;
-                }
+                Vector3 posOtherFuyard = otherFuyard.transform.position;
 
-                float distDestWithFuyard = Calcul.Distance(posFuyard, posBot);
-                float distDestWithChasseur = Calcul.Distance(posChasseur, posBot);
-                float distFuyardWithChasseur = Calcul.Distance(posFuyard, posChasseur);
-                    
-                if (maxDist < distDestWithFuyard && distDestWithFuyard < distDestWithChasseur && distFuyardWithChasseur < distDestWithChasseur)
+                float distDestWithFuyard = Calcul.Distance(posFuyard, posOtherFuyard);
+                float distDestWithChasseur = Calcul.Distance(posChasseur, posOtherFuyard);
+
+                if (maxDist < distDestWithFuyard && distDestWithFuyard < distDestWithChasseur)
                 {
                     maxDist = distDestWithFuyard;
-                    bestPosBot = posBot;
+                    bestPos = posOtherFuyard;
                 }
             }
 
-            if (SimpleMath.IsEncadré(bestPosBot, Vector3.zero)) // aucun bon spot
+            if (SimpleMath.IsEncadré(bestPos, Vector3.zero, 1))
             {
-                return Vector3.zero;
+                // aucun bon spot
+                return null;
             }
-
-            return bestPosBot;*/
+            
+            return CrossManager.Instance.GetNearestPoint(bestPos);
         }
 
         public void Die(BotClass bot)
