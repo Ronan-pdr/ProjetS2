@@ -27,7 +27,7 @@ namespace Script.EntityPlayer
         // ------------ Getter ------------
         public string GetTypeEntity()
         {
-            string type;
+            /*string type;
             
             if (this is BotRectiligne)
                 type = "Rectiligne";
@@ -37,6 +37,8 @@ namespace Script.EntityPlayer
                 type = "Suiveur";
             else if (this is Guide)
                 type = "Guide";
+            else if (this is Hirondelle)
+                type = "Hirondelle";
             else if (this is Chasseur)
                 type = "Chasseur";
             else if (this is Chassé)
@@ -46,9 +48,9 @@ namespace Script.EntityPlayer
             else if (this is BalleFusil)
                 type = "BallFusil";
             else
-                type = "Unrepetoried";
+                type = "Unrepetoried";*/
 
-            return type;
+            return GetType().FullName;
         }
 
         // ------------ Setters ------------
@@ -62,8 +64,7 @@ namespace Script.EntityPlayer
         protected void SetMoveAmount(Vector3 moveDir, float speed) // moveDir doit être de la forme (1, 0, 0), (0, 0, -1), (1, 0, 1)... mais pas de 1 sur y (pour les humains du moins)
         {
             MoveAmount = Vector3.SmoothDamp(MoveAmount,
-                moveDir * speed,
-                ref smoothMoveVelocity, smouthTime);
+                moveDir * speed, ref smoothMoveVelocity, smouthTime);
         }
         
         // ------------ Méthodes ------------
@@ -72,6 +73,9 @@ namespace Script.EntityPlayer
         {
             //Déplace le corps du human grâce à moveAmount précédemment calculé
             Rb.MovePosition(Rb.position + Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime);
+            
+            
+            //Rb.AddForce(Tr.TransformDirection(MoveAmount) * Time.fixedDeltaTime * 200);
         }
 
         // ------------ Surchargeurs ------------
@@ -79,9 +83,9 @@ namespace Script.EntityPlayer
         {
             string type = GetTypeEntity();
             
-            if (this is Humanoide)
+            if (this is PlayerClass)
             {
-                return $"{type}[{name}]";
+                return $"{type}{{{name}}}";
             }
 
             return $"{type}";

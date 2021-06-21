@@ -51,7 +51,7 @@ namespace Script.DossierPoint
         
         private void BeginMaintenance()
         {
-            _crossManager.LoadNeigboors(_sousCrossManager);
+            //_crossManager.LoadNeigboors(_sousCrossManager);
 
             _nResultAttendu = _sousCrossManager.NCrossPoint;
 

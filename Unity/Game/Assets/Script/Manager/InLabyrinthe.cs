@@ -8,6 +8,7 @@ namespace Script.Manager
         public InLabyrinthe(int nJoueur)
         {
             NJoueur = nJoueur;
+            IsMultijoueur = true;
         }
         
         // ------------ Méthodes ------------
@@ -22,7 +23,9 @@ namespace Script.Manager
         protected override NtypeBot GetNBot()
         {
             NtypeBot n = new NtypeBot();
-            n.Guide = CrossManager.Instance.GetNumberPoint() / NJoueur;
+            n.Guide = SpawnManager.Instance.GetNbSpawnBot();
+            // zero bot
+            n.Guide = 0;
             
             return n;
         }

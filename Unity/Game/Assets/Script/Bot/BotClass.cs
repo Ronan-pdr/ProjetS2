@@ -6,6 +6,7 @@ using Photon.Realtime;
 using Script.Animation;
 using Script.Animation.Personnages.Hunted;
 using Script.EntityPlayer;
+using Script.Graph;
 using Script.Manager;
 using Script.Tools;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -14,6 +15,11 @@ namespace Script.Bot
 {
     public abstract class BotClass : Humanoide
     {
+        // ------------ SerializeField ------------
+
+        [Header("Les différents design")]
+        [SerializeField] private GameObject[] designs;
+        
         // ------------ Enum ------------
         protected enum Running
         {
@@ -34,7 +40,6 @@ namespace Script.Bot
         
         // variables relatives à la caméra artificiel des bots
         private static float AngleCamera = 75; // le degré pour la vision périphérique
-        private static Vector3 PositionCamera = new Vector3(0, 0, 0);
 
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
@@ -45,19 +50,50 @@ namespace Script.Bot
         
         // quand il est bloqué
         private (float time, Vector3 position) block;
+        
+        // direction
+        private Vector3 _direction;
+        
+        // design
+        private DesignHumanoide _design;
 
         // ------------ Getters ------------
         
         // cette fonction indique si un bot est contrôlé par ton ordinateur
         public bool IsMyBot()
         {
-            return BotManager != null;
+            return BotManager != null || !master.IsMultijoueur;
         }
+
+        protected float GetSpeed()
+        {
+            switch (running)
+            {
+                case Running.Arret:
+                    return 0;
+                case Running.Marche:
+                    return WalkSpeed;
+                default:
+                    return SprintSpeed;
+            }
+        }
+
+        public int IndexDesign => _design.Index;
 
         // ------------ Setter ------------
         public void SetOwnBotManager(BotManager value)
         {
             BotManager = value;
+        }
+
+        protected void SetDirection(Vector3 value)
+        {
+            if (value.y != 0)
+            {
+                throw new Exception();
+            }
+
+            _direction = value;
         }
 
         // ------------ Constructeurs ------------
@@ -66,9 +102,12 @@ namespace Script.Bot
         protected void Awake()
         {
             Anim = GetComponent<HuntedStateAnim>();
+            _design = new DesignHumanoide(Anim, designs);
             
             AwakeHuman();
             AwakeBot();
+            
+            SetDirection(Vector3.forward);
         }
 
         protected abstract void StartBot();
@@ -80,10 +119,13 @@ namespace Script.Bot
             StartBot();
             
             // son nom (qui sera unique)
-            name = BotManager.Instance.GetNameBot(this, Pv.Owner);
+            if (BotManager.Instance)
+            {
+                name = BotManager.Instance.GetNameBot(this, Pv.Owner);
+            }
 
             // le parenter
-            if (BotManager == null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
+            if (BotManager is null) // cela veut dire que c'est pas cet ordinateur qui a créé ces bots ni qui les contrôle
             {
                 // le parenter dans le dossier qui contient tous les bots controlés par les autres joueurs
                 Tr.parent = MasterManager.Instance.GetDossierOtherBot();
@@ -198,28 +240,28 @@ namespace Script.Bot
                 MoveAmount = Vector3.zero;
                 Anim.StopContinue();
             }
-            else if (AmountRotation > 120)
+            else if (AmountRotation > 100)
             {
                 // ralenti pour le virage
-                SetMoveAmount(Vector3.forward, 0.5f);
-                Anim.Set(HumanAnim.Type.Forward);
+                SetMoveAmount(_direction, 0);
+                Anim.StopContinue();
             }
-            else if (AmountRotation > 60)
+            else if (AmountRotation > 40)
             {
                 // ralenti pour le virage
-                SetMoveAmount(Vector3.forward, 1f);
+                SetMoveAmount(_direction, 1f);
                 Anim.Set(HumanAnim.Type.Forward);
             }
             else if (running == Running.Marche)
             {
                 // marche
-                SetMoveAmount(Vector3.forward, TranquilleVitesse);
+                SetMoveAmount(_direction, TranquilleVitesse);
                 Anim.Set(HumanAnim.Type.Forward);
             }
             else if (running == Running.Course)
             {
                 // court
-                SetMoveAmount(Vector3.forward, PleineVitesse);
+                SetMoveAmount(_direction, PleineVitesse);
                 Anim.Set(HumanAnim.Type.Run);
             }
         }
@@ -284,7 +326,7 @@ namespace Script.Bot
             {
                 if (Physics.Linecast(positionCamera, posPlayer, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
                 {
-                    if (hit.collider.GetComponent<PlayerClass>())
+                    if (hit.collider.GetComponent<PlayerClass>() && hit.distance < 30)
                     {
                         // si l'obstacle est le joueur alors le bot "VOIT" le joueur
                         
@@ -295,7 +337,7 @@ namespace Script.Bot
 
             return false;
         }
-        
+
         // GamePlay
         protected override void Die()
         {

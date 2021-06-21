@@ -116,27 +116,35 @@ namespace Script.Tools
         // coordonnées 'départ'
         public static float Angle(float rotationInitiale, Vector3 depart, Vector3 destination, Coord coord)
         {
-            float diffX, diffY, diffZ;
-            Vector3 vect = Diff(destination, depart);
-            (diffX, diffY, diffZ) = (vect.x, vect.y, vect.z);
+            Vector3 diff = Diff(destination, depart);
 
             float adjacent, opposé;
             if (coord == Coord.X)
             {
-                opposé = diffZ;
-                adjacent = diffY;
+                opposé = diff.y;
+                adjacent = diff.z;
             }
             else if (coord == Coord.Y)
             {
-                opposé = diffX;
-                adjacent = diffZ;
+                opposé = diff.x;
+                adjacent = diff.z;
             }
-            else // pas défini
+            else if (coord == Coord.Z)
             {
-                opposé = 0;
-                adjacent = 0;
+                opposé = diff.x;
+                adjacent = diff.y;
+            }
+            else // pas defini
+            {
+                opposé = diff.x;
+                adjacent = diff.y;
             }
 
+            return BetterArctan(opposé, adjacent, rotationInitiale);
+        }
+
+        public static float BetterArctan(float opposé, float adjacent, float rotationInitiale = 0)
+        {
             float amountRotation;
             if (opposé == 0)
             {

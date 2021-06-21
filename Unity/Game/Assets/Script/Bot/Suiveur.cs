@@ -113,8 +113,6 @@ namespace Script.Bot
                     SetSearching();
                 }
             }
-            
-            Debug.Log($"etat = {etat}");
         }
 
         private void UpdateWhenChasseurInMyVision()

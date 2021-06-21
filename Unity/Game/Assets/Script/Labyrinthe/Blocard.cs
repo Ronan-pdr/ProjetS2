@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using Script.EntityPlayer;
 using Script.Test;
 using Script.Tools;
@@ -43,7 +44,7 @@ namespace Script.Labyrinthe
 
         private void PoserCaillou()
         {
-            caillous.Add(TestRayGaz.CreateMarqueur(Tr.position));
+            caillous.Add(TestRayGaz.CreateMarqueur(Tr.position, TestRayGaz.Couleur.Brown));
             nCaillou += 1;
                 
             if (nCaillou == nCaillouMax)
@@ -69,5 +70,10 @@ namespace Script.Labyrinthe
             caillous.RemoveAt(i);
             nCaillou -= 1;
         }
+        
+        // ------------ Multijoueur ------------
+
+        protected override void PropertiesUpdate(Hashtable _)
+        {}
     }
 }
