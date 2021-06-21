@@ -225,7 +225,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   couvreChef: {fileID: 3388082518431718102}
   designs:
-  - {fileID: 3801073491913186548}
   - {fileID: 1789025321524814587}
   - {fileID: 6113368599954581557}
   - {fileID: 416830507484493405}
@@ -452,17 +451,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5329877308596174752, guid: f0c67e9c0a3da7c49957a14a622617d7, type: 3}
   m_PrefabInstance: {fileID: 7494577472636431048}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &3801073491913186548 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6683964941218625084, guid: f0c67e9c0a3da7c49957a14a622617d7, type: 3}
-  m_PrefabInstance: {fileID: 7494577472636431048}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3612804209681472086 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6494565361373556894, guid: f0c67e9c0a3da7c49957a14a622617d7, type: 3}
   m_PrefabInstance: {fileID: 7494577472636431048}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3801073491913186548}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
