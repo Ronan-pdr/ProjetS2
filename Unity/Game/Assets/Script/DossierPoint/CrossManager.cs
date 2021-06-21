@@ -60,7 +60,7 @@ namespace Script.DossierPoint
                 }
             }
             
-            foreach (SousCrossManager e in sousCrossManagers)
+            foreach (SousCrossManager e in GetComponentsInChildren<SousCrossManager>())
             {
                 LoadNeigboors(e);
             }
@@ -74,22 +74,7 @@ namespace Script.DossierPoint
             }
             else
             {
-                // desactiver tous les sous cross manager
-                foreach (SousCrossManager e in GetComponentsInChildren<SousCrossManager>())
-                {
-                    e.gameObject.SetActive(false);
-                }
-
-                // activer ceux avec lesquels on veut jouer
-                foreach (SousCrossManager e in sousCrossManagers)
-                {
-                    e.gameObject.SetActive(true);
-                }
-                
-                SetCrossPoints();
-                
-                // Après le awake, On NE DOIT PAS utiliser
-                // cette liste si c'est pas une maintenance
+                // On NE DOIT PAS utiliser cette liste si c'est pas une maintenance
                 sousCrossManagers = null;
             }
         }
@@ -154,11 +139,11 @@ namespace Script.DossierPoint
             }
         }
 
-        private void SetCrossPoints()
+        private void SetCrossPoints(SousCrossManager[] scms)
         {
             List<CrossPoint> listCrossPoint = new List<CrossPoint>();
 
-            foreach (SousCrossManager scm in sousCrossManagers)
+            foreach (SousCrossManager scm in scms)
             {
                 foreach (CrossPoint point in scm.GetComponentsInChildren<CrossPoint>())
                 {
@@ -171,6 +156,31 @@ namespace Script.DossierPoint
             }
 
             _crossPoints = ManList<CrossPoint>.Copy(listCrossPoint);
+
+            if (MustPrintGraph)
+            {
+                foreach (CrossPoint cp in _crossPoints)
+                {
+                    cp.PrintNeightboors();
+                }
+            }
+        }
+        
+        public void ActiveSousCrossManager(SousCrossManager[] scms)
+        {
+            // desactiver tous les sous cross manager
+            foreach (SousCrossManager e in GetComponentsInChildren<SousCrossManager>())
+            {
+                e.gameObject.SetActive(false);
+            }
+
+            // activer ceux avec lesquels on veut jouer
+            foreach (SousCrossManager e in scms)
+            {
+                e.gameObject.SetActive(true);
+            }
+                
+            SetCrossPoints(scms);
         }
         
         // ------------ Graph ------------
@@ -225,7 +235,9 @@ namespace Script.DossierPoint
                         int nInfo = infos.Length;
                         for (int i = 1; i < nInfo; i++)
                         {
-                            allCrossPoints[iCrossPoint].AddNeighboor(allCrossPoints[int.Parse(infos[i])]);
+                            CrossPoint cp = allCrossPoints[int.Parse(infos[i])];
+
+                            allCrossPoints[iCrossPoint].AddNeighboor(cp);
                         }
                     }
                 }

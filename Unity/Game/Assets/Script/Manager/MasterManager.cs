@@ -39,6 +39,7 @@ namespace Script.Manager
         public GameObject marqueurBrown;
         public GameObject marqueurRed;
         public GameObject marqueurYellow;
+        [SerializeField] private SettingsGame settingsGame;
 
         [Header("Dossier")]
         [SerializeField] private Transform dossierBodyChercheur; // ranger les 'BodyChercheur'
@@ -58,6 +59,9 @@ namespace Script.Manager
 
         [Header("InterfaceInGame")]
         [SerializeField] private GameObject visé;
+
+        [Header("Canvas")]
+        [SerializeField] private GameObject canvas;
         
         // ------------ Attributs ------------
         
@@ -91,6 +95,9 @@ namespace Script.Manager
         private ManagerGame typeScene;
 
         private bool _endedGame;
+        
+        // time (en minutes)
+        private int _timeMax;
 
         // ------------ Getters ------------
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -119,8 +126,10 @@ namespace Script.Manager
         public (float, float, float, float) GetContour() => contour;
         public HumanCapsule GetHumanCapsule() => new HumanCapsule(capsuleBot);
         public TypeScene GetTypeScene() => scene;
+        public SettingsGame SettingsGame => settingsGame;
         public bool IsGameEnded() => _endedGame;
         public bool IsMultijoueur => typeScene.IsMultijoueur;
+        public int TimeMax => _timeMax;
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
@@ -161,11 +170,22 @@ namespace Script.Manager
             chassés.Add(chassé);
         }
 
+        public void SetTimeMax(int value)
+        {
+            _timeMax = value;
+        }
+
         // ------------ Constructeurs ------------
         private void Awake()
         {
             // On peut faire ça puisqu'il y en aura qu'un seul
             Instance = this;
+            
+            // au cas on a oublié de le remettre
+            if (canvas)
+            {
+                canvas.gameObject.SetActive(true);
+            }
             
             // instancier le nombre de joueur
             nParticipant = PhotonNetwork.PlayerList.Length;
@@ -217,8 +237,7 @@ namespace Script.Manager
                 if (!PhotonNetwork.IsMasterClient)
                     return;
                 
-                SendInfoPlayer();
-                SendInfoBot();
+                // 
             }
             else
             {
@@ -250,8 +269,11 @@ namespace Script.Manager
             contour.maxX = ManList.GetMax(list, ManList.Coord.X);
         }
 
-        private void SendInfoPlayer()
+        public void SendInfoPlayer()
         {
+            if (!PhotonNetwork.IsMasterClient)
+                return;
+
             // les spawns
             int[] indexSpawnChasseur = SpawnManager.Instance.GetSpawnPlayer(TypePlayer.Chasseur);
             int iChasseur = 0;
@@ -287,6 +309,7 @@ namespace Script.Manager
                     }
                     
                     string infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpawn, types[i]);
+                    
                     // envoi des infos au concerné(e)
                     Hashtable hash = new Hashtable();
                     hash.Add("InfoCréationJoueur", infoJoueur);
@@ -295,8 +318,11 @@ namespace Script.Manager
             }
         }
 
-        private void SendInfoBot()
+        public void SendInfoBot()
         {
+            if (!PhotonNetwork.IsMasterClient)
+                return;
+            
             // les spawns
             int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
             
@@ -336,6 +362,7 @@ namespace Script.Manager
 
                 // envoi des infos au concerné(e)
                 string mes = BotManager.EncodeFormatInfoBot(infosBot);
+                
                 Hashtable hash = new Hashtable();
                 hash.Add("InfoCréationBots", mes);
                 PhotonNetwork.PlayerList[iPlayer].SetCustomProperties(hash);

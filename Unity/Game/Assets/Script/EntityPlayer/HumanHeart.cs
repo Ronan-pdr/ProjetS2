@@ -40,7 +40,7 @@ namespace Script.EntityPlayer
 
         private void Hit(Collider other)
         {
-            // Si c'est pas à toi, tu ne fais
+            // Si c'est pas à toi, tu ne fais rien
             if (!_mySelf.GetPv().IsMine)
                 return;
             
