@@ -25,7 +25,7 @@ public class CommandsScript : MonoBehaviour
     private Event keyEvent;
     private KeyCode newKey;
     private bool waitingForKey;
-    TouchesClass touches;
+    private TouchesClass touches;
     
     private Dictionary<TypeTouche, TMP_Text> dict;
     
@@ -73,13 +73,13 @@ public class CommandsScript : MonoBehaviour
         }
     }
 
-    IEnumerator WaitForKey()
+    private IEnumerator WaitForKey()
     {
         while (!keyEvent.isKey)
             yield return null;
     }
 
-    public IEnumerator AssignKey(TypeTouche toucheAssigné)
+    private IEnumerator AssignKey(TypeTouche toucheAssigné)
     {
         waitingForKey = true;
         yield return WaitForKey();

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Cage
   - SetRun
+  - DeadZone
   layers:
   - Default
   - TransparentFX
