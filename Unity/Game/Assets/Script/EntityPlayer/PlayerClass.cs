@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Animation;
@@ -216,6 +217,47 @@ namespace Script.EntityPlayer
         // cette fonction s'occupde des propriétés propre aux enfants de cette classe (chasseur...)
         protected abstract void PropertiesUpdate(Hashtable changedProps);
         
+        // ------------ Event ------------
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!Pv.IsMine)
+                return;
+
+            if (other.CompareTag("DeadZone") && !InDeadZone)
+            {
+                InDeadZone = true;
+                master.SetActiveWarning(true);
+                StartCoroutine(nameof(Clignotement));
+            }
+        }
+
+        private IEnumerator Clignotement()
+        {
+            if (InDeadZone)
+            {
+                yield return new WaitForSeconds(0.6f);
+                
+                master.ClignotementWarning();
+                yield return Clignotement();
+            }
+            else
+            {
+                master.SetActiveWarning(false);
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (!Pv.IsMine)
+                return;
+            
+            if (other.CompareTag("DeadZone"))
+            {
+                InDeadZone = false;
+            }
+        }
+
         // ------------ Animation ------------
         
         private void AnimationPlayer()

@@ -28,6 +28,9 @@ namespace Script.EntityPlayer
 
         // Jump
         private const float JumpForce = 200f;
+        
+        // warning
+        protected bool InDeadZone; 
     
         // Vie
         protected int MaxHealth;
@@ -128,9 +131,12 @@ namespace Script.EntityPlayer
         {
             if (Time.time - lastJump > periodeJump && _grounded)
             {
-                Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
-                SetGrounded(false);
-                lastJump = Time.time;
+                if (!InDeadZone || master.HavePrivilegeDeadZone(name))
+                {
+                    Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
+                    SetGrounded(false);
+                    lastJump = Time.time;
+                }
             }
         }
         
@@ -159,6 +165,7 @@ namespace Script.EntityPlayer
         }
 
         protected abstract void Die();
+        
         
         // ------------ Surchargeurs ------------
 

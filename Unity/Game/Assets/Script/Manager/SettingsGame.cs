@@ -47,8 +47,6 @@ namespace Script.Manager
 
         public void Send()
         {
-            Debug.Log("send");
-            
             // envoi des infos au concerné(e)
             Hashtable hash = new Hashtable();
             hash.Add("SettingsGame", EncodeInfos());
@@ -61,7 +59,6 @@ namespace Script.Manager
         
         public void Receive(string hash)
         {
-            Debug.Log("set");
             DecodeInfos(hash);
             
             ZoneManager.Instance.SetZone();
