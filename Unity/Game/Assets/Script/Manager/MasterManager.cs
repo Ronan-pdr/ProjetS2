@@ -89,7 +89,8 @@ namespace Script.Manager
             Labyrinthe,
             Maintenance,
             CageOiseaux,
-            EntrainementSaut
+            EntrainementSaut,
+            Bar
         }
 
         private ManagerGame typeScene;
@@ -208,25 +209,9 @@ namespace Script.Manager
                 Debug.Log("Début Maintenance des CrossPoints");
                 typeScene = new InMaintenance(nParticipant);
             }
-            else if (scene == TypeScene.Game) // guess who
-            {
-                typeScene = new InGuessWho(nParticipant);
-            }
-            else if (scene == TypeScene.Labyrinthe)// labyrinthe
-            {
-                typeScene = new InLabyrinthe(nParticipant);
-            }
-            else if (scene == TypeScene.CageOiseaux)
-            {
-                typeScene = new InCageOiseaux(nParticipant);
-            }
-            else if (scene == TypeScene.EntrainementSaut)
-            {
-                typeScene = new InEntrainementSaut(nParticipant);
-            }
             else
             {
-                throw new Exception();
+                typeScene = RecupManagerGame();
             }
         }
 
@@ -234,9 +219,6 @@ namespace Script.Manager
         {
             if (typeScene.IsMultijoueur)
             {
-                if (!PhotonNetwork.IsMasterClient)
-                    return;
-                
                 // 
             }
             else
@@ -267,6 +249,25 @@ namespace Script.Manager
             // max
             contour.maxZ = ManList.GetMax(list, ManList.Coord.Z);
             contour.maxX = ManList.GetMax(list, ManList.Coord.X);
+        }
+
+        private ManagerGame RecupManagerGame()
+        {
+            switch (scene)
+            {
+                case TypeScene.Game:
+                    return new InGuessWho(nParticipant);
+                case TypeScene.Labyrinthe:
+                    return new InLabyrinthe(nParticipant);
+                case TypeScene.CageOiseaux:
+                    return new InCageOiseaux(nParticipant);
+                case TypeScene.EntrainementSaut:
+                    return new InEntrainementSaut(nParticipant);
+                case TypeScene.Bar:
+                    return new InBar(nParticipant);
+                default:
+                    throw new Exception();
+            }
         }
 
         public void SendInfoPlayer()

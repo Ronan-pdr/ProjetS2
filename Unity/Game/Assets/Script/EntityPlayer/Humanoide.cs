@@ -134,8 +134,6 @@ namespace Script.EntityPlayer
             }
         }
         
-        // Aucune information pertinente ne peut être retenu
-        // du script qui appelle cette fonction
         public void TakeDamage(int damage)
         {
             // Personne prend de dommage lorsque la partie est terminé

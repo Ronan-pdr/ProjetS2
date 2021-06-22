@@ -10,7 +10,10 @@ namespace Script.EntityPlayer
         
         private Humanoide _mySelf;
         private float _timeLastHit;
+        
+        // degat
         private int _degatHit;
+        private int _degatDeadZone;
 
         // ------------ Constructeur ------------
         private void Start()
@@ -25,6 +28,8 @@ namespace Script.EntityPlayer
             {
                 _degatHit = 33;
             }
+
+            _degatDeadZone = 10;
         }
 
         // ------------ Events ------------
@@ -51,11 +56,19 @@ namespace Script.EntityPlayer
             // On n'enlève des points de vie seulement tous les certains temps
             if (Time.time - _timeLastHit < 1)
                 return;
-
-            Debug.Log($"Le coeur de {_mySelf} est rentré en collision avec {other.name}");
-
-            _mySelf.TakeDamage(_degatHit);
+            
             _timeLastHit = Time.time;
+
+            if (other.gameObject.CompareTag("DeadZone"))
+            {
+                _mySelf.TakeDamage(_degatDeadZone);
+            }
+            else
+            {
+                Debug.Log($"Le coeur de {_mySelf} est rentré en collision avec {other.name}");
+                
+                _mySelf.TakeDamage(_degatHit);
+            }
         }
     }
 }

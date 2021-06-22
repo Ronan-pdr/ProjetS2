@@ -36,8 +36,19 @@ public class RoomManager : MonoBehaviourPunCallbacks
     void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
         MasterManager master = MasterManager.Instance;
-        
-        if (master) // We are in the game scene
+
+        if (scene.buildIndex == 1) // We are in the bar
+        {
+            BarManager barManager = BarManager.Instance;
+            
+            Transform spawn = barManager.GetSpawn();   
+            
+            Chassé hunted = PhotonNetwork.Instantiate("PhotonPrefabs/Manager/Chassé",
+                spawn.position, spawn.rotation).GetComponent<Chassé>();
+            
+            barManager.AddHunted(hunted);
+        }
+        else if (master) // We are in the game scene
         {
             if (master.IsInMaintenance())
             {
