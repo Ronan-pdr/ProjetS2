@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using Script.EntityPlayer;
 using Script.Manager;
+using Script.Menu;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -54,32 +55,13 @@ namespace Script.InterfaceInGame
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        
-        // ------------ Méthodes ------------
-        
-        public IEnumerator Quit()
-        {
-            PhotonNetwork.Disconnect();
-            Destroy(RoomManager.Instance.gameObject);
-            
-            while(PhotonNetwork.IsConnected)
-            {
-                yield return null;
-            }
-            
-            SceneManager.LoadScene(0);
-        }
 
         // ------------ On Button Click ------------
-        
-        public void StartQuit()
-        {
-            StartCoroutine(Quit());
-        }
 
         public void Restart()
         {
-            
+            // c'est parti pour le bar
+            PhotonNetwork.LoadLevel(1);
         }
         
         // ------------ Event ------------

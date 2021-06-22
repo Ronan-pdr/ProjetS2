@@ -11,24 +11,26 @@ namespace Script.Menu
 {
     public class Launcher : MonoBehaviourPunCallbacks
     {
-        public static Launcher Instance;
+        // ------------ SerializeField ------------
+        
         [SerializeField] TMP_InputField roomNameInputField;
         [SerializeField] TMP_Text errorText;
-        [SerializeField] TMP_Text roomNameText;
         //Liste des rooms disponibles
         [SerializeField] Transform roomListContent;
         //Liste des joueurs dans la room
-        [SerializeField] Transform playerListContent;
         [SerializeField] GameObject roomListItemPrefab;
-        [SerializeField] GameObject PlayerListItemPrefab;
-        [SerializeField] GameObject startGameButton;
         [SerializeField] TMP_InputField nameInputField;
         [SerializeField] private Button createRoomButton;
         [SerializeField] private Button findRoomButton;
         [SerializeField] private AudioManager audioManager;
-
+        
+        // ------------ Attributs ------------
+        
+        public static Launcher Instance;
         private const string PlayerPrefsNameKey = "PlayerName";
 
+        // ------------ Constructeur ------------
+        
         void Awake()
         {
             new TouchesClass();
@@ -36,7 +38,7 @@ namespace Script.Menu
         }
         
         //Se connecte au serveur que l'on retrouve dans Assets/Photon/Photon/UnityNetworking/Ressources/PhotonSer...
-        void Start()
+        private void Start()
         {
             Debug.Log("Connecting to Master");
             PhotonNetwork.ConnectUsingSettings();
@@ -44,6 +46,7 @@ namespace Script.Menu
             audioManager.audioSource.volume = PlayerPrefs.GetFloat("volumeMenu", 30f*0.15f/100f);
         }
     
+        // ------------ Connexion ------------
         public override void OnConnectedToMaster()
         {
             Debug.Log("Connected to Master");
@@ -57,7 +60,10 @@ namespace Script.Menu
             Debug.Log("Joined Lobby");
             SavePlayerName();
         }
-
+        
+        // ------------ Créer/Rejoindre ------------
+        
+        //Est appelé par un boutton
         public void CreateRoom()
         {
             if (string.IsNullOrEmpty(roomNameInputField.text))
@@ -68,54 +74,6 @@ namespace Script.Menu
             SavePlayerName();
         }
         
-        //Est appelé automatiquement après 'Join Room'
-        public override void OnJoinedRoom()
-        {
-            MenuManager.Instance.OpenMenu("room");
-            roomNameText.text = PhotonNetwork.CurrentRoom.Name;
-            Player[] players = PhotonNetwork.PlayerList;
-            
-            //Détruit tous les joueurs précédements enregistré dans la room
-            foreach (Transform child in playerListContent)
-            {
-                Destroy(child.gameObject);
-            }
-            
-            ChangeName(players[players.Length-1]);
-
-            foreach (Player player in players)
-            {
-                Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(player);
-            }
-
-            startGameButton.SetActive(PhotonNetwork.IsMasterClient);
-        }
-        
-        //Est appelé lorsque le créateur sort de la room, le but de son contenu est d'aficher le bouton 'start' au nouveau master
-        public override void OnMasterClientSwitched(Player newMasterClient)
-        {
-            startGameButton.SetActive(PhotonNetwork.IsMasterClient);
-        }
-    
-        public override void OnCreateRoomFailed(short returnCode, string message)
-        {
-            errorText.text = "Room Creation Failed" + message;
-            MenuManager.Instance.OpenMenu("error");
-        }
-    
-        public void StartGame()
-        {
-            // c'est parti pour le bar
-            PhotonNetwork.LoadLevel(1);
-        }
-    
-        //Est appelé par un boutton
-        public void LeaveRoom()
-        {
-            PhotonNetwork.LeaveRoom();
-            MenuManager.Instance.OpenMenu("loading");
-        }
-    
         //Est appelé par un boutton
         public void JoinRoom(RoomInfo info)
         {
@@ -123,12 +81,23 @@ namespace Script.Menu
             MenuManager.Instance.OpenMenu("loading");
             SavePlayerName();
         }
-    
-        //Est appelé automatiquement après 'Leave Room'
-        public override void OnLeftRoom()
+        
+        //Est appelé automatiquement après 'Join Room'
+        public override void OnJoinedRoom()
         {
-            MenuManager.Instance.OpenMenu("title");
+            // c'est parti pour le bar
+            PhotonNetwork.LoadLevel(1);
         }
+        
+        // ------------ Error ------------
+    
+        public override void OnCreateRoomFailed(short returnCode, string message)
+        {
+            errorText.text = "Room Creation Failed" + message;
+            MenuManager.Instance.OpenMenu("error");
+        }
+
+        // ------------ Liste des chambres ------------
 
         //Est appelé automatiquement dés que y'a un changement dans la liste des rooms
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -148,12 +117,7 @@ namespace Script.Menu
             }
         }
         
-        //Est appelé automatiquement losque qu'un joueur rentre dans la room
-        public override void OnPlayerEnteredRoom(Player newPlayer)
-        {
-            ChangeName(newPlayer);
-            Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
-        }
+        // ------------ Names ------------
 
         private void SetUpInputField()
         {
@@ -162,42 +126,27 @@ namespace Script.Menu
         
             string defaultName = PlayerPrefs.GetString(PlayerPrefsNameKey);
             nameInputField.text = defaultName;
-            SetPlayerName(defaultName);
+            SetPlayerName();
         }
 
-        public void SetPlayerName(string name)
+        private void SetPlayerName()
         {
             createRoomButton.interactable = !string.IsNullOrEmpty(nameInputField.text);
             findRoomButton.interactable = !string.IsNullOrEmpty(nameInputField.text);
         }
 
-        public void SavePlayerName()
+        private void SavePlayerName()
         {
             string playerName = nameInputField.text;
             PhotonNetwork.NickName = playerName;
             PlayerPrefs.SetString(PlayerPrefsNameKey, playerName);
         }
+        
+        // ------------ Quitter ------------
 
         public void QuitGame()
         {
             Application.Quit();
-        }
-
-        private void ChangeName(Player newPlayer)
-        {
-            string nickName = newPlayer.NickName;
-            Player[] players = PhotonNetwork.PlayerListOthers;
-            int count = 0;
-            for (int i = 0; i < players.Length;i++)
-            {
-                if (players[i].Equals(newPlayer))
-                    continue;
-                if (players[i].NickName == newPlayer.NickName)
-                {
-                    count += 1;
-                    newPlayer.NickName = nickName + count;
-                }
-            }
         }
     }
 }

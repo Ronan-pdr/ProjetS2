@@ -171,7 +171,7 @@ namespace Script.EntityPlayer
 
         public static bool operator ==(Humanoide hum1, Humanoide hum2)
         {
-            if (hum1 is null || hum2 is null)
+            if (!hum1 || !hum2)
             {
                 return false;
             }
@@ -195,6 +195,6 @@ namespace Script.EntityPlayer
         {
             return base.GetHashCode();
         }
-    }
+    }   
 }
 

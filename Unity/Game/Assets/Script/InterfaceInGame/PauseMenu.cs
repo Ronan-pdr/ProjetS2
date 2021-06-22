@@ -11,57 +11,63 @@ namespace Script.InterfaceInGame
 {
     public class PauseMenu : MonoBehaviour
     {
+        [Header("Precision")]
+        [SerializeField] private Menu.Menu menuToOpenWhenResume;
+        
         // ------------ Attributs ------------
         
         public static PauseMenu Instance;
         
         // Etat
-        private bool isPaused;
+        private bool _isPaused;
         private bool disconnecting;
         
         // ------------ Getters ------------
-        public bool GetIsPaused() => isPaused;
+        public bool GetIsPaused() => _isPaused;
         public bool Getdisconnecting() => disconnecting;
         
         // ------------ Constructeur ------------
         public void Awake()
         {
-            isPaused = false;
+            _isPaused = false;
             disconnecting = false;
         }
 
-        // ------------ Méthodes ------------
+        // ------------ Public Méthodes ------------
 
         public void Resume()
         {
-            MenuManager.Instance.OpenMenu("InterfaceInGame");
-            isPaused = false;
+            MenuManager.Instance.OpenMenu(menuToOpenWhenResume);
+            _isPaused = false;
         }
 
         public void Pause()
         {
             MenuManager.Instance.OpenMenu("pause");
-            isPaused = true;
+            _isPaused = true;
         }
-
-        public IEnumerator Quit()
+        
+        public void StartQuit()
         {
             disconnecting = true;
+            
+            PlayerManager.Own.BeginToQuit();
+            StartCoroutine(Quit());
+        }
+        
+        // ------------ Private Méthodes ------------
+
+        private IEnumerator Quit()
+        {
             PhotonNetwork.Disconnect();
             Destroy(RoomManager.Instance.gameObject);
-            
+
             while(PhotonNetwork.IsConnected)
             {
                 yield return null;
             }
             
             SceneManager.LoadScene(0);
-        }
-
-        public void StartQuit()
-        {
-            PlayerManager.Own.BeginToQuit();
-            StartCoroutine(Quit());
         }
     }
 }

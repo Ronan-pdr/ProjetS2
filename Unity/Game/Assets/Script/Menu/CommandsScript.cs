@@ -45,7 +45,7 @@ public class CommandsScript : MonoBehaviour
         dict.Add(TypeTouche.Jump, Jump);
         dict.Add(TypeTouche.Accroupi, Crouch);
         dict.Add(TypeTouche.Assoir, Sit);
-        dict.Add(TypeTouche.ChangerDesign, design);
+        //dict.Add(TypeTouche.ChangerDesign, design);
 
         // afficher les string des KeyCode
         foreach (KeyValuePair<TypeTouche, TMP_Text> e in dict)

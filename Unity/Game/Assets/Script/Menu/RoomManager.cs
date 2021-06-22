@@ -1,68 +1,71 @@
-using UnityEngine;
 using Photon.Pun;
-using Script.DossierPoint;
+using Script.Bar;
 using Script.EntityPlayer;
 using Script.Manager;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RoomManager : MonoBehaviourPunCallbacks
+namespace Script.Menu
 {
-    public static RoomManager Instance;
-
-    void Awake()
+    public class RoomManager : MonoBehaviourPunCallbacks
     {
-        if (Instance) // checks if another RoomManager exists
+        public static RoomManager Instance;
+
+        void Awake()
         {
-            Destroy(gameObject); // there can only be one
-            return;
-        }
-        
-        DontDestroyOnLoad(gameObject); // I am the only one...
-        Instance = this;
-    }
-
-    public override void OnEnable()
-    {
-        base.OnEnable();
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    public override void OnDisable()
-    {
-        base.OnDisable();
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
-    {
-        MasterManager master = MasterManager.Instance;
-
-        if (scene.buildIndex == 10) // We are in the bar
-        {
-            BarManager barManager = BarManager.Instance;
-            
-            Transform spawn = barManager.GetSpawn();   
-            
-            Chassé hunted = PhotonNetwork.Instantiate("PhotonPrefabs/Manager/Chassé",
-                spawn.position, spawn.rotation).GetComponent<Chassé>();
-            
-            barManager.AddHunted(hunted);
-        }
-        else if (master) // We are in the game scene
-        {
-            if (master.IsInMaintenance())
+            if (Instance) // checks if another RoomManager exists
             {
-                // 
+                Destroy(gameObject); // there can only be one
+                return;
             }
-            else
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    master.SettingsGame.Send();
-                }
+        
+            DontDestroyOnLoad(gameObject); // I am the only one...
+            Instance = this;
+        }
 
-                PhotonNetwork.Instantiate("PhotonPrefabs/Manager/PlayerManager",
-                                                Vector3.zero, Quaternion.identity);
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            MasterManager master = MasterManager.Instance;
+
+            if (scene.buildIndex == 1) // We are in the bar
+            {
+                BarManager barManager = BarManager.Instance;
+            
+                Transform spawn = barManager.GetSpawn();   
+            
+                Chassé hunted = PhotonNetwork.Instantiate("PhotonPrefabs/Humanoide/Chassé",
+                    spawn.position, spawn.rotation).GetComponent<Chassé>();
+            
+                barManager.NewHunted(hunted);
+            }
+            else if (master) // We are in the game scene
+            {
+                if (master.IsInMaintenance())
+                {
+                    // 
+                }
+                else
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        master.SettingsGame.Send();
+                    }
+
+                    PhotonNetwork.Instantiate("PhotonPrefabs/Manager/PlayerManager",
+                        Vector3.zero, Quaternion.identity);
+                }
             }
         }
     }

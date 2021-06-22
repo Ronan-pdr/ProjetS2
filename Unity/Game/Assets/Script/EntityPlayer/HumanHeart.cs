@@ -61,7 +61,7 @@ namespace Script.EntityPlayer
 
             if (other.gameObject.CompareTag("DeadZone"))
             {
-                if (MasterManager.Instance.HavePrivilegeDeadZone(_mySelf.name))
+                if (!MasterManager.Instance.HavePrivilegeDeadZone(_mySelf.name))
                 {
                     _mySelf.TakeDamage(_degatDeadZone);
                 }

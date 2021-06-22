@@ -55,7 +55,7 @@ namespace Script.Manager
         [SerializeField] private TypeScene scene;
         
         [Header("Contour")]
-        [SerializeField] private bool IsBordNeeded;
+        [SerializeField] private bool isBordNeeded;
 
         [Header("InterfaceInGame")]
         [SerializeField] private GameObject visé;
@@ -160,7 +160,8 @@ namespace Script.Manager
         {
             players.Add(player);
 
-            if (typeScene is InLabyrinthe)
+            if (typeScene is InLabyrinthe ||
+                typeScene is InBar)
                 return;
             
             // ce if s'active lorsque tous les joueurs ont créé leur avatar et l'ont ajouté à la liste 'players'
@@ -204,8 +205,12 @@ namespace Script.Manager
             if (canvas)
             {
                 // le cas où on a oublié de le remettre
-                
                 canvas.gameObject.SetActive(true);
+            }
+
+            if (photoWarning)
+            {
+                // le cas où on a oublié de le désactiver
                 SetActiveWarning(false);
             }
             
@@ -218,7 +223,7 @@ namespace Script.Manager
             chassés = new List<Chassé>();
             spectateurs = new List<Spectateur>();
             
-            if (IsBordNeeded)
+            if (isBordNeeded)
             {
                 // récupérer les contours de la map
                 RecupContour();

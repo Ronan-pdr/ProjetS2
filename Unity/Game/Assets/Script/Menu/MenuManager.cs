@@ -7,12 +7,17 @@ namespace Script.Menu
 {
     public class MenuManager : MonoBehaviour
     {
-        public static MenuManager Instance;
-    
+        // ------------ SerializeField ------------
+        
         [SerializeField] private Menu[] menus;
         [SerializeField] private GameObject background;
         
+        // ------------ Attributs ------------
+        
+        public static MenuManager Instance;
+
         //--------------Pour le crédit------------
+        
         public void jouerlavideo(VideoPlayer input)
         {
             input.Play();

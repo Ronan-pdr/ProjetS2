@@ -83,7 +83,7 @@ namespace Script.EntityPlayer
                     throw new Exception("Un script a tenté de créer un joueur de type {type}");
             }
 
-            GameObject obj = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", t),
+            PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", t),
                 tr.position, tr.rotation, 0, new object[]{Pv.ViewID});
         }
 
