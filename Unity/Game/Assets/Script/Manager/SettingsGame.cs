@@ -38,7 +38,7 @@ namespace Script.Manager
             nChasseur = value;
         }
         
-        public void SetNbChasse(int value)
+        public void SetTimeMax(int value)
         {
             timeMax = value;
         }

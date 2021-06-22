@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
-using UnityEngine;
-using UnityEngine.UI;
 
 public class EscapeBarMenu : MonoBehaviourPunCallbacks
 {
