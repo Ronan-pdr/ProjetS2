@@ -19,7 +19,6 @@ namespace Script.EntityPlayer
         Assoir = 7,
         ChangerDesign = 8
     }
-
     public class TouchesClass
     {
         private class Touche
@@ -66,25 +65,7 @@ namespace Script.EntityPlayer
         
         public static TouchesClass Instance;
         private Dictionary<TypeTouche, Touche> dict;
-        
-        // ------------ Constructeur ------------
-        
-        public TouchesClass()
-        {
-            Instance = this;
 
-            dict = new Dictionary<TypeTouche, Touche>();
-            dict.Add(TypeTouche.Avancer, new Touche("forwardKey", "Z"));
-            dict.Add(TypeTouche.Reculer, new Touche("backwardKey", "S"));
-            dict.Add(TypeTouche.Droite, new Touche("rightKey", "D"));
-            dict.Add(TypeTouche.Gauche, new Touche("leftKey", "Q"));
-            dict.Add(TypeTouche.Sprint, new Touche("sprintKey", "LeftShift"));
-            dict.Add(TypeTouche.Jump, new Touche("jumpKey", "Space"));
-            dict.Add(TypeTouche.Accroupi, new Touche("crouchKey", "C"));
-            dict.Add(TypeTouche.Assoir, new Touche("sitKey", "X"));
-            dict.Add(TypeTouche.ChangerDesign, new Touche("DesignKey", "A"));
-        }
-    
         // ------------ Getters ------------
         public bool GetKey(TypeTouche typeTouche)
         {
@@ -124,9 +105,28 @@ namespace Script.EntityPlayer
         public static KeyCode GetNullKeyCode() => KeyCode.Joystick1Button19;
         
         // ------------ Setter ------------
+        
         public void SetKey(TypeTouche typeTouche, KeyCode keyCode)
         {
             dict[typeTouche].Key = keyCode;
+        }
+        
+        // ------------ Constructeur ------------
+
+        public TouchesClass()
+        {
+            Instance = this;
+
+            dict = new Dictionary<TypeTouche, Touche>();
+            dict.Add(TypeTouche.Avancer, new Touche("forwardKey", "Z"));
+            dict.Add(TypeTouche.Reculer, new Touche("backwardKey", "S"));
+            dict.Add(TypeTouche.Droite, new Touche("rightKey", "D"));
+            dict.Add(TypeTouche.Gauche, new Touche("leftKey", "Q"));
+            dict.Add(TypeTouche.Sprint, new Touche("sprintKey", "LeftShift"));
+            dict.Add(TypeTouche.Jump, new Touche("jumpKey", "Space"));
+            dict.Add(TypeTouche.Accroupi, new Touche("crouchKey", "C"));
+            dict.Add(TypeTouche.Assoir, new Touche("sitKey", "X"));
+            dict.Add(TypeTouche.ChangerDesign, new Touche("DesignKey", "A"));
         }
         
         // ------------ Méthode ------------

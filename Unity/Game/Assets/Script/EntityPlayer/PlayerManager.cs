@@ -25,6 +25,10 @@ namespace Script.EntityPlayer
     {
         // ------------ Attribut ------------
 
+        [SerializeField] private SettingsGame settingsGame;
+
+        // ------------ Attribut ------------
+
         public static PlayerManager Own;
         
         private PhotonView Pv;
@@ -109,18 +113,23 @@ namespace Script.EntityPlayer
             if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
                 return;
 
-            // type du joueur pour qu'il se fasse instancier pour la première fois -> Update (MasterManager)
-            if (Pv.IsMine)
+            if (!Pv.IsMine)
+                return;
+            
+            object value;
+            
+            // type du joueur pour qu'il se fasse instancier pour la première fois -> Start (MasterManager)
+            if (changedProps.TryGetValue("InfoCréationJoueur", out value))
             {
-                changedProps.TryGetValue("InfoCréationJoueur", out object value);
-
-                if (value == null) // bien vérifier que le changement a été fait
-                    return;
-
                 (int indexSpawn, TypePlayer typePlayer) = DecodeFormatInfoJoueur((string) value);
 
                 _type = typePlayer;
                 CreateController(indexSpawn);
+            }
+
+            if (changedProps.TryGetValue("SettingsGame", out value))
+            {
+                settingsGame.Receive((string)value);
             }
         }
     }

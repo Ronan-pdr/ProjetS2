@@ -16,6 +16,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             Destroy(gameObject); // there can only be one
             return;
         }
+        
         DontDestroyOnLoad(gameObject); // I am the only one...
         Instance = this;
     }
@@ -34,15 +35,32 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        
-        if (scene.buildIndex > 0) // We are in the game scene
+        MasterManager master = MasterManager.Instance;
+
+        if (scene.buildIndex == 10) // We are in the bar
         {
-            if (MasterManager.Instance.IsInMaintenance())
+            BarManager barManager = BarManager.Instance;
+            
+            Transform spawn = barManager.GetSpawn();   
+            
+            Chassé hunted = PhotonNetwork.Instantiate("PhotonPrefabs/Manager/Chassé",
+                spawn.position, spawn.rotation).GetComponent<Chassé>();
+            
+            barManager.AddHunted(hunted);
+        }
+        else if (master) // We are in the game scene
+        {
+            if (master.IsInMaintenance())
             {
                 // 
             }
             else
             {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    master.SettingsGame.Send();
+                }
+
                 PhotonNetwork.Instantiate("PhotonPrefabs/Manager/PlayerManager",
                                                 Vector3.zero, Quaternion.identity);
             }

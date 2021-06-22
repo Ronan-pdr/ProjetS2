@@ -36,7 +36,7 @@ namespace Script.DossierPoint
         }
 
         // ------------ Méthodes ------------
-        private void RecupSpawns()
+        public void RecupSpawns()
         {
             // les listes où sont temporairements stockées tous les spawnPoints
             SpawnPoint[] points = GetComponentsInChildren<SpawnPoint>();

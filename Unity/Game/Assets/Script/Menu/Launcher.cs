@@ -105,7 +105,8 @@ namespace Script.Menu
     
         public void StartGame()
         {
-            PhotonNetwork.LoadLevel(PhotonNetwork.MasterClient.NickName == "Labyrinthe" ? 2 : 1);
+            // c'est parti pour le bar
+            PhotonNetwork.LoadLevel(1);
         }
     
         //Est appelé par un boutton

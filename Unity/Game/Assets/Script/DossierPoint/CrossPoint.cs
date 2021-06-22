@@ -107,15 +107,11 @@ namespace Script.DossierPoint
         public CrossPoint GetNeighboor(int index) => neighboors[index];
         public int GetNbNeighboor() => neighboors.Count;
         public int IndexFile => _indexFile;
+        public bool Actif => gameObject.activeInHierarchy;
 
         // ------------ Setter ------------
         public void AddNeighboor(CrossPoint value)
         {
-            if (CrossManager.Instance.MustPrintGraph)
-            {
-                Line.Create(transform.position, value.transform.position);
-            }
-            
             neighboors.Add(value);
         }
 
@@ -166,12 +162,20 @@ namespace Script.DossierPoint
         {
             for (int i = neighboors.Count - 1; i >= 0; i--)
             {
-                if (!neighboors[i].gameObject.activeInHierarchy)
+                if (!neighboors[i].Actif)
                 {
                     // le cp est désactivé donc c'est un crosspoint
                     // que l'on NE DOIT PAS utiliser de la partie
                     neighboors.RemoveAt(i);
                 }
+            }
+        }
+
+        public void PrintNeightboors()
+        {
+            foreach (CrossPoint cm in neighboors)
+            {
+                Line.Create(transform.position, cm.transform.position);
             }
         }
         

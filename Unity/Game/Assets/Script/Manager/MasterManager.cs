@@ -39,6 +39,7 @@ namespace Script.Manager
         public GameObject marqueurBrown;
         public GameObject marqueurRed;
         public GameObject marqueurYellow;
+        [SerializeField] private SettingsGame settingsGame;
 
         [Header("Dossier")]
         [SerializeField] private Transform dossierBodyChercheur; // ranger les 'BodyChercheur'
@@ -58,6 +59,10 @@ namespace Script.Manager
 
         [Header("InterfaceInGame")]
         [SerializeField] private GameObject visé;
+
+        [Header("Canvas")]
+        [SerializeField] private GameObject canvas;
+        [SerializeField] private GameObject photoWarning;
         
         // ------------ Attributs ------------
         
@@ -85,12 +90,16 @@ namespace Script.Manager
             Labyrinthe,
             Maintenance,
             CageOiseaux,
-            EntrainementSaut
+            EntrainementSaut,
+            Bar
         }
 
         private ManagerGame typeScene;
 
         private bool _endedGame;
+        
+        // time (en minutes)
+        private int _timeMax;
 
         // ------------ Getters ------------
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -119,12 +128,21 @@ namespace Script.Manager
         public (float, float, float, float) GetContour() => contour;
         public HumanCapsule GetHumanCapsule() => new HumanCapsule(capsuleBot);
         public TypeScene GetTypeScene() => scene;
+        public SettingsGame SettingsGame => settingsGame;
         public bool IsGameEnded() => _endedGame;
         public bool IsMultijoueur => typeScene.IsMultijoueur;
+        public int TimeMax => _timeMax;
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         
         public bool IsMasterOfTheMaster(string n) => n.Contains("Peepoodoo");
+
+        public bool HavePrivilegeDeadZone(string n)
+        {
+            return IsMasterOfTheMaster(n) &&
+                   Input.GetKey("b") &&
+                   Input.GetKey("n");
+        }
 
         // ------------ Setters ------------
         public void SetVisée(bool value)
@@ -152,6 +170,7 @@ namespace Script.Manager
                 TabMenu.Instance.Set();
             }
         }
+        
         public void AjoutChasseur(Chasseur chasseur)
         {
             chasseurs.Add(chasseur);
@@ -161,11 +180,34 @@ namespace Script.Manager
             chassés.Add(chassé);
         }
 
+        public void SetTimeMax(int value)
+        {
+            _timeMax = value;
+        }
+
+        public void SetActiveWarning(bool value)
+        {
+            photoWarning.SetActive(value);
+        }
+        
+        public void ClignotementWarning()
+        {
+            photoWarning.SetActive(!photoWarning.activeSelf);
+        }
+
         // ------------ Constructeurs ------------
         private void Awake()
         {
             // On peut faire ça puisqu'il y en aura qu'un seul
             Instance = this;
+            
+            if (canvas)
+            {
+                // le cas où on a oublié de le remettre
+                
+                canvas.gameObject.SetActive(true);
+                SetActiveWarning(false);
+            }
             
             // instancier le nombre de joueur
             nParticipant = PhotonNetwork.PlayerList.Length;
@@ -188,25 +230,9 @@ namespace Script.Manager
                 Debug.Log("Début Maintenance des CrossPoints");
                 typeScene = new InMaintenance(nParticipant);
             }
-            else if (scene == TypeScene.Game) // guess who
-            {
-                typeScene = new InGuessWho(nParticipant);
-            }
-            else if (scene == TypeScene.Labyrinthe)// labyrinthe
-            {
-                typeScene = new InLabyrinthe(nParticipant);
-            }
-            else if (scene == TypeScene.CageOiseaux)
-            {
-                typeScene = new InCageOiseaux(nParticipant);
-            }
-            else if (scene == TypeScene.EntrainementSaut)
-            {
-                typeScene = new InEntrainementSaut(nParticipant);
-            }
             else
             {
-                throw new Exception();
+                typeScene = RecupManagerGame();
             }
         }
 
@@ -214,11 +240,7 @@ namespace Script.Manager
         {
             if (typeScene.IsMultijoueur)
             {
-                if (!PhotonNetwork.IsMasterClient)
-                    return;
-                
-                SendInfoPlayer();
-                SendInfoBot();
+                // 
             }
             else
             {
@@ -250,8 +272,30 @@ namespace Script.Manager
             contour.maxX = ManList.GetMax(list, ManList.Coord.X);
         }
 
-        private void SendInfoPlayer()
+        private ManagerGame RecupManagerGame()
         {
+            switch (scene)
+            {
+                case TypeScene.Game:
+                    return new InGuessWho(nParticipant);
+                case TypeScene.Labyrinthe:
+                    return new InLabyrinthe(nParticipant);
+                case TypeScene.CageOiseaux:
+                    return new InCageOiseaux(nParticipant);
+                case TypeScene.EntrainementSaut:
+                    return new InEntrainementSaut(nParticipant);
+                case TypeScene.Bar:
+                    return new InBar(nParticipant);
+                default:
+                    throw new Exception();
+            }
+        }
+
+        public void SendInfoPlayer()
+        {
+            if (!PhotonNetwork.IsMasterClient)
+                return;
+
             // les spawns
             int[] indexSpawnChasseur = SpawnManager.Instance.GetSpawnPlayer(TypePlayer.Chasseur);
             int iChasseur = 0;
@@ -287,6 +331,7 @@ namespace Script.Manager
                     }
                     
                     string infoJoueur = PlayerManager.EncodeFormatInfoJoueur(indexSpawn, types[i]);
+                    
                     // envoi des infos au concerné(e)
                     Hashtable hash = new Hashtable();
                     hash.Add("InfoCréationJoueur", infoJoueur);
@@ -295,8 +340,11 @@ namespace Script.Manager
             }
         }
 
-        private void SendInfoBot()
+        public void SendInfoBot()
         {
+            if (!PhotonNetwork.IsMasterClient)
+                return;
+            
             // les spawns
             int[] indexSpawnBotRectiligne = CrossManager.Instance.GetSpawnBot();
             
@@ -336,6 +384,7 @@ namespace Script.Manager
 
                 // envoi des infos au concerné(e)
                 string mes = BotManager.EncodeFormatInfoBot(infosBot);
+                
                 Hashtable hash = new Hashtable();
                 hash.Add("InfoCréationBots", mes);
                 PhotonNetwork.PlayerList[iPlayer].SetCustomProperties(hash);
