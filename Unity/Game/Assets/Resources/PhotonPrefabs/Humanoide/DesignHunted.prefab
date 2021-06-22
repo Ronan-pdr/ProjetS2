@@ -71,7 +71,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!95 &262732535101310103
+--- !u!95 &4231761467191510246
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0

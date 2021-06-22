@@ -47,7 +47,7 @@ namespace Script.EntityPlayer
             _anim = anim;
             _designs = designs;
             _indexDesign = new Random().Next(_designs.Length);
-            
+            Debug.Log($"Print de l'index du Design du pero : {_indexDesign} sur une liste de taille {designs.Length}");
             for (int i = designs.Length - 1; i >= 0; i--)
             {
                 designs[i].SetActive(i == _indexDesign);
