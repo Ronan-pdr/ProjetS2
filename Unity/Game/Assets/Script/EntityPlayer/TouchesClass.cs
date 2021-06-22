@@ -65,6 +65,7 @@ namespace Script.EntityPlayer
         
         public static TouchesClass Instance;
         private Dictionary<TypeTouche, Touche> dict;
+        private bool _wantCrosshair;
 
         // ------------ Getters ------------
         public bool GetKey(TypeTouche typeTouche)
@@ -104,6 +105,8 @@ namespace Script.EntityPlayer
         
         public static KeyCode GetNullKeyCode() => KeyCode.Joystick1Button19;
         
+        public bool GetCrosshair() => _wantCrosshair;
+        
         // ------------ Setter ------------
         
         public void SetKey(TypeTouche typeTouche, KeyCode keyCode)
@@ -111,6 +114,10 @@ namespace Script.EntityPlayer
             dict[typeTouche].Key = keyCode;
         }
         
+        public void SetCrosshair(bool wantCrosshair)
+        {
+            _wantCrosshair = wantCrosshair;
+        }
         // ------------ Constructeur ------------
 
         public TouchesClass()

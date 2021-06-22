@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using Script.EntityPlayer;
 using Script.Manager;
 using TMPro;
@@ -33,7 +34,11 @@ public class TabMenu : MonoBehaviour
             infosChasseur.Add(Instantiate(playerInfoTabPrefab, ChasseurInfoContent).GetComponent<PlayerInfoTab>());
             infosChasseur[i].Set(playerclass);
         }
-        
+
+        /*if (PlayerManager.Own.Type == TypePlayer.Chasseur)
+        {
+            
+        }*/
         for (int i = 0; i < mastermanager.GetNbChassé(); i++)
         {
             PlayerClass playerclass = mastermanager.GetChassé(i);

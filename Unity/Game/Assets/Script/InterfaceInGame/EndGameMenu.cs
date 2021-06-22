@@ -74,6 +74,7 @@ namespace Script.InterfaceInGame
         
         public void StartQuit()
         {
+            PlayerManager.Own.BeginToQuit();
             StartCoroutine(Quit());
         }
 
