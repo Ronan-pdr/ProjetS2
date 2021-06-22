@@ -129,7 +129,6 @@ namespace Script.EntityPlayer
 
             if (changedProps.TryGetValue("SettingsGame", out value))
             {
-                Debug.Log("receive");
                 settingsGame.Receive((string)value);
             }
         }

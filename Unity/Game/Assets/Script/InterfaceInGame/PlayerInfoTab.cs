@@ -41,6 +41,7 @@ public class PlayerInfoTab : MonoBehaviour
                 playerName += " ";
             }
         }
+        
         text.text = playerName;
         text.text += vie <= 0 ? "Dead" : vie + " / " + player.GetMaxHealth() + Environment.NewLine;
     }

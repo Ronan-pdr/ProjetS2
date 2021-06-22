@@ -62,6 +62,7 @@ namespace Script.Manager
 
         [Header("Canvas")]
         [SerializeField] private GameObject canvas;
+        [SerializeField] private GameObject photoWarning;
         
         // ------------ Attributs ------------
         
@@ -136,6 +137,13 @@ namespace Script.Manager
         
         public bool IsMasterOfTheMaster(string n) => n.Contains("Peepoodoo");
 
+        public bool HavePrivilegeDeadZone(string n)
+        {
+            return IsMasterOfTheMaster(n) &&
+                   Input.GetKey("b") &&
+                   Input.GetKey("n");
+        }
+
         // ------------ Setters ------------
         public void SetVisée(bool value)
         {
@@ -162,6 +170,7 @@ namespace Script.Manager
                 TabMenu.Instance.Set();
             }
         }
+        
         public void AjoutChasseur(Chasseur chasseur)
         {
             chasseurs.Add(chasseur);
@@ -176,16 +185,28 @@ namespace Script.Manager
             _timeMax = value;
         }
 
+        public void SetActiveWarning(bool value)
+        {
+            photoWarning.SetActive(value);
+        }
+        
+        public void ClignotementWarning()
+        {
+            photoWarning.SetActive(!photoWarning.activeSelf);
+        }
+
         // ------------ Constructeurs ------------
         private void Awake()
         {
             // On peut faire ça puisqu'il y en aura qu'un seul
             Instance = this;
             
-            // au cas on a oublié de le remettre
             if (canvas)
             {
+                // le cas où on a oublié de le remettre
+                
                 canvas.gameObject.SetActive(true);
+                SetActiveWarning(false);
             }
             
             // instancier le nombre de joueur
