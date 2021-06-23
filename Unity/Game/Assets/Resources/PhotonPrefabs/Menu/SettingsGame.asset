@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b9169f8fe5465b89507ca188a92e8e, type: 3}
   m_Name: SettingsGame
   m_EditorClassIdentifier: 
-  zone: 4
+  zone: 3
   nChasseur: 0
-  timeMax: 5
+  timeMax: 9

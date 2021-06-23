@@ -7,6 +7,7 @@ using Photon.Pun;
 using Script.Animation.Personnages.Hunted;
 using Script.Bot;
 using Script.Manager;
+using Random = System.Random;
 
 namespace Script.EntityPlayer
 {
@@ -38,13 +39,19 @@ namespace Script.EntityPlayer
         protected override void StartPlayer()
         {
             MaxHealth = 100;
+            master.SetVisée(true);
+
+            if (Pv.IsMine)
+            {
+                ChangeDesign(new Random().Next(_design.Length));
+            }
         }
         
         // ------------ Update ------------
 
         protected override void UpdatePlayer()
         {
-            if (touches.GetKeyDown(TypeTouche.ChangerDesign))
+            if (Input.GetMouseButton(0))
             {
                 // le joueur souhaite changer de design
                 TryChangeDesign();
@@ -75,19 +82,13 @@ namespace Script.EntityPlayer
                     int index = hit.collider.GetComponent<BotClass>().IndexDesign;
                     ChangeDesign(index);
                 }
-                else
-                {
-                    Debug.Log($"No design : {hit.collider.name}");
-                }
             }
-            
-            Debug.Log("J'ai rien touché");
         }
 
         private void ChangeDesign(int index)
         {
-            _design.Set(index);
             Debug.Log($"Changement design {(Pv.IsMine ? "de toi" : "de quelque d'autre")}");
+            _design.Set(index);
 
             if (Pv.IsMine)
             {
@@ -104,7 +105,7 @@ namespace Script.EntityPlayer
         protected override void PropertiesUpdate(Hashtable changedProps)
         {
             // design du chassé -> ChangeDesign (Chassé)
-            if (!Pv.IsMine) // ça ne doit pas être ton point de vie puisque tu l'as déjà fait
+            if (!Pv.IsMine) // ça ne doit pas être ton point de vue puisque tu l'as déjà fait
             {
                 if (changedProps.TryGetValue("designIndex", out object indexDesign))
                 {

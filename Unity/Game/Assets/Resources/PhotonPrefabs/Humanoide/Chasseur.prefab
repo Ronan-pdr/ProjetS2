@@ -578,7 +578,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraHolder: {fileID: 2045545082932553956}
   armeInfo: {fileID: 11400000, guid: 91da3e1781a2cba4f8e02af840d5c9dd, type: 2}
-  anim: {fileID: 8399655103795158839}
 --- !u!114 &8399655103795158839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -591,7 +590,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7aa751d9e725514281ccabdb828bb1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 7158423160630903851}
 --- !u!1 &7394338402398756892
 GameObject:
   m_ObjectHideFlags: 0
@@ -655,7 +653,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraHolder: {fileID: 2045545082932553956}
   armeInfo: {fileID: 11400000, guid: d41a0c0af4072194e822d6d31aef2d4e, type: 2}
-  anim: {fileID: 8815251999219325599}
   porteur: {fileID: 6184834418380931923}
   cam: {fileID: 4555956787228504273}
 --- !u!114 &7841057658350056948
@@ -726,7 +723,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cb3e9ad0b1021e4fa2e0df05e0388eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 2806977238906982426}
 --- !u!1 &8601670956349905158
 GameObject:
   m_ObjectHideFlags: 0

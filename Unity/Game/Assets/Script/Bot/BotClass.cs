@@ -339,7 +339,7 @@ namespace Script.Bot
         }
 
         // GamePlay
-        protected override void Die()
+        public override void Die()
         {
             enabled = false;
             BotManager.Die(this);

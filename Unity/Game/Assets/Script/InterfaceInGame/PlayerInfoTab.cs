@@ -1,48 +1,55 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Script.EntityPlayer;
-using Script.Manager;
+using Script.Tools;
 using TMPro;
 using UnityEngine;
 
-public class PlayerInfoTab : MonoBehaviour
+namespace Script.InterfaceInGame
 {
-    // ------------ Attributs ------------
-    
-    private PlayerClass player;
-    private int limitation = 15;
-    private string playerName;
-    private TMP_Text text;
+    public class PlayerInfoTab : MonoBehaviour
+    {
+        // ------------ SerializedField ------------
 
-    // ------------ Constructeurs ------------
-    private void Awake()
-    {
-        text = GetComponent<TMP_Text>();
-    }
-
-    public void Set(PlayerClass value)
-    {
-        player = value;
-        playerName = player.name;
-    }
-    
-    // ------------ Upadte ------------
-    void Update()
-    {
-        if (player is null)
-            return;
+        [Header("Text")]
+        [SerializeField] private TextMeshProUGUI textName;
+        [SerializeField] private TextMeshProUGUI textLife;
         
-        int vie = player.GetCurrentHealth();
-        if (playerName.Length < limitation)
+        // ------------ Attributs ------------
+    
+        // relatif au player
+        private PlayerClass _player;
+        private string _playerName;
+    
+        // autre
+        private const int Limitation = 15;
+
+        // ------------ Constructeurs ------------
+
+        public void Set(PlayerClass value)
         {
-            for (int i = playerName.Length - 1; i < limitation; i++)
+            _player = value;
+            _playerName = _player.name;
+        
+            if (_playerName.Length >= Limitation)
             {
-                playerName += " ";
+                // couper les lettres en trop
+                _playerName = ManString.Cut(_playerName, 0, Limitation);
             }
         }
+    
+        // ------------ Upadte ------------
+    
+        void Update()
+        {
+            if (_player is null)
+                return;
+
+            // texte
+            textName.text = _playerName;
         
-        text.text = playerName;
-        text.text += vie <= 0 ? "Dead" : vie + " / " + player.GetMaxHealth() + Environment.NewLine;
+            // vie
+            int vie = _player.GetCurrentHealth();
+            textLife.text = vie <= 0 ? "Dead" : $"{vie} / {_player.GetMaxHealth()}" + Environment.NewLine;
+        }
     }
 }

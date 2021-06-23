@@ -43,18 +43,28 @@ namespace Script.Bar
             _settingsGame = MasterManager.Instance.SettingsGame;
             ZoneManager.EnumZone zone = _settingsGame.Zone;
             
-            Debug.Log(zone);
-            
             // pour les sliders
-            SetSlider(nbChasseurNumber, 0, PhotonNetwork.CurrentRoom.PlayerCount, _settingsGame.NChasseur);
-            SetSlider(nbTimeNumber, 1, 20, _settingsGame.TimeMax);
+            SetSlider(nbChasseurNumber, 0, PhotonNetwork.CurrentRoom.PlayerCount, _settingsGame.NChasseur, nbChasseurText);
+            SetSlider(nbTimeNumber, 1, 20, _settingsGame.TimeMax, nbTimeText);
             
-            void SetSlider(Slider slider, int min, int max, int defaultValue)
+            void SetSlider(Slider slider, int min, int max, int defaultValue, TMP_Text text)
             {
                 slider.minValue = min;
                 slider.maxValue = max;
 
-                slider.value = defaultValue;
+                int value;
+
+                if (min <= defaultValue && defaultValue <= max)
+                {
+                    value = defaultValue;
+                }
+                else
+                {
+                    value = (max - min) / 2;
+                }
+
+                text.text = value.ToString();
+                slider.value = value;
             }
             
             // pour les toggles
@@ -65,6 +75,7 @@ namespace Script.Bar
             _dictToggle.Add(ZoneManager.EnumZone.Bouffe, bouffe);
             _dictToggle.Add(ZoneManager.EnumZone.Cours, cours);
 
+            // sécuriser
             _noWantChange = true;
 
             foreach (var kvp in _dictToggle)
@@ -72,27 +83,26 @@ namespace Script.Bar
                 kvp.Value.isOn = zone == kvp.Key;
             }
             
+            // laisser couler
             _noWantChange = false;
         }
         
         // ------------ Public Methodes ------------
 
-        public void SetNbChasseur(float nbChasseur)
+        public void SetNbChasseur(float value)
         {
-            Set(nbChasseur, nbChasseurText, _settingsGame.SetNbChasseur);
+            Set(value, nbChasseurText, _settingsGame.SetNbChasseur);
         }
 
-        public void SetTime(float time)
+        public void SetTime(float value)
         {
-            Set(time, nbTimeText, _settingsGame.SetTimeMax);
+            Set(value, nbTimeText, _settingsGame.SetTimeMax);
         }
 
         public void OnChangedValue(int intZone)
         {
             if (_noWantChange)
                 return;
-            
-            Debug.Log("Set map");
             
             ZoneManager.EnumZone newZone = (ZoneManager.EnumZone) intZone;
             Toggle toggle = _dictToggle[newZone];
@@ -115,7 +125,7 @@ namespace Script.Bar
             }
             else
             {
-                 // désactivation d'un toggle
+                 // un toggle a été désactivé
 
                  // réactivation de ce toggle
                 _dictToggle[newZone].isOn = true;

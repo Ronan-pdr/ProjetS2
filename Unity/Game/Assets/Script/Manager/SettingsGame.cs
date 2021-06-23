@@ -59,7 +59,7 @@ namespace Script.Manager
         
         public void Receive(string hash)
         {
-            DecodeInfos(hash);
+            int timeEnd = DecodeInfos(hash);
             
             ZoneManager.Instance.SetZone();
 
@@ -74,15 +74,16 @@ namespace Script.Manager
             master.SendInfoBot();
             
             // - récupérer le temps max
-            master.SetTimeMax(timeMax);
+            master.SetTimeEnd(timeEnd);
         }
 
         private string EncodeInfos()
         {
-            return $"{(int) zone};{timeMax}";
+            // timeMax est en minutes
+            return $"{(int) zone};{timeMax * 60 + (int)PhotonNetwork.Time}";
         }
 
-        private void DecodeInfos(string s)
+        private int DecodeInfos(string s)
         {
             string[] infos = s.Split(';');
 
@@ -95,14 +96,12 @@ namespace Script.Manager
                 throw new Exception();
             }
 
-            if (int.TryParse(infos[1], out int t))
+            if (int.TryParse(infos[1], out int timeEnd))
             {
-                timeMax = t;
+                return timeEnd;
             }
-            else
-            {
-                throw new Exception();
-            }
+            
+            throw new Exception();
         }
     }
 }

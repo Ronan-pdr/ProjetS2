@@ -10,8 +10,10 @@ namespace Script.Bar
     {
         // ------------ SerializeField ------------
     
-        [SerializeField] private GameObject startGameButton;
+        [Header("Boutton")]
         [SerializeField] private GameObject gameSettingsButton;
+        [SerializeField] private GameObject startGameButton;
+        
         
         // ------------ Constructeur ------------
 
@@ -52,8 +54,8 @@ namespace Script.Bar
 
         private void SetPrivilegeMaster()
         {
-            startGameButton.SetActive(PhotonNetwork.IsMasterClient);
             gameSettingsButton.SetActive(PhotonNetwork.IsMasterClient);
+            startGameButton.SetActive(PhotonNetwork.IsMasterClient);
         }
     }
 }

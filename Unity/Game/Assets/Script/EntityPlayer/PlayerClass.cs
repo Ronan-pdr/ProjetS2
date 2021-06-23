@@ -7,6 +7,7 @@ using Script.Animation.Personnages.Hunted;
 using Script.Bot;
 using Script.InterfaceInGame;
 using Script.Manager;
+using Script.Menu;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -70,7 +71,11 @@ namespace Script.EntityPlayer
             StartHuman();
             touches = TouchesClass.Instance;
         
-            if (!Pv.IsMine) 
+            if (Pv.IsMine) 
+            {
+                MenuManager.Instance.OpenMenu("InterfaceInGame");
+            }
+            else
             {
                 // On veut détruire les caméras qui ne sont pas les tiennes
                 Destroy(GetComponentInChildren<Camera>().gameObject);
@@ -178,13 +183,15 @@ namespace Script.EntityPlayer
 
             return false;
         }
+        
+        // ------------ Mourir ------------
 
         private void OnDestroy()
         {
             MasterManager.Instance.Die(this);
         }
 
-        protected override void Die()
+        public override void Die()
         {
             enabled = false;
             Anim.StopContinue();

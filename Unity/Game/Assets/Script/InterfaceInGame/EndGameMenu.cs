@@ -5,6 +5,7 @@ using Photon.Realtime;
 using Script.EntityPlayer;
 using Script.Manager;
 using Script.Menu;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,11 +16,11 @@ namespace Script.InterfaceInGame
         // ------------ Serialize Field ------------
 
         [Header("Restart")]
-        [SerializeField] private GameObject reStartGameButton;
+        [SerializeField] private GameObject restartGameButton;
 
         [Header("Ecran D'affichage")]
-        [SerializeField] private GameObject ecranWin;
-        [SerializeField] private GameObject ecranLose;
+        [SerializeField] private TextMeshProUGUI textWinner;
+        [SerializeField] private TextMeshProUGUI textMes;
         
         // ------------ Attributs ------------
 
@@ -29,27 +30,24 @@ namespace Script.InterfaceInGame
         
         // ------------ Setters ------------
 
-        public void SetWinner(TypePlayer winner)
+        public void SetUp(TypePlayer winner, string mes)
         {
             _winner = winner;
+
+            // texte
+            textMes.text = mes;
+            textWinner.text = winner == TypePlayer.Chasseur ? "Hunter Won" : "Hunted Won";
+            
+            // Win ou lose
+            textWinner.color = PlayerManager.Own.Type == _winner ? Color.green : Color.red;
         }
         
         // ------------ Constructeurs ------------
 
         private void Start()
         {
-            // Eécran win ou écran lose
-            if (PlayerManager.Own.Type == _winner)
-            {
-                ecranWin.SetActive(true);
-            }
-            else
-            {
-                ecranLose.SetActive(true);
-            }
-            
             // Le masterClient a le pouvoir de restart
-            reStartGameButton.SetActive(PhotonNetwork.IsMasterClient);
+            restartGameButton.SetActive(PhotonNetwork.IsMasterClient);
             
             // Gérer la souris
             Cursor.lockState = CursorLockMode.None;
@@ -68,7 +66,7 @@ namespace Script.InterfaceInGame
         
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
-            reStartGameButton.SetActive(PhotonNetwork.IsMasterClient);
+            restartGameButton.SetActive(PhotonNetwork.IsMasterClient);
         }
     }
 }

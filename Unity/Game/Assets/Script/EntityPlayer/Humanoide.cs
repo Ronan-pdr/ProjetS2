@@ -93,15 +93,19 @@ namespace Script.EntityPlayer
 
         protected void UpdateMasterOfTheMaster()
         {
+            if (!MasterManager.Instance.GetOwnPlayer() ||
+                !master.IsMasterOfTheMaster(MasterManager.Instance.GetOwnPlayer().name))
+                return;
+            
+            // je suis le master et existant
+            
             if (couvreChef)
             {
-                if (MasterManager.Instance.GetOwnPlayer() && master.IsMasterOfTheMaster(MasterManager.Instance.GetOwnPlayer().name))
+                if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.I) &&
+                    Input.GetKeyDown(KeyCode.U))
                 {
-                    if (Input.GetKey(KeyCode.P) && Input.GetKeyDown(KeyCode.M))
-                    {
-                        Debug.Log("Fais de la magie");
-                        couvreChef.SetActive(!couvreChef.activeSelf);
-                    }
+                    Debug.Log("Fais de la magie");
+                    couvreChef.SetActive(!couvreChef.activeSelf);
                 }
             }
         }
@@ -133,7 +137,7 @@ namespace Script.EntityPlayer
             {
                 if (!InDeadZone || master.HavePrivilegeDeadZone(name))
                 {
-                    Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
+                    Rb.AddForce(transform.up * JumpForce);
                     SetGrounded(false);
                     lastJump = Time.time;
                 }
@@ -164,7 +168,7 @@ namespace Script.EntityPlayer
             Pv.Owner.SetCustomProperties(hash);
         }
 
-        protected abstract void Die();
+        public abstract void Die();
         
         
         // ------------ Surchargeurs ------------

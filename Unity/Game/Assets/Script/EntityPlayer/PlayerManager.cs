@@ -61,6 +61,13 @@ namespace Script.EntityPlayer
         }
 
         // ------------ Méthodes ------------
+
+        public static Spectateur CreateSpectateur(PhotonView pv)
+        {
+            return PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "Spectateur"),
+                Vector3.zero, Quaternion.identity, 0, new object[]{pv.ViewID}).GetComponent<Spectateur>();
+        }
+        
         private void CreateController(int indexSpawn) // Instanstiate our player
         {
             string t;
@@ -80,34 +87,15 @@ namespace Script.EntityPlayer
                     tr = SpawnManager.Instance.GetTrChassé(indexSpawn);
                     break;
                 default:
-                    throw new Exception("Un script a tenté de créer un joueur de type {type}");
+                    throw new Exception($"Un script a tenté de créer un joueur de type {_type}");
             }
 
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", t),
                 tr.position, tr.rotation, 0, new object[]{Pv.ViewID});
         }
 
-        // la string contenant les infos du joueur seront sous la forme :
-        // indexCoordPoint(2 caractères) + type(1 caractère)
-        public static string EncodeFormatInfoJoueur(int indexSpot, TypePlayer type)
-        {
-            return ManString.Format(indexSpot.ToString(), 2) + (int)type;
-        }
-
-        private static (int indexSpot, TypePlayer typePlayer) DecodeFormatInfoJoueur(string s)
-        {
-            int len = s.Length;
-
-            // type du joueur
-            TypePlayer typePlayer = (TypePlayer) int.Parse(s.Substring(len - 1, 1));
-                    
-            // index du point que l'on retrouve dans le SpawnManager
-            int indexSpot = int.Parse(s.Substring(0, 2));
-
-            return (indexSpot, typePlayer);
-        }
-
         // ------------ Multijoueur ------------
+        
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
@@ -131,6 +119,26 @@ namespace Script.EntityPlayer
             {
                 settingsGame.Receive((string)value);
             }
+        }
+        
+        // la string contenant les infos du joueur seront sous la forme :
+        // indexCoordPoint(2 caractères) + type(1 caractère)
+        public static string EncodeFormatInfoJoueur(int indexSpot, TypePlayer type)
+        {
+            return ManString.Format(indexSpot.ToString(), 2) + (int)type;
+        }
+
+        private static (int indexSpot, TypePlayer typePlayer) DecodeFormatInfoJoueur(string s)
+        {
+            int len = s.Length;
+
+            // type du joueur
+            TypePlayer typePlayer = (TypePlayer) int.Parse(s.Substring(len - 1, 1));
+                    
+            // index du point que l'on retrouve dans le SpawnManager
+            int indexSpot = int.Parse(s.Substring(0, 2));
+
+            return (indexSpot, typePlayer);
         }
     }
 }

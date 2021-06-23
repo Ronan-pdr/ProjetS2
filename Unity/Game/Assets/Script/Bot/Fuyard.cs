@@ -51,7 +51,7 @@ namespace Script.Bot
 
         protected override void StartBot()
         {
-            BotManager.AddFuyard(this);
+            BotManager.Instance.AddFuyard(this);
         }
 
         // ------------ Update ------------
