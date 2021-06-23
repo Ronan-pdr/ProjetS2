@@ -29,18 +29,19 @@ namespace Script.Manager
             switch (NJoueur)
             {
                 case 1:
-                    n.Rectiligne = 10;
-                    n.Fuyard = 0;
-                    n.Suiveur = 0;
+                    n.Rectiligne = 6;
+                    n.Fuyard = 3;
+                    n.Suiveur = 1;
                     break;
                 case 2:
-                    n.Rectiligne = 26;
+                    n.Rectiligne = 16;
                     n.Fuyard = 3;
                     n.Suiveur = 1;
                     break;
                 case 3:
-                    n.Rectiligne = 50;
-                    n.Fuyard = 1;
+                    n.Rectiligne = 26;
+                    n.Fuyard = 3;
+                    n.Suiveur = 1;
                     break;
                 case 4:
                     n.Rectiligne = 34;

@@ -161,7 +161,7 @@ namespace Script.EntityPlayer
             else
             {
                 // comme il faut indiqué la vie ainsi que le bot à qui c'est concerné, on met les deux infos dans une string
-                string mes = ((BotClass) this).EncodeFormatVieBot();
+                string mes = BotClass.EncodeHash(name, CurrentHealth);
                 hash.Add("PointDeVieBot", mes);
             }
 

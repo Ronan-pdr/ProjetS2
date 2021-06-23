@@ -10,6 +10,7 @@ using Script.Graph;
 using Script.Manager;
 using Script.Tools;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using Random = System.Random;
 
 namespace Script.Bot
 {
@@ -102,12 +103,25 @@ namespace Script.Bot
         protected void Awake()
         {
             Anim = GetComponent<HuntedStateAnim>();
-            _design = new DesignHumanoide(Anim, designs);
-            
+
             AwakeHuman();
             AwakeBot();
             
             SetDirection(Vector3.forward);
+
+            // récupérer le design par défaut, le modifier et
+            // l'envoyer aux autres
+            _design = new DesignHumanoide(Anim, designs);
+
+            if (Pv.IsMine)
+            {
+                int index = new Random().Next(_design.Length);
+                _design.Set(index);
+
+                Hashtable hash = new Hashtable();
+                hash.Add("DesignBot", EncodeHash(name, index));
+                PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+            }
         }
 
         protected abstract void StartBot();
@@ -350,7 +364,6 @@ namespace Script.Bot
         
         // ------------ Event ------------
         
-        // bloqué
         private void ManageBlock()
         {
             if (running == Running.Arret)
@@ -392,42 +405,49 @@ namespace Script.Bot
         {
             if (!Pv.Owner.Equals(targetPlayer) || !this) // si c'est pas toi la target, tu ne changes rien
                 return;
+
+            object mes;
         
             // point de vie -> TakeDamage (Humanoide)
             // Tout le monde doit faire ce changement (trop compliqué de retrouvé celui qui l'a déjà fait)
-            if (changedProps.TryGetValue("PointDeVieBot", out object mes))
+            if (changedProps.TryGetValue("PointDeVieBot", out mes))
             {
-                (string nameTarget, int vie) = DecodeFormatVieBot((string)mes);
-
                 // parce que chaque joueur contrôle plusieurs bot, il faut donc faire une deuxième vérification
-                if (name == nameTarget)
+                if (DecodeHash((string)mes, out int vie))
                 {
                     CurrentHealth = vie;
+                }
+            }
+            
+            if (!Pv.IsMine && changedProps.TryGetValue("DesignBot", out mes)) // déjà fait de ton propre point de vue
+            {
+                if (DecodeHash((string)mes, out int indexDesign))
+                {
+                    _design.Set(indexDesign);
                 }
             }
         }
 
         // le format -> name[n char]Vie[3 char]
-        public string EncodeFormatVieBot()
+        public static string EncodeHash(string nom, int info)
         {
-            string mes = CurrentHealth.ToString();
-            while (mes.Length < 3) // on formate la vie à trois charactères
-            {
-                mes = " " + mes;
-            }
-
-            return name + mes;
+            return $"{nom};{info}";
         }
 
-        private (string nameTarget, int vie) DecodeFormatVieBot(string mes)
+        private bool DecodeHash(string mes, out int value)
         {
-            string deuxInfos = mes;
-            int len = deuxInfos.Length;
-            string nameTarget = deuxInfos.Substring(0, len - 3);
-            
-            int vie = int.Parse(deuxInfos.Substring(len - 3, 3));
+            string[] infos = mes.Split(';');
 
-            return (nameTarget, vie);
+            string nameTarget = infos[0];
+
+            if (name == nameTarget)
+            {
+                value = int.Parse(infos[1]);
+                return true;
+            }
+            
+            value = -1;
+            return false;
         }
     }
 }

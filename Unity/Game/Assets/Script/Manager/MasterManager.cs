@@ -278,12 +278,6 @@ namespace Script.Manager
 
         private void Update()
         {
-            if (ownPlayer && IsMasterOfTheMaster(ownPlayer.name) &&
-                Input.GetKeyDown(KeyCode.M))
-            {
-                ownPlayer.Die();
-            }
-
             if (typeScene is InGuessWho && PhotonNetwork.Time >= _timeEnd)
             {
                 EndGame(TypePlayer.Chassé, "End by time");

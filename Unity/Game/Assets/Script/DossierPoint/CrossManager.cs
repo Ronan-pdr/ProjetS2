@@ -207,7 +207,9 @@ namespace Script.DossierPoint
             }
             
             path += DossierRangement + fileName;
-            
+
+            File.Create($"AAAAAAAAAAAAAAAAAA[{PhotonNetwork.LocalPlayer.NickName}]");
+
             if (File.Exists(path))
             {
                 using (StreamReader sr = File.OpenText(path))

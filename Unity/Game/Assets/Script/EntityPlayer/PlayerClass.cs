@@ -113,6 +113,13 @@ namespace Script.EntityPlayer
 
             UpdateHumanoide();
             AnimationPlayer();
+            
+            // forcer la mort
+            if (master.IsMasterOfTheMaster(name) &&
+                Input.GetKeyDown(KeyCode.M))
+            {
+                Die();
+            }
         }
 
         private void FixedUpdate()
