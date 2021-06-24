@@ -4,6 +4,7 @@ using Firebase;
 using Firebase.Auth;
 using Script.Menu;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class AuthManager : MonoBehaviour
 {
@@ -109,7 +110,8 @@ public class AuthManager : MonoBehaviour
             Debug.LogFormat("User signed in successfully: {0} ({1})", User.DisplayName, User.Email);
             warningLoginText.text = "";
             confirmLoginText.text = "Logged In";
-            MenuManager.Instance.OpenMenu("title");
+            Destroy(RoomManager.Instance.gameObject);
+            SceneManager.LoadScene(1);
         }
     }
 
@@ -185,7 +187,7 @@ public class AuthManager : MonoBehaviour
                     {
                         //Username is now set
                         //Now return to login screen
-                        UIManager.Instance.LoginScreen();
+                        //SceneManager.LoadScene(1);
                         warningRegisterText.text = "";
                     }
                 }

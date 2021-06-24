@@ -55,7 +55,7 @@ namespace Script.InterfaceInGame
                 yield return null;
             }
             
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
         }
 
         public void StartQuit()
