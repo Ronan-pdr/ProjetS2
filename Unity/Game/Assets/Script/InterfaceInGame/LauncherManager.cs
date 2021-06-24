@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Photon.Pun;
 using Script.Manager;
 using Script.Menu;
 using UnityEngine;
@@ -32,7 +33,11 @@ namespace Script.InterfaceInGame
         private void Start()
         {
             _menuManager = MenuManager.Instance;
-            _menuManager.OpenMenu("loading");
+
+            if (PhotonNetwork.IsConnected)
+            {
+                _menuManager.OpenMenu("loading");
+            }
         }
 
         // ------------ Update ------------

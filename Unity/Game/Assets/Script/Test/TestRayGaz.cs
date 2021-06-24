@@ -24,32 +24,58 @@ namespace Script.Test
             Brown
         }
 
-        private float timeBegin;
+        public static TestRayGaz Instance; 
+
+        private List<Vector3> _path;
+        private List<GameObject> _gameObjects;
+        
+        // ------------ Setter ------------
+
+        public void SetGameOject(List<GameObject> value)
+        {
+            _gameObjects = value;
+            Invoke(nameof(Effacer), 1.9f);
+        }
         
         // ------------ Constructeur ------------
 
         private void Start()
         {
-            //RayGaz.GetPath(depart.position, destination.position, RecepRayGaz);
-            timeBegin = Time.time + 2;
+            Instance = this;
+            
+            CreateMarqueur(depart.position, Couleur.Brown);
+            CreateMarqueur(destination.position, Couleur.Yellow);
+            
+            Invoke(nameof(Begin), 1);
         }
 
-        private void Update()
+        private void Begin()
         {
-            if (Time.time < timeBegin)
-                return;
-
             enabled = false;
             RayGaz.GetPath(depart.position, destination.position, RecepRayGaz);
         }
 
         // ------------ Méthodes ------------
         
-        public void RecepRayGaz(List<Vector3> path)
+        private void RecepRayGaz(List<Vector3> path)
         {
-            foreach (Vector3 p in path)
+            _path = path;
+            Invoke(nameof(Print), 2);
+        }
+
+        private void Print()
+        {
+            for (int i = _path.Count - 2; i > 0; i--)
             {
-                CreateMarqueur(p + Vector3.up * 1.2f, Couleur.Red);
+                CreateMarqueur(_path[i], Couleur.Red);
+            }
+        }
+        
+        public void Effacer()
+        {
+            foreach (var g in _gameObjects)
+            {
+                Destroy(g);
             }
         }
 

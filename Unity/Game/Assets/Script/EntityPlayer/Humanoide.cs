@@ -4,6 +4,7 @@ using Photon.Realtime;
 using Script.Animation;
 using Script.Animation.Personnages.Hunted;
 using Script.Bot;
+using Script.InterfaceInGame;
 using Script.Manager;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -147,7 +148,8 @@ namespace Script.EntityPlayer
         public void TakeDamage(int damage)
         {
             // Personne prend de dommage lorsque la partie est terminé
-            if (master.IsGameEnded())
+            if (master.GetTypeScene() != MasterManager.TypeScene.Game ||
+                master.IsGameEnded())
                 return;
             
             CurrentHealth -= damage;
@@ -157,6 +159,7 @@ namespace Script.EntityPlayer
             if (this is PlayerClass)
             {
                 hash.Add("PointDeViePlayer", CurrentHealth);
+                InterfaceInGameManager.Instance.TakeDamage();
             }
             else
             {

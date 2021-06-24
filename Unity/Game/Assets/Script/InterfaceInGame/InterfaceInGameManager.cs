@@ -21,6 +21,9 @@ namespace Script.InterfaceInGame
         [SerializeField] private Sprite[] sprites;
         [SerializeField] private Transform spriteContent;
 
+        [Header("Reaction Degat")]
+        [SerializeField] private GameObject teinteDegat;
+
         // ------------ Attributs ------------
         
         public static InterfaceInGameManager Instance;
@@ -28,6 +31,7 @@ namespace Script.InterfaceInGame
         private PlayerClass _player;
         private Image _imageVie;
         private float _timeEnd;
+        private float _timeTeinteFalse;
         
         // ------------ Constructeur ------------
 
@@ -52,7 +56,27 @@ namespace Script.InterfaceInGame
             UpdateTime();
         }
         
+        // ------------ Public Methodes ------------
+
+        public void TakeDamage()
+        {
+            teinteDegat.SetActive(true);
+
+            float periode = 0.6f;
+
+            _timeTeinteFalse = Time.time + periode * 0.9f;
+            Invoke(nameof(DesactiverTeinteDegat), periode);
+        }
+        
         // ------------ Private Methodes ------------
+
+        private void DesactiverTeinteDegat()
+        {
+            if (Time.time >= _timeTeinteFalse)
+            {
+                teinteDegat.SetActive(false);
+            }
+        }
 
         private void UpdateImageVie(int v)
         {
@@ -82,7 +106,7 @@ namespace Script.InterfaceInGame
             int minutes = tempsRestant / 60;
             int secondes = tempsRestant % 60;
 
-            string s = (secondes >= 10 ? "" : " ") + secondes;
+            string s = (secondes >= 10 ? "" : "0") + secondes;
             
             textTime.text = $"{minutes}:{s}";
         }

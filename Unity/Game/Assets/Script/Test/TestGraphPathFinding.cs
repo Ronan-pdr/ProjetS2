@@ -17,6 +17,9 @@ namespace Script.Test
 
         private void Start()
         {
+            TestRayGaz.CreateMarqueur(depart.transform.position, TestRayGaz.Couleur.Brown);
+            TestRayGaz.CreateMarqueur(destination.transform.position, TestRayGaz.Couleur.Yellow);
+            
             GraphPathFinding.GetPath(depart, destination, "sacha", Recep);
         }
         
@@ -24,10 +27,10 @@ namespace Script.Test
 
         private void Recep(List<Vector3> path)
         {
-            foreach (Vector3 point in path)
+            /*for (int i = path.Count - 2; i > 0; i--)
             {
-                TestRayGaz.CreateMarqueur(point, TestRayGaz.Couleur.Brown);
-            }
+                TestRayGaz.CreateMarqueur(path[i], TestRayGaz.Couleur.Red);
+            }*/
         }
     }
 }
