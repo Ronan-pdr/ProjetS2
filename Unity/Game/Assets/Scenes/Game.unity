@@ -8104,6 +8104,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BotManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6554237833680362016, guid: 039379020db900741ba489f5227b6186, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7433265980862941480, guid: 039379020db900741ba489f5227b6186, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -71766,6 +71770,10 @@ PrefabInstance:
     - target: {fileID: 8551884248645098152, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
       propertyPath: m_Name
       value: MasterManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8551884248645098152, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
