@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using Script.Menu;
 using Script.EntityPlayer;
+using Script.Manager;
 using PlayerManager = Script.EntityPlayer.PlayerManager;
 
 namespace Script.InterfaceInGame
@@ -20,17 +21,14 @@ namespace Script.InterfaceInGame
         
         // Etat
         private bool _isPaused;
-        private bool disconnecting;
-        
+
         // ------------ Getters ------------
         public bool GetIsPaused() => _isPaused;
-        public bool Getdisconnecting() => disconnecting;
-        
+
         // ------------ Constructeur ------------
         public void Awake()
         {
             _isPaused = false;
-            disconnecting = false;
         }
 
         // ------------ Public Méthodes ------------
@@ -45,29 +43,6 @@ namespace Script.InterfaceInGame
         {
             MenuManager.Instance.OpenMenu("pause");
             _isPaused = true;
-        }
-        
-        public void StartQuit()
-        {
-            disconnecting = true;
-            
-            PlayerManager.Own.BeginToQuit();
-            StartCoroutine(Quit());
-        }
-        
-        // ------------ Private Méthodes ------------
-
-        private IEnumerator Quit()
-        {
-            PhotonNetwork.Disconnect();
-            Destroy(RoomManager.Instance.gameObject);
-
-            while(PhotonNetwork.IsConnected)
-            {
-                yield return null;
-            }
-            
-            SceneManager.LoadScene(0);
         }
     }
 }

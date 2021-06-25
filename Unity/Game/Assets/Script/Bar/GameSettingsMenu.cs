@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using Script.Manager;
 using Script.Zone;
 using TMPro;
@@ -9,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Script.Bar
 {
-    public class GameSettingsMenu : MonoBehaviour
+    public class GameSettingsMenu : MonoBehaviourPunCallbacks
     {
         // ------------ SerializeField ------------
         
@@ -44,29 +45,9 @@ namespace Script.Bar
             ZoneManager.EnumZone zone = _settingsGame.Zone;
             
             // pour les sliders
-            SetSlider(nbChasseurNumber, 0, PhotonNetwork.CurrentRoom.PlayerCount, _settingsGame.NChasseur, nbChasseurText);
-            SetSlider(nbTimeNumber, 1, 20, _settingsGame.TimeMax, nbTimeText);
-            
-            void SetSlider(Slider slider, int min, int max, int defaultValue, TMP_Text text)
-            {
-                slider.minValue = min;
-                slider.maxValue = max;
+            SetSliderNbChasseur();
+            SetSliderTime();
 
-                int value;
-
-                if (min <= defaultValue && defaultValue <= max)
-                {
-                    value = defaultValue;
-                }
-                else
-                {
-                    value = (max - min) / 2;
-                }
-
-                text.text = value.ToString();
-                slider.value = value;
-            }
-            
             // pour les toggles
             _dictToggle = new Dictionary<ZoneManager.EnumZone, Toggle>();
             _dictToggle.Add(ZoneManager.EnumZone.All, all);
@@ -142,6 +123,48 @@ namespace Script.Bar
             int nb = (int) f;
             func(nb);
             text.text = nb.ToString();
+        }
+
+        private void SetSliderNbChasseur()
+        {
+            SetSlider(nbChasseurNumber, 0, PhotonNetwork.CurrentRoom.PlayerCount, _settingsGame.NChasseur, nbChasseurText);
+        }
+
+        private void SetSliderTime()
+        {
+            SetSlider(nbTimeNumber, 1, 20, _settingsGame.TimeMax, nbTimeText);
+        }
+        
+        private void SetSlider(Slider slider, int min, int max, int defaultValue, TMP_Text text)
+        {
+            slider.minValue = min;
+            slider.maxValue = max;
+
+            int value;
+
+            if (min <= defaultValue && defaultValue <= max)
+            {
+                value = defaultValue;
+            }
+            else
+            {
+                value = (max - min) / 2;
+            }
+
+            text.text = value.ToString();
+            slider.value = value;
+        }
+        
+        // ------------ Event ------------
+
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            SetSliderNbChasseur();
+        }
+
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            SetSliderNbChasseur();
         }
     }
 }

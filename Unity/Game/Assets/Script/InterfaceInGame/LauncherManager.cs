@@ -19,7 +19,18 @@ namespace Script.InterfaceInGame
         
         // ------------ Attributs ------------
 
+        public static LauncherManager Instance;
+        
         private MenuManager _menuManager;
+        private bool _loading;
+        
+        // ------------ Setter ------------
+
+        public void EndLoading()
+        {
+            _loading = false;
+            MenuManager.Instance.OpenMenu("InterfaceInGame");
+        }
         
         // ------------ Constructeur ------------
         private void Awake()
@@ -37,13 +48,14 @@ namespace Script.InterfaceInGame
             if (PhotonNetwork.IsConnected)
             {
                 _menuManager.OpenMenu("loading");
+                _loading = true;
             }
         }
 
         // ------------ Update ------------
         void Update()
         {
-            if (pauseMenu.Getdisconnecting())
+            if (MasterManager.Instance.IsDisconnecting || _loading)
                 return;
 
             if (MasterManager.Instance.IsGameEnded())

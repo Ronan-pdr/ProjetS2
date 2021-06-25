@@ -13,8 +13,7 @@ namespace Script.Bar
         // ------------ SerializeField ------------
         
         [Header("Pour liste joueurs")]
-        [SerializeField] private PlayerListItem playerListItemPrefab;
-        [SerializeField] Transform[] playerListContent;
+        [SerializeField] TextMeshProUGUI[] playerListContent;
 
         [Header("Room")]
         [SerializeField] private TMP_Text roomNameText;
@@ -33,66 +32,87 @@ namespace Script.Bar
         {
             MenuManager.Instance.OpenMenu(GetComponent<Menu.Menu>());
         }
-        
-        public override void OnPlayerEnteredRoom(Player newPlayer)
-        {
-            ChangeName(newPlayer);
-            SetListPlayer();
-        }
-
-        public override void OnPlayerLeftRoom(Player otherPlayer)
-        {
-            SetListPlayer();
-        }
 
         // ------------ Private Methods ------------
         
         private void SetListPlayer()
         {
-            Player[] players = PhotonNetwork.PlayerList;
-            
-            //Détruit tous les joueurs précédements enregistré dans la room
-            foreach (Transform list in playerListContent)
+            // effacer
+            foreach (TextMeshProUGUI content in playerListContent)
             {
-                foreach (Transform child in list)
-                {
-                    Destroy(child.gameObject);
-                }
+                content.text = "";
             }
+            
+            // récup info
+            Player[] players = PhotonNetwork.PlayerList;
+            int nbPlayer = players.Length;
+            int nContent = playerListContent.Length;
+            
+            // écrire
+            for (int i = 0; i < nbPlayer; i++)
+            {
+                playerListContent[i % nContent].text += players[i].NickName + Environment.NewLine;
+            }
+        }
 
-            int l = players.Length;
-            int m = playerListContent.Length;
+        private string[] RecupNameOtherPlayers()
+        {
+            Player[] otherPlayers = PhotonNetwork.PlayerListOthers;
+            int l = otherPlayers.Length;
+
+            string[] namesOtherPlayer = new string[l];
 
             for (int i = 0; i < l; i++)
             {
-                Instantiate(playerListItemPrefab, playerListContent[i % m]).GetComponent<PlayerListItem>().SetUp(players[i]);
+                namesOtherPlayer[i] = otherPlayers[i].NickName;
             }
+
+            return namesOtherPlayer;
         }
         
-        private void ChangeName(Player newPlayer)
+        // ------------ Event ------------
+        
+        public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            string nickName = newPlayer.NickName;
-            Player[] players = PhotonNetwork.PlayerListOthers;
-            int count = 0;
-            int l = players.Length;
+            newPlayer.NickName = ChangeName(newPlayer.NickName, RecupNameOtherPlayers());
+            SetListPlayer();
+        }
 
-            for ((int j, int i) = (0, 0); j < l - 1 && i != l; j++)
+        public override void OnPlayerLeftRoom(Player _)
+        {
+            SetListPlayer();
+        }
+        
+        // ------------ Static Methods ------------
+        
+        public static string ChangeName(string namePlayer, string[] namesOtherPlayer)
+        {
+            string res = namePlayer;
+            string[] players = namesOtherPlayer;
+            int count = 1;
+            int l = players.Length;
+            
+            // arthur2 ; arthur
+
+            for ((int j, int i) = (0, 0); j < l && i != l; j++)
             {
-                for (i = 0; i < l && !ChangedName(players[j]); i++)
+                for (i = 0; i < l && !ChangedName(namesOtherPlayer[i]); i++)
                 {}
             }
 
-            bool ChangedName(Player player)
+            bool ChangedName(string nameOtherPlayer)
             {
-                if (!player.Equals(newPlayer) && player.NickName == newPlayer.NickName)
+                if (nameOtherPlayer == res)
                 {
                     count += 1;
-                    newPlayer.NickName = nickName + count;
+                    res = namePlayer + count;
                     return true;
                 }
 
                 return false;
             }
+
+            return res;
         }
     }
 }

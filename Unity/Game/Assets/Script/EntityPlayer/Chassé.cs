@@ -90,7 +90,6 @@ namespace Script.EntityPlayer
             if (!this)
                 return;
 
-            Debug.Log($"Changement design {(Pv.IsMine ? "de toi" : name)} --> index = {index}");
             _design.Set(index);
 
             if (Pv.IsMine)

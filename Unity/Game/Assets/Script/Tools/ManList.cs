@@ -11,12 +11,12 @@ namespace Script.Tools
         // constructeurs
         
         // ex : CreateListRange(4) -> [0, 1, 2, 3]
-        public static List<int> CreateListRange(int iFin)
+        private static List<int> CreateListRange(int iFin)
         {
             return new List<int>(CreateListRange(0, iFin));
         }
 
-        public static int[] CreateListRange(int iDebut, int iFin)
+        private static int[] CreateListRange(int iDebut, int iFin)
         {
             if (iDebut > iFin)
             {
@@ -100,15 +100,12 @@ namespace Script.Tools
         {
             int[] arr = new int[length];
             List<int> list = CreateListRange(length);
-            Random random = new Random();
 
             for (int iArr = 0; iArr < length; iArr++)
             {
-                int iList = random.Next(list.Count);
-                int n = list[iList];
+                int iList = new Random().Next(list.Count);
+                arr[iArr] = list[iList];
                 list.RemoveAt(iList);
-
-                arr[iArr] = n;
             }
 
             return arr;
@@ -168,17 +165,37 @@ namespace Script.Tools
 
         public static string ToString(List<T> list)
         {
-            string res = "[";
-
-            foreach (T e in list)
+            int l = list.Count;
+            if (l == 0)
             {
-                res += $"{e}, ";
+                return "[]";
+            }
+            
+            string res = "[" + list[0];
+
+            for (int i = 1; i < l; i++)
+            {
+                res += $", {list[i]}";  
             }
 
             return res + "]";
         }
+
+        public static T[] Shuffle(T[] arr)
+        {
+            int l = arr.Length;
+            int[] randomIndex = ManList.RandomIndex(l);
+            T[] res = new T[l];
+
+            for (int i = 0; i < l; i++)
+            {
+                res[i] = arr[randomIndex[i]];
+            }
+
+            return res;
+        }
         
-        // recherce
+        // recherche
         public static int GetIndex(T[] arr, T e)
         {
             int l = arr.Length;

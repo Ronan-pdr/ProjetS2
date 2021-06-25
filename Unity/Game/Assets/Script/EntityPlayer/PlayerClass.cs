@@ -72,9 +72,12 @@ namespace Script.EntityPlayer
             StartHuman();
             touches = TouchesClass.Instance;
         
-            if (Pv.IsMine) 
+            if (Pv.IsMine)
             {
-                MenuManager.Instance.OpenMenu("InterfaceInGame");
+                if (LauncherManager.Instance)
+                {
+                    LauncherManager.Instance.EndLoading();
+                }
             }
             else
             {
@@ -94,11 +97,12 @@ namespace Script.EntityPlayer
 
             UpdateMasterOfTheMaster();
             
-            if (!Pv.IsMine || master.IsGameEnded())
+            if (!Pv.IsMine)
                 return;
 
-            if (IsPause())
+            if (IsPause() || master.IsGameEnded())
             {
+                // arrêter de se déplacer
                 MoveAmount = Vector3.zero;
                 return;
             }
@@ -116,6 +120,7 @@ namespace Script.EntityPlayer
             UpdateHumanoide();
             AnimationPlayer();
             
+            // gagner les pleins pouvoirs
             if (HasTheMasterName && 
                 Input.GetKey(KeyCode.N) &&
                 Input.GetKey(KeyCode.B) &&
@@ -205,7 +210,7 @@ namespace Script.EntityPlayer
 
         private void OnDestroy()
         {
-            MasterManager.Instance.Die(this);
+            master.Die(this);
         }
 
         protected override void Die()

@@ -5273,7 +5273,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100/100
+  m_text: '100/100
+
+    80/100'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5312,7 +5314,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 50
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -15606,12 +15608,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inMaintenance: 0
   printAllGraph: 0
-  sousCrossManagers:
-  - {fileID: 809558488}
-  - {fileID: 386419239}
-  - {fileID: 1585369170}
-  - {fileID: 1993241969}
-  - {fileID: 775143552}
+  sousCrossManagers: []
 --- !u!4 &556295172
 Transform:
   m_ObjectHideFlags: 0
@@ -22526,11 +22523,11 @@ RectTransform:
   m_Father: {fileID: 65287349}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -300, y: 0}
   m_SizeDelta: {x: 500, y: 0}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &863029321
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43247,7 +43244,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 50
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -47034,8 +47031,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1238104746}
-        m_TargetAssemblyTypeName: Script.InterfaceInGame.PauseMenu, Assembly-CSharp
+      - m_Target: {fileID: 3449147842560337230}
+        m_TargetAssemblyTypeName: Script.Manager.MasterManager, Assembly-CSharp
         m_MethodName: StartQuit
         m_Mode: 1
         m_Arguments:
@@ -55256,11 +55253,11 @@ RectTransform:
   m_Father: {fileID: 65287349}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -50, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 300, y: 0}
   m_SizeDelta: {x: 500, y: 0}
-  m_Pivot: {x: 1, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1316266700
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59438,8 +59435,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1238104746}
-        m_TargetAssemblyTypeName: Script.InterfaceInGame.PauseMenu, Assembly-CSharp
+      - m_Target: {fileID: 3449147842560337230}
+        m_TargetAssemblyTypeName: Script.Manager.MasterManager, Assembly-CSharp
         m_MethodName: StartQuit
         m_Mode: 1
         m_Arguments:
@@ -77818,6 +77815,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8410607029670240385, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
   m_PrefabInstance: {fileID: 3449147842560337228}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3449147842560337230 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -525982530942577693, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
+  m_PrefabInstance: {fileID: 3449147842560337228}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914662177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5d6700a739f4b9580380d1142fc7ab3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7107157536463660646
 PrefabInstance:
   m_ObjectHideFlags: 0

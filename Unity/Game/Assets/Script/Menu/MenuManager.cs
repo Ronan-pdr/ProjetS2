@@ -47,7 +47,7 @@ namespace Script.Menu
                 }
                 else if (menus[i].open)
                 {
-                    CloseMenu(menus[i]);
+                    menus[i].Close();
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace Script.Menu
             {
                 if (menus[i].open)
                 {
-                    CloseMenu(menus[i]);
+                    menus[i].Close();
                 }
             }
         
@@ -69,11 +69,6 @@ namespace Script.Menu
         public void ForceOpenMenu(string menuName)
         {
             GetMenu(menuName).Open();
-        }
-    
-        public void CloseMenu(Menu menu)
-        {
-            menu.Close();
         }
 
         public void CloseMenu(string menuName)

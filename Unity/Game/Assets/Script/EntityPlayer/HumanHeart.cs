@@ -45,6 +45,12 @@ namespace Script.EntityPlayer
 
         private void Hit(Collider other)
         {
+            if (!_mySelf)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
             // Si c'est pas à toi, tu ne fais rien
             if (!_mySelf.GetPv().IsMine)
                 return;

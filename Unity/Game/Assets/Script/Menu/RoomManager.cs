@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Photon.Pun;
 using Script.Bar;
 using Script.EntityPlayer;
@@ -9,8 +11,11 @@ namespace Script.Menu
 {
     public class RoomManager : MonoBehaviourPunCallbacks
     {
+        // ------------ Atributs ------------
+        
         public static RoomManager Instance;
 
+        // ------------ Constructeur ------------
         void Awake()
         {
             if (Instance) // checks if another RoomManager exists
@@ -22,6 +27,8 @@ namespace Script.Menu
             DontDestroyOnLoad(gameObject); // I am the only one...
             Instance = this;
         }
+        
+        // ------------ De la magie noire ------------
 
         public override void OnEnable()
         {
@@ -34,6 +41,8 @@ namespace Script.Menu
             base.OnDisable();
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
+        
+        // ------------ manager les scènes ------------
 
         void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {

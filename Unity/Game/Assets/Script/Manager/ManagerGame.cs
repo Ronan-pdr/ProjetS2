@@ -2,6 +2,7 @@
 using Script.Bot;
 using Script.DossierPoint;
 using Script.EntityPlayer;
+using Script.Tools;
 
 namespace Script.Manager
 {
@@ -72,7 +73,7 @@ namespace Script.Manager
 
             TypePlayer[] listTrié = GetListTrié(n.GetList(), NJoueur);
 
-            return listTrié;
+            return ManList<TypePlayer>.Shuffle(listTrié);
 
             void CasEreur()
             {

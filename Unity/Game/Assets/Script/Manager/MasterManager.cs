@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -16,6 +17,7 @@ using Script.MachineLearning;
 using Script.Menu;
 using Script.TeteChercheuse;
 using Script.Tools;
+using UnityEngine.SceneManagement;
 using Random = System.Random;
 
 namespace Script.Manager
@@ -96,8 +98,10 @@ namespace Script.Manager
 
         private ManagerGame typeScene;
 
+        // etat partie / joueur
         private bool _endedGame;
-        
+        private bool _disconnecting;
+
         // time (en minutes)
         private int _timeEnd;
         
@@ -136,6 +140,7 @@ namespace Script.Manager
         public bool IsMultijoueur => typeScene.IsMultijoueur;
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
+        public bool IsDisconnecting => _disconnecting;
 
         // ------------ Setters ------------
         
@@ -246,6 +251,9 @@ namespace Script.Manager
             
             // pour pas que ça se termine instantanément
             _timeEnd = (int)PhotonNetwork.Time + 60;
+            
+            // etat
+            _disconnecting = false;
         }
 
         public void Start()
@@ -417,25 +425,62 @@ namespace Script.Manager
             }
         }
         
+        // ------------ Event ------------
+        
         // cette fontion seulement aux personnes rentrant dans la room alors que le jeu a déjà commencé
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             if (typeScene is InGuessWho)
             {
                 Hashtable hash = new Hashtable();
-                hash.Add("Retardataire", 0);
+                
+                // pour lui indiquer que ce sera un spectateur et le "time end"
+                hash.Add("Retardataire", _timeEnd);
+
+                // lui envoyer
                 newPlayer.SetCustomProperties(hash);
             }
         }
-        
+
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            SupprList(players);
+            SupprList(chasseurs);
+            SupprList(chassés);
+            SupprList(spectateurs);
+
+            void SupprList<T>(List<T> list)
+            {
+                for (int i = list.Count - 1; i >= 0; i--)
+                {
+                    if (list[i] is null)
+                    {
+                        list.RemoveAt(i);
+                    }
+                }
+            }
+            
+            string mes = "End by dead";
+            
+            if (chassés.Count == 0)
+            {
+                EndGame(TypePlayer.Chasseur, mes);
+            }
+            
+            if (chasseurs.Count == 0)
+            {
+                EndGame(TypePlayer.Chassé, mes);
+            }
+        }
+
         // ------------ GamePlay ------------
 
         public void Die(PlayerClass playerClass)
         {
-            if (!PlayerManager.Own || PlayerManager.Own.IsQuitting)
+            if (!ownPlayer || IsDisconnecting)
             {
                 // cela veut dire qu'on est sur un joueur qui a quitté la partie
-                // ou qui n'existe déjà plus, donc on ne fait rien
+                // ou qui n'existe déjà plus, donc on ne fait rien de plus
                 return;
             }
 
@@ -503,6 +548,27 @@ namespace Script.Manager
             _endedGame = true;
             MenuManager.Instance.OpenMenu("EndGame");
             EndGameMenu.Instance.SetUp(typeWinner, mes);
+        }
+        
+        // ------------ Quitter ------------
+        
+        public void StartQuit()
+        {
+            _disconnecting = true;
+            StartCoroutine(Quit());
+        }
+        
+        private IEnumerator Quit()
+        {
+            PhotonNetwork.Disconnect();
+            Destroy(RoomManager.Instance.gameObject);
+
+            while(PhotonNetwork.IsConnected)
+            {
+                yield return null;
+            }
+            
+            SceneManager.LoadScene(0);
         }
     }
 }

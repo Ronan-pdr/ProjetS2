@@ -35,11 +35,17 @@ namespace Script.EntityPlayer
         {
             _porteur = master.GetPlayer(indexPorteur).transform;
             Position();
+            SetRotation();
 
             if (Pv.IsMine)
             {
                 _interfaceInGameManager.SetNameForSpect(_porteur.name);
             }
+        }
+
+        private void SetRotation()
+        {
+            Tr.rotation = _porteur.rotation;
         }
         
         // ------------ Constructeurs ------------
@@ -55,13 +61,8 @@ namespace Script.EntityPlayer
             // interface
             _interfaceInGameManager = InterfaceInGameManager.Instance;
             _interfaceInGameManager.NewSpect();
+            _interfaceInGameManager.ActiveNbSpect();
 
-            if (Pv.IsMine)
-            {
-                _interfaceInGameManager.ActiveNbSpect();
-                MenuManager.Instance.OpenMenu("InterfaceInGame");
-            }
-            
             // reste
             indexPorteur = 0;
             SetPorteur();
@@ -71,13 +72,17 @@ namespace Script.EntityPlayer
         {
             if (Pv.IsMine)
             {
-                Tr.rotation = _porteur.rotation;
+                SetRotation();
+
+                if (!master.IsGameEnded() && LauncherManager.Instance)
+                {
+                    LauncherManager.Instance.EndLoading();
+                }
             }
             else
             {
                 // On veut détruire les caméras qui ne sont pas les tiennes
                 Destroy(GetComponentInChildren<Camera>().gameObject);
-                Destroy(GetComponentInChildren<CinemachineVirtualCamera>().gameObject);
             }
         }
 

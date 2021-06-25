@@ -88,6 +88,6 @@ namespace Script.DossierPoint
         }
 
         // pour l'instant c'est pas random
-        public int[] GetSpawnBot() => ManList.CreateArrRange(spawnBot.Length);
+        public int[] GetSpawnBot() => ManList.RandomIndex(spawnBot.Length);
     }
 }
