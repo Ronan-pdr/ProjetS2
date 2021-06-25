@@ -48,7 +48,7 @@ namespace Script.Menu
         {
             MasterManager master = MasterManager.Instance;
 
-            if (scene.buildIndex == 1) // We are in the bar
+            if (scene.buildIndex == 2) // We are in the bar
             {
                 BarManager barManager = BarManager.Instance;
             

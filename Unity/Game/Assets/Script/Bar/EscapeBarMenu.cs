@@ -13,8 +13,7 @@ namespace Script.Bar
         [Header("Boutton")]
         [SerializeField] private GameObject gameSettingsButton;
         [SerializeField] private GameObject startGameButton;
-        
-        
+
         // ------------ Constructeur ------------
 
         private void Awake()
@@ -33,21 +32,13 @@ namespace Script.Bar
         {
             if (PhotonNetwork.MasterClient.NickName == "Labyrinthe")
             {
-                PhotonNetwork.LoadLevel(3);
+                PhotonNetwork.LoadLevel(4);
             }
             else
             {
-                PhotonNetwork.LoadLevel(2);
+                // c'est parti pour le guess who
+                PhotonNetwork.LoadLevel(3);
             }
-        }
-    
-        // Est appelé par un boutton
-        public void LeaveRoom()
-        {
-            PhotonNetwork.LeaveRoom();
-        
-            // c'est reparti pour le menu
-            PhotonNetwork.LoadLevel(0);
         }
     
         // ------------ Private Methodes ------------

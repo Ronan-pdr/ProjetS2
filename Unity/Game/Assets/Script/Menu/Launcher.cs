@@ -6,6 +6,7 @@ using Script.EntityPlayer;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace Script.Menu
 {
@@ -13,16 +14,24 @@ namespace Script.Menu
     {
         // ------------ SerializeField ------------
         
-        [SerializeField] TMP_InputField roomNameInputField;
-        [SerializeField] TMP_Text errorText;
-        //Liste des rooms disponibles
-        [SerializeField] Transform roomListContent;
-        //Liste des joueurs dans la room
-        [SerializeField] GameObject roomListItemPrefab;
+        [Header("Menu Principale")]
         [SerializeField] TMP_InputField nameInputField;
+
+        [Header("Menu jouer")]
         [SerializeField] private Button createRoomButton;
         [SerializeField] private Button findRoomButton;
+        
+        [Header("Room")]
+        [SerializeField] Transform roomListContent;
+        [SerializeField] GameObject roomListItemPrefab;
+        [SerializeField] TMP_InputField roomNameInputField;
+        [SerializeField] TMP_Text errorText;
+
+        [Header("Son")]
         [SerializeField] private AudioManager audioManager;
+        
+        [Header("Crédit")]
+        [SerializeField] private Image background;
         
         // ------------ Attributs ------------
         
@@ -31,7 +40,7 @@ namespace Script.Menu
 
         // ------------ Constructeur ------------
         
-        void Awake()
+        private void Awake()
         {
             new TouchesClass();
             Instance = this;
@@ -89,7 +98,7 @@ namespace Script.Menu
             Debug.Log($"new name = {PhotonNetwork.NickName}");
             
             // c'est parti pour le bar
-            PhotonNetwork.LoadLevel(1);
+            PhotonNetwork.LoadLevel(2);
         }
 
         // ------------ Error ------------
@@ -188,6 +197,20 @@ namespace Script.Menu
             }
 
             return namesOtherPlayer;
+        }
+        
+        //--------------Pour le crédit------------
+        
+        public void Jouerlavideo(VideoPlayer input)
+        {
+            input.Play();
+            background.enabled = false;
+        }
+
+        public void Arreterlavideo(VideoPlayer input)
+        {
+            input.Stop();
+            background.enabled = true;
         }
         
         // ------------ Quitter ------------

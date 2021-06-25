@@ -9,27 +9,13 @@ namespace Script.Menu
     {
         // ------------ SerializeField ------------
         
+        [Header("Liste des menus")]
         [SerializeField] private Menu[] menus;
-        [SerializeField] private GameObject background;
-        
+
         // ------------ Attributs ------------
         
         public static MenuManager Instance;
 
-        //--------------Pour le crédit------------
-        
-        public void jouerlavideo(VideoPlayer input)
-        {
-            input.Play();
-            background.GetComponent<Image>().enabled = false;
-        }
-
-        public void arreterlavideo(VideoPlayer input)
-        {
-            input.Stop();
-            background.GetComponent<Image>().enabled = true;
-        }
-        
         //----------------------------------------
         private void Awake()
         {

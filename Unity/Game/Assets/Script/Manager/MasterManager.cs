@@ -571,7 +571,8 @@ namespace Script.Manager
                 yield return null;
             }
             
-            SceneManager.LoadScene(0);
+            // c'est reparti pour le menu
+            SceneManager.LoadScene(1);
         }
     }
 }
