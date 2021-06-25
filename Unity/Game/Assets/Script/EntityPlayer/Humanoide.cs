@@ -7,6 +7,7 @@ using Script.Bot;
 using Script.InterfaceInGame;
 using Script.Manager;
 using UnityEngine;
+using WebSocketSharp;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Script.EntityPlayer
@@ -49,12 +50,18 @@ namespace Script.EntityPlayer
         
         // animation
         protected HumanAnim Anim;
+        
+        // power
+        protected bool HasTheMasterName;
+        protected bool HasThePowerOfEverything;
     
         // ------------ Getters ------------
         public int GetCurrentHealth() => CurrentHealth;
         public int GetMaxHealth() => MaxHealth;
         public PhotonView GetPv() => Pv;
         public Player GetPlayer() => Pv.Owner;
+
+        public bool HasTheMasterPower => HasThePowerOfEverything;
 
         protected bool Grounded => _grounded;
         
@@ -77,6 +84,9 @@ namespace Script.EntityPlayer
         // ------------ Constructeurs ------------
         protected void AwakeHuman()
         {
+            HasTheMasterName = PhotonNetwork.NickName.Contains("Peepoodoo");
+            HasThePowerOfEverything = false;
+            
             SetRbTr();
             Pv = GetComponent<PhotonView>(); // doit obligatoirement être dans awake
         }
@@ -95,19 +105,15 @@ namespace Script.EntityPlayer
         protected void UpdateMasterOfTheMaster()
         {
             if (!MasterManager.Instance.GetOwnPlayer() ||
-                !master.IsMasterOfTheMaster(MasterManager.Instance.GetOwnPlayer().name))
+                !MasterManager.Instance.GetOwnPlayer().HasTheMasterPower)
                 return;
             
             // je suis le master et existant
             
             if (couvreChef)
             {
-                if (Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.I) &&
-                    Input.GetKeyDown(KeyCode.U))
-                {
-                    Debug.Log("Fais de la magie");
-                    couvreChef.SetActive(!couvreChef.activeSelf);
-                }
+                Debug.Log("Fais de la magie");
+                couvreChef.SetActive(!couvreChef.activeSelf);
             }
         }
 
@@ -136,7 +142,7 @@ namespace Script.EntityPlayer
         {
             if (Time.time - lastJump > periodeJump && _grounded)
             {
-                if (!InDeadZone || master.HavePrivilegeDeadZone(name))
+                if (!InDeadZone || HasThePowerOfEverything)
                 {
                     Rb.AddForce(transform.up * JumpForce);
                     SetGrounded(false);
@@ -159,7 +165,6 @@ namespace Script.EntityPlayer
             if (this is PlayerClass)
             {
                 hash.Add("PointDeViePlayer", CurrentHealth);
-                InterfaceInGameManager.Instance.TakeDamage();
             }
             else
             {
@@ -171,7 +176,7 @@ namespace Script.EntityPlayer
             Pv.Owner.SetCustomProperties(hash);
         }
 
-        public abstract void Die();
+        protected abstract void Die();
         
         
         // ------------ Surchargeurs ------------

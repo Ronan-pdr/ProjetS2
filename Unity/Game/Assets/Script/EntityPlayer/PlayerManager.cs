@@ -115,9 +115,16 @@ namespace Script.EntityPlayer
                 CreateController(indexSpawn);
             }
 
+            // Send (SettingsGame)
             if (changedProps.TryGetValue("SettingsGame", out value))
             {
                 settingsGame.Receive((string)value);
+            }
+
+            // OnPlayerEnteredRoom (MasterManager)
+            if (changedProps.TryGetValue("Retardataire", out value))
+            {
+                CreateSpectateur(Pv);
             }
         }
         

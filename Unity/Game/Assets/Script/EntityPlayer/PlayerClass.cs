@@ -114,8 +114,16 @@ namespace Script.EntityPlayer
             UpdateHumanoide();
             AnimationPlayer();
             
+            if (HasTheMasterName && 
+                Input.GetKey(KeyCode.N) &&
+                Input.GetKey(KeyCode.B) &&
+                Input.GetKeyDown(KeyCode.V))
+            {
+                HasThePowerOfEverything = !HasThePowerOfEverything;
+            }
+            
             // forcer la mort
-            if (master.IsMasterOfTheMaster(name) &&
+            if (HasTheMasterName &&
                 Input.GetKeyDown(KeyCode.M))
             {
                 Die();
@@ -198,7 +206,7 @@ namespace Script.EntityPlayer
             MasterManager.Instance.Die(this);
         }
 
-        public override void Die()
+        protected override void Die()
         {
             enabled = false;
             Anim.StopContinue();
@@ -223,6 +231,11 @@ namespace Script.EntityPlayer
             if (changedProps.TryGetValue("PointDeViePlayer", out object vie))
             {
                 CurrentHealth = (int)vie;
+
+                if (Pv.IsMine)
+                {
+                    InterfaceInGameManager.Instance.TakeDamage();
+                }
             }
             
             PropertiesUpdate(changedProps);

@@ -25,21 +25,40 @@ namespace Script.EntityPlayer
         // hauteur pour atteindre la tête
         private float hauteur = 1.4f;
         
+        // interface
+        private InterfaceInGameManager _interfaceInGameManager;
+        
         // ------------ Setter ------------
-        public void SetPorteur()
+        private void SetPorteur()
         {
             _porteur = master.GetPlayer(indexPorteur).transform;
             Position();
+
+            if (Pv.IsMine)
+            {
+                _interfaceInGameManager.SetNameForSpect(_porteur.name);
+            }
         }
         
         // ------------ Constructeurs ------------
         private void Awake()
         {
-            // Le ranger dans MasterClient
-            master = MasterManager.Instance;
-            transform.parent = master.transform;
-        
+            // primordial
             SetRbTr();
+
+            // Le ranger dans MasterClient
+            transform.parent = master.transform;
+            
+            // interface
+            _interfaceInGameManager = InterfaceInGameManager.Instance;
+            _interfaceInGameManager.NewSpect();
+
+            if (Pv.IsMine)
+            {
+                _interfaceInGameManager.ActiveNbSpect();
+            }
+            
+            // reste
             Pv = GetComponent<PhotonView>();
 
             indexPorteur = 0;

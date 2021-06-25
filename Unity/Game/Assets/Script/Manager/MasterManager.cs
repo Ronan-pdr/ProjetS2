@@ -20,7 +20,7 @@ using Random = System.Random;
 
 namespace Script.Manager
 {
-    public class MasterManager : MonoBehaviour
+    public class MasterManager : MonoBehaviourPunCallbacks
     {
         // ------------ SerializedField ------------
         
@@ -102,7 +102,7 @@ namespace Script.Manager
         private int _timeEnd;
         
         // for master of the master
-        private bool _haveTapedForPrivilegeDeadZone;
+        //private bool _haveThePower;
 
         // ------------ Getters ------------
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -136,13 +136,6 @@ namespace Script.Manager
         public bool IsMultijoueur => typeScene.IsMultijoueur;
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
-        
-        public bool IsMasterOfTheMaster(string n) => n.Contains("Peepoodoo");
-
-        public bool HavePrivilegeDeadZone(string n)
-        {
-            return IsMasterOfTheMaster(n) && _haveTapedForPrivilegeDeadZone;
-        }
 
         // ------------ Setters ------------
         
@@ -253,9 +246,6 @@ namespace Script.Manager
             
             // pour pas que ça se termine instantanément
             _timeEnd = (int)PhotonNetwork.Time + 60;
-            
-            // master of the mater awake
-            _haveTapedForPrivilegeDeadZone = false;
         }
 
         public void Start()
@@ -283,12 +273,7 @@ namespace Script.Manager
                 EndGame(TypePlayer.Chassé, "End by time");
             }
 
-            if (Input.GetKey(KeyCode.N) &&
-                Input.GetKey(KeyCode.B) &&
-                Input.GetKeyDown(KeyCode.V))
-            {
-                _haveTapedForPrivilegeDeadZone = !_haveTapedForPrivilegeDeadZone;
-            }
+            
         }
 
         // ------------ Private Méthodes ------------
@@ -429,6 +414,17 @@ namespace Script.Manager
                 Hashtable hash = new Hashtable();
                 hash.Add("InfoCréationBots", mes);
                 PhotonNetwork.PlayerList[iPlayer].SetCustomProperties(hash);
+            }
+        }
+        
+        // cette fontion seulement aux personnes rentrant dans la room alors que le jeu a déjà commencé
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            if (typeScene is InGuessWho)
+            {
+                Hashtable hash = new Hashtable();
+                hash.Add("Retardataire", 0);
+                newPlayer.SetCustomProperties(hash);
             }
         }
         

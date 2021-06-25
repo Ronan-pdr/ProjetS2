@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -23,6 +24,14 @@ namespace Script.InterfaceInGame
 
         [Header("Reaction Degat")]
         [SerializeField] private GameObject teinteDegat;
+        
+        [Header("For Spectateur")]
+        [SerializeField] private GameObject objNbSpect;
+        [SerializeField] private TextMeshProUGUI textNbSpect;
+        [SerializeField] private TextMeshProUGUI textNameToSpect;
+        
+        [Header("Debug")]
+        [SerializeField] private TextMeshProUGUI debug;
 
         // ------------ Attributs ------------
         
@@ -32,13 +41,25 @@ namespace Script.InterfaceInGame
         private Image _imageVie;
         private float _timeEnd;
         private float _timeTeinteFalse;
+
+        private int _nbSpect;
         
         // ------------ Constructeur ------------
+
+        private void Awake()
+        {
+            objNbSpect.SetActive(false);
+            _imageVie = spriteContent.GetComponent<Image>();
+
+            // pour spect
+            _nbSpect = 0;
+            textNbSpect.text = "0";
+            textNameToSpect.text = "";
+        }
 
         public void SetUp(PlayerClass player, float timeEnd)
         {
             _player = player;
-            _imageVie = spriteContent.GetComponent<Image>();
             _timeEnd = timeEnd;
         }
         
@@ -58,6 +79,7 @@ namespace Script.InterfaceInGame
         
         // ------------ Public Methodes ------------
 
+        // pour les humanoides
         public void TakeDamage()
         {
             teinteDegat.SetActive(true);
@@ -66,6 +88,29 @@ namespace Script.InterfaceInGame
 
             _timeTeinteFalse = Time.time + periode * 0.9f;
             Invoke(nameof(DesactiverTeinteDegat), periode);
+        }
+
+        // pour les scpectateurs
+        public void NewSpect()
+        {
+            _nbSpect += 1;
+            textNbSpect.text = _nbSpect.ToString();
+        }
+
+        public void ActiveNbSpect()
+        {
+            objNbSpect.SetActive(true);
+        }
+
+        public void SetNameForSpect(string namePorteur)
+        {
+            textNameToSpect.name = namePorteur;
+        }
+
+        // pour debug
+        public void Print(string mes)
+        {
+            debug.text += mes;
         }
         
         // ------------ Private Methodes ------------
