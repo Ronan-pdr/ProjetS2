@@ -177,8 +177,8 @@ MonoBehaviour:
   couvreChef: {fileID: 0}
   cameraHolder: {fileID: 2045545082932553956}
   armes:
-  - {fileID: 3331846866724865443}
-  - {fileID: 8950958029214654684}
+  - {fileID: 5569307209230388759}
+  - {fileID: 6235785777617248130}
 --- !u!114 &7257875464731040772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1101,7 +1101,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7a06244551b4f7d4092fe09a55022791, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a06244551b4f7d4092fe09a55022791, type: 3}
@@ -1184,7 +1184,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 78aa08cb87e5a374d82622f39f7d24c0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78aa08cb87e5a374d82622f39f7d24c0, type: 3}

@@ -523,7 +523,7 @@ namespace Script.Manager
 
             PhotonView pv = playerClass.GetPv(); // on récupère le point de vue du mourant
 
-            if (!pv.IsMine) // Seul le mourant créé un spectateur
+            if (!pv.IsMine || IsDisconnecting) // Seul le mourant créé un spectateur (s'il reste dans la partie)
                 return;
 
             if (players.Count == 0)

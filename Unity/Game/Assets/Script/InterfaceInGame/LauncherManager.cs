@@ -35,6 +35,10 @@ namespace Script.InterfaceInGame
         // ------------ Constructeur ------------
         private void Awake()
         {
+            // s'instancier
+            Instance = this;
+            
+            // instancier les autres
             InterfaceInGameManager.Instance = interfaceInGame;
             PauseMenu.Instance = pauseMenu;
             TabMenu.Instance = tabMenu;

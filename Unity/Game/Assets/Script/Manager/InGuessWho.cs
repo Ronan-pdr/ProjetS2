@@ -34,13 +34,13 @@ namespace Script.Manager
                     n.Suiveur = 1;
                     break;
                 case 2:
-                    n.Rectiligne = 16;
-                    n.Fuyard = 3;
+                    n.Rectiligne = 14;
+                    n.Fuyard = 5;
                     n.Suiveur = 1;
                     break;
                 case 3:
                     n.Rectiligne = 26;
-                    n.Fuyard = 3;
+                    n.Fuyard = 5;
                     n.Suiveur = 1;
                     break;
                 case 4:

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Script.Bar;
 using Script.Tools;
 using UnityEngine;
+using Launcher = Script.Menu.Launcher;
 
 namespace Script.Test
 {
@@ -35,7 +36,7 @@ namespace Script.Test
 
             void Aux(string expected, string[] arr)
             {
-                Assert.AreEqual(expected, MenuTabBar.ChangeName("Sam", arr));
+                Assert.AreEqual(expected, Launcher.ChangeName("Sam", arr));
             }
         }
     }

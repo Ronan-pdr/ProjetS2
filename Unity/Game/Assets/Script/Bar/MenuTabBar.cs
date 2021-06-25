@@ -55,64 +55,16 @@ namespace Script.Bar
             }
         }
 
-        private string[] RecupNameOtherPlayers()
-        {
-            Player[] otherPlayers = PhotonNetwork.PlayerListOthers;
-            int l = otherPlayers.Length;
-
-            string[] namesOtherPlayer = new string[l];
-
-            for (int i = 0; i < l; i++)
-            {
-                namesOtherPlayer[i] = otherPlayers[i].NickName;
-            }
-
-            return namesOtherPlayer;
-        }
-        
         // ------------ Event ------------
         
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            newPlayer.NickName = ChangeName(newPlayer.NickName, RecupNameOtherPlayers());
             SetListPlayer();
         }
 
         public override void OnPlayerLeftRoom(Player _)
         {
             SetListPlayer();
-        }
-        
-        // ------------ Static Methods ------------
-        
-        public static string ChangeName(string namePlayer, string[] namesOtherPlayer)
-        {
-            string res = namePlayer;
-            string[] players = namesOtherPlayer;
-            int count = 1;
-            int l = players.Length;
-            
-            // arthur2 ; arthur
-
-            for ((int j, int i) = (0, 0); j < l && i != l; j++)
-            {
-                for (i = 0; i < l && !ChangedName(namesOtherPlayer[i]); i++)
-                {}
-            }
-
-            bool ChangedName(string nameOtherPlayer)
-            {
-                if (nameOtherPlayer == res)
-                {
-                    count += 1;
-                    res = namePlayer + count;
-                    return true;
-                }
-
-                return false;
-            }
-
-            return res;
         }
     }
 }
