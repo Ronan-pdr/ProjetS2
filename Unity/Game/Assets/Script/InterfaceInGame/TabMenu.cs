@@ -36,20 +36,38 @@ namespace Script.InterfaceInGame
         {
             MasterManager mastermanager = MasterManager.Instance;
 
-            for (int i = 0; i < mastermanager.GetNbChasseur(); i++)
+            // hunter
+            Effacer(hunterNames, hunterLifes);
+            
+            int l = mastermanager.GetNbChasseur();
+
+            for (int i = 0; i < l; i++)
             {
                 Write(mastermanager.GetChasseur(i), hunterNames, hunterLifes);
             }
+            
+            // hunted
+            Effacer(huntedNames, huntedLifes);
+            
+            l = mastermanager.GetNbChassé();
 
-            for (int i = 0; i < mastermanager.GetNbChassé(); i++)
+            for (int i = 0; i < l; i++)
             {
                 Write(mastermanager.GetChassé(i), huntedNames, huntedLifes);
             }
+            
+            // fonction auxiliaire
 
             void Write(PlayerClass player, TextMeshProUGUI nameP, TextMeshProUGUI life)
             {
-                nameP.text = player.name + Environment.NewLine;
-                life.text = $"{player.GetCurrentHealth()}/{player.GetMaxHealth()}" + Environment.NewLine;
+                nameP.text += player.name + Environment.NewLine;
+                life.text += $"{player.GetCurrentHealth()}/{player.GetMaxHealth()}" + Environment.NewLine;
+            }
+
+            void Effacer(TextMeshProUGUI nameP, TextMeshProUGUI life)
+            {
+                nameP.text = "";
+                life.text = "";
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Cinemachine;
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Animation;
@@ -79,6 +80,7 @@ namespace Script.EntityPlayer
             {
                 // On veut détruire les caméras qui ne sont pas les tiennes
                 Destroy(GetComponentInChildren<Camera>().gameObject);
+                Destroy(GetComponentInChildren<CinemachineVirtualCamera>().gameObject);
             }
         }
 

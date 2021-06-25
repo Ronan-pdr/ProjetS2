@@ -203,7 +203,8 @@ namespace Script.DossierPoint
             string d = "dossierDebug";
             Aux(build,d);
 
-            File.Create($"{build}/{d}/AAAAAAAAAAAAAAAAAA[{PhotonNetwork.LocalPlayer.NickName}]");
+            using (File.Create($"{build}/{d}/AAAAAAAAAAAAAAAAAA[{PhotonNetwork.LocalPlayer.NickName}]"))
+            {}
 
             void Aux(string path, string nameDir)
             {

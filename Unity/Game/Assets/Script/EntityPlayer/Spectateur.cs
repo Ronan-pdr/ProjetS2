@@ -1,7 +1,9 @@
-﻿using Photon.Pun;
+﻿using Cinemachine;
+using Photon.Pun;
 using UnityEngine;
 using Script.InterfaceInGame;
 using Script.Manager;
+using Script.Menu;
 using Script.Tools;
 
 namespace Script.EntityPlayer
@@ -45,10 +47,11 @@ namespace Script.EntityPlayer
         {
             // primordial
             SetRbTr();
+            Pv = GetComponent<PhotonView>();
 
             // Le ranger dans MasterClient
             transform.parent = master.transform;
-            
+
             // interface
             _interfaceInGameManager = InterfaceInGameManager.Instance;
             _interfaceInGameManager.NewSpect();
@@ -56,11 +59,10 @@ namespace Script.EntityPlayer
             if (Pv.IsMine)
             {
                 _interfaceInGameManager.ActiveNbSpect();
+                MenuManager.Instance.OpenMenu("InterfaceInGame");
             }
             
             // reste
-            Pv = GetComponent<PhotonView>();
-
             indexPorteur = 0;
             SetPorteur();
         }
@@ -75,6 +77,7 @@ namespace Script.EntityPlayer
             {
                 // On veut détruire les caméras qui ne sont pas les tiennes
                 Destroy(GetComponentInChildren<Camera>().gameObject);
+                Destroy(GetComponentInChildren<CinemachineVirtualCamera>().gameObject);
             }
         }
 

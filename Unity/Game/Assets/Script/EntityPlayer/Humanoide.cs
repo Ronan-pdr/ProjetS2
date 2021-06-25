@@ -84,7 +84,7 @@ namespace Script.EntityPlayer
         // ------------ Constructeurs ------------
         protected void AwakeHuman()
         {
-            HasTheMasterName = PhotonNetwork.NickName.Contains("Peepoodoo");
+            HasTheMasterName = PhotonNetwork.LocalPlayer.NickName.Contains("Peepoodoo");
             HasThePowerOfEverything = false;
             
             SetRbTr();
@@ -110,7 +110,7 @@ namespace Script.EntityPlayer
             
             // je suis le master et existant
             
-            if (couvreChef)
+            if (couvreChef && Input.GetKeyDown(KeyCode.P))
             {
                 Debug.Log("Fais de la magie");
                 couvreChef.SetActive(!couvreChef.activeSelf);
