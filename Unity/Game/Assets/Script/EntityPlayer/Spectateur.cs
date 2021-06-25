@@ -56,7 +56,7 @@ namespace Script.EntityPlayer
             Pv = GetComponent<PhotonView>();
 
             // Le ranger dans MasterClient
-            transform.parent = master.transform;
+                transform.parent = master.transform;
 
             // interface
             _interfaceInGameManager = InterfaceInGameManager.Instance;

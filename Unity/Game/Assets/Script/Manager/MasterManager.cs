@@ -430,7 +430,7 @@ namespace Script.Manager
         // cette fontion seulement aux personnes rentrant dans la room alors que le jeu a déjà commencé
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            if (typeScene is InGuessWho)
+            if (typeScene is InGuessWho && PhotonNetwork.IsMasterClient)
             {
                 Hashtable hash = new Hashtable();
                 
@@ -448,6 +448,9 @@ namespace Script.Manager
             SupprList(chasseurs);
             SupprList(chassés);
             SupprList(spectateurs);
+            
+            bool oneHuntedLeft = chassés.Count == 1;
+            bool oneHunterLeft = chasseurs.Count == 1;
 
             void SupprList<T>(List<T> list)
             {
@@ -462,12 +465,12 @@ namespace Script.Manager
             
             string mes = "End by dead";
             
-            if (chassés.Count == 0)
+            if (oneHuntedLeft && chassés.Count == 0)
             {
                 EndGame(TypePlayer.Chasseur, mes);
             }
             
-            if (chasseurs.Count == 0)
+            if (oneHunterLeft && chasseurs.Count == 0)
             {
                 EndGame(TypePlayer.Chassé, mes);
             }

@@ -35,6 +35,9 @@ namespace Script.EntityPlayer
         
         // Pour savoir ce que tu étais au début
         private TypePlayer _type;
+
+        private MasterManager _master;
+        
         
         // ------------ Getter ------------
 
@@ -43,7 +46,9 @@ namespace Script.EntityPlayer
         // ------------ Constructeurs ------------
         private void Awake()
         {
-            transform.parent = MasterManager.Instance.transform;
+            _master = MasterManager.Instance;
+            
+            transform.parent = _master.transform;
             Pv = GetComponent<PhotonView>();
 
             if (Pv.IsMine)
@@ -117,7 +122,7 @@ namespace Script.EntityPlayer
             if (changedProps.TryGetValue("Retardataire", out value))
             {
                 CreateSpectateur(Pv);
-                MasterManager.Instance.SetTimeEnd((int)value);
+                _master.SetTimeEnd((int)value);
             }
         }
         

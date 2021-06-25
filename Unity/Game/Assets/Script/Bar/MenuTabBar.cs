@@ -31,6 +31,7 @@ namespace Script.Bar
         public void Open()
         {
             MenuManager.Instance.OpenMenu(GetComponent<Menu.Menu>());
+            SetListPlayer();
         }
 
         // ------------ Private Methods ------------

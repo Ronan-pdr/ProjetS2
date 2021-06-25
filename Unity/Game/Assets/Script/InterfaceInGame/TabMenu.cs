@@ -29,6 +29,13 @@ namespace Script.InterfaceInGame
         {
             Set();
         }
+        
+        // ------------ Event ------------
+
+        private void OnEnable()
+        {
+            Set();
+        }
 
         // ------------ Publique méthodes ------------
 
@@ -60,7 +67,13 @@ namespace Script.InterfaceInGame
 
             void Write(PlayerClass player, TextMeshProUGUI nameP, TextMeshProUGUI life)
             {
-                nameP.text += player.name + Environment.NewLine;
+                string n = player.name;
+                if (n.Length > 9)
+                {
+                    n = player.name.Substring(0, 8) + n[n.Length - 1];
+                }
+                
+                nameP.text += n + Environment.NewLine;
                 life.text += $"{player.GetCurrentHealth()}/{player.GetMaxHealth()}" + Environment.NewLine;
             }
 

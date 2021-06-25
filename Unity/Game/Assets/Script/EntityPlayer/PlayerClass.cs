@@ -210,7 +210,10 @@ namespace Script.EntityPlayer
 
         private void OnDestroy()
         {
-            master.Die(this);
+            if (master && master.GetTypeScene() == MasterManager.TypeScene.Game)
+            {
+                master.Die(this);
+            }
         }
 
         protected override void Die()
@@ -243,6 +246,8 @@ namespace Script.EntityPlayer
                 {
                     InterfaceInGameManager.Instance.TakeDamage();
                 }
+                
+                TabMenu.Instance.Set();
             }
             
             PropertiesUpdate(changedProps);
