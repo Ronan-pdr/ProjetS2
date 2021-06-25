@@ -55,6 +55,8 @@ namespace Script.InterfaceInGame
             _nbSpect = 0;
             textNbSpect.text = "0";
             textNameToSpect.text = "";
+            
+            teinteDegat.SetActive(false);
         }
 
         public void SetUp(PlayerClass player, float timeEnd)
