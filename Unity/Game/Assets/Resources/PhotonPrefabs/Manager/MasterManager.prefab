@@ -47,6 +47,7 @@ MonoBehaviour:
   originalHirondelle: {fileID: 4674858542141970376, guid: d2590c6a1bd4eff47a151e166f2db8a6, type: 3}
   originalSauteur: {fileID: 752753128678136743, guid: 9262fa7e7a8c94d47a3ac9858b06eaa2, type: 3}
   originalDetecteur: {fileID: 8594925851147014710, guid: 820b2853d66d08d4caa3367d170c2099, type: 3}
+  originalTraqueur: {fileID: 0}
   originalBodyGaz: {fileID: 8424364165130499839, guid: 866c659c271f014479473fc1e543201e, type: 3}
   originalRayGaz: {fileID: 5939710653004678706, guid: 05224721a27744443ad888b4b3e1ef77, type: 3}
   originalGraphPathFinding: {fileID: 2776933183299841945, guid: 9dccbe25ee3728b46b4d026295fbb8be, type: 3}
@@ -54,12 +55,15 @@ MonoBehaviour:
   marqueurBrown: {fileID: 4670889363634942262, guid: 1f50cb2dcb2be1742b3e37efa3c768e8, type: 3}
   marqueurRed: {fileID: 4670889363634942262, guid: db79c15371b47c544962fe8804d23261, type: 3}
   marqueurYellow: {fileID: 4670889363634942262, guid: e616b847958603d499260ecc7a8f5d49, type: 3}
+  settingsGame: {fileID: 11400000, guid: 0fa564ccad961764daf2ee1ceca27bf1, type: 2}
   dossierBodyChercheur: {fileID: 0}
   dossierBalleFusil: {fileID: 0}
   dossierRayGaz: {fileID: 0}
   dossierOtherBot: {fileID: 0}
   dossierGraph: {fileID: 0}
-  capsuleBot: {fileID: 2764116466850601302, guid: d90a1376be65d054da9a309f9e90c892, type: 3}
+  capsuleBot: {fileID: 2764116466850601302, guid: 633e98e3707538c4c9699ec7bcb75098, type: 3}
   scene: 0
-  IsBordNeeded: 0
+  isBordNeeded: 0
   "vis\xE9": {fileID: 0}
+  canvas: {fileID: 0}
+  photoWarning: {fileID: 0}

@@ -8,6 +8,7 @@ using Photon.Realtime;
 using Script.DossierPoint;
 using Script.EntityPlayer;
 using Script.Manager;
+using Script.Test;
 using Script.Tools;
 
 namespace Script.Bot
@@ -36,6 +37,8 @@ namespace Script.Bot
         // stocker tous les bots
         private List<BotClass> Bots;
 
+        // all
+        private List<BotClass> _allBots;
         private List<Fuyard> _allFuyards;
         
         // cette liste va servir à donner les noms à chaque bot
@@ -60,9 +63,14 @@ namespace Script.Bot
         
         // ------------ Setter ------------
 
-        public void AddFuyard(Fuyard fuyard)
+        public void AddBot(BotClass value)
         {
-            _allFuyards.Add(fuyard);
+            _allBots.Add(value);
+        }
+        
+        public void AddFuyard(Fuyard value)
+        {
+            _allFuyards.Add(value);
         }
 
         // ------------ Constructeurs ------------
@@ -70,6 +78,7 @@ namespace Script.Bot
         {
             Instance = this;
             Bots = new List<BotClass>();
+            _allBots = new List<BotClass>();
             _allFuyards = new List<Fuyard>();
         }
 
@@ -153,11 +162,11 @@ namespace Script.Bot
             
             Vector3 posFuyard = fuyard.transform.position;
 
-            Vector3 bestPos = Vector3.zero;
-            float maxDist = 3;
+            (Vector3 pos, float dist) best = (Vector3.zero, 5);
+
             foreach (Fuyard otherFuyard in _allFuyards)
             {
-                if (otherFuyard == fuyard)
+                if (!otherFuyard || otherFuyard == fuyard)
                 {
                     // il va pas fuir vers lui-même (logique hehe)
                     continue;
@@ -168,20 +177,44 @@ namespace Script.Bot
                 float distDestWithFuyard = Calcul.Distance(posFuyard, posOtherFuyard);
                 float distDestWithChasseur = Calcul.Distance(posChasseur, posOtherFuyard);
 
-                if (maxDist < distDestWithFuyard && distDestWithFuyard < distDestWithChasseur)
+                if (best.dist < distDestWithFuyard && distDestWithFuyard < distDestWithChasseur)
                 {
-                    maxDist = distDestWithFuyard;
-                    bestPos = posOtherFuyard;
+                    best.dist = distDestWithFuyard;
+                    best.pos = posOtherFuyard;
                 }
             }
 
-            if (SimpleMath.IsEncadré(bestPos, Vector3.zero, 1))
+            if (SimpleMath.IsEncadré(best.pos, Vector3.zero))
             {
                 // aucun bon spot
                 return null;
             }
             
-            return CrossManager.Instance.GetNearestPoint(bestPos);
+            return CrossManager.Instance.GetNearestPoint(best.pos);
+        }
+
+        public CrossPoint GetSpotToMove(Vector3 posFuyard)
+        {
+            float goodDist = 30;
+            (Vector3 Pos, float diff) best = (Vector3.zero, goodDist);
+            
+            foreach (BotClass bot in _allBots)
+            {
+                if (!bot)
+                    continue;
+
+                Vector3 posOtherBot = bot.transform.position;
+
+                float dist = Calcul.Distance(posFuyard, posOtherBot);
+                float diff = SimpleMath.Abs(goodDist - dist);
+                
+                if (diff < best.diff)
+                {
+                    best = (posOtherBot, diff);
+                }
+            }
+
+            return CrossManager.Instance.GetNearestPoint(best.Pos);
         }
 
         public void Die(BotClass bot)
@@ -191,6 +224,13 @@ namespace Script.Bot
             {
                 // le supprimer de la liste
                 Bots.Remove(bot);
+            }
+
+            _allBots.Remove(bot);
+
+            if (bot is Fuyard)
+            {
+                _allFuyards.Remove((Fuyard) bot);
             }
         }
         

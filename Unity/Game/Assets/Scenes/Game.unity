@@ -72264,10 +72264,10 @@ RectTransform:
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 600}
-  m_Pivot: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -100}
+  m_SizeDelta: {x: 1500, y: -200}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1388912814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72315,8 +72315,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 42
+  m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -93384,7 +93384,7 @@ PrefabInstance:
     - target: {fileID: -525982530942577693, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
       propertyPath: capsuleBot
       value: 
-      objectReference: {fileID: 2764116466850601302, guid: d90a1376be65d054da9a309f9e90c892, type: 3}
+      objectReference: {fileID: 2764116466850601302, guid: 633e98e3707538c4c9699ec7bcb75098, type: 3}
     - target: {fileID: -525982530942577693, guid: 75130e8b46a7c1c4eb0fa01742a0e16d, type: 3}
       propertyPath: dossierGraph
       value: 

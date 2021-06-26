@@ -59,12 +59,7 @@ namespace Script.DossierPoint
                     Debug.Log($"La liste allCrossPoints a mal été créé ou le cross point avec l'index '{i}' n'existe pas");
                 }
             }
-            
-            foreach (SousCrossManager e in GetComponentsInChildren<SousCrossManager>())
-            {
-                LoadNeigboors(e);
-            }
-            
+
             if (IsMaintenance)
             {
                 foreach (SousCrossManager e in sousCrossManagers)
@@ -76,6 +71,21 @@ namespace Script.DossierPoint
             {
                 // On NE DOIT PAS utiliser cette liste si c'est pas une maintenance
                 sousCrossManagers = null;
+            }
+        }
+
+        private void Start()
+        {
+            foreach (SousCrossManager e in GetComponentsInChildren<SousCrossManager>())
+            {
+                try
+                {
+                    LoadNeigboors(e);
+                }
+                catch (Exception exception)
+                {
+                    Print(exception.Message);
+                }
             }
         }
 
@@ -91,9 +101,11 @@ namespace Script.DossierPoint
             for (int i = 1; i < l; i++)
             {
                 point = _crossPoints[i];
-                float dist = Calcul.Distance(pos, point.transform.position);
+                Vector3 posPoint = point.transform.position;
+                
+                float dist = Calcul.Distance(pos, posPoint);
 
-                if (dist < best.dist)
+                if (dist < best.dist && SimpleMath.Abs(pos.y - posPoint.y) < 1)
                 {
                     best = (point, dist);
                 }
@@ -229,7 +241,7 @@ namespace Script.DossierPoint
             {
                 path = "Build/";
             }
-            
+
             path += DossierRangement + fileName;
 
             if (File.Exists(path))
@@ -247,12 +259,15 @@ namespace Script.DossierPoint
 
                         if (iCrossPoint >= l)
                         {
-                            throw new Exception($"WARNING : Le fichier de sauvegarde '{fileName}' des crossPoints n'est pas compatible --> faire une maintenance");
+                            InterfaceInGameManager.Instance.Print
+                            ($"WARNING 1 : Le fichier de sauvegarde '{fileName}' des crossPoints n'est pas compatible --> faire une maintenance");
                         }
 
                         if (allCrossPoints[iCrossPoint].name != nameCrossPoint)
                         {
-                            Debug.Log($"WARNING : Le fichier de sauvegarde '{fileName}' des crossPoints n'est pas compatible --> faire une maintenance");
+                            InterfaceInGameManager.Instance.Print
+                                ($"WARNING 2 : Le fichier de sauvegarde '{fileName}' des crossPoints n'est pas compatible --> faire une maintenance");
+                            
                         }
 
                         // set les neighboors du cross point
@@ -268,8 +283,14 @@ namespace Script.DossierPoint
             }
             else if (!IsMaintenance)
             {
-                Debug.Log($"WARNING : Le fichier de sauvegarde '{sousCrossManager.name}' des crossPoints n'existe pas --> faire une maintenance");
+                InterfaceInGameManager.Instance.Print
+                ($"WARNING : Le fichier de sauvegarde '{sousCrossManager.name}' des crossPoints n'existe pas --> faire une maintenance");
             }
+        }
+
+        private void Print(string mes)
+        {
+            InterfaceInGameManager.Instance.Print(mes);
         }
     }
 }

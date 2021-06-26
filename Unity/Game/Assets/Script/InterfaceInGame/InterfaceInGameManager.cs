@@ -114,7 +114,7 @@ namespace Script.InterfaceInGame
         // pour debug
         public void Print(string mes)
         {
-            debug.text += mes;
+            debug.text += mes + Environment.NewLine;
         }
         
         // ------------ Private Methodes ------------

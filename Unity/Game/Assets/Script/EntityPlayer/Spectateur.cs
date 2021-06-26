@@ -32,17 +32,11 @@ namespace Script.EntityPlayer
         {
             _porteur = master.GetPlayer(_indexPorteur).transform;
             Position();
-            SetRotation();
 
             if (Pv.IsMine)
             {
                 _interfaceInGameManager.SetNameForSpect(_porteur.name);
             }
-        }
-
-        private void SetRotation()
-        {
-            //Tr.rotation = _porteur.rotation;
         }
         
         // ------------ Constructeurs ------------
@@ -68,8 +62,6 @@ namespace Script.EntityPlayer
         {
             if (Pv.IsMine)
             {
-                SetRotation();
-
                 if (!master.IsGameEnded() && LauncherManager.Instance)
                 {
                     LauncherManager.Instance.EndLoading();

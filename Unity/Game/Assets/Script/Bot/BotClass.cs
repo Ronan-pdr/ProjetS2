@@ -40,7 +40,7 @@ namespace Script.Bot
         protected float AmountRotation;
         
         // variables relatives à la caméra artificiel des bots
-        private static float AngleCamera = 75; // le degré pour la vision périphérique
+        private static float AngleCamera = 80; // le degré pour la vision périphérique
 
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
@@ -148,6 +148,8 @@ namespace Script.Bot
             {
                 Tr.parent = BotManager.transform; // le parenter dans ton dossier de botManager
             }
+            
+            BotManager.Instance.AddBot(this);
         }
 
         // ------------ Update ------------
@@ -180,7 +182,7 @@ namespace Script.Bot
         // ------------ Méthodes ------------
 
         // Rotation
-        protected void GestionRotation(Vector3 dest, float periodeCalculRotation)
+        protected void GestionRotation(Vector3 dest, float periodeCalculRotation = 0.2f)
         {
             // il recalcule sa rotation tous les 0.5f
             if (Time.time - LastCalculRotation > periodeCalculRotation)
@@ -189,11 +191,6 @@ namespace Script.Bot
             }
 
             Tourner();
-        }
-        
-        protected void GestionRotation(Vector3 dest)
-        {
-            GestionRotation(dest, 0.5f);
         }
         
         protected void CalculeRotation(Vector3 dest)
@@ -231,19 +228,19 @@ namespace Script.Bot
         {
             float absMoveAmount = SimpleMath.Abs(AmountRotation);
             if (absMoveAmount < 5)
-                return 0.7f;
-            if (absMoveAmount < 30)
                 return 0.8f;
-            if (absMoveAmount < 60)
+            if (absMoveAmount < 30)
                 return 0.9f;
+            if (absMoveAmount < 60)
+                return 1f;
             if (absMoveAmount < 90)
-                return 1.1f;
-            if (absMoveAmount < 120)
                 return 1.3f;
+            if (absMoveAmount < 120)
+                return 1.4f;
             if (absMoveAmount < 150)
-                return 1.5f;
+                return 1.6f;
             
-            return 1.7f;
+            return 1.8f;
         }
         
         // vitesse
@@ -330,20 +327,19 @@ namespace Script.Bot
 
         protected bool IsInMyVision(PlayerClass player)
         {
-            Vector3 positionCamera = Tr.position;
+            Vector3 posYeuxArti = Tr.position + 2.2f * Vector3.up;
             Vector3 posPlayer = player.transform.position;
             
-            float angleY = Calcul.Angle(Tr.eulerAngles.y, positionCamera,
+            float angleY = Calcul.Angle(Tr.eulerAngles.y, posYeuxArti,
                 posPlayer, Calcul.Coord.Y);
 
             if (SimpleMath.Abs(angleY) < AngleCamera) // le chasseur est dans le champs de vision du bot ?
             {
-                if (Physics.Linecast(positionCamera, posPlayer, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
+                if (Physics.Linecast(posYeuxArti, posPlayer, out RaycastHit hit)) // y'a t'il aucun obstacle entre le chasseur et le bot ?
                 {
-                    if (hit.collider.GetComponent<PlayerClass>() && hit.distance < 30)
+                    if (hit.collider.GetComponent<PlayerClass>() && hit.distance < 40)
                     {
                         // si l'obstacle est le joueur alors le bot "VOIT" le joueur
-                        
                         return hit.collider.GetComponent<PlayerClass>() == player;
                     }
                 }
@@ -356,12 +352,16 @@ namespace Script.Bot
         protected override void Die()
         {
             enabled = false;
-            BotManager.Die(this);
-            
+
             // détruire l'objet
             PhotonNetwork.Destroy(gameObject);
         }
-        
+
+        private void OnDestroy()
+        {
+            BotManager.Die(this);
+        }
+
         // ------------ Event ------------
         
         private void ManageBlock()

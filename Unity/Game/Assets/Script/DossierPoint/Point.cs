@@ -14,7 +14,10 @@ namespace Script.DossierPoint
         // ------------ Constructeur ------------
         private void Start()
         {
-            Invisible();
+            if (!(this is CrossPoint))
+            {
+                Invisible();
+            }
         }
         
         // ------------ Méthodes ------------

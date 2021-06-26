@@ -29,10 +29,8 @@ namespace Script.Bot
 
         // fuite
         private List<Vector3> planFuite;
-        
-        /*private float tempsMaxFuite = 3f;
-        private float tempsRestantFuite;
-        private float distanceFuite;*/
+
+        private float _timeBeginJustWait;
         
         // ------------ Setter ------------
 
@@ -52,6 +50,10 @@ namespace Script.Bot
         protected override void StartBot()
         {
             BotManager.Instance.AddFuyard(this);
+            etat = Etat.Attend;
+            _timeBeginJustWait = Time.time;
+            
+            InvokeRepeating(nameof(UpdateFuyard), 0, 0.1f);
         }
 
         // ------------ Update ------------
@@ -60,6 +62,21 @@ namespace Script.Bot
             if (etat == Etat.Fuite)
             {
                 Fuir();
+            }
+        }
+
+        private void UpdateFuyard()
+        {
+            if (Time.time - _timeBeginJustWait > 40)
+            {
+                SearchPlan(BotManager.GetSpotToMove(Tr.position));
+                _timeBeginJustWait = Time.time;
+            }
+            
+            if (etat == Etat.Fuite)
+            {
+                // le reste est fait dans "l'update bot"
+                _timeBeginJustWait = Time.time;
             }
             else if (etat == Etat.Attend)
             {
@@ -74,6 +91,7 @@ namespace Script.Bot
             else if (etat == Etat.FuiteSansPlan)
             {
                 // attend son plan, ne fait strictement rien
+                _timeBeginJustWait = Time.time;
             }
             else if (etat == Etat.Poule)
             {
@@ -101,13 +119,16 @@ namespace Script.Bot
             }
             else // attend son plan de fuite
             {
-                Vector3 pos = Tr.position;
-                
-                CrossPoint start = CrossManager.Instance.GetNearestPoint(pos);
-                
-                GraphPathFinding.GetPath(start, dest, name, RecepPathEscape);
-                etat = Etat.FuiteSansPlan;
+                SearchPlan(dest);
             }
+        }
+
+        private void SearchPlan(CrossPoint dest)
+        {
+            CrossPoint start = CrossManager.Instance.GetNearestPoint(Tr.position);
+                
+            GraphPathFinding.GetPath(start, dest, name, RecepPathEscape);
+            etat = Etat.FuiteSansPlan;
         }
 
         private void RecepPathEscape(List<Vector3> path)
@@ -123,7 +144,7 @@ namespace Script.Bot
             {
                 Vector3 pos = Tr.position;
                 
-                if (l == 1 && Calcul.Distance(pos, path[0]) < 5)
+                if (l == 1 && Calcul.Distance(pos, path[0]) < 3)
                 {
                     SetEtatPoule();
                     return;

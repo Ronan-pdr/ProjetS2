@@ -19,7 +19,7 @@ namespace Script.DossierPoint
 
             private float _bestDist;
             private Node _previous;
-            private Line _bridge;
+            //private Line _bridge;
             private Vector3 _pos;
             
             // ------------ Getter ------------
@@ -37,7 +37,7 @@ namespace Script.DossierPoint
                 }
 
                 _bestDist = dist;
-                _bridge.SetColor(DistToCouleur(_bestDist));
+                //_bridge.SetColor(DistToCouleur(_bestDist));
             }
 
             public bool NewPath(Node node)
@@ -48,8 +48,8 @@ namespace Script.DossierPoint
                 {
                     _bestDist = dist;
                     _previous = node;
-                    _bridge.SetNode(_pos, _previous._pos);
-                    _bridge.SetColor(DistToCouleur(_bestDist));
+                    //_bridge.SetNode(_pos, _previous._pos);
+                    //_bridge.SetColor(DistToCouleur(_bestDist));
                     return true;
                 }
                 
@@ -64,7 +64,7 @@ namespace Script.DossierPoint
                 
                 _bestDist = 0;
                 _previous = null;
-                _bridge = null;
+                //_bridge = null;
                 _pos = pos;
             }
             
@@ -75,7 +75,7 @@ namespace Script.DossierPoint
                 
                 _bestDist = previous._bestDist + Calcul.Distance(_pos, previous._pos);
                 
-                _bridge = Line.Create(_pos, previous._pos, DistToCouleur(_bestDist));
+                //_bridge = Line.Create(_pos, previous._pos, DistToCouleur(_bestDist));
             }
             
             // ------------ Method(s) ------------
@@ -108,7 +108,7 @@ namespace Script.DossierPoint
         public CrossPoint GetNeighboor(int index) => neighboors[index];
         public int GetNbNeighboor() => neighboors.Count;
         public int IndexFile => _indexFile;
-        public bool Actif => gameObject.activeInHierarchy;
+        private bool Actif => gameObject.activeInHierarchy;
 
         // ------------ Setter ------------
         public void AddNeighboor(CrossPoint value)
