@@ -103,7 +103,7 @@ namespace Script.EntityPlayer
             
             object value;
             
-            // type du joueur pour qu'il se fasse instancier pour la première fois -> Start (MasterManager)
+            // type du joueur pour qu'il se fasse instancier pour la première fois -> SendInfoPlayer (MasterManager)
             if (changedProps.TryGetValue("InfoCréationJoueur", out value))
             {
                 (int indexSpawn, TypePlayer typePlayer) = DecodeFormatInfoJoueur((string) value);

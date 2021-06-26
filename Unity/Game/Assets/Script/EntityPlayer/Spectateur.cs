@@ -1,9 +1,6 @@
-﻿using Cinemachine;
-using Photon.Pun;
+﻿using Photon.Pun;
 using UnityEngine;
 using Script.InterfaceInGame;
-using Script.Manager;
-using Script.Menu;
 using Script.Tools;
 
 namespace Script.EntityPlayer
@@ -14,14 +11,14 @@ namespace Script.EntityPlayer
         
         // Celui que l'on va suivre
         private Transform _porteur;
-        private int indexPorteur;
+        private int _indexPorteur;
         
         //Photon
         protected PhotonView Pv;
         
         //Variable similaire aux playerClass
-        private float yLookRotation;
-        private float xLookRotation;
+        private float _yLookRotation;
+        private float _xLookRotation;
         private float mouseSensitivity = 3f;
 
         // hauteur pour atteindre la tête
@@ -33,7 +30,7 @@ namespace Script.EntityPlayer
         // ------------ Setter ------------
         private void SetPorteur()
         {
-            _porteur = master.GetPlayer(indexPorteur).transform;
+            _porteur = master.GetPlayer(_indexPorteur).transform;
             Position();
             SetRotation();
 
@@ -45,7 +42,7 @@ namespace Script.EntityPlayer
 
         private void SetRotation()
         {
-            Tr.rotation = _porteur.rotation;
+            //Tr.rotation = _porteur.rotation;
         }
         
         // ------------ Constructeurs ------------
@@ -60,11 +57,10 @@ namespace Script.EntityPlayer
 
             // interface
             _interfaceInGameManager = InterfaceInGameManager.Instance;
-            _interfaceInGameManager.NewSpect();
-            _interfaceInGameManager.ActiveNbSpect();
+            _interfaceInGameManager.ChangeNbSpect(true);
 
             // reste
-            indexPorteur = 0;
+            _indexPorteur = 0;
             SetPorteur();
         }
 
@@ -95,7 +91,7 @@ namespace Script.EntityPlayer
             // le cas ou l'ancier porteur est mort ou à quitter la partie
             if (!_porteur)
             {
-                indexPorteur = 0;
+                _indexPorteur = 0;
                 SetPorteur();
             }
             
@@ -117,12 +113,12 @@ namespace Script.EntityPlayer
 
         private void Look()
         {
-            xLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-            xLookRotation = Mathf.Clamp(xLookRotation, -50f, 30f);
+            _xLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
+            _xLookRotation = Mathf.Clamp(_xLookRotation, -50f, 30f);
             
-            yLookRotation += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
+            _yLookRotation += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
 
-            Tr.localEulerAngles = new Vector3(-xLookRotation, yLookRotation, 0);
+            Tr.localEulerAngles = new Vector3(-_xLookRotation, _yLookRotation, 0);
         }
 
         private void ChangerPorteur()
@@ -130,14 +126,21 @@ namespace Script.EntityPlayer
             //changer d'arme avec la molette
             if (Input.GetAxisRaw("Mouse ScrollWheel") > 0)
             {
-                indexPorteur = SimpleMath.Mod(indexPorteur + 1, master.GetNbPlayer());
+                _indexPorteur = SimpleMath.Mod(_indexPorteur + 1, master.GetNbPlayer());
             }
             else if (Input.GetAxisRaw("Mouse ScrollWheel") < 0)
             {
-                indexPorteur = SimpleMath.Mod(indexPorteur - 1, master.GetNbPlayer());
+                _indexPorteur = SimpleMath.Mod(_indexPorteur - 1, master.GetNbPlayer());
             }
             
             SetPorteur();
+        }
+        
+        // ------------ Event ------------
+
+        private void OnDestroy()
+        {
+            _interfaceInGameManager.ChangeNbSpect(false);
         }
     }
 }

@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using Script.Animation;
 using Script.Animation.Personnages.Hunted;
+using Script.Bar;
 using Script.Bot;
 using Script.InterfaceInGame;
 using Script.Manager;
@@ -128,7 +129,14 @@ namespace Script.EntityPlayer
             // Mourir de chute
             if (transform.position.y < -10f)
             {
-                Die();
+                if (master.GetTypeScene() == MasterManager.TypeScene.Game)
+                {
+                    Die();
+                }
+                else
+                {
+                    BarManager.Instance.Tp(Tr);
+                }
             }
         
             // Mourir point de vie

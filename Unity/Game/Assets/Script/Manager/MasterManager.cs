@@ -105,8 +105,8 @@ namespace Script.Manager
         // time (en minutes)
         private int _timeEnd;
         
-        // for master of the master
-        //private bool _haveThePower;
+        // full hunter
+        private bool _modeBattleRoyal;
 
         // ------------ Getters ------------
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -141,6 +141,7 @@ namespace Script.Manager
 
         public bool IsInMaintenance() => typeScene is InMaintenance;
         public bool IsDisconnecting => _disconnecting;
+        public bool IsBatleRoyal => _modeBattleRoyal;
 
         // ------------ Setters ------------
         
@@ -176,17 +177,27 @@ namespace Script.Manager
             // ce if s'active lorsque tous les joueurs ont créé leur avatar et l'ont ajouté à la liste 'players'
             if (players.Count == nParticipant && typeScene is InGuessWho)
             {
-                TabMenu.Instance.Set();
+                TabMenu.Instance.Updateinfos();
             }
         }
         
-        public void AjoutChasseur(Chasseur chasseur)
+        public void AjoutChasseur(Chasseur value)
         {
-            chasseurs.Add(chasseur);
+            chasseurs.Add(value);
+
+            if (typeScene is InGuessWho)
+            {
+                TabMenu.Instance.NewChasseur(value);
+            }
         }
-        public void AjoutChassé(Chassé chassé)
+        public void AjoutChassé(Chassé value)
         {
-            chassés.Add(chassé);
+            chassés.Add(value);
+            
+            if (typeScene is InGuessWho)
+            {
+                TabMenu.Instance.NewChassé(value);
+            }
         }
 
         public void SetTimeEnd(int value)
@@ -202,6 +213,11 @@ namespace Script.Manager
         public void ClignotementWarning()
         {
             photoWarning.SetActive(!photoWarning.activeSelf);
+        }
+
+        public void LetsGetReadyToRambo()
+        {
+            _modeBattleRoyal = true;
         }
 
         // ------------ Constructeurs ------------
@@ -278,10 +294,15 @@ namespace Script.Manager
         {
             if (typeScene is InGuessWho && PhotonNetwork.Time >= _timeEnd)
             {
-                EndGame(TypePlayer.Chassé, "End by time");
+                if (IsBatleRoyal)
+                {
+                    EndGame(TypePlayer.Chasseur, "Everybody won");
+                }
+                else
+                {
+                    EndGame(TypePlayer.Chassé, "End by time");
+                }
             }
-
-            
         }
 
         // ------------ Private Méthodes ------------
@@ -327,6 +348,12 @@ namespace Script.Manager
 
         public void SendInfoPlayer()
         {
+            if (settingsGame.NChasseur == nParticipant)
+            {
+                // battle royale !!!!!!!!!!!!!!!!
+                LetsGetReadyToRambo();
+            }
+            
             if (!PhotonNetwork.IsMasterClient)
                 return;
 
@@ -572,7 +599,7 @@ namespace Script.Manager
             }
             
             // c'est reparti pour le menu
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene(0);
         }
     }
 }

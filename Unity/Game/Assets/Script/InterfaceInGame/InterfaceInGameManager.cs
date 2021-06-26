@@ -93,15 +93,17 @@ namespace Script.InterfaceInGame
         }
 
         // pour les scpectateurs
-        public void NewSpect()
+        public void ChangeNbSpect(bool incremente)
         {
-            _nbSpect += 1;
+            _nbSpect += incremente ? 1 : -1;
             textNbSpect.text = _nbSpect.ToString();
-        }
+            
+            objNbSpect.SetActive(_nbSpect > 0);
 
-        public void ActiveNbSpect()
-        {
-            objNbSpect.SetActive(true);
+            if (_nbSpect < 0)
+            {
+                debug.text += $"NbSpect = {_nbSpect}";
+            }
         }
 
         public void SetNameForSpect(string namePorteur)

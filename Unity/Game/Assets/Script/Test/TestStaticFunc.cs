@@ -36,7 +36,7 @@ namespace Script.Test
 
             void Aux(string expected, string[] arr)
             {
-                Assert.AreEqual(expected, Launcher.ChangeName("Sam", arr));
+                Assert.AreEqual(expected, BarManager.ChangeName("Sam", arr));
             }
         }
     }

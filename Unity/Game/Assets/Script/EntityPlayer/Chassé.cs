@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 using ExitGames.Client.Photon;
-using ExitGames.Client.Photon.StructWrapping;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using Script.Animation.Personnages.Hunted;
 using Script.Bot;
 using Script.Manager;
@@ -62,6 +60,11 @@ namespace Script.EntityPlayer
             {
                 ChangeDesign((_design.Index + 1) % _design.Length);
             }
+            
+            if (Input.GetAxisRaw("Mouse ScrollWheel") < 0)
+            {
+                ChangeDesign((_design.Index - 1 + _design.Length) % _design.Length);
+            }
         }
         
         // ------------ Methods ------------
@@ -70,7 +73,7 @@ namespace Script.EntityPlayer
         {
             Ray ray = new Ray(trCamera.position, trCamera.TransformDirection(Vector3.forward));
 
-            if (Physics.Raycast(ray, out RaycastHit hit, 30))
+            if (Physics.Raycast(ray, out RaycastHit hit, 50))
             {
                 if (hit.collider.GetComponent<Chassé>())
                 {
@@ -101,7 +104,6 @@ namespace Script.EntityPlayer
             }
         }
 
-
         // ------------ Multijoueur ------------
 
         protected override void PropertiesUpdate(Hashtable changedProps)
@@ -114,6 +116,11 @@ namespace Script.EntityPlayer
                     ChangeDesign((int)indexDesign);
                 }
             }
+        }
+
+        public override void OnPlayerEnteredRoom(Player _)
+        {
+            ChangeDesign(_design.Index);
         }
     }
 }

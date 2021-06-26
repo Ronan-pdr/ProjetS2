@@ -59,7 +59,7 @@ namespace Script.InterfaceInGame
         public void Restart()
         {
             // c'est parti pour le bar
-            PhotonNetwork.LoadLevel(1);
+            PhotonNetwork.LoadLevel(0);
         }
         
         // ------------ Event ------------

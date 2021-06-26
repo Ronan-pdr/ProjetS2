@@ -72,7 +72,7 @@ namespace Script.Menu
         
         // ------------ Créer/Rejoindre ------------
         
-        //Est appelé par un boutton
+        // Est appelé par un boutton
         public void CreateRoom()
         {
             if (string.IsNullOrEmpty(roomNameInputField.text))
@@ -83,22 +83,19 @@ namespace Script.Menu
             SavePlayerName();
         }
         
-        //Est appelé par un boutton
+        // Est appelé par un boutton
         public void JoinRoom(RoomInfo info)
         {
             PhotonNetwork.JoinRoom(info.Name);
             MenuManager.Instance.OpenMenu("loading");
-            SavePlayerName();
         }
-        
-        //Est appelé automatiquement après 'Join Room'
+
         public override void OnJoinedRoom()
         {
-            PhotonNetwork.NickName = ChangeName(PhotonNetwork.NickName, RecupNameOtherPlayers());
-            Debug.Log($"new name = {PhotonNetwork.NickName}");
-            
-            // c'est parti pour le bar
-            PhotonNetwork.LoadLevel(2);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.LoadLevel(2);
+            }
         }
 
         // ------------ Error ------------
@@ -153,52 +150,7 @@ namespace Script.Menu
             PhotonNetwork.NickName = playerName;
             PlayerPrefs.SetString(PlayerPrefsNameKey, playerName);
         }
-        
-        public static string ChangeName(string namePlayer, string[] namesOtherPlayer)
-        {
-            string res = namePlayer;
-            string[] players = namesOtherPlayer;
-            int count = 1;
-            int l = players.Length;
-            
-            // arthur2 ; arthur
 
-            for ((int j, int i) = (0, 0); j < l && i != l; j++)
-            {
-                for (i = 0; i < l && !ChangedName(namesOtherPlayer[i]); i++)
-                {}
-            }
-
-            bool ChangedName(string nameOtherPlayer)
-            {
-                if (nameOtherPlayer == res)
-                {
-                    count += 1;
-                    res = namePlayer + count;
-                    return true;
-                }
-
-                return false;
-            }
-
-            return res;
-        }
-        
-        private string[] RecupNameOtherPlayers()
-        {
-            Player[] otherPlayers = PhotonNetwork.PlayerListOthers;
-            int l = otherPlayers.Length;
-
-            string[] namesOtherPlayer = new string[l];
-
-            for (int i = 0; i < l; i++)
-            {
-                namesOtherPlayer[i] = otherPlayers[i].NickName;
-            }
-
-            return namesOtherPlayer;
-        }
-        
         //--------------Pour le crédit------------
         
         public void Jouerlavideo(VideoPlayer input)

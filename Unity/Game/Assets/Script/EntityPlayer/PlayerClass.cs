@@ -41,13 +41,19 @@ namespace Script.EntityPlayer
         private float mouseSensitivity = 3f;
 
         // ------------ Constructeurs ------------
-        
+
         protected abstract void AwakePlayer();
         private void Awake()
         {
+            // first of all
             AwakeHuman();
+            
+            // le nom est le même que celui de photon
+            name = Pv.Owner.NickName;
+            
+            // forcément après le nom
             AwakePlayer();
-        
+
             // parenter
             Tr.parent = MasterManager.Instance.transform;
 
@@ -57,8 +63,7 @@ namespace Script.EntityPlayer
                 MasterManager.Instance.SetOwnPlayer(this);
             }
         
-            // le nom est le même que celui de photon
-            name = Pv.Owner.NickName;
+            
             
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);
@@ -176,7 +181,7 @@ namespace Script.EntityPlayer
                 speed = WalkSpeed;
             }
 
-            Vector3 moveDir = new Vector3(xMov, 0, zMov);
+            Vector3 moveDir = new Vector3(xMov, 0, zMov).normalized;
 
             SetMoveAmount(moveDir, speed);
         }
@@ -247,7 +252,7 @@ namespace Script.EntityPlayer
                     InterfaceInGameManager.Instance.TakeDamage();
                 }
                 
-                TabMenu.Instance.Set();
+                TabMenu.Instance.Updateinfos();
             }
             
             PropertiesUpdate(changedProps);

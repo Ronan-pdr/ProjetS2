@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using Script.EntityPlayer;
 using Script.InterfaceInGame;
 using Script.Menu;
@@ -51,6 +52,9 @@ namespace Script.Bar
             
             // initialiser le reste
             _rnd = new Random();
+            
+            // changer de nom
+            PhotonNetwork.NickName = ChangeName(PhotonNetwork.NickName, RecupNameOtherPlayers());
         }
 
         private void Start()
@@ -86,6 +90,63 @@ namespace Script.Bar
                 // fermer le menu tab
                 MenuManager.Instance.OpenMenu(menuWaiting);
             }
+        }
+        
+        // ------------ Publique méthode ------------
+
+        public void Tp(Transform player)
+        {
+            Transform tp = GetSpawn();
+                
+            player.position = tp.position;
+            player.rotation = tp.rotation;
+        }
+        
+        // ------------ Private méthod ------------
+        
+        public static string ChangeName(string namePlayer, string[] namesOtherPlayer)
+        {
+            string res = namePlayer;
+            string[] players = namesOtherPlayer;
+            int count = 1;
+            int l = players.Length;
+            
+            // arthur2 ; arthur
+
+            for ((int j, int i) = (0, 0); j < l && i != l; j++)
+            {
+                for (i = 0; i < l && !ChangedName(namesOtherPlayer[i]); i++)
+                {}
+            }
+
+            bool ChangedName(string nameOtherPlayer)
+            {
+                if (nameOtherPlayer == res)
+                {
+                    count += 1;
+                    res = namePlayer + count;
+                    return true;
+                }
+
+                return false;
+            }
+
+            return res;
+        }
+        
+        private string[] RecupNameOtherPlayers()
+        {
+            Player[] otherPlayers = PhotonNetwork.PlayerListOthers;
+            int l = otherPlayers.Length;
+
+            string[] namesOtherPlayer = new string[l];
+
+            for (int i = 0; i < l; i++)
+            {
+                namesOtherPlayer[i] = otherPlayers[i].NickName;
+            }
+
+            return namesOtherPlayer;
         }
     }
 }

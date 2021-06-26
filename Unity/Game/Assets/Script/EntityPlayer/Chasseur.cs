@@ -145,13 +145,22 @@ namespace Script.EntityPlayer
             {
                 Humanoide cibleHumaine = hittenObj.GetComponent<Humanoide>();
     
-                if (!(cibleHumaine is Chasseur)) // Si la personne touchée est un chasseur, personne prend de dégât
+                if (cibleHumaine is Chasseur) 
+                {
+                    // Si la personne touchée est un chasseur, personne prend de dégât
+                    // sauf si c'est un battle royale
+                    if (master.IsBatleRoyal)
+                    {
+                        cibleHumaine.TakeDamage(armeDamage / 2);
+                    }
+                }
+                else
                 {
                     cibleHumaine.TakeDamage(armeDamage); // Le chassé ou le bot prend des dégâts
     
                     if (cibleHumaine is BotClass)
                     {
-                        TakeDamage(6); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
+                        TakeDamage(10); // Le chasseur en prend aussi puisqu'il s'est trompé de cible
                     }
                 }
             }

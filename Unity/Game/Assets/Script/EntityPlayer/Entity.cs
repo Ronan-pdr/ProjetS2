@@ -18,8 +18,8 @@ namespace Script.EntityPlayer
 
         //Déplacement
         protected Vector3 MoveAmount;
-        private Vector3 smoothMoveVelocity;
-        private float smouthTime = 0.15f;
+        private Vector3 _smoothMoveVelocity;
+        private const float SmouthTime = 0.15f;
         
         // masterManager
         protected MasterManager master;
@@ -64,7 +64,7 @@ namespace Script.EntityPlayer
         protected void SetMoveAmount(Vector3 moveDir, float speed) // moveDir doit être de la forme (1, 0, 0), (0, 0, -1), (1, 0, 1)... mais pas de 1 sur y (pour les humains du moins)
         {
             MoveAmount = Vector3.SmoothDamp(MoveAmount,
-                moveDir * speed, ref smoothMoveVelocity, smouthTime);
+                moveDir * speed, ref _smoothMoveVelocity, SmouthTime);
         }
         
         // ------------ Méthodes ------------

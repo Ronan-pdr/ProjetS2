@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Photon.Realtime;
 using Script.EntityPlayer;
 using Script.Manager;
 using TMPro;
@@ -23,64 +25,57 @@ namespace Script.InterfaceInGame
     
         public static TabMenu Instance;
 
+        // les listes
+        private List<PlayerInfoTab> _infosChasseurs = new List<PlayerInfoTab>();
+        private List<PlayerInfoTab> _infosChassés = new List<PlayerInfoTab>();
+        
+        // ------------ Setter ------------
+
+        public void NewChasseur(Chasseur value)
+        {
+            _infosChasseurs.Add(new PlayerInfoTab(value));
+        }
+        
+        public void NewChassé(Chassé value)
+        {
+            _infosChassés.Add(new PlayerInfoTab(value));
+        }
+
         // ------------ Constructeur ------------
 
         private void Start()
         {
-            Set();
+            Updateinfos();
         }
         
         // ------------ Event ------------
 
         private void OnEnable()
         {
-            Set();
+            Updateinfos();
         }
 
         // ------------ Publique méthodes ------------
 
-        public void Set()
+        public void Updateinfos()
         {
-            MasterManager mastermanager = MasterManager.Instance;
-
             // hunter
-            Effacer(hunterNames, hunterLifes);
-            
-            int l = mastermanager.GetNbChasseur();
-
-            for (int i = 0; i < l; i++)
-            {
-                Write(mastermanager.GetChasseur(i), hunterNames, hunterLifes);
-            }
+            Write(_infosChasseurs, hunterNames, hunterLifes);
             
             // hunted
-            Effacer(huntedNames, huntedLifes);
-            
-            l = mastermanager.GetNbChassé();
-
-            for (int i = 0; i < l; i++)
-            {
-                Write(mastermanager.GetChassé(i), huntedNames, huntedLifes);
-            }
+            Write(_infosChassés, huntedNames, huntedLifes);
             
             // fonction auxiliaire
 
-            void Write(PlayerClass player, TextMeshProUGUI nameP, TextMeshProUGUI life)
-            {
-                string n = player.name;
-                if (n.Length > 9)
-                {
-                    n = player.name.Substring(0, 8) + n[n.Length - 1];
-                }
-                
-                nameP.text += n + Environment.NewLine;
-                life.text += $"{player.GetCurrentHealth()}/{player.GetMaxHealth()}" + Environment.NewLine;
-            }
-
-            void Effacer(TextMeshProUGUI nameP, TextMeshProUGUI life)
+            void Write(List<PlayerInfoTab> listInfos, TextMeshProUGUI nameP, TextMeshProUGUI life)
             {
                 nameP.text = "";
                 life.text = "";
+                
+                foreach (PlayerInfoTab infos in listInfos)
+                {
+                    infos.UpdatedInfos(nameP, life);
+                }
             }
         }
     }
