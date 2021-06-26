@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Script.EntityPlayer;
+using Script.Graph;
 using Script.Manager;
 using Script.Test;
 using Script.Tools;
@@ -59,7 +60,8 @@ namespace Script.TeteChercheuse
         // variable relative à sa capsule
         private HumanCapsule capsule;
 
-        // destination
+        // position
+        private Vector3 _depart;
         private Vector3 destination;
         
         // ------------ Getters ------------
@@ -100,6 +102,7 @@ namespace Script.TeteChercheuse
         private void Instancier(Vector3 posInitiale, TypeRecherche t)
         {
             type = t;
+            _depart = posInitiale;
             
             // légèrement modifier la position initiale en fonction du bond
             // c'est pour que les positions soit toujours bien calé avec la matrice
@@ -143,7 +146,7 @@ namespace Script.TeteChercheuse
             // Impossible que la file soit empty ici
             Node node = file.Defiler();
             
-            for (int i = 0; i < 500 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
+            for (int i = 0; i < 100 && (!file.IsEmpty() || i == 0) && !Arrivé(node.Position); i++)
             {
                 if (i > 0)
                     node = file.Defiler();
@@ -160,7 +163,7 @@ namespace Script.TeteChercheuse
                 // gauche
                 NewPosition(node, Vector3.left, bond);
 
-                //float maxDist = bond * SimpleMath.Sqrt(2.1f);
+                float maxDist = bond * SimpleMath.Sqrt(2.1f);
                 
                 // devant - droite
                 //NewPosition(node, new Vector3(1, 0, 1), maxDist);
@@ -246,6 +249,9 @@ namespace Script.TeteChercheuse
                 // ...indiquer que cette position va être traiter,
                 // ainsi, il sera inutile de la refaire
                 CheckPosition(node);
+                
+                // affichage
+                Line.Create(position, newPos, Calcul.Distance(_depart, newPos) * 4);
             }
         }
 
@@ -267,13 +273,19 @@ namespace Script.TeteChercheuse
 
             return GetBestPath(Sonde[z, x]);
         }
-        
+
+        private List<GameObject> _gameObjects;
+
         private List<Vector3> GetBestPath(Node node)
         {
             List<Vector3> path = new List<Vector3>();
             
             // c'est la position de la destination
             path.Add(node.Position);
+            
+            List<Vector3> pathPasOpti = new List<Vector3>();
+            pathPasOpti.Add(node.Position);
+            _gameObjects = new List<GameObject>();
 
             Node nextNode;
             while (node.After != null)
@@ -282,14 +294,20 @@ namespace Script.TeteChercheuse
                 for (int i = 0; i >= 0 && nextNode.After != null && capsule.CanIPass(node.Position, Calcul.Diff(nextNode.After.Position, node.Position),
                     Calcul.Distance(nextNode.After.Position, node.Position)); i++)
                 {
-                    //TestRayGaz.CreateMarqueur(nextNode.Position + Vector3.up * 1.1f, TestRayGaz.Couleur.Yellow);
-                    
                     nextNode = nextNode.After;
+                    pathPasOpti.Add(nextNode.Position);
                 }
 
                 node = nextNode;
                 path.Add(node.Position);
             }
+
+            for (int i = pathPasOpti.Count - 2; i > 0; i--)
+            {
+                _gameObjects.Add(TestRayGaz.CreateMarqueur(pathPasOpti[i], TestRayGaz.Couleur.Red));
+            }
+
+            TestRayGaz.Instance.SetGameOject(_gameObjects);
 
             return path;
         }

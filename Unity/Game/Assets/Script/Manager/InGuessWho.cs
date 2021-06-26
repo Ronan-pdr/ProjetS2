@@ -16,21 +16,9 @@ namespace Script.Manager
         protected override NtypeJoueur GetNJoueur()
         {
             NtypeJoueur n = new NtypeJoueur();
-            switch (NJoueur)
-            {
-                case 1:
-                    n.Chasseur = 0;
-                    n.Chassé = 1;
-                    break;
-                case 4:
-                    n.Chasseur = 1;
-                    n.Chassé = 3;
-                    break;
-                default:
-                    n.Chasseur = 1;
-                    n.Chassé = NJoueur - n.Chasseur;
-                    break;
-            }
+            
+            n.Chasseur = MasterManager.Instance.SettingsGame.NChasseur;
+            n.Chassé = NJoueur - n.Chasseur;
 
             return n;
         }
@@ -41,18 +29,19 @@ namespace Script.Manager
             switch (NJoueur)
             {
                 case 1:
-                    n.Rectiligne = 10;
-                    n.Fuyard = 0;
-                    n.Suiveur = 0;
-                    break;
-                case 2:
-                    n.Rectiligne = 26;
+                    n.Rectiligne = 6;
                     n.Fuyard = 3;
                     n.Suiveur = 1;
                     break;
+                case 2:
+                    n.Rectiligne = 14;
+                    n.Fuyard = 5;
+                    n.Suiveur = 1;
+                    break;
                 case 3:
-                    n.Rectiligne = 50;
-                    n.Fuyard = 1;
+                    n.Rectiligne = 26;
+                    n.Fuyard = 5;
+                    n.Suiveur = 1;
                     break;
                 case 4:
                     n.Rectiligne = 34;

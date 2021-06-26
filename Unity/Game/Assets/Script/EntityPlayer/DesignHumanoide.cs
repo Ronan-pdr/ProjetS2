@@ -1,7 +1,7 @@
 ﻿using System;
 using Script.Animation;
 using UnityEngine;
-using Random = System.Random;
+
 
 namespace Script.EntityPlayer
 {
@@ -46,7 +46,7 @@ namespace Script.EntityPlayer
         {
             _anim = anim;
             _designs = designs;
-            _indexDesign = new Random().Next(_designs.Length);
+            _indexDesign = 0;
             
             for (int i = designs.Length - 1; i >= 0; i--)
             {

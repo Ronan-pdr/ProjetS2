@@ -29,7 +29,7 @@ namespace Script.EntityPlayer
                 _degatHit = 33;
             }
 
-            _degatDeadZone = 1;
+            _degatDeadZone = 10;
         }
 
         // ------------ Events ------------
@@ -45,6 +45,12 @@ namespace Script.EntityPlayer
 
         private void Hit(Collider other)
         {
+            if (!_mySelf)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
             // Si c'est pas à toi, tu ne fais rien
             if (!_mySelf.GetPv().IsMine)
                 return;
@@ -61,7 +67,7 @@ namespace Script.EntityPlayer
 
             if (other.gameObject.CompareTag("DeadZone"))
             {
-                if (MasterManager.Instance.HavePrivilegeDeadZone(_mySelf.name))
+                if (!_mySelf.HasTheMasterPower)
                 {
                     _mySelf.TakeDamage(_degatDeadZone);
                 }

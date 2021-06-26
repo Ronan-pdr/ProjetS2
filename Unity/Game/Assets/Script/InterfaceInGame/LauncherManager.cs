@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Photon.Pun;
 using Script.Manager;
 using Script.Menu;
 using UnityEngine;
@@ -8,30 +10,56 @@ namespace Script.InterfaceInGame
     public class LauncherManager : MonoBehaviour
     {
         // ------------ SerializedField ------------
-    
+
         [Header("Menus")]
+        [SerializeField] private InterfaceInGameManager interfaceInGame;
         [SerializeField] private PauseMenu pauseMenu;
         [SerializeField] private TabMenu tabMenu;
         [SerializeField] private EndGameMenu endGameMenu;
-    
-        // ------------ Attributs------------
+        
+        // ------------ Attributs ------------
 
         public static LauncherManager Instance;
-    
-        // ------------ Constructeur ------------
-        void Start()
-        {
-            Instance = this;
         
+        private MenuManager _menuManager;
+        private bool _loading;
+        
+        // ------------ Setter ------------
+
+        public void EndLoading()
+        {
+            _loading = false;
+            MenuManager.Instance.OpenMenu("InterfaceInGame");
+        }
+        
+        // ------------ Constructeur ------------
+        private void Awake()
+        {
+            // s'instancier
+            Instance = this;
+            
+            // instancier les autres
+            InterfaceInGameManager.Instance = interfaceInGame;
             PauseMenu.Instance = pauseMenu;
             TabMenu.Instance = tabMenu;
             EndGameMenu.Instance = endGameMenu;
         }
-    
+
+        private void Start()
+        {
+            _menuManager = MenuManager.Instance;
+
+            if (PhotonNetwork.IsConnected)
+            {
+                _menuManager.OpenMenu("loading");
+                _loading = true;
+            }
+        }
+
         // ------------ Update ------------
         void Update()
         {
-            if (pauseMenu.Getdisconnecting())
+            if (MasterManager.Instance.IsDisconnecting || _loading)
                 return;
 
             if (MasterManager.Instance.IsGameEnded())
@@ -40,13 +68,13 @@ namespace Script.InterfaceInGame
             }
             else
             {
-                GestioInGame();
+                GestionInGame();
             }
-            
         }
 
-        // ------------ Méthodes ------------
-        private void GestioInGame()
+        // ------------ Private Méthodes ------------
+        
+        private void GestionInGame()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -62,29 +90,32 @@ namespace Script.InterfaceInGame
             }
             else if (!pauseMenu.GetIsPaused())
             {
+                // gérer le menu tab
                 if (Input.GetKeyDown(KeyCode.Tab))
                 {
                     // ouvrir menu tab
-                    MenuManager.Instance.OpenMenu("tab");
+                    _menuManager.OpenMenu("tab");
                 }
                 else if (Input.GetKeyUp(KeyCode.Tab))
                 {
                     // fermé menu tab -> ouvrir interfaInGame
-                    MenuManager.Instance.OpenMenu("InterfaceInGame");
+                    _menuManager.OpenMenu("InterfaceInGame");
                 }
             }
         }
+        
         private void GestionGameEnded()
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                // ouvrir menu tab
-                MenuManager.Instance.ForceOpenMenu("tab");
+                // ouvrir de force menu tab pour
+                // pas que l'écran de win s'efface
+                _menuManager.ForceOpenMenu("tab");
             }
             else if (Input.GetKeyUp(KeyCode.Tab))
             {
-                // fermé menu tab -> ouvrir interfaInGame
-                MenuManager.Instance.CloseMenu("tab");
+                // fermé menu tab
+                _menuManager.CloseMenu("tab");
             }
         }
     }

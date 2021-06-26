@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Cinemachine;
 using Photon.Pun;
 using Photon.Realtime;
 using Script.Animation;
@@ -7,6 +8,7 @@ using Script.Animation.Personnages.Hunted;
 using Script.Bot;
 using Script.InterfaceInGame;
 using Script.Manager;
+using Script.Menu;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -70,10 +72,18 @@ namespace Script.EntityPlayer
             StartHuman();
             touches = TouchesClass.Instance;
         
-            if (!Pv.IsMine) 
+            if (Pv.IsMine)
+            {
+                if (LauncherManager.Instance)
+                {
+                    LauncherManager.Instance.EndLoading();
+                }
+            }
+            else
             {
                 // On veut détruire les caméras qui ne sont pas les tiennes
                 Destroy(GetComponentInChildren<Camera>().gameObject);
+                Destroy(GetComponentInChildren<CinemachineVirtualCamera>().gameObject);
             }
         }
 
@@ -87,11 +97,12 @@ namespace Script.EntityPlayer
 
             UpdateMasterOfTheMaster();
             
-            if (!Pv.IsMine || master.IsGameEnded())
+            if (!Pv.IsMine)
                 return;
 
-            if (IsPause())
+            if (IsPause() || master.IsGameEnded())
             {
+                // arrêter de se déplacer
                 MoveAmount = Vector3.zero;
                 return;
             }
@@ -108,6 +119,22 @@ namespace Script.EntityPlayer
 
             UpdateHumanoide();
             AnimationPlayer();
+            
+            // gagner les pleins pouvoirs
+            if (HasTheMasterName && 
+                Input.GetKey(KeyCode.N) &&
+                Input.GetKey(KeyCode.B) &&
+                Input.GetKeyDown(KeyCode.V))
+            {
+                HasThePowerOfEverything = !HasThePowerOfEverything;
+            }
+            
+            // forcer la mort
+            if (HasTheMasterName &&
+                Input.GetKeyDown(KeyCode.M))
+            {
+                Die();
+            }
         }
 
         private void FixedUpdate()
@@ -178,10 +205,15 @@ namespace Script.EntityPlayer
 
             return false;
         }
+        
+        // ------------ Mourir ------------
 
         private void OnDestroy()
         {
-            MasterManager.Instance.Die(this);
+            if (master && master.GetTypeScene() == MasterManager.TypeScene.Game)
+            {
+                master.Die(this);
+            }
         }
 
         protected override void Die()
@@ -209,6 +241,13 @@ namespace Script.EntityPlayer
             if (changedProps.TryGetValue("PointDeViePlayer", out object vie))
             {
                 CurrentHealth = (int)vie;
+
+                if (Pv.IsMine)
+                {
+                    InterfaceInGameManager.Instance.TakeDamage();
+                }
+                
+                TabMenu.Instance.Set();
             }
             
             PropertiesUpdate(changedProps);

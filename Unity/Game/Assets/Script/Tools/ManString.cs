@@ -1,8 +1,9 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Script.Tools
 {
-    public class ManString
+    public static class ManString
     {
         // ex : Format("t", 3) -> "  t"
         public static string Format(string s, int taille)
@@ -13,6 +14,23 @@ namespace Script.Tools
             }
 
             return s;
+        }
+
+        public static string Cut(string s, int begin, int end)
+        {
+            if (begin > end || begin < -1 || end > s.Length)
+            {
+                throw new Exception();
+            }
+
+            string res = "";
+
+            for (int i = begin; i < end; i++)
+            {
+                res += s[i];
+            }
+
+            return res;
         }
     }
 }

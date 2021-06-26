@@ -1,7 +1,9 @@
-﻿using Photon.Pun;
+﻿using Cinemachine;
+using Photon.Pun;
 using UnityEngine;
 using Script.InterfaceInGame;
 using Script.Manager;
+using Script.Menu;
 using Script.Tools;
 
 namespace Script.EntityPlayer
@@ -25,23 +27,43 @@ namespace Script.EntityPlayer
         // hauteur pour atteindre la tête
         private float hauteur = 1.4f;
         
+        // interface
+        private InterfaceInGameManager _interfaceInGameManager;
+        
         // ------------ Setter ------------
-        public void SetPorteur()
+        private void SetPorteur()
         {
             _porteur = master.GetPlayer(indexPorteur).transform;
             Position();
+            SetRotation();
+
+            if (Pv.IsMine)
+            {
+                _interfaceInGameManager.SetNameForSpect(_porteur.name);
+            }
+        }
+
+        private void SetRotation()
+        {
+            Tr.rotation = _porteur.rotation;
         }
         
         // ------------ Constructeurs ------------
         private void Awake()
         {
-            // Le ranger dans MasterClient
-            master = MasterManager.Instance;
-            transform.parent = master.transform;
-        
+            // primordial
             SetRbTr();
             Pv = GetComponent<PhotonView>();
 
+            // Le ranger dans MasterClient
+                transform.parent = master.transform;
+
+            // interface
+            _interfaceInGameManager = InterfaceInGameManager.Instance;
+            _interfaceInGameManager.NewSpect();
+            _interfaceInGameManager.ActiveNbSpect();
+
+            // reste
             indexPorteur = 0;
             SetPorteur();
         }
@@ -50,7 +72,12 @@ namespace Script.EntityPlayer
         {
             if (Pv.IsMine)
             {
-                Tr.rotation = _porteur.rotation;
+                SetRotation();
+
+                if (!master.IsGameEnded() && LauncherManager.Instance)
+                {
+                    LauncherManager.Instance.EndLoading();
+                }
             }
             else
             {

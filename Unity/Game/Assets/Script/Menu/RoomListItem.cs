@@ -1,24 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using Photon.Realtime;
-using Script.Menu;
 using TMPro;
 using UnityEngine;
 
-public class RoomListItem : MonoBehaviour
+namespace Script.Menu
 {
-    [SerializeField] private TMP_Text text;
-
-    public RoomInfo info;
+    public class RoomListItem : MonoBehaviour
+    {
+        // ------------ SerializeField ------------
     
-    public void SetUp(RoomInfo _info)
-    {
-        info = _info;
-        text.text = info.Name;
-    }
+        [SerializeField] private TMP_Text text;
 
-    public void OnClick()
-    {
-        Launcher.Instance.JoinRoom(info);
+        // ------------ Attributs ------------
+        
+        private RoomInfo _info;
+    
+        // ------------ Constructeur ------------
+        
+        public void SetUp(RoomInfo info)
+        {
+            _info = info;
+            text.text = _info.Name;
+        }
+        
+        // ------------ Methodes ------------
+
+        public void OnClick()
+        {
+            Launcher.Instance.JoinRoom(_info);
+        }
     }
 }

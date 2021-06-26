@@ -4,7 +4,6 @@ using Script.EntityPlayer;
 using Script.Test;
 using Script.Tools;
 using UnityEngine;
-using UnityEngine.WSA;
 
 namespace Script.Bot
 {

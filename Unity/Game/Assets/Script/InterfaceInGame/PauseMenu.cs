@@ -5,63 +5,44 @@ using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using Script.Menu;
 using Script.EntityPlayer;
+using Script.Manager;
 using PlayerManager = Script.EntityPlayer.PlayerManager;
 
 namespace Script.InterfaceInGame
 {
     public class PauseMenu : MonoBehaviour
     {
+        [Header("Precision")]
+        [SerializeField] private Menu.Menu menuToOpenWhenResume;
+        
         // ------------ Attributs ------------
         
         public static PauseMenu Instance;
         
         // Etat
-        private bool isPaused;
-        private bool disconnecting;
-        
+        private bool _isPaused;
+
         // ------------ Getters ------------
-        public bool GetIsPaused() => isPaused;
-        public bool Getdisconnecting() => disconnecting;
-        
+        public bool GetIsPaused() => _isPaused;
+
         // ------------ Constructeur ------------
         public void Awake()
         {
-            isPaused = false;
-            disconnecting = false;
+            _isPaused = false;
         }
 
-        // ------------ Méthodes ------------
+        // ------------ Public Méthodes ------------
 
         public void Resume()
         {
-            MenuManager.Instance.OpenMenu("InterfaceInGame");
-            isPaused = false;
+            MenuManager.Instance.OpenMenu(menuToOpenWhenResume);
+            _isPaused = false;
         }
 
         public void Pause()
         {
             MenuManager.Instance.OpenMenu("pause");
-            isPaused = true;
-        }
-
-        public IEnumerator Quit()
-        {
-            disconnecting = true;
-            PhotonNetwork.Disconnect();
-            Destroy(RoomManager.Instance.gameObject);
-            
-            while(PhotonNetwork.IsConnected)
-            {
-                yield return null;
-            }
-            
-            SceneManager.LoadScene(1);
-        }
-
-        public void StartQuit()
-        {
-            PlayerManager.Own.BeginToQuit();
-            StartCoroutine(Quit());
+            _isPaused = true;
         }
     }
 }

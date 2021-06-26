@@ -192,6 +192,30 @@ namespace Script.DossierPoint
                 point.ResetPathFinding(key);
             }
         }
+        
+        // ------------ Private methods ------------
+
+        private void DebugWithFile()
+        {
+            string build = "Build";
+            Aux("",build);
+            
+            string d = "dossierDebug";
+            Aux(build,d);
+
+            using (File.Create($"{build}/{d}/AAAAAAAAAAAAAAAAAA[{PhotonNetwork.LocalPlayer.NickName}]"))
+            {}
+
+            void Aux(string path, string nameDir)
+            {
+                string p = $"{path}/{nameDir}";
+                
+                if (!Directory.Exists(p))
+                {
+                    Directory.CreateDirectory(p);
+                }
+            }
+        }
 
         // ------------ Parsing ------------
 
@@ -207,7 +231,7 @@ namespace Script.DossierPoint
             }
             
             path += DossierRangement + fileName;
-            
+
             if (File.Exists(path))
             {
                 using (StreamReader sr = File.OpenText(path))

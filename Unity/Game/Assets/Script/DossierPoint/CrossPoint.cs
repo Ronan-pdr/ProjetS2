@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Script.EntityPlayer;
 using Script.Graph;
 using Script.Manager;
+using Script.Test;
 using Script.TeteChercheuse;
 using Script.Tools;
 using UnityEngine;
@@ -173,9 +174,9 @@ namespace Script.DossierPoint
 
         public void PrintNeightboors()
         {
-            foreach (CrossPoint cm in neighboors)
+            foreach (CrossPoint neighboor in neighboors)
             {
-                Line.Create(transform.position, cm.transform.position);
+                Line.Create(transform.position, neighboor.transform.position, 150);
             }
         }
         
@@ -265,7 +266,7 @@ namespace Script.DossierPoint
             
             Node node = _nodes[key];
             List<Vector3> path = new List<Vector3>();
-            
+
             // c'est la position de la destination
             path.Add(transform.position);
             HumanCapsule capsule = MasterManager.Instance.GetHumanCapsule();
@@ -318,7 +319,7 @@ namespace Script.DossierPoint
                     throw new Exception($"Ca devrait être impossible (Lanceur -> {name}, Dest -> {neighboor})");
                 }
                 
-                neighboors.Add(neighboor);
+                AddNeighboor(neighboor);
                 _crossMaintenance.OneNewNeighboorFind(); // incrémente un indicateur
             }
 

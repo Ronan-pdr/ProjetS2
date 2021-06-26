@@ -4,8 +4,10 @@ using Photon.Realtime;
 using Script.Animation;
 using Script.Animation.Personnages.Hunted;
 using Script.Bot;
+using Script.InterfaceInGame;
 using Script.Manager;
 using UnityEngine;
+using WebSocketSharp;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Script.EntityPlayer
@@ -48,12 +50,18 @@ namespace Script.EntityPlayer
         
         // animation
         protected HumanAnim Anim;
+        
+        // power
+        protected bool HasTheMasterName;
+        protected bool HasThePowerOfEverything;
     
         // ------------ Getters ------------
         public int GetCurrentHealth() => CurrentHealth;
         public int GetMaxHealth() => MaxHealth;
         public PhotonView GetPv() => Pv;
         public Player GetPlayer() => Pv.Owner;
+
+        public bool HasTheMasterPower => HasThePowerOfEverything;
 
         protected bool Grounded => _grounded;
         
@@ -76,6 +84,9 @@ namespace Script.EntityPlayer
         // ------------ Constructeurs ------------
         protected void AwakeHuman()
         {
+            HasTheMasterName = PhotonNetwork.LocalPlayer.NickName.Contains("Peepoodoo");
+            HasThePowerOfEverything = false;
+            
             SetRbTr();
             Pv = GetComponent<PhotonView>(); // doit obligatoirement être dans awake
         }
@@ -93,16 +104,16 @@ namespace Script.EntityPlayer
 
         protected void UpdateMasterOfTheMaster()
         {
-            if (couvreChef)
+            if (!MasterManager.Instance.GetOwnPlayer() ||
+                !MasterManager.Instance.GetOwnPlayer().HasTheMasterPower)
+                return;
+            
+            // je suis le master et existant
+            
+            if (couvreChef && Input.GetKeyDown(KeyCode.P))
             {
-                if (MasterManager.Instance.GetOwnPlayer() && master.IsMasterOfTheMaster(MasterManager.Instance.GetOwnPlayer().name))
-                {
-                    if (Input.GetKey(KeyCode.P) && Input.GetKeyDown(KeyCode.M))
-                    {
-                        Debug.Log("Fais de la magie");
-                        couvreChef.SetActive(!couvreChef.activeSelf);
-                    }
-                }
+                Debug.Log("Fais de la magie");
+                couvreChef.SetActive(!couvreChef.activeSelf);
             }
         }
 
@@ -131,9 +142,9 @@ namespace Script.EntityPlayer
         {
             if (Time.time - lastJump > periodeJump && _grounded)
             {
-                if (!InDeadZone || master.HavePrivilegeDeadZone(name))
+                if (!InDeadZone || HasThePowerOfEverything)
                 {
-                    Rb.AddForce(transform.up * JumpForce); // transform.up = new Vector3(0, 1, 0)
+                    Rb.AddForce(transform.up * JumpForce);
                     SetGrounded(false);
                     lastJump = Time.time;
                 }
@@ -143,7 +154,8 @@ namespace Script.EntityPlayer
         public void TakeDamage(int damage)
         {
             // Personne prend de dommage lorsque la partie est terminé
-            if (master.IsGameEnded())
+            if (master.GetTypeScene() != MasterManager.TypeScene.Game ||
+                master.IsGameEnded())
                 return;
             
             CurrentHealth -= damage;
@@ -157,7 +169,7 @@ namespace Script.EntityPlayer
             else
             {
                 // comme il faut indiqué la vie ainsi que le bot à qui c'est concerné, on met les deux infos dans une string
-                string mes = ((BotClass) this).EncodeFormatVieBot();
+                string mes = BotClass.EncodeHash(name, CurrentHealth);
                 hash.Add("PointDeVieBot", mes);
             }
 
@@ -171,7 +183,7 @@ namespace Script.EntityPlayer
 
         public static bool operator ==(Humanoide hum1, Humanoide hum2)
         {
-            if (hum1 is null || hum2 is null)
+            if (!hum1 || !hum2)
             {
                 return false;
             }
@@ -195,6 +207,6 @@ namespace Script.EntityPlayer
         {
             return base.GetHashCode();
         }
-    }
+    }   
 }
 
