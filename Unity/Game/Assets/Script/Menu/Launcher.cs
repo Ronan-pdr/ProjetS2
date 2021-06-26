@@ -4,7 +4,9 @@ using Photon.Pun;
 using Photon.Realtime;
 using Script.EntityPlayer;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -213,6 +215,14 @@ namespace Script.Menu
             background.enabled = true;
         }
         
+        
+        // ------------ Disconnect----------
+
+        public void DisconnectUser()
+        {
+            Destroy(RoomManager.Instance.gameObject);
+            SceneManager.LoadScene(0);
+        }
         // ------------ Quitter ------------
 
         public void QuitGame()
