@@ -52,7 +52,6 @@ namespace Script.Bot
         {
             RotationSpeed = 500;
             running = Running.Marche;
-            TranquilleVitesse = 2;
             
             SetSynchro(true);
             

@@ -38,10 +38,20 @@ namespace Script.Brain
         
         // ------------ Methods ------------
 
+        // à partir de raycast
         public bool IsThereWall(Transform tr, float distMaxDetection)
         {
             // recupérer les infos par rapport aux obstacles
             (_, double height) = GetDistHeightFirstObstacle(tr, distMaxDetection);
+
+            return IsThereWall(height);
+        }
+        
+        // à partir de linecast
+        public bool IsThereWall(Vector3 depart, Vector3 fin)
+        {
+            // recupérer les infos par rapport aux obstacles
+            (_, double height) = GetDistHeightFirstObstacle(depart, fin);
 
             return IsThereWall(height);
         }
@@ -58,7 +68,7 @@ namespace Script.Brain
             double[] output = GetResult(Neurones, input);
             
             // interpréter l'output
-            return output[0] > 0.8d;
+            return output[0] > 0.6d;
         }
     }
 }

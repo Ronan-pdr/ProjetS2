@@ -69,7 +69,6 @@ namespace Script.Bot
                 CalculeRotation(_pointDestination.transform.position);
                 _etat = Etat.EnChemin;
                 running = Running.Marche;
-                SetMoveAmount(Vector3.forward, TranquilleVitesse);
             }
             else
             {

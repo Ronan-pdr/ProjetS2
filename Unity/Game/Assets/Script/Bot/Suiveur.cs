@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Photon.Realtime;
+using Script.Animation;
+using Script.Brain;
 using Script.EntityPlayer;
 using Script.Manager;
 using Script.Tools;
@@ -25,18 +27,20 @@ namespace Script.Bot
         
         private (Chasseur chasseur, Vector3 position) Vu;
 
-        // temps
-        private float timeManage;
-
-        private static float rayonPerimetre = 25;
+        private const float RayonPerimetre = 30;
         
         // destination
         private Vector3 _whereToLookAt;
+        
+        // cerveaux
+        private BrainWall _brainWall;
+        private BrainJump _brainJump;
         
         // ------------ Setter ------------
 
         private void SetEscape()
         {
+            StandUp();
             running = Running.Course;
             _whereToLookAt = FindEscapePosition(Vu.position);
             etat = Etat.Escape;
@@ -44,13 +48,24 @@ namespace Script.Bot
 
         private void SetStatique()
         {
+            StandUp();
+            Anim.Set(HumanAnim.Type.Sit);
             running = Running.Arret;
             _whereToLookAt = Vu.position;
             etat = Etat.Statique;
         }
 
+        private void SetLooking()
+        {
+            StandUp();
+            running = Running.Arret;
+            _whereToLookAt = Vu.position;
+            Vu.chasseur = null;
+        }
+
         private void SetSearching()
         {
+            StandUp();
             running = Running.Marche;
             _whereToLookAt = Vu.position;
             etat = Etat.Searching;
@@ -58,37 +73,61 @@ namespace Script.Bot
 
         private void SetFollow()
         {
-            running = Running.Marche;
+            StandUp();
+            Anim.Set(HumanAnim.Type.Squat);
+            running = Running.Squatting;
             _whereToLookAt = Vu.position;
             etat = Etat.Follow;
         }
 
+        private void StandUp()
+        {
+            Anim.Stop(HumanAnim.Type.Squat);
+            Anim.Stop(HumanAnim.Type.Sit);
+        }
+
 
         // ------------ Constructeurs ------------
-        
+
         protected override void AwakeBot()
-        {}
+        {
+            _brainWall = new BrainWall(0);
+            _brainJump = new BrainJump(0);
+
+            PeriodeBlock = 1;
+        }
 
         protected override void StartBot()
         {
             running = Running.Arret;
             etat = Etat.Looking;
+            
+            InvokeRepeating(nameof(UpdateSuiveur), 0, 0.3f);
         }
     
         // ------------ Update ------------
+
         protected override void UpdateBot()
         {
             Tourner();
-            GestionRotation(_whereToLookAt, 0.3f);
-            
-            if (Time.time - timeManage < 0.5f)
+
+            if (etat == Etat.Escape && SimpleMath.IsEncadré(_whereToLookAt, Tr.position, 1.5f))
             {
-                // il update son comportement sous tous les certains temps
-                return;
+                // il a fini de fuir
+                SetLooking();
+                CalculeRotation(_whereToLookAt);
             }
 
-            timeManage = Time.time;
-
+            if (running != Running.Arret && _brainJump.JumpNeeded(Tr, GetSpeed(), SprintSpeed))
+            {
+                Jump();
+            }
+        }
+        
+        private void UpdateSuiveur()
+        {
+            GestionRotation(_whereToLookAt, 0);
+            
             if (Vu.chasseur is null)
             {
                 // il n'a encore vu personne
@@ -107,9 +146,10 @@ namespace Script.Bot
                 {
                     // s'il fuit c'est normal
                 }
-                else
+                else if (!SearchChasseurWithVision())
                 {
                     // il faut tenter de le retrouver
+                    // étant donné qu'il n'y a aucun autre chasseur
                     SetSearching();
                 }
             }
@@ -122,12 +162,13 @@ namespace Script.Bot
             
             float dist = Calcul.Distance(Tr.position, Vu.position, Calcul.Coord.Y);
                     
-            if (SimpleMath.IsEncadré(dist, rayonPerimetre, 1f))
+            if (SimpleMath.IsEncadré(dist, RayonPerimetre, 1.5f))
             {
                 // est pile à la bonne position
                 SetStatique();
+                Debug.Log("je suis bien");
             }
-            else if (dist < rayonPerimetre)
+            else if (dist < RayonPerimetre)
             {
                 // trop proche
                 SetEscape();
@@ -136,13 +177,14 @@ namespace Script.Bot
             {
                 // est trop loin
                 SetFollow();
+                Debug.Log("je te suis");
             }
             
             CalculeRotation(_whereToLookAt);
         }
 
         // ------------ Méthodes ------------
-        private void SearchChasseurWithVision()
+        private bool SearchChasseurWithVision()
         {
             List<PlayerClass> vus = GetPlayerInMyVision(TypePlayer.Chasseur);
 
@@ -154,23 +196,27 @@ namespace Script.Bot
                 Vu.chasseur = (Chasseur) player;
                 Vu.position = player.transform.position;
                 UpdateWhenChasseurInMyVision();
+
+                return true;
             }
+
+            return false;
         }
 
         // Prend la position la plus proche du bot parmi toutes
         // celles au périmètre (le cercle) du "Vu"
         private Vector3 FindEscapePosition(Vector3 centre)
         {
-            (Vector3 bestDest, float minDist) res = (Vector3.zero, rayonPerimetre*2.1f);
+            (Vector3 bestDest, float minDist) res = (Vector3.zero, RayonPerimetre * 2.1f);
+            
             for (int degre = 0; degre < 360; degre += 10)
             {
-                Vector3 pos = centre + rayonPerimetre * 1f * Calcul.Direction(degre);
+                Vector3 pos = centre + RayonPerimetre * Calcul.Direction(degre);
                 float dist = Calcul.Distance(Tr.position, pos);
 
-                if (dist < res.minDist && capsule.CanIPass(Tr.position,
-                    Calcul.Diff(pos, Tr.position), dist))
+                if (dist < res.minDist && !_brainWall.IsThereWall(Tr.position, pos))
                 {
-                    // nouvelle meilleur destination
+                    // nouvelle meilleure destination
                     res = (pos, dist);
                 }
             }
@@ -183,8 +229,7 @@ namespace Script.Bot
         // bloqué
         protected override void WhenBlock()
         {
-            AmountRotation = 180;
-            running = Running.Arret;
+            SetLooking();
         }
     }
 }

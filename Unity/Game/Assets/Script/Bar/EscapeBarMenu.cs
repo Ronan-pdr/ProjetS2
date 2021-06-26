@@ -13,12 +13,17 @@ namespace Script.Bar
         [Header("Boutton")]
         [SerializeField] private GameObject gameSettingsButton;
         [SerializeField] private GameObject startGameButton;
+        
+        // ------------ Attributs ------------
 
+        private bool _isStartingGame;
+        
         // ------------ Constructeur ------------
 
         private void Awake()
         {
             SetPrivilegeMaster();
+            _isStartingGame = false;
         }
 
         // ------------ Public Methodes ------------
@@ -30,6 +35,11 @@ namespace Script.Bar
     
         public void StartGame()
         {
+            if (_isStartingGame)
+                return;
+
+            _isStartingGame = true;
+            
             if (PhotonNetwork.MasterClient.NickName == "Labyrinthe")
             {
                 PhotonNetwork.LoadLevel(4);

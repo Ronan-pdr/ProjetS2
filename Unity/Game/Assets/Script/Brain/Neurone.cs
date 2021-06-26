@@ -163,7 +163,6 @@ namespace Script.Brain
             }
 
             Value = Activation(Value);
-            Debug.Log(Value);
         }
 
         /// <summary>

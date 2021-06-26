@@ -4,6 +4,7 @@ using Script.EntityPlayer;
 using Script.Graph;
 using Script.MachineLearning;
 using Script.Manager;
+using Script.Tools;
 using UnityEngine;
 using Random = System.Random;
 
@@ -74,9 +75,48 @@ namespace Script.Brain
             Neurones.Save(GetPath(numero));
         }
         
-        public static (double dist, double height) GetStaticDistHeightFirstObstacle(Transform tr, double distMax)
+        // ------------ Detection (hauteur d'un obstacle) ------------
+        
+        // avec des line cast
+        
+        protected (double _, double height) GetDistHeightFirstObstacle(Vector3 depart, Vector3 fin)
         {
-            return GetStaticDistHeightFirstObstacle(tr, distMax, MasterManager.Instance.GetHumanCapsule());
+            return GetStaticDistHeightFirstObstacle(depart, fin, Capsule);
+        }
+
+        public static (double dist, double height) GetStaticDistHeightFirstObstacle(Vector3 depart, Vector3 fin, HumanCapsule capsule)
+        {
+            float decoupage = 10;
+            float minDist = Calcul.Distance(depart, fin);
+            float height = 0;
+            float ecart = capsule.Height / decoupage;
+            Vector3 pos1 = 1 * depart;
+            Vector3 pos2 = 1 * fin;
+            pos2.y = pos1.y;
+
+            // trouver la hauteur et la distance du premier obstacle
+            for (int i = 2; i < decoupage; i++)
+            {
+                pos1 += Vector3.up * ecart;
+                pos2 += Vector3.up * ecart;
+                
+                if (Physics.Linecast(pos1, pos2, out RaycastHit hit) && hit.distance <= minDist + 0.1f)
+                {
+                    //Line.Create(pos1, hit.point, 250);
+                    
+                    minDist = hit.distance;
+                    height = pos1.y - depart.y;
+                }
+            }
+
+            return (minDist, height);
+        }
+        
+        // avec des raycast
+        
+        protected (double dist, double height) GetDistHeightFirstObstacle(Transform tr, double distMax)
+        {
+            return GetStaticDistHeightFirstObstacle(tr, distMax, Capsule);
         }
         
         public static (double dist, double height) GetStaticDistHeightFirstObstacle(Transform tr, double distMax, HumanCapsule capsule)
@@ -112,12 +152,6 @@ namespace Script.Brain
         protected abstract string GetNameDirectory();
 
         protected int BoolToInt(bool value) => value ? 1 : 0;
-        
-        // detection
-        protected (double dist, double height) GetDistHeightFirstObstacle(Transform tr, double distMax)
-        {
-            return GetStaticDistHeightFirstObstacle(tr, distMax, Capsule);
-        }
 
         protected double[] GetResult(NeuralNetwork neuralNetwork, double[] input)
         {

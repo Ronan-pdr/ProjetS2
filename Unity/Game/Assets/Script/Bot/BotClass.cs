@@ -25,6 +25,7 @@ namespace Script.Bot
         protected enum Running
         {
             Arret,
+            Squatting,
             Marche,
             Course
         }
@@ -45,12 +46,9 @@ namespace Script.Bot
         //Le bot va recalculer automatiquement sa trajectoire au bout de 'ecartTime'
         protected float LastCalculRotation; //cette variable contient le dernier moment durant lequel le bot à recalculer sa trajectoire
 
-        // Vitesse
-        protected float TranquilleVitesse = WalkSpeed;
-        protected float PleineVitesse = SprintSpeed;
-        
         // quand il est bloqué
         private (float time, Vector3 position) block;
+        protected float PeriodeBlock = 2.5f;
         
         // direction
         private Vector3 _direction;
@@ -263,16 +261,20 @@ namespace Script.Bot
                 SetMoveAmount(_direction, 1f);
                 Anim.Set(HumanAnim.Type.Forward);
             }
+            else if (running == Running.Squatting)
+            {
+                SetMoveAmount(_direction, SquatSpeed);
+            }
             else if (running == Running.Marche)
             {
                 // marche
-                SetMoveAmount(_direction, TranquilleVitesse);
+                SetMoveAmount(_direction, WalkSpeed);
                 Anim.Set(HumanAnim.Type.Forward);
             }
             else if (running == Running.Course)
             {
                 // court
-                SetMoveAmount(_direction, PleineVitesse);
+                SetMoveAmount(_direction, SprintSpeed);
                 Anim.Set(HumanAnim.Type.Run);
             }
         }
@@ -377,7 +379,7 @@ namespace Script.Bot
             if (SimpleMath.IsEncadré(block.position, Tr.position, 0.2f))
             {
                 // s'il semble bloquer à une position
-                if (Time.time - block.time > 2.5f)
+                if (Time.time - block.time > PeriodeBlock)
                 {
                     // et que ça fait longtemps
                     WhenBlock();

@@ -33,7 +33,6 @@ namespace Script.Labyrinthe
         protected override void StartBot()
         {
             etat = Etat.Attend;
-            PleineVitesse = SprintSpeed * 1.15f;
         }
         
         // ------------ Update ------------
@@ -78,7 +77,6 @@ namespace Script.Labyrinthe
             {
                 etat = Etat.Guidage;
                 running = Running.Course;
-                SetMoveAmount(Vector3.forward, PleineVitesse);
             }
         }
 
