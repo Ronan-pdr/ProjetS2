@@ -253,7 +253,7 @@ AvatarMask:
   - m_Path: control_rig/Bone/IK.R/foot.R/toe.R
     m_Weight: 0
   - m_Path: control_rig/Bone/IK.R/foot.R/toe.R/toe.R_end
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: control_rig/Bone/IK.R/pole.R
     m_Weight: 0
   - m_Path: control_rig/Bone/IK.R/pole.R/pole.R_end
