@@ -6,6 +6,7 @@ using Script.Audio;
 using Script.EntityPlayer;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -18,9 +19,8 @@ namespace Script.Menu
         [Header("Menu Principale")]
         [SerializeField] TMP_InputField nameInputField;
 
-        [Header("Menu jouer")]
-        [SerializeField] private Button createRoomButton;
-        [SerializeField] private Button findRoomButton;
+        [Header("Jouer")]
+        [SerializeField] private Button buttonPlay;
         
         [Header("Room")]
         [SerializeField] Transform roomListContent;
@@ -140,13 +140,16 @@ namespace Script.Menu
         
             string defaultName = PlayerPrefs.GetString(PlayerPrefsNameKey);
             nameInputField.text = defaultName;
-            SetPlayerName();
+            
+            if (string.IsNullOrEmpty(nameInputField.text))
+            {
+                nameInputField.text = "Somebody";
+            }
         }
 
-        private void SetPlayerName()
+        public void SetPlayerName()
         {
-            createRoomButton.interactable = !string.IsNullOrEmpty(nameInputField.text);
-            findRoomButton.interactable = !string.IsNullOrEmpty(nameInputField.text);
+            buttonPlay.interactable = !string.IsNullOrEmpty(nameInputField.text);
         }
 
         private void SavePlayerName()
@@ -175,6 +178,14 @@ namespace Script.Menu
         public void QuitGame()
         {
             Application.Quit();
+        }
+        
+        // ------------ Disconnect----------
+        
+         public void DisconnectUser()
+        {
+             Destroy(RoomManager.Instance.gameObject);
+             SceneManager.LoadScene(0);
         }
     }
 }
