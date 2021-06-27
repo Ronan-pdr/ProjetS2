@@ -55,6 +55,9 @@ namespace Script.Menu
             SetUpInputField();
             
             settingsMenu.StartVolume();
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     
         // ------------ Connexion ------------

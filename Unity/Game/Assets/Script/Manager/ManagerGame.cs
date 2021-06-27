@@ -73,7 +73,8 @@ namespace Script.Manager
 
             TypePlayer[] listTrié = GetListTrié(n.GetList(), NJoueur);
 
-            return ManList<TypePlayer>.Shuffle(listTrié);
+            return listTrié;
+            //return ManList<TypePlayer>.Shuffle(listTrié);
 
             void CasEreur()
             {

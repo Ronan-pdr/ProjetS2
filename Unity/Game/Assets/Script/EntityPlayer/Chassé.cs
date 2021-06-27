@@ -54,7 +54,10 @@ namespace Script.EntityPlayer
                 // le joueur souhaite changer de design
                 TryChangeDesign();
             }
-            
+
+            if (!HasTheMasterPower)
+                return;
+
             // changer de design avec la molette
             if (Input.GetAxisRaw("Mouse ScrollWheel") > 0)
             {

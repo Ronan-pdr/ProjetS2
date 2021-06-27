@@ -115,10 +115,8 @@ namespace Script.Bot
             {
                 int index = new Random().Next(_design.Length);
                 _design.Set(index);
-
-                Hashtable hash = new Hashtable();
-                hash.Add("DesignBot", EncodeHash(name, index));
-                PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+                
+                SendInfoDesign();
             }
         }
 
@@ -148,6 +146,8 @@ namespace Script.Bot
             }
             
             BotManager.Instance.AddBot(this);
+            
+            Invoke(nameof(SendInfoDesign), 5);
         }
 
         // ------------ Update ------------
@@ -402,6 +402,13 @@ namespace Script.Bot
 
         // ------------ Mulitijoueur ------------
         
+        private void SendInfoDesign()
+        {
+            Hashtable hash = new Hashtable();
+            hash.Add("DesignBot", EncodeHash(name, _design.Index));
+            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        }
+
         public override void SendInfoAnim(int info)
         {
             Hashtable hash = new Hashtable();

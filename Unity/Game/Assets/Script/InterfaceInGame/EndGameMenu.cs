@@ -63,6 +63,8 @@ namespace Script.InterfaceInGame
         public void Restart()
         {
             // c'est parti pour le bar
+            PhotonNetwork.CurrentRoom.IsOpen = true;
+            PhotonNetwork.CurrentRoom.IsVisible = true;
             PhotonNetwork.LoadLevel(2);
         }
         

@@ -12,6 +12,7 @@ namespace Script.EntityPlayer
         // Celui que l'on va suivre
         private Transform _porteur;
         private int _indexPorteur;
+        private bool _thereIsSomeone;
         
         //Photon
         protected PhotonView Pv;
@@ -31,7 +32,14 @@ namespace Script.EntityPlayer
         private void SetPorteur()
         {
             PlayerClass porteur = master.GetPlayer(_indexPorteur);
-            
+
+            if (!porteur)
+            {
+                _thereIsSomeone = false;
+                return;
+            }
+                
+
             _porteur = porteur.transform;
             Position();
 
@@ -56,6 +64,7 @@ namespace Script.EntityPlayer
             _interfaceInGameManager.ChangeNbSpect(true);
 
             // reste
+            _thereIsSomeone = true;
             _indexPorteur = 0;
             SetPorteur();
         }
@@ -80,9 +89,9 @@ namespace Script.EntityPlayer
         
         private void Update()
         {
-            if (!Pv.IsMine || master.IsGameEnded())
+            if (!Pv.IsMine || !_thereIsSomeone)
                 return;
-            
+
             // le cas ou l'ancier porteur est mort ou à quitter la partie
             if (!_porteur)
             {

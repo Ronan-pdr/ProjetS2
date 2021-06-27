@@ -206,17 +206,7 @@ namespace Script.EntityPlayer
 
         public static bool MustArret()
         {
-            if (PauseMenu.Instance.GetIsPaused() || MasterManager.Instance.IsGameEnded())
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                return true;
-            }
-            
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = false;
-
-            return false;
+            return PauseMenu.Instance.GetIsPaused() || MasterManager.Instance.IsGameEnded();
         }
         
         // ------------ Mourir ------------

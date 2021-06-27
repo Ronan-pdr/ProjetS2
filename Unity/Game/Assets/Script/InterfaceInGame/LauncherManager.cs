@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Photon.Pun;
+using Script.EntityPlayer;
 using Script.Manager;
 using Script.Menu;
 using UnityEngine;
@@ -62,8 +63,25 @@ namespace Script.InterfaceInGame
             if (MasterManager.Instance.IsDisconnecting || _loading)
                 return;
 
+            // la souris
+            if (PlayerClass.MustArret())
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = false;
+            }
+
+            // manager
             if (MasterManager.Instance.IsGameEnded())
             {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                
+                MenuManager.Instance.OpenMenu("EndGame");
                 GestionGameEnded();
             }
             else

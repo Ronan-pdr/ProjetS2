@@ -50,7 +50,7 @@ namespace Script.InterfaceInGame
             }
             else
             {
-                life.text += "Dead";
+                life.text += "Dead" + Environment.NewLine;
             }
         }
     }

@@ -64,6 +64,9 @@ namespace Script.Bar
             MenuManager.Instance.OpenMenu(menuWaiting);
             
             settingsMenus.StartVolume();
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         // ------------ Update ------------
