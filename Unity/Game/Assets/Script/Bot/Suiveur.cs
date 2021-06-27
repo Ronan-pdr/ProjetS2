@@ -128,7 +128,7 @@ namespace Script.Bot
         {
             GestionRotation(_whereToLookAt, 0);
             
-            if (Vu.chasseur is null)
+            if (!Vu.chasseur)
             {
                 // il n'a encore vu personne
                 etat = Etat.Looking;
@@ -166,7 +166,6 @@ namespace Script.Bot
             {
                 // est pile à la bonne position
                 SetStatique();
-                Debug.Log("je suis bien");
             }
             else if (dist < RayonPerimetre)
             {
@@ -177,7 +176,6 @@ namespace Script.Bot
             {
                 // est trop loin
                 SetFollow();
-                Debug.Log("je te suis");
             }
             
             CalculeRotation(_whereToLookAt);

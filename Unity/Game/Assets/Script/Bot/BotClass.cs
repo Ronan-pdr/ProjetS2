@@ -109,7 +109,7 @@ namespace Script.Bot
 
             // récupérer le design par défaut, le modifier et
             // l'envoyer aux autres
-            _design = new DesignHumanoide(Anim, designs);
+            _design = new DesignHumanoide(Anim, designs, this);
 
             if (Pv.IsMine)
             {
@@ -265,7 +265,7 @@ namespace Script.Bot
             {
                 SetMoveAmount(_direction, SquatSpeed);
             }
-            else if (running == Running.Marche)
+            else if (running == Running.Marche || HaveHighCollision)
             {
                 // marche
                 SetMoveAmount(_direction, WalkSpeed);
@@ -361,7 +361,7 @@ namespace Script.Bot
 
         private void OnDestroy()
         {
-            BotManager.Die(this);
+            BotManager.Instance.Die(this);
         }
 
         // ------------ Event ------------
@@ -402,6 +402,13 @@ namespace Script.Bot
 
         // ------------ Mulitijoueur ------------
         
+        public override void SendInfoAnim(int info)
+        {
+            Hashtable hash = new Hashtable();
+            hash.Add("AnimationBot", EncodeHash(name, info));
+            Pv.Owner.SetCustomProperties(hash);
+        }
+        
         // réception des hash
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
@@ -426,6 +433,14 @@ namespace Script.Bot
                 if (DecodeHash((string)mes, out int indexDesign))
                 {
                     _design.Set(indexDesign);
+                }
+            }
+
+            if (changedProps.TryGetValue("AnimationBot", out mes))
+            {
+                if (DecodeHash((string)mes, out int anim))
+                {
+                    Anim.Set((HumanAnim.Type) anim);
                 }
             }
         }

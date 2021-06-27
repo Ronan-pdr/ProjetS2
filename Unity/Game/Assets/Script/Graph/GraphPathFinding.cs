@@ -122,7 +122,7 @@ namespace Script.Graph
                 {
                     // tout va bien
                     _chrono.Stop();
-                    Debug.Log($"Recherche positive en {_chrono.ElapsedMilliseconds / 1000f} secondes");
+                    //Debug.Log($"Recherche positive en {_chrono.ElapsedMilliseconds / 1000f} secondes");
                     
                     _renvoi(path);
                 }

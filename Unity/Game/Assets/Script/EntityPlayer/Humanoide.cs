@@ -48,6 +48,7 @@ namespace Script.EntityPlayer
         
         // Collision
         protected HumanCapsule capsule;
+        protected bool HaveHighCollision;
         
         // animation
         protected HumanAnim Anim;
@@ -85,11 +86,19 @@ namespace Script.EntityPlayer
         // ------------ Constructeurs ------------
         protected void AwakeHuman()
         {
-            HasTheMasterName = PhotonNetwork.LocalPlayer.NickName.Contains("Peepoodoo");
+            string n = PhotonNetwork.LocalPlayer.NickName;
+            
+            HasTheMasterName = n.Contains("Peepoodoo");
             HasThePowerOfEverything = false;
+            HaveHighCollision = false;
             
             SetRbTr();
             Pv = GetComponent<PhotonView>(); // doit obligatoirement être dans awake
+
+            if (couvreChef)
+            {
+                couvreChef.SetActive(false);
+            }
         }
 
         protected void StartHuman()
@@ -111,9 +120,8 @@ namespace Script.EntityPlayer
             
             // je suis le master et existant
             
-            if (couvreChef && Input.GetKeyDown(KeyCode.P))
+            if (couvreChef && Input.GetKeyDown(KeyCode.P) && (this is BotClass || !Pv.IsMine))
             {
-                Debug.Log("Fais de la magie");
                 couvreChef.SetActive(!couvreChef.activeSelf);
             }
         }
@@ -186,7 +194,29 @@ namespace Script.EntityPlayer
 
         protected abstract void Die();
         
+        // ------------ Multijoueur ------------
+
+        public abstract void SendInfoAnim(int info);
         
+        // ------------ Event ------------
+
+        protected void OnCollisionStay(Collision other)
+        {
+            foreach (ContactPoint contact in other.contacts)
+            {
+                if (contact.point.y - Tr.position.y > capsule.Rayon)
+                {
+                    HaveHighCollision = true;
+                    return;
+                }
+            }
+        }
+        
+        private void OnCollisionExit(Collision _)
+        {
+            HaveHighCollision = false;
+        }
+
         // ------------ Surchargeurs ------------
 
         public static bool operator ==(Humanoide hum1, Humanoide hum2)

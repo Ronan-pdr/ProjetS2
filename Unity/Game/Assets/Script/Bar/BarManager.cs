@@ -18,6 +18,7 @@ namespace Script.Bar
         [SerializeField] private Menu.Menu menuWaiting;
         [SerializeField] private PauseMenu pauseMenu;
         [SerializeField] private MenuTabBar tabMenu;
+        [SerializeField] private SettingsMenu settingsMenus;
 
         [Header("Spawner")]
         [SerializeField] private Transform[] spawns;
@@ -61,6 +62,8 @@ namespace Script.Bar
         {
             // afficher le bon menu
             MenuManager.Instance.OpenMenu(menuWaiting);
+            
+            settingsMenus.StartVolume();
         }
 
         // ------------ Update ------------

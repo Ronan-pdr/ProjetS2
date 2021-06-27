@@ -125,7 +125,19 @@ MonoBehaviour:
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7868893354195645356}
+        m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
+        m_MethodName: SetVolume
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5100673700187395520
 GameObject:
   m_ObjectHideFlags: 0
@@ -520,7 +532,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resolutionDropdown: {fileID: 7868893354327362975}
   audioManager: {fileID: 0}
-  volumeSlider: {fileID: 0}
+  volumeSlider: {fileID: 6474960189797450099}
+  fullScreenToggle: {fileID: 7868893355177256342}
+  graphicsDropdown: {fileID: 7868893355673386952}
 --- !u!1 &7868893354217259905
 GameObject:
   m_ObjectHideFlags: 0

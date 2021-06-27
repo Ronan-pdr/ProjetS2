@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
+using Script.Bot;
+using Script.EntityPlayer;
 using Script.Tools;
 using UnityEngine;
 
@@ -35,17 +40,27 @@ namespace Script.Animation
         
         private Animator _animator;
         
+        // Synchronisation
+        private Humanoide _porteur;
+        
         // ------------ Setter ------------
 
-        public void SetAnimator(Animator value)
+        public void Constructeur(Animator animator, Humanoide player)
         {
-            _animator = value;
+            _animator = animator;
+            _porteur = player;
         }
         
         protected abstract void AddAnim();
         
         public void Set(Type newAnim)
         {
+            if (_porteur is BotClass || !_porteur.photonView.IsMine)
+                return;
+
+            if (!_animator)
+                return;
+
             // potentiel erreur
             CheckError(newAnim);
 
@@ -69,11 +84,14 @@ namespace Script.Animation
             }
 
             _animator.SetBool(Dict[newAnim], true);
+            
+            // Synchronisation
+            //_porteur.SendInfoAnim((int)newAnim);
         }
 
         public void Set(HumanAnim humanAnim)
         {
-            if (humanAnim is null)
+            if (humanAnim is null || !_animator)
                 return;
 
             foreach (KeyValuePair<Type, int> e in humanAnim.Dict)
@@ -132,6 +150,9 @@ namespace Script.Animation
 
         public void Stop(Type animToStop)
         {
+            if (!_animator)
+                return;
+            
             // potentiel erreur
             CheckError(animToStop);
             

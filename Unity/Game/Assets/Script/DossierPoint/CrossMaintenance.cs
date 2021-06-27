@@ -87,7 +87,7 @@ namespace Script.DossierPoint
                 Ouput();
                 time.Stop();
                 Debug.Log($"Maintenance de '{_sousCrossManager.name}' est terminé et a trouvé {nNewNeighboor} nouveaux voisins");
-                Debug.Log($"La maintence s'est effectué en {time.ElapsedMilliseconds/60000} minutes et {time.ElapsedMilliseconds%60000/1000} secondes");
+                Debug.Log($"La maintence s'est effectuée en {time.ElapsedMilliseconds/60000} minutes et {time.ElapsedMilliseconds%60000/1000} secondes");
             }
         }
         

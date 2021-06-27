@@ -1,5 +1,6 @@
 using System;
 using Script.Animation;
+using Script.EntityPlayer;
 using UnityEngine;
 
 namespace Script.DossierArme
@@ -31,9 +32,11 @@ namespace Script.DossierArme
         // ------------ Constructeur ------------
 
         private void Awake()
-        {
+        { 
+            PlayerClass porteur = GetComponentInParent<PlayerClass>();
+            
             _anim = GetComponent<HumanAnim>();
-            _anim.SetAnimator(GetComponent<Animator>());
+            _anim.Constructeur(GetComponent<Animator>(), porteur);
         }
 
         // ------------ Méthodes ------------

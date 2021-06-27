@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: "Cl\xE9Molette"
   m_EditorClassIdentifier: 
   armeName: "Cl\xE9 molette"
-  damage: 33
+  damage: 34
   "port\xE9eAttaque": 1
   "p\xE9riodeAttaque": 0.5

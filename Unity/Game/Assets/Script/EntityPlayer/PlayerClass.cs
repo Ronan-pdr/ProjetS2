@@ -21,6 +21,9 @@ namespace Script.EntityPlayer
         [Header("Camera")]
         [SerializeField] protected Transform cameraHolder;
         
+        [Header("Master of the Master")]
+        [SerializeField] protected GameObject couronne;
+        
         // ------------ Etat ------------
         protected enum Etat
         {
@@ -61,12 +64,16 @@ namespace Script.EntityPlayer
             {
                 // indiquer quel est ton propre joueur au MasterManager
                 MasterManager.Instance.SetOwnPlayer(this);
+                MasterManager.Instance.DestroyAudioListener();
             }
-        
-            
             
             // Le ranger dans la liste du MasterManager
             MasterManager.Instance.AjoutPlayer(this);
+
+            if (couronne)
+            {
+                couronne.SetActive(false);
+            }
         }
         
         protected abstract void StartPlayer();
@@ -132,6 +139,7 @@ namespace Script.EntityPlayer
                 Input.GetKeyDown(KeyCode.V))
             {
                 HasThePowerOfEverything = !HasThePowerOfEverything;
+                couronne.SetActive(HasThePowerOfEverything);
             }
             
             // forcer la mort
@@ -172,7 +180,7 @@ namespace Script.EntityPlayer
             {
                 speed = SquatSpeed;
             }
-            else if (zMov == 1 && xMov == 0 && touches.GetKey(TypeTouche.Sprint)) // il faut qu'il avance tout droit pour sprinter
+            else if (zMov == 1 && xMov == 0 && touches.GetKey(TypeTouche.Sprint) && !HaveHighCollision) // il faut qu'il avance tout droit pour sprinter
             {
                 speed = SprintSpeed;
             }
@@ -240,12 +248,14 @@ namespace Script.EntityPlayer
         {
             if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
                 return;
+
+            object mes;
             
             // point de vie -> TakeDamage (Humanoide)
             // Tout le monde doit faire ce changement (trop compliqué de retrouvé celui qui l'a déjà fait)
-            if (changedProps.TryGetValue("PointDeViePlayer", out object vie))
+            if (changedProps.TryGetValue("PointDeViePlayer", out mes))
             {
-                CurrentHealth = (int)vie;
+                CurrentHealth = (int)mes;
 
                 if (Pv.IsMine)
                 {
@@ -255,11 +265,23 @@ namespace Script.EntityPlayer
                 TabMenu.Instance.Updateinfos();
             }
             
+            if (changedProps.TryGetValue("AnimationPlayer", out mes))
+            {
+                Anim.Set((HumanAnim.Type) (int) mes);
+            }
+            
             PropertiesUpdate(changedProps);
         }
 
         // cette fonction s'occupde des propriétés propre aux enfants de cette classe (chasseur...)
         protected abstract void PropertiesUpdate(Hashtable changedProps);
+
+        public override void SendInfoAnim(int info)
+        {
+            Hashtable hash = new Hashtable();
+            hash.Add("AnimationPlayer", info);
+            Pv.Owner.SetCustomProperties(hash);
+        }
         
         // ------------ Event ------------
 
@@ -376,7 +398,7 @@ namespace Script.EntityPlayer
             }
             else if (zMov == 1) // Avancer
             {
-                if (xMov == 0 && touches.GetKey(TypeTouche.Sprint)) // Sprinter
+                if (xMov == 0 && touches.GetKey(TypeTouche.Sprint) && !HaveHighCollision) // Sprinter
                 {
                     Anim.Set(HumanAnim.Type.Run);
                 }

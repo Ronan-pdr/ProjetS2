@@ -31,7 +31,7 @@ namespace Script.EntityPlayer
             MasterManager.Instance.AjoutChassé(this);
             
             Anim = GetComponent<HuntedStateAnim>();
-            _design = new DesignHumanoide(Anim, designs);
+            _design = new DesignHumanoide(Anim, designs, this);
         }
 
         protected override void StartPlayer()

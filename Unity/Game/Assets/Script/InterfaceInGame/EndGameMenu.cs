@@ -40,6 +40,10 @@ namespace Script.InterfaceInGame
             
             // Win ou lose
             textWinner.color = PlayerManager.Own.Type == _winner ? Color.green : Color.red;
+            
+            // gérer la souris
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
         
         // ------------ Constructeurs ------------
@@ -59,7 +63,7 @@ namespace Script.InterfaceInGame
         public void Restart()
         {
             // c'est parti pour le bar
-            PhotonNetwork.LoadLevel(0);
+            PhotonNetwork.LoadLevel(2);
         }
         
         // ------------ Event ------------

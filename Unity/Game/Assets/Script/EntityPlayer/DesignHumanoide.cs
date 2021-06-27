@@ -12,6 +12,7 @@ namespace Script.EntityPlayer
         private HumanAnim _anim;
         private GameObject[] _designs;
         private int _indexDesign;
+        private Humanoide _porteur;
         
         // ------------ Getter ------------
 
@@ -35,18 +36,14 @@ namespace Script.EntityPlayer
             SetAnim();
         }
 
-        private void SetAnim()
-        {
-            _anim.SetAnimator(_designs[_indexDesign].GetComponent<Animator>());
-        }
-        
         // ------------ Constructeur ------------
 
-        public DesignHumanoide(HumanAnim anim, GameObject[] designs)
+        public DesignHumanoide(HumanAnim anim, GameObject[] designs, Humanoide porteur)
         {
             _anim = anim;
             _designs = designs;
             _indexDesign = 0;
+            _porteur = porteur;
             
             for (int i = designs.Length - 1; i >= 0; i--)
             {
@@ -54,6 +51,13 @@ namespace Script.EntityPlayer
             }
             
             SetAnim();
+        }
+        
+        // ------------ Private Methode ------------
+        
+        private void SetAnim()
+        {
+            _anim.Constructeur(_designs[_indexDesign].GetComponent<Animator>(), _porteur);
         }
     }
 }

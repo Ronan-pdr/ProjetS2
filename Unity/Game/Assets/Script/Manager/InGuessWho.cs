@@ -1,5 +1,6 @@
 ﻿using System;
 using Script.EntityPlayer;
+using Script.Zone;
 
 namespace Script.Manager
 {
@@ -31,29 +32,36 @@ namespace Script.Manager
                 case 1:
                     n.Rectiligne = 10;
                     n.Fuyard = 2;
-                    n.Suiveur = 1;
                     break;
                 case 2:
-                    n.Rectiligne = 14;
+                    n.Rectiligne = 16;
                     n.Fuyard = 3;
-                    n.Suiveur = 1;
                     break;
                 case 3:
                     n.Rectiligne = 26;
                     n.Fuyard = 3;
-                    n.Suiveur = 1;
                     break;
                 case 4:
                     n.Rectiligne = 34;
                     n.Fuyard = 4;
-                    n.Suiveur = 1;
                     break;
                 default:
                     n.Rectiligne = 43;
                     n.Fuyard = 5;
-                    n.Suiveur = 1;
                     break;
             }
+
+            ZoneManager.EnumZone zone = MasterManager.Instance.SettingsGame.Zone;
+
+            if (zone != ZoneManager.EnumZone.All &&
+                zone != ZoneManager.EnumZone.Inside)
+            {
+                n.Suiveur = 1;
+            }
+
+            //n.Rectiligne = 0;
+            //n.Suiveur = 0;
+            //n.Fuyard = 0;
             
             return n;
         }

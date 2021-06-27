@@ -66,6 +66,9 @@ namespace Script.Manager
         [SerializeField] private GameObject canvas;
         [SerializeField] private GameObject photoWarning;
         
+        [Header("Main Camera")]
+        [SerializeField] private AudioListener audioListener;
+        
         // ------------ Attributs ------------
         
         public static MasterManager Instance;
@@ -218,6 +221,14 @@ namespace Script.Manager
         public void LetsGetReadyToRambo()
         {
             _modeBattleRoyal = true;
+        }
+
+        public void DestroyAudioListener()
+        {
+            if (audioListener)
+            {
+                Destroy(audioListener);
+            }
         }
 
         // ------------ Constructeurs ------------

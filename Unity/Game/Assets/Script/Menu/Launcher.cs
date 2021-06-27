@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using Script.Audio;
 using Script.EntityPlayer;
 using TMPro;
 using UnityEngine;
@@ -28,7 +29,7 @@ namespace Script.Menu
         [SerializeField] TMP_Text errorText;
 
         [Header("Son")]
-        [SerializeField] private AudioManager audioManager;
+        [SerializeField] private SettingsMenu settingsMenu;
         
         [Header("Crédit")]
         [SerializeField] private Image background;
@@ -52,7 +53,8 @@ namespace Script.Menu
             Debug.Log("Connecting to Master");
             PhotonNetwork.ConnectUsingSettings();
             SetUpInputField();
-            audioManager.audioSource.volume = PlayerPrefs.GetFloat("volumeMenu", 30f*0.15f/100f);
+            
+            settingsMenu.StartVolume();
         }
     
         // ------------ Connexion ------------

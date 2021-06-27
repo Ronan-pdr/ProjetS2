@@ -171,7 +171,7 @@ namespace Script.Brain
             {
                 if (input[i] < -0.1 || input[i] > 1.1)
                 {
-                    Debug.Log($"input[{i}] = {input[i]}");
+                    //Debug.Log($"input[{i}] = {input[i]}");
                 }
             }
         }

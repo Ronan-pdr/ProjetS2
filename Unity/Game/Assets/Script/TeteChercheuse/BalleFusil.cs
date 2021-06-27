@@ -19,6 +19,7 @@ namespace Script.TeteChercheuse
         private Chasseur _lanceur;
     
         // ------------ Constructeurs ------------
+        
         private void Start()
         {
             SetRbTr();
@@ -29,6 +30,9 @@ namespace Script.TeteChercheuse
             Tr.parent = MasterManager.Instance.GetDossierBalleFusil();
             
             MoveAmount = new Vector3(0, 0, 150);
+            
+            // déplacer un peu
+            Tr.position += Tr.TransformDirection(Vector3.forward) * 1;
         }
         
         

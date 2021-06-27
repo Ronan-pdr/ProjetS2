@@ -161,11 +161,6 @@ namespace Script.Bot
                 {
                     planFuite.RemoveAt(i);
                 }
-                
-                foreach (Vector3 p in planFuite)
-                {
-                    TestRayGaz.CreateMarqueur(p, TestRayGaz.Couleur.Brown);
-                }
             }
         }
 

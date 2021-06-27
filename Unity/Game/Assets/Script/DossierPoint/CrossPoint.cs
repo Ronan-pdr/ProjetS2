@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Photon.Pun;
 using Script.EntityPlayer;
 using Script.Graph;
 using Script.Manager;
@@ -114,6 +115,11 @@ namespace Script.DossierPoint
         public void AddNeighboor(CrossPoint value)
         {
             neighboors.Add(value);
+
+            if (!PhotonNetwork.IsConnected && _crossManager.MustPrintGraph)
+            {
+                Line.Create(transform.position, value.transform.position, 200);
+            }
         }
 
         public void ResetPathFinding(string key)

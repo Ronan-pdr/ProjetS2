@@ -283,8 +283,6 @@ namespace Script.TeteChercheuse
             // c'est la position de la destination
             path.Add(node.Position);
             
-            List<Vector3> pathPasOpti = new List<Vector3>();
-            pathPasOpti.Add(node.Position);
             _gameObjects = new List<GameObject>();
 
             Node nextNode;
@@ -295,19 +293,11 @@ namespace Script.TeteChercheuse
                     Calcul.Distance(nextNode.After.Position, node.Position)); i++)
                 {
                     nextNode = nextNode.After;
-                    pathPasOpti.Add(nextNode.Position);
                 }
 
                 node = nextNode;
                 path.Add(node.Position);
             }
-
-            for (int i = pathPasOpti.Count - 2; i > 0; i--)
-            {
-                _gameObjects.Add(TestRayGaz.CreateMarqueur(pathPasOpti[i], TestRayGaz.Couleur.Red));
-            }
-
-            TestRayGaz.Instance.SetGameOject(_gameObjects);
 
             return path;
         }
