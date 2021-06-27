@@ -70,6 +70,9 @@ namespace Script.Menu
                     if (PhotonNetwork.IsMasterClient)
                     {
                         master.SettingsGame.Send();
+
+                        PhotonNetwork.CurrentRoom.IsOpen = false;
+                        PhotonNetwork.CurrentRoom.IsVisible = false;
                     }
 
                     PhotonNetwork.Instantiate("PhotonPrefabs/Manager/PlayerManager",

@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 1230384247467066515}
   m_Layer: 0
   m_Name: Detection
-  m_TagString: Untagged
+  m_TagString: SetRun
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 8170283686671122243}
   m_Layer: 0
   m_Name: Detection (1)
-  m_TagString: Untagged
+  m_TagString: SetRun
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

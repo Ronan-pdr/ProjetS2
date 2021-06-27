@@ -52,8 +52,11 @@ namespace Script.Bot
             BotManager.Instance.AddFuyard(this);
             etat = Etat.Attend;
             _timeBeginJustWait = Time.time;
-            
-            InvokeRepeating(nameof(UpdateFuyard), 0, 0.1f);
+
+            if (Pv.IsMine)
+            {
+                InvokeRepeating(nameof(UpdateFuyard), 0, 0.1f);
+            }
         }
 
         // ------------ Update ------------

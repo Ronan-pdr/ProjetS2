@@ -43,8 +43,15 @@ namespace Script.InterfaceInGame
         {
             nameP.text += _namePlayer + Environment.NewLine;
 
-            int vie = _player.GetCurrentHealth();
-            life.text += vie <= 0 ? "Dead" : $"{vie}/{_player.GetMaxHealth()}" + Environment.NewLine;
+            if (_player)
+            {
+                int vie = _player.GetCurrentHealth();
+                life.text += vie <= 0 ? "Dead" : $"{vie}/{_player.GetMaxHealth()}" + Environment.NewLine;
+            }
+            else
+            {
+                life.text += "Dead";
+            }
         }
     }
 }

@@ -112,7 +112,7 @@ namespace Script.EntityPlayer
             if (!Pv.IsMine)
                 return;
 
-            if (IsPause() || master.IsGameEnded())
+            if (MustArret())
             {
                 // arrêter de se déplacer
                 MoveAmount = Vector3.zero;
@@ -204,9 +204,9 @@ namespace Script.EntityPlayer
             cameraHolder.localEulerAngles = Vector3.left * verticalLookRotation;
         }
 
-        public static bool IsPause()
+        public static bool MustArret()
         {
-            if (PauseMenu.Instance.GetIsPaused())
+            if (PauseMenu.Instance.GetIsPaused() || MasterManager.Instance.IsGameEnded())
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;

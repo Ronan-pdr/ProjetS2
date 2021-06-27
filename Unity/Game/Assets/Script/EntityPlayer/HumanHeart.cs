@@ -56,7 +56,7 @@ namespace Script.EntityPlayer
                 return;
             
             // Si c'est une Entity, on s'en fout
-            if (other.GetComponent<Entity>())
+            if (other.GetComponent<Entity>() || other.CompareTag("SetRun"))
                 return;
 
             // On n'enlève des points de vie seulement tous les certains temps

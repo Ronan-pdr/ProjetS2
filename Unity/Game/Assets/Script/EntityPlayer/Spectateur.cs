@@ -30,12 +30,14 @@ namespace Script.EntityPlayer
         // ------------ Setter ------------
         private void SetPorteur()
         {
-            _porteur = master.GetPlayer(_indexPorteur).transform;
+            PlayerClass porteur = master.GetPlayer(_indexPorteur);
+            
+            _porteur = porteur.transform;
             Position();
 
             if (Pv.IsMine)
             {
-                _interfaceInGameManager.SetNameForSpect(_porteur.name);
+                _interfaceInGameManager.SetNameForSpect(porteur.name);
             }
         }
         
@@ -75,6 +77,7 @@ namespace Script.EntityPlayer
         }
 
         // ------------ Update ------------
+        
         private void Update()
         {
             if (!Pv.IsMine || master.IsGameEnded())
@@ -89,7 +92,7 @@ namespace Script.EntityPlayer
             
             Position();
 
-            if (PlayerClass.IsPause())
+            if (PlayerClass.MustArret())
                 return;
 
             Look();
