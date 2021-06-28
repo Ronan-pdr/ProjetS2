@@ -61,8 +61,10 @@ namespace Script.EntityPlayer
 
         public static Spectateur CreateSpectateur(PhotonView pv)
         {
-            return PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "Spectateur"),
-                Vector3.zero, Quaternion.identity, 0, new object[]{pv.ViewID}).GetComponent<Spectateur>();
+            if (!pv.IsMine)
+                return null;
+
+            return PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Humanoide", "Spectateur"), Vector3.zero, Quaternion.identity, 0, new object[]{pv.ViewID}).GetComponent<Spectateur>();
         }
         
         private void CreateController(int indexSpawn) // Instanstiate our player

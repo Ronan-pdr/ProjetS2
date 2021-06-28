@@ -46,8 +46,6 @@ namespace Script.Menu
 
         void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
-            MasterManager master = MasterManager.Instance;
-
             if (scene.buildIndex == 2) // We are in the bar
             {
                 BarManager barManager = BarManager.Instance;
@@ -59,25 +57,21 @@ namespace Script.Menu
             
                 barManager.NewHunted(hunted);
             }
-            else if (master) // We are in the game scene
+            else if (scene.buildIndex == 3) // We are in the game scene
             {
-                if (master.IsInMaintenance())
+                if (PhotonNetwork.IsMasterClient)
                 {
-                    // 
-                }
-                else
-                {
-                    if (PhotonNetwork.IsMasterClient)
+                    if (MasterManager.Instance)
                     {
-                        master.SettingsGame.Send();
-
-                        PhotonNetwork.CurrentRoom.IsOpen = false;
-                        PhotonNetwork.CurrentRoom.IsVisible = false;
+                        MasterManager.Instance.SendInfo();
                     }
-
-                    PhotonNetwork.Instantiate("PhotonPrefabs/Manager/PlayerManager",
-                        Vector3.zero, Quaternion.identity);
+                    
+                    PhotonNetwork.CurrentRoom.IsOpen = false;
+                    PhotonNetwork.CurrentRoom.IsVisible = false;
                 }
+
+                PhotonNetwork.Instantiate("PhotonPrefabs/Manager/PlayerManager",
+                    Vector3.zero, Quaternion.identity);
             }
         }
     }

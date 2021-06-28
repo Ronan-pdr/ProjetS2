@@ -180,6 +180,7 @@ namespace Script.EntityPlayer
 
             if (this is PlayerClass)
             {
+                Debug.Log("Send");
                 hash.Add("PointDeViePlayer", CurrentHealth);
             }
             else
@@ -196,7 +197,9 @@ namespace Script.EntityPlayer
         
         // ------------ Multijoueur ------------
 
-        public abstract void SendInfoAnim(int info);
+        public abstract void SendInfoAnimToSet(int info);
+        
+        public abstract void SendInfoAnimToStop(int info);
         
         // ------------ Event ------------
 

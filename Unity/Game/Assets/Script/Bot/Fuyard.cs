@@ -72,8 +72,10 @@ namespace Script.Bot
         {
             if (Time.time - _timeBeginJustWait > 40)
             {
+                // aller à un endroit random
                 SearchPlan(BotManager.GetSpotToMove(Tr.position));
                 _timeBeginJustWait = Time.time;
+                Anim.Stop(HumanAnim.Type.Sit);
             }
             
             if (etat == Etat.Fuite)

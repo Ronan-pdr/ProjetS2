@@ -73,6 +73,19 @@ namespace Script.Bar
 
         private void Update()
         {
+            // la souris
+            if (pauseMenu.GetIsPaused())
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = false;
+            }
+
+            // manager
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (pauseMenu.GetIsPaused())

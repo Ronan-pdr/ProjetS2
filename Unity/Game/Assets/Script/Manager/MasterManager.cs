@@ -110,6 +110,9 @@ namespace Script.Manager
         
         // full hunter
         private bool _modeBattleRoyal;
+        
+        // pour envoyer les infos
+        private bool _infoSent;
 
         // ------------ Getters ------------
         public int GetNbParticipant() => nParticipant; // les spectateurs sont compris
@@ -231,6 +234,15 @@ namespace Script.Manager
             }
         }
 
+        public void SendInfo()
+        {
+            if (!_infoSent && PhotonNetwork.IsMasterClient)
+            {
+                settingsGame.Send();
+                _infoSent = true;
+            }
+        }
+
         // ------------ Constructeurs ------------
         
         private void Awake()
@@ -281,6 +293,12 @@ namespace Script.Manager
             
             // etat
             _disconnecting = false;
+            
+            // infos
+            if (PhotonNetwork.IsMasterClient)
+            {
+                SendInfo();
+            }
         }
 
         public void Start()
@@ -610,7 +628,7 @@ namespace Script.Manager
             }
             
             // c'est reparti pour le menu
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
         }
     }
 }

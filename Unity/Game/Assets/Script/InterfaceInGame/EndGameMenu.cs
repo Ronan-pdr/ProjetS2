@@ -41,9 +41,7 @@ namespace Script.InterfaceInGame
             // Win ou lose
             textWinner.color = PlayerManager.Own.Type == _winner ? Color.green : Color.red;
             
-            // gérer la souris
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            Start();
         }
         
         // ------------ Constructeurs ------------

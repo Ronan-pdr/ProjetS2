@@ -114,7 +114,7 @@ namespace Script.Login
                 warningLoginText.text = "";
                 confirmLoginText.text = "Logged In";
             
-                // change de scène
+                // changer de scène
                 Destroy(RoomManager.Instance.gameObject);
                 SceneManager.LoadScene(1);
             }

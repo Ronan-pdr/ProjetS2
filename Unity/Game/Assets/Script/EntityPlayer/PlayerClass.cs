@@ -116,6 +116,7 @@ namespace Script.EntityPlayer
             {
                 // arrêter de se déplacer
                 MoveAmount = Vector3.zero;
+                Anim.StopContinue();
                 return;
             }
             
@@ -239,6 +240,8 @@ namespace Script.EntityPlayer
             if (!Pv.Owner.Equals(targetPlayer)) // si c'est pas toi la target, tu ne changes rien
                 return;
 
+            PropertiesUpdate(changedProps);
+            
             object mes;
             
             // point de vie -> TakeDamage (Humanoide)
@@ -254,25 +257,43 @@ namespace Script.EntityPlayer
                 
                 TabMenu.Instance.Updateinfos();
             }
-            
-            if (changedProps.TryGetValue("AnimationPlayer", out mes))
+
+            if (Pv.IsMine) // déjà fait de ton propre point de vue
+                return;
+
+            // SendInfoAnimToSet (PlayerClass)
+            if (changedProps.TryGetValue("AnimationPlayerToSet", out mes))
             {
                 Anim.Set((HumanAnim.Type) (int) mes);
             }
             
-            PropertiesUpdate(changedProps);
+            // SendInfoAnimToSet (PlayerClass)
+            if (changedProps.TryGetValue("AnimationPlayerToStop", out mes))
+            {
+                Anim.Stop((HumanAnim.Type) (int) mes);
+            }
         }
 
         // cette fonction s'occupde des propriétés propre aux enfants de cette classe (chasseur...)
         protected abstract void PropertiesUpdate(Hashtable changedProps);
 
-        public override void SendInfoAnim(int info)
+        public override void SendInfoAnimToSet(int info)
+        {
+            SendInfoAnim("AnimationPlayerToSet", info);
+        }
+
+        public override void SendInfoAnimToStop(int info)
+        {
+            SendInfoAnim("AnimationPlayerToStop", info);
+        }
+
+        private void SendInfoAnim(string nature, int info)
         {
             Hashtable hash = new Hashtable();
-            hash.Add("AnimationPlayer", info);
+            hash.Add(nature, info);
             Pv.Owner.SetCustomProperties(hash);
         }
-        
+
         // ------------ Event ------------
 
         private void OnTriggerEnter(Collider other)

@@ -139,12 +139,8 @@ namespace Script.Menu
                 return;
         
             string defaultName = PlayerPrefs.GetString(PlayerPrefsNameKey);
-            nameInputField.text = defaultName;
-            
-            if (string.IsNullOrEmpty(nameInputField.text))
-            {
-                nameInputField.text = "Somebody";
-            }
+
+            nameInputField.text = string.IsNullOrEmpty(defaultName) ? "Somebody" : defaultName;
         }
 
         public void SetPlayerName()

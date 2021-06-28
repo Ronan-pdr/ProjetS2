@@ -409,13 +409,23 @@ namespace Script.Bot
             PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
         }
 
-        public override void SendInfoAnim(int info)
+        public override void SendInfoAnimToSet(int info)
+        {
+            SendInfoAnim("AnimationBotToSet", info);
+        }
+
+        public override void SendInfoAnimToStop(int info)
+        {
+            SendInfoAnim("AnimationBotToStop", info);
+        }
+
+        private void SendInfoAnim(string nature, int info)
         {
             Hashtable hash = new Hashtable();
-            hash.Add("AnimationBot", EncodeHash(name, info));
+            hash.Add(nature, EncodeHash(name, info));
             Pv.Owner.SetCustomProperties(hash);
         }
-        
+
         // réception des hash
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
@@ -434,8 +444,12 @@ namespace Script.Bot
                     CurrentHealth = vie;
                 }
             }
-            
-            if (!Pv.IsMine && changedProps.TryGetValue("DesignBot", out mes)) // déjà fait de ton propre point de vue
+
+            if (Pv.IsMine) // déjà fait de ton propre point de vue
+                return;
+
+            // SendInfoDesign (BotClass)
+            if (changedProps.TryGetValue("DesignBot", out mes))
             {
                 if (DecodeHash((string)mes, out int indexDesign))
                 {
@@ -443,11 +457,21 @@ namespace Script.Bot
                 }
             }
 
-            if (changedProps.TryGetValue("AnimationBot", out mes))
+            // SendInfoAnimToSet (BotClass)
+            if (changedProps.TryGetValue("AnimationBotToSet", out mes))
             {
                 if (DecodeHash((string)mes, out int anim))
                 {
                     Anim.Set((HumanAnim.Type) anim);
+                }
+            }
+            
+            // SendInfoAnimToStop (BotClass)
+            if (changedProps.TryGetValue("AnimationBotToStop", out mes))
+            {
+                if (DecodeHash((string)mes, out int anim))
+                {
+                    Anim.Stop((HumanAnim.Type) anim);
                 }
             }
         }

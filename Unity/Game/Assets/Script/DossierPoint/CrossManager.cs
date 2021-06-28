@@ -78,14 +78,7 @@ namespace Script.DossierPoint
         {
             foreach (SousCrossManager e in GetComponentsInChildren<SousCrossManager>())
             {
-                try
-                {
-                    LoadNeigboors(e);
-                }
-                catch (Exception exception)
-                {
-                    Print(exception.Message);
-                }
+                LoadNeigboors(e);
             }
         }
 

@@ -42,6 +42,7 @@ namespace Script.Animation
         
         // Synchronisation
         private Humanoide _porteur;
+        private float _nextTimeSendInfo;
         
         // ------------ Setter ------------
 
@@ -55,22 +56,25 @@ namespace Script.Animation
         
         public void Set(Type newAnim)
         {
-            if (_porteur is BotClass || !_porteur.photonView.IsMine)
-                return;
-
             if (!_animator)
                 return;
+
+            //if (_porteur is BotClass || !_porteur.photonView.IsMine)
+                //return;
 
             // potentiel erreur
             CheckError(newAnim);
 
             StopContinue();
+
+            bool isState = IsState(newAnim);
+            bool isTrigger = IsTrigger(newAnim, out float timeAnim);
             
-            if (IsState(newAnim)) // state
+            if (isState) // state
             {
                 // rien de plus
             }
-            else if (IsTrigger(newAnim, out float timeAnim)) // trigger
+            else if (isTrigger) // trigger
             {
                 // enlever la précédente
                 Stop(_trigger.anim);
@@ -81,12 +85,24 @@ namespace Script.Animation
             else // continue
             {
                 // elle sont stocké dans une liste
+                
+                if (_porteur is BotClass)
+                {
+                    return;
+                }
             }
+
+            if (_animator.GetBool(Dict[newAnim]))
+                return;
 
             _animator.SetBool(Dict[newAnim], true);
             
             // Synchronisation
-            //_porteur.SendInfoAnim((int)newAnim);
+            if (!(_porteur is Chasseur) && (isTrigger || isState) && _nextTimeSendInfo >= Time.time)
+            {
+                _porteur.SendInfoAnimToSet((int)newAnim);
+                _nextTimeSendInfo = Time.time + 1f;
+            }
         }
 
         public void Set(HumanAnim humanAnim)
@@ -134,7 +150,7 @@ namespace Script.Animation
             AddAnim();
         }
         
-        // ------------Update ------------
+        // ------------ Update ------------
 
         private void Update()
         {
@@ -146,7 +162,7 @@ namespace Script.Animation
             }
         }
 
-        // ------------ Méthodes ------------
+        // ------------ Publique Méthodes ------------
 
         public void Stop(Type animToStop)
         {
@@ -155,10 +171,22 @@ namespace Script.Animation
             
             // potentiel erreur
             CheckError(animToStop);
+
+            if (animToStop == Type.Idle || !_animator.GetBool(Dict[animToStop]))
+                return;
+
+            bool isContinue = IsContinue(animToStop);
+
+            if (isContinue && _porteur is BotClass)
+                return;
+
+            _animator.SetBool(Dict[animToStop], false);
             
-            if (animToStop != Type.Idle)
+            // Synchronisation
+            if (!(_porteur is Chasseur) && !isContinue && _nextTimeSendInfo >= Time.time)
             {
-                _animator.SetBool(Dict[animToStop], false);
+                _porteur.SendInfoAnimToStop((int)animToStop);
+                _nextTimeSendInfo = Time.time + 1;
             }
         }
 
@@ -190,6 +218,11 @@ namespace Script.Animation
                     time = 0;
                     return false;
             }
+        }
+
+        private bool IsContinue(Type type)
+        {
+            return _animContinue.Contains(type);
         }
 
         private void CheckError(Type type)

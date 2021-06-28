@@ -116,7 +116,7 @@ namespace Script.DossierPoint
         {
             neighboors.Add(value);
 
-            if (!PhotonNetwork.IsConnected && _crossManager.MustPrintGraph)
+            if (!PhotonNetwork.IsConnected && CrossManager.Instance.MustPrintGraph)
             {
                 Line.Create(transform.position, value.transform.position, 200);
             }

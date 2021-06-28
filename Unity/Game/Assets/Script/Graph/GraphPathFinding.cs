@@ -112,9 +112,10 @@ namespace Script.Graph
                 if (path is null)
                 {
                     // recherche négative
-                    TestRayGaz.CreateMarqueur(_destination.transform.position, TestRayGaz.Couleur.Red);
+                    //TestRayGaz.CreateMarqueur(_destination.transform.position, TestRayGaz.Couleur.Red);
                     
-                    throw new Exception("Recherche négative");
+                    //throw new Exception("Recherche négative");
+                    return;
                 }
                 
                 if (SimpleMath.IsEncadré(path[path.Count - 1], _start) && 
