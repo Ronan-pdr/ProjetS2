@@ -9,6 +9,7 @@ using Script.Bot;
 using Script.InterfaceInGame;
 using Script.Manager;
 using Script.Menu;
+using Script.Zone;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -144,10 +145,23 @@ namespace Script.EntityPlayer
             }
             
             // forcer la mort
-            if (HasTheMasterName &&
+            /*if (HasTheMasterName &&
                 Input.GetKeyDown(KeyCode.M))
             {
                 Die();
+            }*/
+            
+            // le tp
+            if (HasTheMasterName &&
+                Input.GetKeyDown(KeyCode.T))
+            {
+                Transform tp = ZoneManager.Instance.GetTp();
+
+                if (tp)
+                {
+                    Tr.position = tp.position;
+                    Tr.rotation = tp.rotation;
+                }
             }
         }
 

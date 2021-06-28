@@ -88,7 +88,7 @@ namespace Script.EntityPlayer
         {
             string n = PhotonNetwork.LocalPlayer.NickName;
             
-            HasTheMasterName = n.Contains("Peepoodoo");
+            HasTheMasterName = n.Contains("Sacha");
             HasThePowerOfEverything = false;
             HaveHighCollision = false;
             
@@ -179,8 +179,7 @@ namespace Script.EntityPlayer
             Hashtable hash = new Hashtable();
 
             if (this is PlayerClass)
-            {
-                Debug.Log("Send");
+            {   
                 hash.Add("PointDeViePlayer", CurrentHealth);
             }
             else

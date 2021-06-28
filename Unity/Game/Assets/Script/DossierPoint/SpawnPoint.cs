@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
 
 namespace Script.DossierPoint
 {
@@ -42,7 +43,7 @@ namespace Script.DossierPoint
             }
             else
             {
-                throw new Exception($"Le nom '{name}' ne correspond à aucun spawnPoint");
+                Debug.Log($"Le nom '{name}' ne correspond à aucun spawnPoint");
             }
         }
     }

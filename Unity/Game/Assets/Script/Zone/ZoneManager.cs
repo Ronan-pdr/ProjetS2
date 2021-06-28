@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Script.Zone
 {
-    public class ZoneManager : MonoBehaviourPunCallbacks
+    public class ZoneManager : MonoBehaviour
     {
         // ------------ SerializeField ------------
         
@@ -33,6 +33,9 @@ namespace Script.Zone
         [Header("Choose zone")]
         [SerializeField] private SettingsGame settings;
         
+        [Header("Téléportation")]
+        [SerializeField] private Transform[] tps;
+        
         // ------------ Attributs ------------
 
         public static ZoneManager Instance;
@@ -51,6 +54,22 @@ namespace Script.Zone
         private Zone _bouffe;
         private Zone _cours;
         
+        // téléportation
+        private int _indexTp;
+        
+        // ------------ Getter ------------
+
+        public Transform GetTp()
+        {
+            _indexTp += 1;
+            if (_indexTp < tps.Length)
+            {
+                return tps[_indexTp];
+            }
+
+            return null;
+        }
+        
         // ------------ Constructeur ------------
 
         private void Awake()
@@ -61,6 +80,8 @@ namespace Script.Zone
             {
                 SetZone();
             }
+
+            _indexTp = -1;
         }
 
         public void SetZone()
@@ -85,7 +106,7 @@ namespace Script.Zone
                 cm.ActiveSousCrossManager(ManList<SousCrossManager>.Copy(scmToActive));
             }
         }
-
+        
         // ------------ Methods ------------
 
         private void InitialiserZones()
