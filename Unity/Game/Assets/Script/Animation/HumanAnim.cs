@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ExitGames.Client.Photon;
-using Photon.Pun;
-using Photon.Realtime;
 using Script.Bot;
 using Script.EntityPlayer;
 using Script.Tools;
@@ -42,7 +39,7 @@ namespace Script.Animation
         
         // Synchronisation
         private Humanoide _porteur;
-        private float _nextTimeSendInfo;
+        private int _nbAnimSendInTheLastSeconds;
         
         // ------------ Setter ------------
 
@@ -98,26 +95,10 @@ namespace Script.Animation
             _animator.SetBool(Dict[newAnim], true);
             
             // Synchronisation
-            if (!(_porteur is Chasseur) && (isTrigger || isState) && _nextTimeSendInfo >= Time.time)
+            if (!(_porteur is Chasseur) && (isTrigger || isState) && _nbAnimSendInTheLastSeconds < 3)
             {
                 _porteur.SendInfoAnimToSet((int)newAnim);
-                _nextTimeSendInfo = Time.time + 1f;
-            }
-        }
-
-        public void Set(HumanAnim humanAnim)
-        {
-            if (humanAnim is null || !_animator)
-                return;
-
-            foreach (KeyValuePair<Type, int> e in humanAnim.Dict)
-            {
-                if (Dict.ContainsKey(e.Key) && _animator.GetBool(e.Value))
-                {
-                    _animator.SetBool(Dict[e.Key], true);
-
-                    Debug.Log($"Le met en mode '{e.Key}'");
-                }
+                _nbAnimSendInTheLastSeconds += 1;
             }
         }
 
@@ -148,6 +129,10 @@ namespace Script.Animation
             
             // ajouter des anims spécifique
             AddAnim();
+            
+            // synchro
+            _nbAnimSendInTheLastSeconds = 0;
+            InvokeRepeating(nameof(DecrementeNbAnimSend), 0.5f, 1);
         }
         
         // ------------ Update ------------
@@ -183,10 +168,10 @@ namespace Script.Animation
             _animator.SetBool(Dict[animToStop], false);
             
             // Synchronisation
-            if (!(_porteur is Chasseur) && !isContinue && _nextTimeSendInfo >= Time.time)
+            if (!(_porteur is Chasseur) && !isContinue && _nbAnimSendInTheLastSeconds < 3)
             {
                 _porteur.SendInfoAnimToStop((int)animToStop);
-                _nextTimeSendInfo = Time.time + 1;
+                _nbAnimSendInTheLastSeconds += 1;
             }
         }
 
@@ -198,7 +183,8 @@ namespace Script.Animation
             }
         }
 
-        // private
+        // ------------ Private Méthodes ------------
+        
         private bool IsState(Type type)
         {
             return type == Type.Squat ||
@@ -223,6 +209,14 @@ namespace Script.Animation
         private bool IsContinue(Type type)
         {
             return _animContinue.Contains(type);
+        }
+
+        private void DecrementeNbAnimSend()
+        {
+            if (_nbAnimSendInTheLastSeconds > 0)
+            {
+                _nbAnimSendInTheLastSeconds--;
+            }
         }
 
         private void CheckError(Type type)

@@ -1,6 +1,7 @@
 using System.Collections;
 using Firebase;
 using Firebase.Auth;
+using Script.Audio;
 using Script.Menu;
 using TMPro;
 using UnityEngine;
@@ -32,6 +33,9 @@ namespace Script.Login
         public TMP_InputField passwordRegisterField;
         public TMP_InputField confirmRegisterField;
         public TMP_Text warningRegisterText;
+        
+        [Header("Son")]
+        [SerializeField] private AudioManager audioManager;
     
         // ------------ Constructeur ------------
 
@@ -51,6 +55,9 @@ namespace Script.Login
                     Debug.LogError("Could not resolve all Firebase dependencies: " + dependencyStatus);
                 }
             });
+            
+            // son
+            audioManager.audioSource.volume = PlayerPrefs.GetFloat("volumeMenu", 30f*0.15f/100f);
         }
 
         // ------------ Publique methodes ------------

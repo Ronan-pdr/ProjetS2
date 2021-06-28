@@ -117,6 +117,9 @@ namespace Script.Bot
                 _design.Set(index);
                 
                 SendInfoDesign();
+                
+                Invoke(nameof(SendInfoDesign), 1);
+                Invoke(nameof(SendInfoDesign), 3);
             }
         }
 
@@ -146,8 +149,6 @@ namespace Script.Bot
             }
             
             BotManager.Instance.AddBot(this);
-            
-            Invoke(nameof(SendInfoDesign), 5);
         }
 
         // ------------ Update ------------
@@ -318,7 +319,7 @@ namespace Script.Bot
             for (int i = 0; i < l; i++)
             {
                 PlayerClass player = getPlayer(i);
-                if (IsInMyVision(player))
+                if (player && IsInMyVision(player))
                 {
                     playersInVision.Add(player);
                 }

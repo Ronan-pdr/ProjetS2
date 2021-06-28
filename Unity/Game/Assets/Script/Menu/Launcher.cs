@@ -180,6 +180,7 @@ namespace Script.Menu
         
          public void DisconnectUser()
         {
+            PhotonNetwork.Disconnect();
              Destroy(RoomManager.Instance.gameObject);
              SceneManager.LoadScene(0);
         }

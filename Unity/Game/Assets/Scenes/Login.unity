@@ -1453,6 +1453,7 @@ MonoBehaviour:
   passwordRegisterField: {fileID: 747323686}
   confirmRegisterField: {fileID: 838615114}
   warningRegisterText: {fileID: 2107939963}
+  audioManager: {fileID: 940704468}
 --- !u!4 &535954603
 Transform:
   m_ObjectHideFlags: 0
