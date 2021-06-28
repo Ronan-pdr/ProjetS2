@@ -6,7 +6,7 @@ CrossPoint (60) : ,58,59,61,62,64,73,75
 CrossPoint (61) : ,60,62,63,64
 CrossPoint (62) : ,60,61,63,64
 CrossPoint (63) : ,62
-CrossPoint (64) : ,61,62,65,60
+CrossPoint (64) : ,60,61,62,65
 CrossPoint (65) : ,59,64,66
 CrossPoint (66) : ,59,65,67
 CrossPoint (67) : ,66,68,69
