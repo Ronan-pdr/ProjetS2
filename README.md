@@ -1,7 +1,6 @@
 __**Origine et nature de notre projet**__  <br/>
 <br/>
-Tout d’abord, nous étions tous d’accord pour développer ensemble un jeu vidéo. En effet, ce format nous a laissé une infinité de projets abordables même à notre 
-niveau de S2. Nous sommes aussi quatre fans de ce genre de distraction/sport, ce qui a pour conséquence de nous stimuler davantage pour ce type de projet.
+
 Pour commencer, nous avons regardé les projets de nos aînées épitéens pour avoir une idée du niveau, ainsi que de la discipline à adopter pour cette épreuve.
 Un projet a attiré notre attention, le concept est simple, un joueur ayant le rôle de chasser tous les autres participants. Ils pourront se cacher parmi des 
 personnages non joueurs qui auront eux aussi une forme humanoïde (durant cette présentation, différents termes seront utilisés pour désigner les personnages 
