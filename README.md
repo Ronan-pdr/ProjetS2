@@ -1,4 +1,4 @@
-Bienvenu sur Hunter X Hunted, jeu réalisé par l'équipe SMAR
+Bienvenu sur Hunter X Hunted, jeu réalisé par l'équipe SMAR <br/>
 <img alt="Logo_hunterxhunted" src="Logo_hunterxhunted.png">
 
 __**Origine et nature de notre projet**__  <br/>
