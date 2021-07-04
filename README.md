@@ -1,4 +1,4 @@
-__**Origine et nature de notre projet**__
+__**Origine et nature de notre projet**__  <br/>
 Tout d’abord, nous étions tous d’accord pour développer ensemble un jeu vidéo. En effet, ce format nous a laissé une infinité de projets abordables même à notre 
 niveau de S2. Nous sommes aussi quatre fans de ce genre de distraction/sport, ce qui a pour conséquence de nous stimuler davantage pour ce type de projet.
 Pour commencer, nous avons regardé les projets de nos aînées épitéens pour avoir une idée du niveau, ainsi que de la discipline à adopter pour cette épreuve.
